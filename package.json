@@ -1,0 +1,31 @@
+{
+  "name": "@angular/cdk-experimental",
+  "version": "9.1.1-sha-59ae34bf9",
+  "description": "Experimental components for Angular CDK",
+  "main": "./bundles/cdk-experimental.umd.js",
+  "fesm5": "./fesm5/cdk-experimental.js",
+  "fesm2015": "./fesm2015/cdk-experimental.js",
+  "esm5": "./esm5/index.js",
+  "esm2015": "./esm2015/index.js",
+  "typings": "./index.d.ts",
+  "module": "./fesm5/cdk-experimental.js",
+  "es2015": "./fesm2015/cdk-experimental.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/components.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/angular/components/issues"
+  },
+  "homepage": "https://github.com/angular/components#readme",
+  "peerDependencies": {
+    "@angular/cdk": "9.1.1-sha-59ae34bf9",
+    "@angular/core": "^9.0.0 || ^10.0.0-0",
+    "tslib": "^1.9.0"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "registry": "https://wombat-dressing-room.appspot.com"
+  }
+}

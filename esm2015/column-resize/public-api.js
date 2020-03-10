@@ -1,0 +1,26 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: src/cdk-experimental/column-resize/public-api.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+export { ColumnResize } from './column-resize';
+export { CdkColumnResize } from './column-resize-directives/column-resize';
+export { CdkColumnResizeFlex } from './column-resize-directives/column-resize-flex';
+export { CdkDefaultEnabledColumnResize } from './column-resize-directives/default-enabled-column-resize';
+export { CdkDefaultEnabledColumnResizeFlex } from './column-resize-directives/default-enabled-column-resize-flex';
+export { CdkColumnResizeDefaultEnabledModule, CdkColumnResizeModule } from './column-resize-module';
+export { ColumnResizeNotifierSource, ColumnResizeNotifier } from './column-resize-notifier';
+export { ColumnSizeStore } from './column-size-store';
+export { HeaderRowEventDispatcher } from './event-dispatcher';
+export { Resizable } from './resizable';
+export { ResizeRef } from './resize-ref';
+export { ResizeStrategy, TableLayoutFixedResizeStrategy, CdkFlexTableResizeStrategy, TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER, FLEX_RESIZE_STRATEGY_PROVIDER } from './resize-strategy';
+export { ResizeOverlayHandle } from './overlay-handle';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uL3NyYy9jZGstZXhwZXJpbWVudGFsL2NvbHVtbi1yZXNpemUvcHVibGljLWFwaS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7QUFRQSw2QkFBYyxpQkFBaUIsQ0FBQztBQUNoQyxnQ0FBYywwQ0FBMEMsQ0FBQztBQUN6RCxvQ0FBYywrQ0FBK0MsQ0FBQztBQUM5RCw4Q0FBYywwREFBMEQsQ0FBQztBQUN6RSxrREFBYywrREFBK0QsQ0FBQztBQUM5RSwyRUFBYyx3QkFBd0IsQ0FBQztBQUN2QyxpRUFBYywwQkFBMEIsQ0FBQztBQUN6QyxnQ0FBYyxxQkFBcUIsQ0FBQztBQUNwQyx5Q0FBYyxvQkFBb0IsQ0FBQztBQUNuQywwQkFBYyxhQUFhLENBQUM7QUFDNUIsMEJBQWMsY0FBYyxDQUFDO0FBQzdCLHVLQUFjLG1CQUFtQixDQUFDO0FBQ2xDLG9DQUFjLGtCQUFrQixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBAbGljZW5zZVxuICogQ29weXJpZ2h0IEdvb2dsZSBMTEMgQWxsIFJpZ2h0cyBSZXNlcnZlZC5cbiAqXG4gKiBVc2Ugb2YgdGhpcyBzb3VyY2UgY29kZSBpcyBnb3Zlcm5lZCBieSBhbiBNSVQtc3R5bGUgbGljZW5zZSB0aGF0IGNhbiBiZVxuICogZm91bmQgaW4gdGhlIExJQ0VOU0UgZmlsZSBhdCBodHRwczovL2FuZ3VsYXIuaW8vbGljZW5zZVxuICovXG5cbmV4cG9ydCAqIGZyb20gJy4vY29sdW1uLXJlc2l6ZSc7XG5leHBvcnQgKiBmcm9tICcuL2NvbHVtbi1yZXNpemUtZGlyZWN0aXZlcy9jb2x1bW4tcmVzaXplJztcbmV4cG9ydCAqIGZyb20gJy4vY29sdW1uLXJlc2l6ZS1kaXJlY3RpdmVzL2NvbHVtbi1yZXNpemUtZmxleCc7XG5leHBvcnQgKiBmcm9tICcuL2NvbHVtbi1yZXNpemUtZGlyZWN0aXZlcy9kZWZhdWx0LWVuYWJsZWQtY29sdW1uLXJlc2l6ZSc7XG5leHBvcnQgKiBmcm9tICcuL2NvbHVtbi1yZXNpemUtZGlyZWN0aXZlcy9kZWZhdWx0LWVuYWJsZWQtY29sdW1uLXJlc2l6ZS1mbGV4JztcbmV4cG9ydCAqIGZyb20gJy4vY29sdW1uLXJlc2l6ZS1tb2R1bGUnO1xuZXhwb3J0ICogZnJvbSAnLi9jb2x1bW4tcmVzaXplLW5vdGlmaWVyJztcbmV4cG9ydCAqIGZyb20gJy4vY29sdW1uLXNpemUtc3RvcmUnO1xuZXhwb3J0ICogZnJvbSAnLi9ldmVudC1kaXNwYXRjaGVyJztcbmV4cG9ydCAqIGZyb20gJy4vcmVzaXphYmxlJztcbmV4cG9ydCAqIGZyb20gJy4vcmVzaXplLXJlZic7XG5leHBvcnQgKiBmcm9tICcuL3Jlc2l6ZS1zdHJhdGVneSc7XG5leHBvcnQgKiBmcm9tICcuL292ZXJsYXktaGFuZGxlJztcbiJdfQ==

@@ -1,0 +1,33 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: src/cdk-experimental/column-resize/column-resize-directives/constants.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { ColumnResizeNotifier, ColumnResizeNotifierSource } from '../column-resize-notifier';
+import { HeaderRowEventDispatcher } from '../event-dispatcher';
+import { TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER, FLEX_RESIZE_STRATEGY_PROVIDER, } from '../resize-strategy';
+/** @type {?} */
+const PROVIDERS = [
+    ColumnResizeNotifier,
+    HeaderRowEventDispatcher,
+    ColumnResizeNotifierSource,
+];
+/** @type {?} */
+export const TABLE_PROVIDERS = [
+    ...PROVIDERS,
+    TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER,
+];
+/** @type {?} */
+export const FLEX_PROVIDERS = [...PROVIDERS, FLEX_RESIZE_STRATEGY_PROVIDER];
+/** @type {?} */
+export const HOST_BINDINGS = {
+    '[class.cdk-column-resize-rtl]': 'directionality.value === "rtl"',
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29uc3RhbnRzLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vLi4vc3JjL2Nkay1leHBlcmltZW50YWwvY29sdW1uLXJlc2l6ZS9jb2x1bW4tcmVzaXplLWRpcmVjdGl2ZXMvY29uc3RhbnRzLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OztBQVNBLE9BQU8sRUFBQyxvQkFBb0IsRUFBRSwwQkFBMEIsRUFBQyxNQUFNLDJCQUEyQixDQUFDO0FBQzNGLE9BQU8sRUFBQyx3QkFBd0IsRUFBQyxNQUFNLHFCQUFxQixDQUFDO0FBQzdELE9BQU8sRUFDTCwyQ0FBMkMsRUFDM0MsNkJBQTZCLEdBQzlCLE1BQU0sb0JBQW9CLENBQUM7O01BRXRCLFNBQVMsR0FBZTtJQUM1QixvQkFBb0I7SUFDcEIsd0JBQXdCO0lBQ3hCLDBCQUEwQjtDQUMzQjs7QUFFRCxNQUFNLE9BQU8sZUFBZSxHQUFlO0lBQ3pDLEdBQUcsU0FBUztJQUNaLDJDQUEyQztDQUM1Qzs7QUFDRCxNQUFNLE9BQU8sY0FBYyxHQUFlLENBQUMsR0FBRyxTQUFTLEVBQUUsNkJBQTZCLENBQUM7O0FBQ3ZGLE1BQU0sT0FBTyxhQUFhLEdBQUc7SUFDM0IsK0JBQStCLEVBQUUsZ0NBQWdDO0NBQ2xFIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBAbGljZW5zZVxuICogQ29weXJpZ2h0IEdvb2dsZSBMTEMgQWxsIFJpZ2h0cyBSZXNlcnZlZC5cbiAqXG4gKiBVc2Ugb2YgdGhpcyBzb3VyY2UgY29kZSBpcyBnb3Zlcm5lZCBieSBhbiBNSVQtc3R5bGUgbGljZW5zZSB0aGF0IGNhbiBiZVxuICogZm91bmQgaW4gdGhlIExJQ0VOU0UgZmlsZSBhdCBodHRwczovL2FuZ3VsYXIuaW8vbGljZW5zZVxuICovXG5cbmltcG9ydCB7UHJvdmlkZXJ9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuaW1wb3J0IHtDb2x1bW5SZXNpemVOb3RpZmllciwgQ29sdW1uUmVzaXplTm90aWZpZXJTb3VyY2V9IGZyb20gJy4uL2NvbHVtbi1yZXNpemUtbm90aWZpZXInO1xuaW1wb3J0IHtIZWFkZXJSb3dFdmVudERpc3BhdGNoZXJ9IGZyb20gJy4uL2V2ZW50LWRpc3BhdGNoZXInO1xuaW1wb3J0IHtcbiAgVEFCTEVfTEFZT1VUX0ZJWEVEX1JFU0laRV9TVFJBVEVHWV9QUk9WSURFUixcbiAgRkxFWF9SRVNJWkVfU1RSQVRFR1lfUFJPVklERVIsXG59IGZyb20gJy4uL3Jlc2l6ZS1zdHJhdGVneSc7XG5cbmNvbnN0IFBST1ZJREVSUzogUHJvdmlkZXJbXSA9IFtcbiAgQ29sdW1uUmVzaXplTm90aWZpZXIsXG4gIEhlYWRlclJvd0V2ZW50RGlzcGF0Y2hlcixcbiAgQ29sdW1uUmVzaXplTm90aWZpZXJTb3VyY2UsXG5dO1xuXG5leHBvcnQgY29uc3QgVEFCTEVfUFJPVklERVJTOiBQcm92aWRlcltdID0gW1xuICAuLi5QUk9WSURFUlMsXG4gIFRBQkxFX0xBWU9VVF9GSVhFRF9SRVNJWkVfU1RSQVRFR1lfUFJPVklERVIsXG5dO1xuZXhwb3J0IGNvbnN0IEZMRVhfUFJPVklERVJTOiBQcm92aWRlcltdID0gWy4uLlBST1ZJREVSUywgRkxFWF9SRVNJWkVfU1RSQVRFR1lfUFJPVklERVJdO1xuZXhwb3J0IGNvbnN0IEhPU1RfQklORElOR1MgPSB7XG4gICdbY2xhc3MuY2RrLWNvbHVtbi1yZXNpemUtcnRsXSc6ICdkaXJlY3Rpb25hbGl0eS52YWx1ZSA9PT0gXCJydGxcIicsXG59O1xuIl19
