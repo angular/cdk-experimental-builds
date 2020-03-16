@@ -8,6 +8,3 @@
 import { Provider } from '@angular/core';
 export declare const TABLE_PROVIDERS: Provider[];
 export declare const FLEX_PROVIDERS: Provider[];
-export declare const HOST_BINDINGS: {
-    '[class.cdk-column-resize-rtl]': string;
-};

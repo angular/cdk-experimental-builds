@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@angular/cdk-experimental/popover-edit'), require('@angular/cdk/bidi'), require('@angular/common'), require('@angular/cdk/coercion'), require('@angular/cdk/portal'), require('@angular/cdk/keycodes')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/column-resize', ['exports', '@angular/core', 'rxjs', 'rxjs/operators', '@angular/cdk-experimental/popover-edit', '@angular/cdk/bidi', '@angular/common', '@angular/cdk/coercion', '@angular/cdk/portal', '@angular/cdk/keycodes'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.columnResize = {}), global.ng.core, global.rxjs, global.rxjs.operators, global.ng.cdkExperimental.popoverEdit, global.ng.cdk.bidi, global.ng.common, global.ng.cdk.coercion, global.ng.cdk.portal, global.ng.cdk.keycodes));
-}(this, (function (exports, core, rxjs, operators, popoverEdit, bidi, common, coercion, portal, keycodes) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@angular/cdk-experimental/popover-edit'), require('@angular/common'), require('@angular/cdk/coercion'), require('@angular/cdk/portal'), require('@angular/cdk/keycodes')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/column-resize', ['exports', '@angular/core', 'rxjs', 'rxjs/operators', '@angular/cdk-experimental/popover-edit', '@angular/common', '@angular/cdk/coercion', '@angular/cdk/portal', '@angular/cdk/keycodes'], factory) :
+    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.columnResize = {}), global.ng.core, global.rxjs, global.rxjs.operators, global.ng.cdkExperimental.popoverEdit, global.ng.common, global.ng.cdk.coercion, global.ng.cdk.portal, global.ng.cdk.keycodes));
+}(this, (function (exports, core, rxjs, operators, popoverEdit, common, coercion, portal, keycodes) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -563,9 +563,6 @@
         TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER,
     ]);
     var FLEX_PROVIDERS = __spread(PROVIDERS, [FLEX_RESIZE_STRATEGY_PROVIDER]);
-    var HOST_BINDINGS = {
-        '[class.cdk-column-resize-rtl]': 'directionality.value === "rtl"',
-    };
 
     /**
      * @license
@@ -580,10 +577,9 @@
      */
     var CdkColumnResize = /** @class */ (function (_super) {
         __extends(CdkColumnResize, _super);
-        function CdkColumnResize(columnResizeNotifier, directionality, elementRef, eventDispatcher, ngZone, notifier) {
+        function CdkColumnResize(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
             var _this = _super.call(this) || this;
             _this.columnResizeNotifier = columnResizeNotifier;
-            _this.directionality = directionality;
             _this.elementRef = elementRef;
             _this.eventDispatcher = eventDispatcher;
             _this.ngZone = ngZone;
@@ -593,7 +589,6 @@
         CdkColumnResize.decorators = [
             { type: core.Directive, args: [{
                         selector: 'table[cdk-table][columnResize]',
-                        host: HOST_BINDINGS,
                         providers: __spread(TABLE_PROVIDERS, [
                             { provide: ColumnResize, useExisting: CdkColumnResize },
                         ]),
@@ -602,7 +597,6 @@
         /** @nocollapse */
         CdkColumnResize.ctorParameters = function () { return [
             { type: ColumnResizeNotifier },
-            { type: bidi.Directionality },
             { type: core.ElementRef },
             { type: HeaderRowEventDispatcher },
             { type: core.NgZone },
@@ -624,10 +618,9 @@
      */
     var CdkColumnResizeFlex = /** @class */ (function (_super) {
         __extends(CdkColumnResizeFlex, _super);
-        function CdkColumnResizeFlex(columnResizeNotifier, directionality, elementRef, eventDispatcher, ngZone, notifier) {
+        function CdkColumnResizeFlex(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
             var _this = _super.call(this) || this;
             _this.columnResizeNotifier = columnResizeNotifier;
-            _this.directionality = directionality;
             _this.elementRef = elementRef;
             _this.eventDispatcher = eventDispatcher;
             _this.ngZone = ngZone;
@@ -637,7 +630,6 @@
         CdkColumnResizeFlex.decorators = [
             { type: core.Directive, args: [{
                         selector: 'cdk-table[columnResize]',
-                        host: HOST_BINDINGS,
                         providers: __spread(FLEX_PROVIDERS, [
                             { provide: ColumnResize, useExisting: CdkColumnResizeFlex },
                         ]),
@@ -646,7 +638,6 @@
         /** @nocollapse */
         CdkColumnResizeFlex.ctorParameters = function () { return [
             { type: ColumnResizeNotifier },
-            { type: bidi.Directionality },
             { type: core.ElementRef },
             { type: HeaderRowEventDispatcher },
             { type: core.NgZone },
@@ -668,10 +659,9 @@
      */
     var CdkDefaultEnabledColumnResize = /** @class */ (function (_super) {
         __extends(CdkDefaultEnabledColumnResize, _super);
-        function CdkDefaultEnabledColumnResize(columnResizeNotifier, directionality, elementRef, eventDispatcher, ngZone, notifier) {
+        function CdkDefaultEnabledColumnResize(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
             var _this = _super.call(this) || this;
             _this.columnResizeNotifier = columnResizeNotifier;
-            _this.directionality = directionality;
             _this.elementRef = elementRef;
             _this.eventDispatcher = eventDispatcher;
             _this.ngZone = ngZone;
@@ -681,7 +671,6 @@
         CdkDefaultEnabledColumnResize.decorators = [
             { type: core.Directive, args: [{
                         selector: 'table[cdk-table]',
-                        host: HOST_BINDINGS,
                         providers: __spread(TABLE_PROVIDERS, [
                             { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResize },
                         ]),
@@ -690,7 +679,6 @@
         /** @nocollapse */
         CdkDefaultEnabledColumnResize.ctorParameters = function () { return [
             { type: ColumnResizeNotifier },
-            { type: bidi.Directionality },
             { type: core.ElementRef },
             { type: HeaderRowEventDispatcher },
             { type: core.NgZone },
@@ -712,10 +700,9 @@
      */
     var CdkDefaultEnabledColumnResizeFlex = /** @class */ (function (_super) {
         __extends(CdkDefaultEnabledColumnResizeFlex, _super);
-        function CdkDefaultEnabledColumnResizeFlex(columnResizeNotifier, directionality, elementRef, eventDispatcher, ngZone, notifier) {
+        function CdkDefaultEnabledColumnResizeFlex(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
             var _this = _super.call(this) || this;
             _this.columnResizeNotifier = columnResizeNotifier;
-            _this.directionality = directionality;
             _this.elementRef = elementRef;
             _this.eventDispatcher = eventDispatcher;
             _this.ngZone = ngZone;
@@ -725,7 +712,6 @@
         CdkDefaultEnabledColumnResizeFlex.decorators = [
             { type: core.Directive, args: [{
                         selector: 'cdk-table',
-                        host: HOST_BINDINGS,
                         providers: __spread(FLEX_PROVIDERS, [
                             { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResizeFlex },
                         ]),
@@ -734,7 +720,6 @@
         /** @nocollapse */
         CdkDefaultEnabledColumnResizeFlex.ctorParameters = function () { return [
             { type: ColumnResizeNotifier },
-            { type: bidi.Directionality },
             { type: core.ElementRef },
             { type: HeaderRowEventDispatcher },
             { type: core.NgZone },
@@ -1173,7 +1158,6 @@
     exports.TableLayoutFixedResizeStrategy = TableLayoutFixedResizeStrategy;
     exports.ɵangular_material_src_cdk_experimental_column_resize_column_resize_a = TABLE_PROVIDERS;
     exports.ɵangular_material_src_cdk_experimental_column_resize_column_resize_b = FLEX_PROVIDERS;
-    exports.ɵangular_material_src_cdk_experimental_column_resize_column_resize_c = HOST_BINDINGS;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
