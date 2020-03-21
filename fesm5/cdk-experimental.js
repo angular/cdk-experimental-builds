@@ -8,7 +8,7 @@ import { Version } from '@angular/core';
  * found in the LICENSE file at https://angular.io/license
  */
 /** Current version of the CDK Experimental package. */
-var VERSION = new Version('9.2.0-next.0-sha-cd968863c');
+var VERSION = new Version('9.2.0-next.0-sha-11536e47c');
 
 /**
  * @license
