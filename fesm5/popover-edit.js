@@ -918,7 +918,7 @@ var CdkEditable = /** @class */ (function () {
             fromEvent(element, 'mousemove').pipe(throttleTime(MOUSE_MOVE_THROTTLE_TIME_MS), toClosest(ROW_SELECTOR), takeUntil(_this.destroyed)).subscribe(_this.editEventDispatcher.mouseMove);
             // Track focus within the table to hide/show/make focusable hover content.
             fromEventPattern(function (handler) { return element.addEventListener('focus', handler, true); }, function (handler) { return element.removeEventListener('focus', handler, true); }).pipe(takeUntil(_this.destroyed), toClosest(ROW_SELECTOR), share()).subscribe(_this.editEventDispatcher.focused);
-            fromEventPattern(function (handler) { return element.addEventListener('blur', handler, true); }, function (handler) { return element.removeEventListener('blur', handler, true); }).pipe(takeUntil(_this.destroyed), mapTo(null), share()).subscribe(_this.editEventDispatcher.focused);
+            merge(fromEventPattern(function (handler) { return element.addEventListener('blur', handler, true); }, function (handler) { return element.removeEventListener('blur', handler, true); }), fromEvent(element, 'keydown').pipe(filter(function (event) { return event.key === 'Escape'; }))).pipe(takeUntil(_this.destroyed), mapTo(null), share()).subscribe(_this.editEventDispatcher.focused);
             // Keep track of rows within the table. This is used to know which rows with hover content
             // are first or last in the table. They are kept focusable in case focus enters from above
             // or below the table.

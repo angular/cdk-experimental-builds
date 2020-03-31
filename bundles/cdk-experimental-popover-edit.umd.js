@@ -1108,7 +1108,7 @@
                 rxjs.fromEvent(element, 'mousemove').pipe(operators.throttleTime(MOUSE_MOVE_THROTTLE_TIME_MS), toClosest(ROW_SELECTOR), operators.takeUntil(_this.destroyed)).subscribe(_this.editEventDispatcher.mouseMove);
                 // Track focus within the table to hide/show/make focusable hover content.
                 rxjs.fromEventPattern(function (handler) { return element.addEventListener('focus', handler, true); }, function (handler) { return element.removeEventListener('focus', handler, true); }).pipe(operators.takeUntil(_this.destroyed), toClosest(ROW_SELECTOR), operators.share()).subscribe(_this.editEventDispatcher.focused);
-                rxjs.fromEventPattern(function (handler) { return element.addEventListener('blur', handler, true); }, function (handler) { return element.removeEventListener('blur', handler, true); }).pipe(operators.takeUntil(_this.destroyed), operators.mapTo(null), operators.share()).subscribe(_this.editEventDispatcher.focused);
+                rxjs.merge(rxjs.fromEventPattern(function (handler) { return element.addEventListener('blur', handler, true); }, function (handler) { return element.removeEventListener('blur', handler, true); }), rxjs.fromEvent(element, 'keydown').pipe(operators.filter(function (event) { return event.key === 'Escape'; }))).pipe(operators.takeUntil(_this.destroyed), operators.mapTo(null), operators.share()).subscribe(_this.editEventDispatcher.focused);
                 // Keep track of rows within the table. This is used to know which rows with hover content
                 // are first or last in the table. They are kept focusable in case focus enters from above
                 // or below the table.

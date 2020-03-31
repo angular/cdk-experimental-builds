@@ -1571,20 +1571,24 @@ class CdkEditable {
              * @param {?} handler
              * @return {?}
              */
-            (handler) => element.addEventListener('focus', handler, true)), (/**
+            handler => element.addEventListener('focus', handler, true)), (/**
              * @param {?} handler
              * @return {?}
              */
-            (handler) => element.removeEventListener('focus', handler, true))).pipe(takeUntil(this.destroyed), toClosest(ROW_SELECTOR), share()).subscribe(this.editEventDispatcher.focused);
-            fromEventPattern((/**
+            handler => element.removeEventListener('focus', handler, true))).pipe(takeUntil(this.destroyed), toClosest(ROW_SELECTOR), share()).subscribe(this.editEventDispatcher.focused);
+            merge(fromEventPattern((/**
              * @param {?} handler
              * @return {?}
              */
-            (handler) => element.addEventListener('blur', handler, true)), (/**
+            handler => element.addEventListener('blur', handler, true)), (/**
              * @param {?} handler
              * @return {?}
              */
-            (handler) => element.removeEventListener('blur', handler, true))).pipe(takeUntil(this.destroyed), mapTo(null), share()).subscribe(this.editEventDispatcher.focused);
+            handler => element.removeEventListener('blur', handler, true))), fromEvent(element, 'keydown').pipe(filter((/**
+             * @param {?} event
+             * @return {?}
+             */
+            event => event.key === 'Escape')))).pipe(takeUntil(this.destroyed), mapTo(null), share()).subscribe(this.editEventDispatcher.focused);
             // Keep track of rows within the table. This is used to know which rows with hover content
             // are first or last in the table. They are kept focusable in case focus enters from above
             // or below the table.
