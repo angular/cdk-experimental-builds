@@ -1,6 +1,6 @@
 {
   "name": "@angular/cdk-experimental",
-  "version": "9.2.0-sha-09d0b1f7b",
+  "version": "9.2.0-sha-4e02a95b9",
   "description": "Experimental components for Angular CDK",
   "main": "./bundles/cdk-experimental.umd.js",
   "fesm5": "./fesm5/cdk-experimental.js",
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/angular/components#readme",
   "peerDependencies": {
-    "@angular/cdk": "9.2.0-sha-09d0b1f7b",
+    "@angular/cdk": "9.2.0-sha-4e02a95b9",
     "@angular/core": "^9.0.0 || ^10.0.0-0",
     "tslib": "^1.9.0"
   },
