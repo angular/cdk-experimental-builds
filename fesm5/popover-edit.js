@@ -1,7 +1,7 @@
 import { __read, __values, __extends } from 'tslib';
 import { Injectable, NgZone, Self, ɵɵdefineInjectable, ɵɵinject, EventEmitter, Directive, ElementRef, HostListener, Input, Inject, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
 import { Subject, pipe, combineLatest, Observable, fromEvent, fromEventPattern, merge } from 'rxjs';
-import { distinctUntilChanged, startWith, share, filter, map, auditTime, audit, debounceTime, skip, take, takeUntil, mapTo, throttleTime, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, startWith, shareReplay, filter, map, auditTime, audit, debounceTime, skip, take, takeUntil, mapTo, throttleTime, share, withLatestFrom } from 'rxjs/operators';
 import { ControlContainer } from '@angular/forms';
 import { Directionality } from '@angular/cdk/bidi';
 import { RIGHT_ARROW, LEFT_ARROW, DOWN_ARROW, UP_ARROW, hasModifierKey } from '@angular/cdk/keycodes';
@@ -104,9 +104,9 @@ var EditEventDispatcher = /** @class */ (function () {
         // Optimization: Precompute common pipeable operators used per row/cell.
         this._distinctUntilChanged = distinctUntilChanged();
         this._startWithNull = startWith(null);
-        this._distinctShare = pipe(this._distinctUntilChanged, share());
+        this._distinctShare = pipe(this._distinctUntilChanged, shareReplay(1));
         this._startWithNullDistinct = pipe(this._startWithNull, this._distinctUntilChanged);
-        this.editingAndEnabled = this.editing.pipe(filter(function (cell) { return cell == null || !_this.disabledCells.has(cell); }), share());
+        this.editingAndEnabled = this.editing.pipe(filter(function (cell) { return cell == null || !_this.disabledCells.has(cell); }), shareReplay(1));
         /** An observable that emits the row containing focus or an active edit. */
         this.editingOrFocused = combineLatest([
             this.editingAndEnabled.pipe(map(function (cell) { return closest(cell, ROW_SELECTOR); }), this._startWithNull),
@@ -115,7 +115,7 @@ var EditEventDispatcher = /** @class */ (function () {
             var _b = __read(_a, 2), editingRow = _b[0], focusedRow = _b[1];
             return focusedRow || editingRow;
         }), this._distinctUntilChanged, auditTime(FOCUS_DELAY), // Use audit to skip over blur events to the next focused element.
-        this._distinctUntilChanged, share());
+        this._distinctUntilChanged, shareReplay(1));
         /** Tracks rows that contain hover content with a reference count. */
         this._rowsWithHoverContent = new WeakMap();
         /** The table cell that has an active edit lens (or null). */
@@ -128,10 +128,10 @@ var EditEventDispatcher = /** @class */ (function () {
             this.hovering.pipe(distinctUntilChanged(), audit(function (row) { return _this.mouseMove.pipe(filter(function (mouseMoveRow) { return row === mouseMoveRow; }), _this._startWithNull, debounceTime(MOUSE_EVENT_DELAY_MS)); }), this._startWithNullDistinct),
         ]).pipe(skip(1), // Skip the initial emission of [null, null, null, null].
         map(computeHoverContentState), distinctUntilChanged(areMapEntriesEqual), 
-        // Optimization: Enter the zone before share() so that we trigger a single
+        // Optimization: Enter the zone before shareReplay so that we trigger a single
         // ApplicationRef.tick for all row updates.
-        this._enterZone(), share());
-        this._editingAndEnabledDistinct = this.editingAndEnabled.pipe(distinctUntilChanged(), this._enterZone(), share());
+        this._enterZone(), shareReplay(1));
+        this._editingAndEnabledDistinct = this.editingAndEnabled.pipe(distinctUntilChanged(), this._enterZone(), shareReplay(1));
         // Optimization: Share row events observable with subsequent callers.
         // At startup, calls will be sequential by row.
         this._lastSeenRow = null;
@@ -918,7 +918,7 @@ var CdkEditable = /** @class */ (function () {
             fromEvent(element, 'mousemove').pipe(throttleTime(MOUSE_MOVE_THROTTLE_TIME_MS), toClosest(ROW_SELECTOR), takeUntil(_this.destroyed)).subscribe(_this.editEventDispatcher.mouseMove);
             // Track focus within the table to hide/show/make focusable hover content.
             fromEventPattern(function (handler) { return element.addEventListener('focus', handler, true); }, function (handler) { return element.removeEventListener('focus', handler, true); }).pipe(takeUntil(_this.destroyed), toClosest(ROW_SELECTOR), share()).subscribe(_this.editEventDispatcher.focused);
-            fromEventPattern(function (handler) { return element.addEventListener('blur', handler, true); }, function (handler) { return element.removeEventListener('blur', handler, true); }).pipe(takeUntil(_this.destroyed), mapTo(null), share()).subscribe(_this.editEventDispatcher.focused);
+            merge(fromEventPattern(function (handler) { return element.addEventListener('blur', handler, true); }, function (handler) { return element.removeEventListener('blur', handler, true); }), fromEvent(element, 'keydown').pipe(filter(function (event) { return event.key === 'Escape'; }))).pipe(takeUntil(_this.destroyed), mapTo(null), share()).subscribe(_this.editEventDispatcher.focused);
             // Keep track of rows within the table. This is used to know which rows with hover content
             // are first or last in the table. They are kept focusable in case focus enters from above
             // or below the table.
