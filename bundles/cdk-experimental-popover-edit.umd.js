@@ -294,9 +294,9 @@
             // Optimization: Precompute common pipeable operators used per row/cell.
             this._distinctUntilChanged = operators.distinctUntilChanged();
             this._startWithNull = operators.startWith(null);
-            this._distinctShare = rxjs.pipe(this._distinctUntilChanged, operators.share());
+            this._distinctShare = rxjs.pipe(this._distinctUntilChanged, operators.shareReplay(1));
             this._startWithNullDistinct = rxjs.pipe(this._startWithNull, this._distinctUntilChanged);
-            this.editingAndEnabled = this.editing.pipe(operators.filter(function (cell) { return cell == null || !_this.disabledCells.has(cell); }), operators.share());
+            this.editingAndEnabled = this.editing.pipe(operators.filter(function (cell) { return cell == null || !_this.disabledCells.has(cell); }), operators.shareReplay(1));
             /** An observable that emits the row containing focus or an active edit. */
             this.editingOrFocused = rxjs.combineLatest([
                 this.editingAndEnabled.pipe(operators.map(function (cell) { return closest(cell, ROW_SELECTOR); }), this._startWithNull),
@@ -305,7 +305,7 @@
                 var _b = __read(_a, 2), editingRow = _b[0], focusedRow = _b[1];
                 return focusedRow || editingRow;
             }), this._distinctUntilChanged, operators.auditTime(FOCUS_DELAY), // Use audit to skip over blur events to the next focused element.
-            this._distinctUntilChanged, operators.share());
+            this._distinctUntilChanged, operators.shareReplay(1));
             /** Tracks rows that contain hover content with a reference count. */
             this._rowsWithHoverContent = new WeakMap();
             /** The table cell that has an active edit lens (or null). */
@@ -318,10 +318,10 @@
                 this.hovering.pipe(operators.distinctUntilChanged(), operators.audit(function (row) { return _this.mouseMove.pipe(operators.filter(function (mouseMoveRow) { return row === mouseMoveRow; }), _this._startWithNull, operators.debounceTime(MOUSE_EVENT_DELAY_MS)); }), this._startWithNullDistinct),
             ]).pipe(operators.skip(1), // Skip the initial emission of [null, null, null, null].
             operators.map(computeHoverContentState), operators.distinctUntilChanged(areMapEntriesEqual), 
-            // Optimization: Enter the zone before share() so that we trigger a single
+            // Optimization: Enter the zone before shareReplay so that we trigger a single
             // ApplicationRef.tick for all row updates.
-            this._enterZone(), operators.share());
-            this._editingAndEnabledDistinct = this.editingAndEnabled.pipe(operators.distinctUntilChanged(), this._enterZone(), operators.share());
+            this._enterZone(), operators.shareReplay(1));
+            this._editingAndEnabledDistinct = this.editingAndEnabled.pipe(operators.distinctUntilChanged(), this._enterZone(), operators.shareReplay(1));
             // Optimization: Share row events observable with subsequent callers.
             // At startup, calls will be sequential by row.
             this._lastSeenRow = null;

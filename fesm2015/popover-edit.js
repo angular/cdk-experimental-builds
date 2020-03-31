@@ -1,6 +1,6 @@
 import { Injectable, NgZone, Self, ɵɵdefineInjectable, ɵɵinject, EventEmitter, Directive, ElementRef, HostListener, Input, Inject, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
 import { Subject, pipe, combineLatest, Observable, fromEvent, fromEventPattern, merge } from 'rxjs';
-import { distinctUntilChanged, startWith, share, filter, map, auditTime, audit, debounceTime, skip, take, takeUntil, mapTo, throttleTime, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, startWith, shareReplay, filter, map, auditTime, audit, debounceTime, skip, take, takeUntil, mapTo, throttleTime, share, withLatestFrom } from 'rxjs/operators';
 import { ControlContainer } from '@angular/forms';
 import { Directionality } from '@angular/cdk/bidi';
 import { RIGHT_ARROW, LEFT_ARROW, DOWN_ARROW, UP_ARROW, hasModifierKey } from '@angular/cdk/keycodes';
@@ -171,13 +171,13 @@ class EditEventDispatcher {
         // Optimization: Precompute common pipeable operators used per row/cell.
         this._distinctUntilChanged = distinctUntilChanged();
         this._startWithNull = startWith(null);
-        this._distinctShare = pipe((/** @type {?} */ (this._distinctUntilChanged)), share());
+        this._distinctShare = pipe((/** @type {?} */ (this._distinctUntilChanged)), shareReplay(1));
         this._startWithNullDistinct = pipe(this._startWithNull, (/** @type {?} */ (this._distinctUntilChanged)));
         this.editingAndEnabled = this.editing.pipe(filter((/**
          * @param {?} cell
          * @return {?}
          */
-        cell => cell == null || !this.disabledCells.has(cell))), share());
+        cell => cell == null || !this.disabledCells.has(cell))), shareReplay(1));
         /**
          * An observable that emits the row containing focus or an active edit.
          */
@@ -192,7 +192,7 @@ class EditEventDispatcher {
          * @param {?} __0
          * @return {?}
          */
-        ([editingRow, focusedRow]) => focusedRow || editingRow)), (/** @type {?} */ (this._distinctUntilChanged)), auditTime(FOCUS_DELAY), (/** @type {?} */ (this._distinctUntilChanged)), share());
+        ([editingRow, focusedRow]) => focusedRow || editingRow)), (/** @type {?} */ (this._distinctUntilChanged)), auditTime(FOCUS_DELAY), (/** @type {?} */ (this._distinctUntilChanged)), shareReplay(1));
         /**
          * Tracks rows that contain hover content with a reference count.
          */
@@ -219,10 +219,10 @@ class EditEventDispatcher {
             mouseMoveRow => row === mouseMoveRow)), this._startWithNull, debounceTime(MOUSE_EVENT_DELAY_MS)))), this._startWithNullDistinct),
         ]).pipe(skip(1), // Skip the initial emission of [null, null, null, null].
         map(computeHoverContentState), distinctUntilChanged(areMapEntriesEqual), 
-        // Optimization: Enter the zone before share() so that we trigger a single
+        // Optimization: Enter the zone before shareReplay so that we trigger a single
         // ApplicationRef.tick for all row updates.
-        this._enterZone(), share());
-        this._editingAndEnabledDistinct = this.editingAndEnabled.pipe(distinctUntilChanged(), this._enterZone(), share());
+        this._enterZone(), shareReplay(1));
+        this._editingAndEnabledDistinct = this.editingAndEnabled.pipe(distinctUntilChanged(), this._enterZone(), shareReplay(1));
         // Optimization: Share row events observable with subsequent callers.
         // At startup, calls will be sequential by row.
         this._lastSeenRow = null;

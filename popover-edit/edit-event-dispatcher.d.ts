@@ -11,7 +11,7 @@ import { EditRef } from './edit-ref';
 /**
  * The possible states for hover content:
  * OFF - Not rendered.
- * FOCUSABLE - Rendered in the dom and stylyed for its contents to be focusable but invisible.
+ * FOCUSABLE - Rendered in the dom and styled for its contents to be focusable but invisible.
  * ON - Rendered and fully visible.
  */
 export declare const enum HoverContentState {
