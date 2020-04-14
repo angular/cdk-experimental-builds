@@ -1109,15 +1109,12 @@ class Dialog {
         // Create a reference to the dialog we're creating in order to give the user a handle
         // to modify and close it.
         /** @type {?} */
-        const dialogRef = new this._dialogRefConstructor(overlayRef, dialogContainer, config.id);
+        const dialogRef = this._createDialogRef(overlayRef, dialogContainer, config);
         /** @type {?} */
         const injector = this._createInjector(config, dialogRef, dialogContainer);
         /** @type {?} */
         const contentRef = dialogContainer.attachComponentPortal(new ComponentPortal(componentOrTemplateRef, undefined, injector));
         dialogRef.componentInstance = contentRef.instance;
-        dialogRef.disableClose = config.disableClose;
-        dialogRef.updateSize({ width: config.width, height: config.height })
-            .updatePosition(config.position);
         return dialogRef;
     }
     /**
@@ -1135,10 +1132,8 @@ class Dialog {
         // Create a reference to the dialog we're creating in order to give the user a handle
         // to modify and close it.
         /** @type {?} */
-        const dialogRef = new this._dialogRefConstructor(overlayRef, dialogContainer, config.id);
+        const dialogRef = this._createDialogRef(overlayRef, dialogContainer, config);
         dialogContainer.attachTemplatePortal(new TemplatePortal(componentOrTemplateRef, (/** @type {?} */ (null)), (/** @type {?} */ ({ $implicit: config.data, dialogRef }))));
-        dialogRef.updateSize({ width: config.width, height: config.height })
-            .updatePosition(config.position);
         return dialogRef;
     }
     /**
@@ -1168,6 +1163,21 @@ class Dialog {
             });
         }
         return new PortalInjector(userInjector || this._injector, injectionTokens);
+    }
+    /**
+     * Creates a new dialog ref.
+     * @private
+     * @param {?} overlayRef
+     * @param {?} dialogContainer
+     * @param {?} config
+     * @return {?}
+     */
+    _createDialogRef(overlayRef, dialogContainer, config) {
+        /** @type {?} */
+        const dialogRef = new this._dialogRefConstructor(overlayRef, dialogContainer, config.id);
+        dialogRef.disableClose = config.disableClose;
+        dialogRef.updateSize(config).updatePosition(config.position);
+        return dialogRef;
     }
     /**
      * Expands the provided configuration object to include the default values for properties which

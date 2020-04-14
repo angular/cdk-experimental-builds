@@ -87,6 +87,8 @@ export declare class Dialog implements OnDestroy {
      * @returns The custom injector that can be used inside the dialog.
      */
     private _createInjector;
+    /** Creates a new dialog ref. */
+    private _createDialogRef;
     /**
      * Expands the provided configuration object to include the default values for properties which
      * are undefined.
