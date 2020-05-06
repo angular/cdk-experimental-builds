@@ -1397,6 +1397,9 @@ class Resizable {
         (/** @type {?} */ (this.elementRef.nativeElement)).appendChild(this.inlineHandle);
     }
 }
+Resizable.decorators = [
+    { type: Directive }
+];
 if (false) {
     /**
      * @type {?}

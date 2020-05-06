@@ -972,6 +972,9 @@
             // TODO: Apply correct aria role (probably slider) after a11y spec questions resolved.
             this.elementRef.nativeElement.appendChild(this.inlineHandle);
         };
+        Resizable.decorators = [
+            { type: core.Directive }
+        ];
         return Resizable;
     }());
 
