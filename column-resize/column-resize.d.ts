@@ -16,7 +16,7 @@ import { HeaderRowEventDispatcher } from './event-dispatcher';
 export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
     protected readonly destroyed: ReplaySubject<void>;
     abstract readonly columnResizeNotifier: ColumnResizeNotifier;
-    protected abstract readonly elementRef: ElementRef<HTMLElement>;
+    abstract readonly elementRef: ElementRef<HTMLElement>;
     protected abstract readonly eventDispatcher: HeaderRowEventDispatcher;
     protected abstract readonly ngZone: NgZone;
     protected abstract readonly notifier: ColumnResizeNotifierSource;
@@ -28,6 +28,8 @@ export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
     ngOnDestroy(): void;
     /** Gets the unique CSS class name for this table instance. */
     getUniqueCssClass(): string;
+    /** Called when a column in the table is resized. Applies a css class to the table element. */
+    setResized(): void;
     private _listenForRowHoverEvents;
     private _listenForResizeActivity;
     private _listenForHoverActivity;
