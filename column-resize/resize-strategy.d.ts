@@ -12,15 +12,9 @@ import { ColumnResize } from './column-resize';
  * The details of how resizing works for tables for flex mat-tables are quite different.
  */
 export declare abstract class ResizeStrategy {
-    protected abstract readonly columnResize: ColumnResize;
-    /** Updates the width of the specified column. */
-    abstract applyColumnSize(cssFriendlyColumnName: string, columnHeader: HTMLElement, sizeInPx: number, previousSizeInPx?: number): void;
-    /** Applies a minimum width to the specified column, updating its current width as needed. */
+    abstract applyColumnSize(cssFriendlyColumnName: string, columnHeader: HTMLElement, sizeInPx: number): void;
     abstract applyMinColumnSize(cssFriendlyColumnName: string, columnHeader: HTMLElement, minSizeInPx: number): void;
-    /** Applies a maximum width to the specified column, updating its current width as needed. */
     abstract applyMaxColumnSize(cssFriendlyColumnName: string, columnHeader: HTMLElement, minSizeInPx: number): void;
-    /** Adjusts the width of the table element by the specified delta. */
-    protected updateTableWidth(delta: number): void;
 }
 /**
  * The optimially performing resize strategy for &lt;table&gt; elements with table-layout: fixed.
@@ -30,11 +24,9 @@ export declare abstract class ResizeStrategy {
  *   Updating all cell nodes
  */
 export declare class TableLayoutFixedResizeStrategy extends ResizeStrategy {
-    protected readonly columnResize: ColumnResize;
-    constructor(columnResize: ColumnResize);
-    applyColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number, previousSizeInPx?: number): void;
+    applyColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number): void;
     applyMinColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number): void;
-    applyMaxColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number): void;
+    applyMaxColumnSize(): void;
 }
 /**
  * The optimally performing resize strategy for flex mat-tables.
@@ -43,7 +35,7 @@ export declare class TableLayoutFixedResizeStrategy extends ResizeStrategy {
  *   Updating all mat-cell nodes
  */
 export declare class CdkFlexTableResizeStrategy extends ResizeStrategy implements OnDestroy {
-    protected readonly columnResize: ColumnResize;
+    private readonly _columnResize;
     private readonly _document;
     private readonly _columnIndexes;
     private readonly _columnProperties;
@@ -51,14 +43,12 @@ export declare class CdkFlexTableResizeStrategy extends ResizeStrategy implement
     private _indexSequence;
     protected readonly defaultMinSize = 0;
     protected readonly defaultMaxSize: number;
-    constructor(columnResize: ColumnResize, document: any);
-    applyColumnSize(cssFriendlyColumnName: string, columnHeader: HTMLElement, sizeInPx: number, previousSizeInPx?: number): void;
+    constructor(_columnResize: ColumnResize, document: any);
+    applyColumnSize(cssFriendlyColumnName: string, _: HTMLElement, sizeInPx: number): void;
     applyMinColumnSize(cssFriendlyColumnName: string, _: HTMLElement, sizeInPx: number): void;
     applyMaxColumnSize(cssFriendlyColumnName: string, _: HTMLElement, sizeInPx: number): void;
     protected getColumnCssClass(cssFriendlyColumnName: string): string;
     ngOnDestroy(): void;
-    private _getPropertyValue;
-    private _getAppliedWidth;
     private _applyProperty;
     private _getStyleSheet;
     private _getColumnPropertiesMap;

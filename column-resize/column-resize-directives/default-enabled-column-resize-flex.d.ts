@@ -15,9 +15,9 @@ import { HeaderRowEventDispatcher } from '../event-dispatcher';
  */
 export declare class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
     readonly columnResizeNotifier: ColumnResizeNotifier;
-    readonly elementRef: ElementRef<HTMLElement>;
+    protected readonly elementRef: ElementRef;
     protected readonly eventDispatcher: HeaderRowEventDispatcher;
     protected readonly ngZone: NgZone;
     protected readonly notifier: ColumnResizeNotifierSource;
-    constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource);
+    constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource);
 }
