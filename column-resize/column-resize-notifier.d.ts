@@ -12,6 +12,8 @@ export interface ColumnSize {
     readonly columnId: string;
     /** The width in pixels of the column. */
     readonly size: number;
+    /** The width in pixels of the column prior to this update, if known. */
+    readonly previousSize?: number;
 }
 /** Interface describing column size changes. */
 export interface ColumnSizeAction extends ColumnSize {
@@ -22,7 +24,10 @@ export interface ColumnSizeAction extends ColumnSize {
      */
     readonly completeImmediately?: boolean;
 }
-/** Originating source of column resize events within a table. */
+/**
+ * Originating source of column resize events within a table.
+ * @docs-private
+ */
 export declare class ColumnResizeNotifierSource {
     /** Emits when an in-progress resize is canceled. */
     readonly resizeCanceled: Subject<ColumnSizeAction>;
