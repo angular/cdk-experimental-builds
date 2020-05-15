@@ -55,6 +55,10 @@ var ColumnResize = /** @class */ (function () {
     ColumnResize.prototype.getUniqueCssClass = function () {
         return "cdk-column-resize-" + this.selectorId;
     };
+    /** Called when a column in the table is resized. Applies a css class to the table element. */
+    ColumnResize.prototype.setResized = function () {
+        this.elementRef.nativeElement.classList.add(WITH_RESIZED_COLUMN_CLASS);
+    };
     ColumnResize.prototype._listenForRowHoverEvents = function () {
         var _this = this;
         this.ngZone.runOutsideAngular(function () {
@@ -67,7 +71,7 @@ var ColumnResize = /** @class */ (function () {
     ColumnResize.prototype._listenForResizeActivity = function () {
         var _this = this;
         merge(this.eventDispatcher.overlayHandleActiveForCell.pipe(mapTo(undefined)), this.notifier.triggerResize.pipe(mapTo(undefined)), this.notifier.resizeCompleted.pipe(mapTo(undefined))).pipe(takeUntil(this.destroyed), take(1)).subscribe(function () {
-            _this.elementRef.nativeElement.classList.add(WITH_RESIZED_COLUMN_CLASS);
+            _this.setResized();
         });
     };
     ColumnResize.prototype._listenForHoverActivity = function () {
@@ -94,7 +98,10 @@ var ColumnResize = /** @class */ (function () {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/** Originating source of column resize events within a table. */
+/**
+ * Originating source of column resize events within a table.
+ * @docs-private
+ */
 var ColumnResizeNotifierSource = /** @class */ (function () {
     function ColumnResizeNotifierSource() {
         /** Emits when an in-progress resize is canceled. */
@@ -214,6 +221,12 @@ var HeaderRowEventDispatcher = /** @class */ (function () {
 var ResizeStrategy = /** @class */ (function () {
     function ResizeStrategy() {
     }
+    /** Adjusts the width of the table element by the specified delta. */
+    ResizeStrategy.prototype.updateTableWidth = function (delta) {
+        var table = this.columnResize.elementRef.nativeElement;
+        var tableWidth = getElementWidth(table);
+        table.style.width = coerceCssPixelValue(tableWidth + delta);
+    };
     ResizeStrategy.decorators = [
         { type: Injectable }
     ];
@@ -228,22 +241,33 @@ var ResizeStrategy = /** @class */ (function () {
  */
 var TableLayoutFixedResizeStrategy = /** @class */ (function (_super) {
     __extends(TableLayoutFixedResizeStrategy, _super);
-    function TableLayoutFixedResizeStrategy() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function TableLayoutFixedResizeStrategy(columnResize) {
+        var _this = _super.call(this) || this;
+        _this.columnResize = columnResize;
+        return _this;
     }
-    TableLayoutFixedResizeStrategy.prototype.applyColumnSize = function (_, columnHeader, sizeInPx) {
+    TableLayoutFixedResizeStrategy.prototype.applyColumnSize = function (_, columnHeader, sizeInPx, previousSizeInPx) {
+        var delta = sizeInPx - (previousSizeInPx !== null && previousSizeInPx !== void 0 ? previousSizeInPx : getElementWidth(columnHeader));
         columnHeader.style.width = coerceCssPixelValue(sizeInPx);
+        this.updateTableWidth(delta);
     };
     TableLayoutFixedResizeStrategy.prototype.applyMinColumnSize = function (_, columnHeader, sizeInPx) {
-        columnHeader.style.minWidth = coerceCssPixelValue(sizeInPx);
+        var currentWidth = getElementWidth(columnHeader);
+        var newWidth = Math.max(currentWidth, sizeInPx);
+        this.applyColumnSize(_, columnHeader, newWidth, currentWidth);
     };
-    TableLayoutFixedResizeStrategy.prototype.applyMaxColumnSize = function () {
-        // Intentionally omitted as max-width causes strange rendering issues in Chrome.
-        // Max size will still apply when the user is resizing this column.
+    TableLayoutFixedResizeStrategy.prototype.applyMaxColumnSize = function (_, columnHeader, sizeInPx) {
+        var currentWidth = getElementWidth(columnHeader);
+        var newWidth = Math.min(currentWidth, sizeInPx);
+        this.applyColumnSize(_, columnHeader, newWidth, currentWidth);
     };
     TableLayoutFixedResizeStrategy.decorators = [
         { type: Injectable }
     ];
+    /** @nocollapse */
+    TableLayoutFixedResizeStrategy.ctorParameters = function () { return [
+        { type: ColumnResize }
+    ]; };
     return TableLayoutFixedResizeStrategy;
 }(ResizeStrategy));
 /**
@@ -254,9 +278,9 @@ var TableLayoutFixedResizeStrategy = /** @class */ (function (_super) {
  */
 var CdkFlexTableResizeStrategy = /** @class */ (function (_super) {
     __extends(CdkFlexTableResizeStrategy, _super);
-    function CdkFlexTableResizeStrategy(_columnResize, document) {
+    function CdkFlexTableResizeStrategy(columnResize, document) {
         var _this = _super.call(this) || this;
-        _this._columnResize = _columnResize;
+        _this.columnResize = columnResize;
         _this._columnIndexes = new Map();
         _this._columnProperties = new Map();
         _this._indexSequence = 0;
@@ -265,9 +289,13 @@ var CdkFlexTableResizeStrategy = /** @class */ (function (_super) {
         _this._document = document;
         return _this;
     }
-    CdkFlexTableResizeStrategy.prototype.applyColumnSize = function (cssFriendlyColumnName, _, sizeInPx) {
+    CdkFlexTableResizeStrategy.prototype.applyColumnSize = function (cssFriendlyColumnName, columnHeader, sizeInPx, previousSizeInPx) {
+        // Optimization: Check applied width first as we probably set it already before reading
+        // offsetWidth which triggers layout.
+        var delta = sizeInPx - (previousSizeInPx !== null && previousSizeInPx !== void 0 ? previousSizeInPx : (this._getAppliedWidth(cssFriendlyColumnName) || columnHeader.offsetWidth));
         var cssSize = coerceCssPixelValue(sizeInPx);
         this._applyProperty(cssFriendlyColumnName, 'flex', "0 0.01 " + cssSize);
+        this.updateTableWidth(delta);
     };
     CdkFlexTableResizeStrategy.prototype.applyMinColumnSize = function (cssFriendlyColumnName, _, sizeInPx) {
         var cssSize = coerceCssPixelValue(sizeInPx);
@@ -286,6 +314,13 @@ var CdkFlexTableResizeStrategy = /** @class */ (function (_super) {
             this._styleElement.parentNode.removeChild(this._styleElement);
             this._styleElement = undefined;
         }
+    };
+    CdkFlexTableResizeStrategy.prototype._getPropertyValue = function (cssFriendlyColumnName, key) {
+        var properties = this._getColumnPropertiesMap(cssFriendlyColumnName);
+        return properties.get(key);
+    };
+    CdkFlexTableResizeStrategy.prototype._getAppliedWidth = function (cssFriendslyColumnName) {
+        return coercePixelsFromFlexValue(this._getPropertyValue(cssFriendslyColumnName, 'flex'));
     };
     CdkFlexTableResizeStrategy.prototype._applyProperty = function (cssFriendlyColumnName, key, value, enable) {
         if (enable === void 0) { enable = true; }
@@ -330,7 +365,7 @@ var CdkFlexTableResizeStrategy = /** @class */ (function (_super) {
             this._getStyleSheet().deleteRule(index);
         }
         var columnClassName = this.getColumnCssClass(cssFriendlyColumnName);
-        var tableClassName = this._columnResize.getUniqueCssClass();
+        var tableClassName = this.columnResize.getUniqueCssClass();
         var selector = "." + tableClassName + " ." + columnClassName;
         var body = propertyKeys.map(function (key) { return key + ":" + properties.get(key); }).join(';');
         this._getStyleSheet().insertRule(selector + " {" + body + "}", index);
@@ -345,6 +380,25 @@ var CdkFlexTableResizeStrategy = /** @class */ (function (_super) {
     ]; };
     return CdkFlexTableResizeStrategy;
 }(ResizeStrategy));
+/** Converts CSS pixel values to numbers, eg "123px" to 123. Returns NaN for non pixel values. */
+function coercePixelsFromCssValue(cssValue) {
+    var _a;
+    return Number((_a = cssValue.match(/(\d+)px/)) === null || _a === void 0 ? void 0 : _a[1]);
+}
+/** Gets the style.width pixels on the specified element if present, otherwise its offsetWidth. */
+function getElementWidth(element) {
+    // Optimization: Check style.width first as we probably set it already before reading
+    // offsetWidth which triggers layout.
+    return coercePixelsFromCssValue(element.style.width) || element.offsetWidth;
+}
+/**
+ * Converts CSS flex values as set in CdkFlexTableResizeStrategy to numbers,
+ * eg "0 0.01 123px" to 123.
+ */
+function coercePixelsFromFlexValue(flexValue) {
+    var _a;
+    return Number((_a = flexValue === null || flexValue === void 0 ? void 0 : flexValue.match(/0 0\.01 (\d+)px/)) === null || _a === void 0 ? void 0 : _a[1]);
+}
 var TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER = {
     provide: ResizeStrategy,
     useClass: TableLayoutFixedResizeStrategy,
@@ -636,6 +690,7 @@ var Resizable = /** @class */ (function () {
         set: function (value) {
             this.minWidthPxInternal = value;
             if (this.elementRef.nativeElement) {
+                this.columnResize.setResized();
                 this._applyMinWidthPx();
             }
         },
@@ -650,6 +705,7 @@ var Resizable = /** @class */ (function () {
         set: function (value) {
             this.maxWidthPxInternal = value;
             if (this.elementRef.nativeElement) {
+                this.columnResize.setResized();
                 this._applyMaxWidthPx();
             }
         },
@@ -677,19 +733,22 @@ var Resizable = /** @class */ (function () {
         // Use of overlays allows us to properly capture click events spanning parts
         // of two table cells and is also useful for displaying a resize thumb
         // over both cells and extending it down the table as needed.
+        var isRtl = this.directionality.value === 'rtl';
         var positionStrategy = this.overlay.position()
             .flexibleConnectedTo(this.elementRef.nativeElement)
             .withFlexibleDimensions(false)
             .withGrowAfterOpen(false)
             .withPush(false)
+            .withDefaultOffsetX(isRtl ? 1 : 0)
             .withPositions([{
-                originX: 'end',
+                originX: isRtl ? 'start' : 'end',
                 originY: 'top',
                 overlayX: 'center',
                 overlayY: 'top',
             }]);
         return this.overlay.create({
-            direction: this.directionality,
+            // Always position the overlay based on left-indexed coordinates.
+            direction: 'ltr',
             disposeOnNavigation: true,
             positionStrategy: positionStrategy,
             scrollStrategy: this.overlay.scrollStrategies.reposition(),
@@ -718,9 +777,9 @@ var Resizable = /** @class */ (function () {
         var _this = this;
         var takeUntilDestroyed = takeUntil(this.destroyed);
         merge(this.resizeNotifier.resizeCanceled, this.resizeNotifier.triggerResize).pipe(takeUntilDestroyed, filter(function (columnSize) { return columnSize.columnId === _this.columnDef.name; })).subscribe(function (_a) {
-            var size = _a.size, completeImmediately = _a.completeImmediately;
+            var size = _a.size, previousSize = _a.previousSize, completeImmediately = _a.completeImmediately;
             _this.elementRef.nativeElement.classList.add(OVERLAY_ACTIVE_CLASS);
-            _this._applySize(size);
+            _this._applySize(size, previousSize);
             if (completeImmediately) {
                 _this._completeResizeOperation();
             }
@@ -762,9 +821,9 @@ var Resizable = /** @class */ (function () {
     Resizable.prototype._updateOverlayHandleHeight = function () {
         this.overlayRef.updateSize({ height: this.elementRef.nativeElement.offsetHeight });
     };
-    Resizable.prototype._applySize = function (sizeInPixels) {
+    Resizable.prototype._applySize = function (sizeInPixels, previousSize) {
         var sizeToApply = Math.min(Math.max(sizeInPixels, this.minWidthPx, 0), this.maxWidthPx);
-        this.resizeStrategy.applyColumnSize(this.columnDef.cssClassFriendlyName, this.elementRef.nativeElement, sizeToApply);
+        this.resizeStrategy.applyColumnSize(this.columnDef.cssClassFriendlyName, this.elementRef.nativeElement, sizeToApply, previousSize);
     };
     Resizable.prototype._applyMinWidthPx = function () {
         this.resizeStrategy.applyMinColumnSize(this.columnDef.cssClassFriendlyName, this.elementRef.nativeElement, this.minWidthPx);
@@ -833,9 +892,8 @@ var ResizeOverlayHandle = /** @class */ (function () {
         var escape = fromEvent(this.document, 'keyup')
             .pipe(filter(function (event) { return event.keyCode === ESCAPE; }));
         var startX = mousedownEvent.screenX;
-        var initialOverlayOffset = this._getOverlayOffset();
         var initialSize = this._getOriginWidth();
-        var overlayOffset = initialOverlayOffset;
+        var overlayOffset = this._getOverlayOffset();
         var originOffset = this._getOriginOffset();
         var size = initialSize;
         var overshot = 0;
@@ -872,7 +930,7 @@ var ResizeOverlayHandle = /** @class */ (function () {
             }
             var computedNewSize = size + (_this._isLtr() ? deltaX : -deltaX);
             computedNewSize = Math.min(Math.max(computedNewSize, _this.resizeRef.minWidthPx, 0), _this.resizeRef.maxWidthPx);
-            _this.resizeNotifier.triggerResize.next({ columnId: _this.columnDef.name, size: computedNewSize });
+            _this.resizeNotifier.triggerResize.next({ columnId: _this.columnDef.name, size: computedNewSize, previousSize: size });
             var originNewSize = _this._getOriginWidth();
             var originNewOffset = _this._getOriginOffset();
             var originOffsetDeltaX = originNewOffset - originOffset;
@@ -880,7 +938,7 @@ var ResizeOverlayHandle = /** @class */ (function () {
             size = originNewSize;
             originOffset = originNewOffset;
             overshot += deltaX + (_this._isLtr() ? -originSizeDeltaX : originSizeDeltaX);
-            overlayOffset += originSizeDeltaX + originOffsetDeltaX;
+            overlayOffset += originOffsetDeltaX + (_this._isLtr() ? originSizeDeltaX : 0);
             _this._updateOverlayOffset(overlayOffset);
         });
     };
@@ -891,26 +949,13 @@ var ResizeOverlayHandle = /** @class */ (function () {
         return this.resizeRef.origin.nativeElement.offsetWidth;
     };
     ResizeOverlayHandle.prototype._getOriginOffset = function () {
-        var originElement = this.resizeRef.origin.nativeElement;
-        var offsetLeft = originElement.offsetLeft;
-        return this._isLtr() ?
-            offsetLeft :
-            originElement.offsetParent.offsetWidth - (offsetLeft + this._getOriginWidth());
+        return this.resizeRef.origin.nativeElement.offsetLeft;
     };
     ResizeOverlayHandle.prototype._getOverlayOffset = function () {
-        var overlayElement = this.resizeRef.overlayRef.overlayElement;
-        return this._isLtr() ?
-            parseInt(overlayElement.style.left, 10) : parseInt(overlayElement.style.right, 10);
+        return parseInt(this.resizeRef.overlayRef.overlayElement.style.left, 10);
     };
     ResizeOverlayHandle.prototype._updateOverlayOffset = function (offset) {
-        var overlayElement = this.resizeRef.overlayRef.overlayElement;
-        var overlayOffsetCssValue = coerceCssPixelValue(offset);
-        if (this._isLtr()) {
-            overlayElement.style.left = overlayOffsetCssValue;
-        }
-        else {
-            overlayElement.style.right = overlayOffsetCssValue;
-        }
+        this.resizeRef.overlayRef.overlayElement.style.left = coerceCssPixelValue(offset);
     };
     ResizeOverlayHandle.prototype._isLtr = function () {
         return this.directionality.value === 'ltr';
