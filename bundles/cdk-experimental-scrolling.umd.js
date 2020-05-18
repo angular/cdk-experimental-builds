@@ -377,7 +377,7 @@
              */
             get: function () { return this._minBufferPx; },
             set: function (value) { this._minBufferPx = coercion.coerceNumberProperty(value); },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(CdkAutoSizeVirtualScroll.prototype, "maxBufferPx", {
@@ -389,7 +389,7 @@
              */
             get: function () { return this._maxBufferPx; },
             set: function (value) { this._maxBufferPx = coercion.coerceNumberProperty(value); },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         CdkAutoSizeVirtualScroll.prototype.ngOnChanges = function () {

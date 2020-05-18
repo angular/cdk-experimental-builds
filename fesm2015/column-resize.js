@@ -44,102 +44,110 @@ let nextId = 0;
  * provide common events and services for column resizing.
  * @abstract
  */
-class ColumnResize {
-    constructor() {
-        this.destroyed = new ReplaySubject();
+let ColumnResize = /** @class */ (() => {
+    /**
+     * Base class for ColumnResize directives which attach to mat-table elements to
+     * provide common events and services for column resizing.
+     * @abstract
+     */
+    class ColumnResize {
+        constructor() {
+            this.destroyed = new ReplaySubject();
+            /**
+             * Unique ID for this table instance.
+             */
+            this.selectorId = `${++nextId}`;
+        }
         /**
-         * Unique ID for this table instance.
-         */
-        this.selectorId = `${++nextId}`;
-    }
-    /**
-     * @return {?}
-     */
-    ngAfterViewInit() {
-        (/** @type {?} */ (this.elementRef.nativeElement)).classList.add(this.getUniqueCssClass());
-        this._listenForRowHoverEvents();
-        this._listenForResizeActivity();
-        this._listenForHoverActivity();
-    }
-    /**
-     * @return {?}
-     */
-    ngOnDestroy() {
-        this.destroyed.next();
-        this.destroyed.complete();
-    }
-    /**
-     * Gets the unique CSS class name for this table instance.
-     * @return {?}
-     */
-    getUniqueCssClass() {
-        return `cdk-column-resize-${this.selectorId}`;
-    }
-    /**
-     * Called when a column in the table is resized. Applies a css class to the table element.
-     * @return {?}
-     */
-    setResized() {
-        (/** @type {?} */ (this.elementRef.nativeElement)).classList.add(WITH_RESIZED_COLUMN_CLASS);
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _listenForRowHoverEvents() {
-        this.ngZone.runOutsideAngular((/**
          * @return {?}
          */
-        () => {
-            /** @type {?} */
-            const element = (/** @type {?} */ (this.elementRef.nativeElement));
-            fromEvent(element, 'mouseover').pipe(map((/**
-             * @param {?} event
+        ngAfterViewInit() {
+            (/** @type {?} */ (this.elementRef.nativeElement)).classList.add(this.getUniqueCssClass());
+            this._listenForRowHoverEvents();
+            this._listenForResizeActivity();
+            this._listenForHoverActivity();
+        }
+        /**
+         * @return {?}
+         */
+        ngOnDestroy() {
+            this.destroyed.next();
+            this.destroyed.complete();
+        }
+        /**
+         * Gets the unique CSS class name for this table instance.
+         * @return {?}
+         */
+        getUniqueCssClass() {
+            return `cdk-column-resize-${this.selectorId}`;
+        }
+        /**
+         * Called when a column in the table is resized. Applies a css class to the table element.
+         * @return {?}
+         */
+        setResized() {
+            (/** @type {?} */ (this.elementRef.nativeElement)).classList.add(WITH_RESIZED_COLUMN_CLASS);
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _listenForRowHoverEvents() {
+            this.ngZone.runOutsideAngular((/**
              * @return {?}
              */
-            event => _closest(event.target, HEADER_CELL_SELECTOR))), takeUntil(this.destroyed)).subscribe(this.eventDispatcher.headerCellHovered);
-            fromEvent(element, 'mouseleave').pipe(filter((/**
-             * @param {?} event
+            () => {
+                /** @type {?} */
+                const element = (/** @type {?} */ (this.elementRef.nativeElement));
+                fromEvent(element, 'mouseover').pipe(map((/**
+                 * @param {?} event
+                 * @return {?}
+                 */
+                event => _closest(event.target, HEADER_CELL_SELECTOR))), takeUntil(this.destroyed)).subscribe(this.eventDispatcher.headerCellHovered);
+                fromEvent(element, 'mouseleave').pipe(filter((/**
+                 * @param {?} event
+                 * @return {?}
+                 */
+                event => !!event.relatedTarget &&
+                    !_matches((/** @type {?} */ (event.relatedTarget)), RESIZE_OVERLAY_SELECTOR))), mapTo(null), takeUntil(this.destroyed)).subscribe(this.eventDispatcher.headerCellHovered);
+            }));
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _listenForResizeActivity() {
+            merge(this.eventDispatcher.overlayHandleActiveForCell.pipe(mapTo(undefined)), this.notifier.triggerResize.pipe(mapTo(undefined)), this.notifier.resizeCompleted.pipe(mapTo(undefined))).pipe(takeUntil(this.destroyed), take(1)).subscribe((/**
              * @return {?}
              */
-            event => !!event.relatedTarget &&
-                !_matches((/** @type {?} */ (event.relatedTarget)), RESIZE_OVERLAY_SELECTOR))), mapTo(null), takeUntil(this.destroyed)).subscribe(this.eventDispatcher.headerCellHovered);
-        }));
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _listenForResizeActivity() {
-        merge(this.eventDispatcher.overlayHandleActiveForCell.pipe(mapTo(undefined)), this.notifier.triggerResize.pipe(mapTo(undefined)), this.notifier.resizeCompleted.pipe(mapTo(undefined))).pipe(takeUntil(this.destroyed), take(1)).subscribe((/**
+            () => {
+                this.setResized();
+            }));
+        }
+        /**
+         * @private
          * @return {?}
          */
-        () => {
-            this.setResized();
-        }));
+        _listenForHoverActivity() {
+            this.eventDispatcher.headerRowHoveredOrActiveDistinct.pipe(startWith(null), pairwise(), takeUntil(this.destroyed)).subscribe((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            ([previousRow, hoveredRow]) => {
+                if (hoveredRow) {
+                    hoveredRow.classList.add(HOVER_OR_ACTIVE_CLASS);
+                }
+                if (previousRow) {
+                    previousRow.classList.remove(HOVER_OR_ACTIVE_CLASS);
+                }
+            }));
+        }
     }
-    /**
-     * @private
-     * @return {?}
-     */
-    _listenForHoverActivity() {
-        this.eventDispatcher.headerRowHoveredOrActiveDistinct.pipe(startWith(null), pairwise(), takeUntil(this.destroyed)).subscribe((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([previousRow, hoveredRow]) => {
-            if (hoveredRow) {
-                hoveredRow.classList.add(HOVER_OR_ACTIVE_CLASS);
-            }
-            if (previousRow) {
-                previousRow.classList.remove(HOVER_OR_ACTIVE_CLASS);
-            }
-        }));
-    }
-}
-ColumnResize.decorators = [
-    { type: Directive }
-];
+    ColumnResize.decorators = [
+        { type: Directive }
+    ];
+    return ColumnResize;
+})();
 if (false) {
     /**
      * @type {?}
@@ -223,25 +231,32 @@ if (false) {
  * Originating source of column resize events within a table.
  * \@docs-private
  */
-class ColumnResizeNotifierSource {
-    constructor() {
-        /**
-         * Emits when an in-progress resize is canceled.
-         */
-        this.resizeCanceled = new Subject();
-        /**
-         * Emits when a resize is applied.
-         */
-        this.resizeCompleted = new Subject();
-        /**
-         * Triggers a resize action.
-         */
-        this.triggerResize = new Subject();
+let ColumnResizeNotifierSource = /** @class */ (() => {
+    /**
+     * Originating source of column resize events within a table.
+     * \@docs-private
+     */
+    class ColumnResizeNotifierSource {
+        constructor() {
+            /**
+             * Emits when an in-progress resize is canceled.
+             */
+            this.resizeCanceled = new Subject();
+            /**
+             * Emits when a resize is applied.
+             */
+            this.resizeCompleted = new Subject();
+            /**
+             * Triggers a resize action.
+             */
+            this.triggerResize = new Subject();
+        }
     }
-}
-ColumnResizeNotifierSource.decorators = [
-    { type: Injectable }
-];
+    ColumnResizeNotifierSource.decorators = [
+        { type: Injectable }
+    ];
+    return ColumnResizeNotifierSource;
+})();
 if (false) {
     /**
      * Emits when an in-progress resize is canceled.
@@ -262,34 +277,40 @@ if (false) {
 /**
  * Service for triggering column resizes imperatively or being notified of them.
  */
-class ColumnResizeNotifier {
+let ColumnResizeNotifier = /** @class */ (() => {
     /**
-     * @param {?} _source
+     * Service for triggering column resizes imperatively or being notified of them.
      */
-    constructor(_source) {
-        this._source = _source;
+    class ColumnResizeNotifier {
         /**
-         * Emits whenever a column is resized.
+         * @param {?} _source
          */
-        this.resizeCompleted = this._source.resizeCompleted.asObservable();
+        constructor(_source) {
+            this._source = _source;
+            /**
+             * Emits whenever a column is resized.
+             */
+            this.resizeCompleted = this._source.resizeCompleted.asObservable();
+        }
+        /**
+         * Instantly resizes the specified column.
+         * @param {?} columnId
+         * @param {?} size
+         * @return {?}
+         */
+        resize(columnId, size) {
+            this._source.triggerResize.next({ columnId, size, completeImmediately: true });
+        }
     }
-    /**
-     * Instantly resizes the specified column.
-     * @param {?} columnId
-     * @param {?} size
-     * @return {?}
-     */
-    resize(columnId, size) {
-        this._source.triggerResize.next({ columnId, size, completeImmediately: true });
-    }
-}
-ColumnResizeNotifier.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-ColumnResizeNotifier.ctorParameters = () => [
-    { type: ColumnResizeNotifierSource }
-];
+    ColumnResizeNotifier.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    ColumnResizeNotifier.ctorParameters = () => [
+        { type: ColumnResizeNotifierSource }
+    ];
+    return ColumnResizeNotifier;
+})();
 if (false) {
     /**
      * Emits whenever a column is resized.
@@ -311,110 +332,116 @@ if (false) {
 /**
  * Coordinates events between the column resize directives.
  */
-class HeaderRowEventDispatcher {
+let HeaderRowEventDispatcher = /** @class */ (() => {
     /**
-     * @param {?} _ngZone
+     * Coordinates events between the column resize directives.
      */
-    constructor(_ngZone) {
-        this._ngZone = _ngZone;
+    class HeaderRowEventDispatcher {
         /**
-         * Emits the currently hovered header cell or null when no header cells are hovered.
-         * Exposed publicly for events to feed in, but subscribers should use headerCellHoveredDistinct,
-         * defined below.
+         * @param {?} _ngZone
          */
-        this.headerCellHovered = new Subject();
-        /**
-         * Emits the header cell for which a user-triggered resize is active or null
-         * when no resize is in progress.
-         */
-        this.overlayHandleActiveForCell = new Subject();
-        /**
-         * Distinct and shared version of headerCellHovered.
-         */
-        this.headerCellHoveredDistinct = this.headerCellHovered.pipe(distinctUntilChanged(), share());
-        /**
-         * Emits the header that is currently hovered or hosting an active resize event (with active
-         * taking precedence).
-         */
-        this.headerRowHoveredOrActiveDistinct = combineLatest(this.headerCellHoveredDistinct.pipe(map((/**
-         * @param {?} cell
-         * @return {?}
-         */
-        cell => _closest(cell, HEADER_ROW_SELECTOR))), startWith(null), distinctUntilChanged()), this.overlayHandleActiveForCell.pipe(map((/**
-         * @param {?} cell
-         * @return {?}
-         */
-        cell => _closest(cell, HEADER_ROW_SELECTOR))), startWith(null), distinctUntilChanged())).pipe(skip(1), // Ignore initial [null, null] emission.
-        map((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([hovered, active]) => active || hovered)), distinctUntilChanged(), share());
-        this._headerRowHoveredOrActiveDistinctReenterZone = this.headerRowHoveredOrActiveDistinct.pipe(this._enterZone(), share());
-        // Optimization: Share row events observable with subsequent callers.
-        // At startup, calls will be sequential by row (and typically there's only one).
-        this._lastSeenRow = null;
-        this._lastSeenRowHover = null;
-    }
-    /**
-     * Emits whether the specified row should show its overlay controls.
-     * Emission occurs within the NgZone.
-     * @param {?} row
-     * @return {?}
-     */
-    resizeOverlayVisibleForHeaderRow(row) {
-        if (row !== this._lastSeenRow) {
-            this._lastSeenRow = row;
-            this._lastSeenRowHover = this._headerRowHoveredOrActiveDistinctReenterZone.pipe(map((/**
-             * @param {?} hoveredRow
+        constructor(_ngZone) {
+            this._ngZone = _ngZone;
+            /**
+             * Emits the currently hovered header cell or null when no header cells are hovered.
+             * Exposed publicly for events to feed in, but subscribers should use headerCellHoveredDistinct,
+             * defined below.
+             */
+            this.headerCellHovered = new Subject();
+            /**
+             * Emits the header cell for which a user-triggered resize is active or null
+             * when no resize is in progress.
+             */
+            this.overlayHandleActiveForCell = new Subject();
+            /**
+             * Distinct and shared version of headerCellHovered.
+             */
+            this.headerCellHoveredDistinct = this.headerCellHovered.pipe(distinctUntilChanged(), share());
+            /**
+             * Emits the header that is currently hovered or hosting an active resize event (with active
+             * taking precedence).
+             */
+            this.headerRowHoveredOrActiveDistinct = combineLatest(this.headerCellHoveredDistinct.pipe(map((/**
+             * @param {?} cell
              * @return {?}
              */
-            hoveredRow => hoveredRow === row)), distinctUntilChanged(), share());
+            cell => _closest(cell, HEADER_ROW_SELECTOR))), startWith(null), distinctUntilChanged()), this.overlayHandleActiveForCell.pipe(map((/**
+             * @param {?} cell
+             * @return {?}
+             */
+            cell => _closest(cell, HEADER_ROW_SELECTOR))), startWith(null), distinctUntilChanged())).pipe(skip(1), // Ignore initial [null, null] emission.
+            map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            ([hovered, active]) => active || hovered)), distinctUntilChanged(), share());
+            this._headerRowHoveredOrActiveDistinctReenterZone = this.headerRowHoveredOrActiveDistinct.pipe(this._enterZone(), share());
+            // Optimization: Share row events observable with subsequent callers.
+            // At startup, calls will be sequential by row (and typically there's only one).
+            this._lastSeenRow = null;
+            this._lastSeenRowHover = null;
         }
-        return (/** @type {?} */ (this._lastSeenRowHover));
-    }
-    /**
-     * @private
-     * @template T
-     * @return {?}
-     */
-    _enterZone() {
-        return (/**
-         * @param {?} source
+        /**
+         * Emits whether the specified row should show its overlay controls.
+         * Emission occurs within the NgZone.
+         * @param {?} row
          * @return {?}
          */
-        (source) => new Observable((/**
-         * @param {?} observer
+        resizeOverlayVisibleForHeaderRow(row) {
+            if (row !== this._lastSeenRow) {
+                this._lastSeenRow = row;
+                this._lastSeenRowHover = this._headerRowHoveredOrActiveDistinctReenterZone.pipe(map((/**
+                 * @param {?} hoveredRow
+                 * @return {?}
+                 */
+                hoveredRow => hoveredRow === row)), distinctUntilChanged(), share());
+            }
+            return (/** @type {?} */ (this._lastSeenRowHover));
+        }
+        /**
+         * @private
+         * @template T
          * @return {?}
          */
-        (observer) => source.subscribe({
-            next: (/**
-             * @param {?} value
+        _enterZone() {
+            return (/**
+             * @param {?} source
              * @return {?}
              */
-            (value) => this._ngZone.run((/**
+            (source) => new Observable((/**
+             * @param {?} observer
              * @return {?}
              */
-            () => observer.next(value)))),
-            error: (/**
-             * @param {?} err
-             * @return {?}
-             */
-            (err) => observer.error(err)),
-            complete: (/**
-             * @return {?}
-             */
-            () => observer.complete())
-        }))));
+            (observer) => source.subscribe({
+                next: (/**
+                 * @param {?} value
+                 * @return {?}
+                 */
+                (value) => this._ngZone.run((/**
+                 * @return {?}
+                 */
+                () => observer.next(value)))),
+                error: (/**
+                 * @param {?} err
+                 * @return {?}
+                 */
+                (err) => observer.error(err)),
+                complete: (/**
+                 * @return {?}
+                 */
+                () => observer.complete())
+            }))));
+        }
     }
-}
-HeaderRowEventDispatcher.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-HeaderRowEventDispatcher.ctorParameters = () => [
-    { type: NgZone }
-];
+    HeaderRowEventDispatcher.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    HeaderRowEventDispatcher.ctorParameters = () => [
+        { type: NgZone }
+    ];
+    return HeaderRowEventDispatcher;
+})();
 if (false) {
     /**
      * Emits the currently hovered header cell or null when no header cells are hovered.
@@ -472,24 +499,32 @@ if (false) {
  * The details of how resizing works for tables for flex mat-tables are quite different.
  * @abstract
  */
-class ResizeStrategy {
+let ResizeStrategy = /** @class */ (() => {
     /**
-     * Adjusts the width of the table element by the specified delta.
-     * @protected
-     * @param {?} delta
-     * @return {?}
+     * Provides an implementation for resizing a column.
+     * The details of how resizing works for tables for flex mat-tables are quite different.
+     * @abstract
      */
-    updateTableWidth(delta) {
-        /** @type {?} */
-        const table = this.columnResize.elementRef.nativeElement;
-        /** @type {?} */
-        const tableWidth = getElementWidth(table);
-        table.style.width = coerceCssPixelValue(tableWidth + delta);
+    class ResizeStrategy {
+        /**
+         * Adjusts the width of the table element by the specified delta.
+         * @protected
+         * @param {?} delta
+         * @return {?}
+         */
+        updateTableWidth(delta) {
+            /** @type {?} */
+            const table = this.columnResize.elementRef.nativeElement;
+            /** @type {?} */
+            const tableWidth = getElementWidth(table);
+            table.style.width = coerceCssPixelValue(tableWidth + delta);
+        }
     }
-}
-ResizeStrategy.decorators = [
-    { type: Injectable }
-];
+    ResizeStrategy.decorators = [
+        { type: Injectable }
+    ];
+    return ResizeStrategy;
+})();
 if (false) {
     /**
      * @type {?}
@@ -532,61 +567,71 @@ if (false) {
  *   CSS selector w/ CSS variable
  *   Updating all cell nodes
  */
-class TableLayoutFixedResizeStrategy extends ResizeStrategy {
+let TableLayoutFixedResizeStrategy = /** @class */ (() => {
     /**
-     * @param {?} columnResize
+     * The optimially performing resize strategy for &lt;table&gt; elements with table-layout: fixed.
+     * Tested against and outperformed:
+     *   CSS selector
+     *   CSS selector w/ CSS variable
+     *   Updating all cell nodes
      */
-    constructor(columnResize) {
-        super();
-        this.columnResize = columnResize;
+    class TableLayoutFixedResizeStrategy extends ResizeStrategy {
+        /**
+         * @param {?} columnResize
+         */
+        constructor(columnResize) {
+            super();
+            this.columnResize = columnResize;
+        }
+        /**
+         * @param {?} _
+         * @param {?} columnHeader
+         * @param {?} sizeInPx
+         * @param {?=} previousSizeInPx
+         * @return {?}
+         */
+        applyColumnSize(_, columnHeader, sizeInPx, previousSizeInPx) {
+            /** @type {?} */
+            const delta = sizeInPx - (previousSizeInPx !== null && previousSizeInPx !== void 0 ? previousSizeInPx : getElementWidth(columnHeader));
+            columnHeader.style.width = coerceCssPixelValue(sizeInPx);
+            this.updateTableWidth(delta);
+        }
+        /**
+         * @param {?} _
+         * @param {?} columnHeader
+         * @param {?} sizeInPx
+         * @return {?}
+         */
+        applyMinColumnSize(_, columnHeader, sizeInPx) {
+            /** @type {?} */
+            const currentWidth = getElementWidth(columnHeader);
+            /** @type {?} */
+            const newWidth = Math.max(currentWidth, sizeInPx);
+            this.applyColumnSize(_, columnHeader, newWidth, currentWidth);
+        }
+        /**
+         * @param {?} _
+         * @param {?} columnHeader
+         * @param {?} sizeInPx
+         * @return {?}
+         */
+        applyMaxColumnSize(_, columnHeader, sizeInPx) {
+            /** @type {?} */
+            const currentWidth = getElementWidth(columnHeader);
+            /** @type {?} */
+            const newWidth = Math.min(currentWidth, sizeInPx);
+            this.applyColumnSize(_, columnHeader, newWidth, currentWidth);
+        }
     }
-    /**
-     * @param {?} _
-     * @param {?} columnHeader
-     * @param {?} sizeInPx
-     * @param {?=} previousSizeInPx
-     * @return {?}
-     */
-    applyColumnSize(_, columnHeader, sizeInPx, previousSizeInPx) {
-        /** @type {?} */
-        const delta = sizeInPx - (previousSizeInPx !== null && previousSizeInPx !== void 0 ? previousSizeInPx : getElementWidth(columnHeader));
-        columnHeader.style.width = coerceCssPixelValue(sizeInPx);
-        this.updateTableWidth(delta);
-    }
-    /**
-     * @param {?} _
-     * @param {?} columnHeader
-     * @param {?} sizeInPx
-     * @return {?}
-     */
-    applyMinColumnSize(_, columnHeader, sizeInPx) {
-        /** @type {?} */
-        const currentWidth = getElementWidth(columnHeader);
-        /** @type {?} */
-        const newWidth = Math.max(currentWidth, sizeInPx);
-        this.applyColumnSize(_, columnHeader, newWidth, currentWidth);
-    }
-    /**
-     * @param {?} _
-     * @param {?} columnHeader
-     * @param {?} sizeInPx
-     * @return {?}
-     */
-    applyMaxColumnSize(_, columnHeader, sizeInPx) {
-        /** @type {?} */
-        const currentWidth = getElementWidth(columnHeader);
-        /** @type {?} */
-        const newWidth = Math.min(currentWidth, sizeInPx);
-        this.applyColumnSize(_, columnHeader, newWidth, currentWidth);
-    }
-}
-TableLayoutFixedResizeStrategy.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-TableLayoutFixedResizeStrategy.ctorParameters = () => [
-    { type: ColumnResize }
-];
+    TableLayoutFixedResizeStrategy.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    TableLayoutFixedResizeStrategy.ctorParameters = () => [
+        { type: ColumnResize }
+    ];
+    return TableLayoutFixedResizeStrategy;
+})();
 if (false) {
     /**
      * @type {?}
@@ -600,188 +645,197 @@ if (false) {
  *   CSS selector w/ CSS variable
  *   Updating all mat-cell nodes
  */
-class CdkFlexTableResizeStrategy extends ResizeStrategy {
+let CdkFlexTableResizeStrategy = /** @class */ (() => {
     /**
-     * @param {?} columnResize
-     * @param {?} document
+     * The optimally performing resize strategy for flex mat-tables.
+     * Tested against and outperformed:
+     *   CSS selector w/ CSS variable
+     *   Updating all mat-cell nodes
      */
-    constructor(columnResize, document) {
-        super();
-        this.columnResize = columnResize;
-        this._columnIndexes = new Map();
-        this._columnProperties = new Map();
-        this._indexSequence = 0;
-        this.defaultMinSize = 0;
-        this.defaultMaxSize = Number.MAX_SAFE_INTEGER;
-        this._document = document;
-    }
-    /**
-     * @param {?} cssFriendlyColumnName
-     * @param {?} columnHeader
-     * @param {?} sizeInPx
-     * @param {?=} previousSizeInPx
-     * @return {?}
-     */
-    applyColumnSize(cssFriendlyColumnName, columnHeader, sizeInPx, previousSizeInPx) {
-        // Optimization: Check applied width first as we probably set it already before reading
-        // offsetWidth which triggers layout.
-        /** @type {?} */
-        const delta = sizeInPx - (previousSizeInPx !== null && previousSizeInPx !== void 0 ? previousSizeInPx : (this._getAppliedWidth(cssFriendlyColumnName) || columnHeader.offsetWidth));
-        /** @type {?} */
-        const cssSize = coerceCssPixelValue(sizeInPx);
-        this._applyProperty(cssFriendlyColumnName, 'flex', `0 0.01 ${cssSize}`);
-        this.updateTableWidth(delta);
-    }
-    /**
-     * @param {?} cssFriendlyColumnName
-     * @param {?} _
-     * @param {?} sizeInPx
-     * @return {?}
-     */
-    applyMinColumnSize(cssFriendlyColumnName, _, sizeInPx) {
-        /** @type {?} */
-        const cssSize = coerceCssPixelValue(sizeInPx);
-        this._applyProperty(cssFriendlyColumnName, 'min-width', cssSize, sizeInPx !== this.defaultMinSize);
-    }
-    /**
-     * @param {?} cssFriendlyColumnName
-     * @param {?} _
-     * @param {?} sizeInPx
-     * @return {?}
-     */
-    applyMaxColumnSize(cssFriendlyColumnName, _, sizeInPx) {
-        /** @type {?} */
-        const cssSize = coerceCssPixelValue(sizeInPx);
-        this._applyProperty(cssFriendlyColumnName, 'max-width', cssSize, sizeInPx !== this.defaultMaxSize);
-    }
-    /**
-     * @protected
-     * @param {?} cssFriendlyColumnName
-     * @return {?}
-     */
-    getColumnCssClass(cssFriendlyColumnName) {
-        return `cdk-column-${cssFriendlyColumnName}`;
-    }
-    /**
-     * @return {?}
-     */
-    ngOnDestroy() {
-        // TODO: Use remove() once we're off IE11.
-        if (this._styleElement && this._styleElement.parentNode) {
-            this._styleElement.parentNode.removeChild(this._styleElement);
-            this._styleElement = undefined;
+    class CdkFlexTableResizeStrategy extends ResizeStrategy {
+        /**
+         * @param {?} columnResize
+         * @param {?} document
+         */
+        constructor(columnResize, document) {
+            super();
+            this.columnResize = columnResize;
+            this._columnIndexes = new Map();
+            this._columnProperties = new Map();
+            this._indexSequence = 0;
+            this.defaultMinSize = 0;
+            this.defaultMaxSize = Number.MAX_SAFE_INTEGER;
+            this._document = document;
         }
-    }
-    /**
-     * @private
-     * @param {?} cssFriendlyColumnName
-     * @param {?} key
-     * @return {?}
-     */
-    _getPropertyValue(cssFriendlyColumnName, key) {
-        /** @type {?} */
-        const properties = this._getColumnPropertiesMap(cssFriendlyColumnName);
-        return properties.get(key);
-    }
-    /**
-     * @private
-     * @param {?} cssFriendslyColumnName
-     * @return {?}
-     */
-    _getAppliedWidth(cssFriendslyColumnName) {
-        return coercePixelsFromFlexValue(this._getPropertyValue(cssFriendslyColumnName, 'flex'));
-    }
-    /**
-     * @private
-     * @param {?} cssFriendlyColumnName
-     * @param {?} key
-     * @param {?} value
-     * @param {?=} enable
-     * @return {?}
-     */
-    _applyProperty(cssFriendlyColumnName, key, value, enable = true) {
-        /** @type {?} */
-        const properties = this._getColumnPropertiesMap(cssFriendlyColumnName);
-        if (enable) {
-            properties.set(key, value);
+        /**
+         * @param {?} cssFriendlyColumnName
+         * @param {?} columnHeader
+         * @param {?} sizeInPx
+         * @param {?=} previousSizeInPx
+         * @return {?}
+         */
+        applyColumnSize(cssFriendlyColumnName, columnHeader, sizeInPx, previousSizeInPx) {
+            // Optimization: Check applied width first as we probably set it already before reading
+            // offsetWidth which triggers layout.
+            /** @type {?} */
+            const delta = sizeInPx - (previousSizeInPx !== null && previousSizeInPx !== void 0 ? previousSizeInPx : (this._getAppliedWidth(cssFriendlyColumnName) || columnHeader.offsetWidth));
+            /** @type {?} */
+            const cssSize = coerceCssPixelValue(sizeInPx);
+            this._applyProperty(cssFriendlyColumnName, 'flex', `0 0.01 ${cssSize}`);
+            this.updateTableWidth(delta);
         }
-        else {
-            properties.delete(key);
+        /**
+         * @param {?} cssFriendlyColumnName
+         * @param {?} _
+         * @param {?} sizeInPx
+         * @return {?}
+         */
+        applyMinColumnSize(cssFriendlyColumnName, _, sizeInPx) {
+            /** @type {?} */
+            const cssSize = coerceCssPixelValue(sizeInPx);
+            this._applyProperty(cssFriendlyColumnName, 'min-width', cssSize, sizeInPx !== this.defaultMinSize);
         }
-        this._applySizeCss(cssFriendlyColumnName);
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _getStyleSheet() {
-        if (!this._styleElement) {
-            this._styleElement = this._document.createElement('style');
-            this._styleElement.appendChild(this._document.createTextNode(''));
-            this._document.head.appendChild(this._styleElement);
+        /**
+         * @param {?} cssFriendlyColumnName
+         * @param {?} _
+         * @param {?} sizeInPx
+         * @return {?}
+         */
+        applyMaxColumnSize(cssFriendlyColumnName, _, sizeInPx) {
+            /** @type {?} */
+            const cssSize = coerceCssPixelValue(sizeInPx);
+            this._applyProperty(cssFriendlyColumnName, 'max-width', cssSize, sizeInPx !== this.defaultMaxSize);
         }
-        return (/** @type {?} */ (this._styleElement.sheet));
-    }
-    /**
-     * @private
-     * @param {?} cssFriendlyColumnName
-     * @return {?}
-     */
-    _getColumnPropertiesMap(cssFriendlyColumnName) {
-        /** @type {?} */
-        let properties = this._columnProperties.get(cssFriendlyColumnName);
-        if (properties === undefined) {
-            properties = new Map();
-            this._columnProperties.set(cssFriendlyColumnName, properties);
+        /**
+         * @protected
+         * @param {?} cssFriendlyColumnName
+         * @return {?}
+         */
+        getColumnCssClass(cssFriendlyColumnName) {
+            return `cdk-column-${cssFriendlyColumnName}`;
         }
-        return properties;
-    }
-    /**
-     * @private
-     * @param {?} cssFriendlyColumnName
-     * @return {?}
-     */
-    _applySizeCss(cssFriendlyColumnName) {
-        /** @type {?} */
-        const properties = this._getColumnPropertiesMap(cssFriendlyColumnName);
-        /** @type {?} */
-        const propertyKeys = Array.from(properties.keys());
-        /** @type {?} */
-        let index = this._columnIndexes.get(cssFriendlyColumnName);
-        if (index === undefined) {
-            if (!propertyKeys.length) {
-                // Nothing to set or unset.
-                return;
+        /**
+         * @return {?}
+         */
+        ngOnDestroy() {
+            // TODO: Use remove() once we're off IE11.
+            if (this._styleElement && this._styleElement.parentNode) {
+                this._styleElement.parentNode.removeChild(this._styleElement);
+                this._styleElement = undefined;
             }
-            index = this._indexSequence++;
-            this._columnIndexes.set(cssFriendlyColumnName, index);
         }
-        else {
-            this._getStyleSheet().deleteRule(index);
-        }
-        /** @type {?} */
-        const columnClassName = this.getColumnCssClass(cssFriendlyColumnName);
-        /** @type {?} */
-        const tableClassName = this.columnResize.getUniqueCssClass();
-        /** @type {?} */
-        const selector = `.${tableClassName} .${columnClassName}`;
-        /** @type {?} */
-        const body = propertyKeys.map((/**
+        /**
+         * @private
+         * @param {?} cssFriendlyColumnName
          * @param {?} key
          * @return {?}
          */
-        key => `${key}:${properties.get(key)}`)).join(';');
-        this._getStyleSheet().insertRule(`${selector} {${body}}`, (/** @type {?} */ (index)));
+        _getPropertyValue(cssFriendlyColumnName, key) {
+            /** @type {?} */
+            const properties = this._getColumnPropertiesMap(cssFriendlyColumnName);
+            return properties.get(key);
+        }
+        /**
+         * @private
+         * @param {?} cssFriendslyColumnName
+         * @return {?}
+         */
+        _getAppliedWidth(cssFriendslyColumnName) {
+            return coercePixelsFromFlexValue(this._getPropertyValue(cssFriendslyColumnName, 'flex'));
+        }
+        /**
+         * @private
+         * @param {?} cssFriendlyColumnName
+         * @param {?} key
+         * @param {?} value
+         * @param {?=} enable
+         * @return {?}
+         */
+        _applyProperty(cssFriendlyColumnName, key, value, enable = true) {
+            /** @type {?} */
+            const properties = this._getColumnPropertiesMap(cssFriendlyColumnName);
+            if (enable) {
+                properties.set(key, value);
+            }
+            else {
+                properties.delete(key);
+            }
+            this._applySizeCss(cssFriendlyColumnName);
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _getStyleSheet() {
+            if (!this._styleElement) {
+                this._styleElement = this._document.createElement('style');
+                this._styleElement.appendChild(this._document.createTextNode(''));
+                this._document.head.appendChild(this._styleElement);
+            }
+            return (/** @type {?} */ (this._styleElement.sheet));
+        }
+        /**
+         * @private
+         * @param {?} cssFriendlyColumnName
+         * @return {?}
+         */
+        _getColumnPropertiesMap(cssFriendlyColumnName) {
+            /** @type {?} */
+            let properties = this._columnProperties.get(cssFriendlyColumnName);
+            if (properties === undefined) {
+                properties = new Map();
+                this._columnProperties.set(cssFriendlyColumnName, properties);
+            }
+            return properties;
+        }
+        /**
+         * @private
+         * @param {?} cssFriendlyColumnName
+         * @return {?}
+         */
+        _applySizeCss(cssFriendlyColumnName) {
+            /** @type {?} */
+            const properties = this._getColumnPropertiesMap(cssFriendlyColumnName);
+            /** @type {?} */
+            const propertyKeys = Array.from(properties.keys());
+            /** @type {?} */
+            let index = this._columnIndexes.get(cssFriendlyColumnName);
+            if (index === undefined) {
+                if (!propertyKeys.length) {
+                    // Nothing to set or unset.
+                    return;
+                }
+                index = this._indexSequence++;
+                this._columnIndexes.set(cssFriendlyColumnName, index);
+            }
+            else {
+                this._getStyleSheet().deleteRule(index);
+            }
+            /** @type {?} */
+            const columnClassName = this.getColumnCssClass(cssFriendlyColumnName);
+            /** @type {?} */
+            const tableClassName = this.columnResize.getUniqueCssClass();
+            /** @type {?} */
+            const selector = `.${tableClassName} .${columnClassName}`;
+            /** @type {?} */
+            const body = propertyKeys.map((/**
+             * @param {?} key
+             * @return {?}
+             */
+            key => `${key}:${properties.get(key)}`)).join(';');
+            this._getStyleSheet().insertRule(`${selector} {${body}}`, (/** @type {?} */ (index)));
+        }
     }
-}
-CdkFlexTableResizeStrategy.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-CdkFlexTableResizeStrategy.ctorParameters = () => [
-    { type: ColumnResize },
-    { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
-];
+    CdkFlexTableResizeStrategy.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    CdkFlexTableResizeStrategy.ctorParameters = () => [
+        { type: ColumnResize },
+        { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
+    ];
+    return CdkFlexTableResizeStrategy;
+})();
 if (false) {
     /**
      * @type {?}
@@ -892,40 +946,47 @@ const FLEX_PROVIDERS = [...PROVIDERS, FLEX_RESIZE_STRATEGY_PROVIDER];
  * Explicitly enables column resizing for a table-based cdk-table.
  * Individual columns must be annotated specifically.
  */
-class CdkColumnResize extends ColumnResize {
+let CdkColumnResize = /** @class */ (() => {
     /**
-     * @param {?} columnResizeNotifier
-     * @param {?} elementRef
-     * @param {?} eventDispatcher
-     * @param {?} ngZone
-     * @param {?} notifier
+     * Explicitly enables column resizing for a table-based cdk-table.
+     * Individual columns must be annotated specifically.
      */
-    constructor(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
-        super();
-        this.columnResizeNotifier = columnResizeNotifier;
-        this.elementRef = elementRef;
-        this.eventDispatcher = eventDispatcher;
-        this.ngZone = ngZone;
-        this.notifier = notifier;
+    class CdkColumnResize extends ColumnResize {
+        /**
+         * @param {?} columnResizeNotifier
+         * @param {?} elementRef
+         * @param {?} eventDispatcher
+         * @param {?} ngZone
+         * @param {?} notifier
+         */
+        constructor(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
+            super();
+            this.columnResizeNotifier = columnResizeNotifier;
+            this.elementRef = elementRef;
+            this.eventDispatcher = eventDispatcher;
+            this.ngZone = ngZone;
+            this.notifier = notifier;
+        }
     }
-}
-CdkColumnResize.decorators = [
-    { type: Directive, args: [{
-                selector: 'table[cdk-table][columnResize]',
-                providers: [
-                    ...TABLE_PROVIDERS,
-                    { provide: ColumnResize, useExisting: CdkColumnResize },
-                ],
-            },] }
-];
-/** @nocollapse */
-CdkColumnResize.ctorParameters = () => [
-    { type: ColumnResizeNotifier },
-    { type: ElementRef },
-    { type: HeaderRowEventDispatcher },
-    { type: NgZone },
-    { type: ColumnResizeNotifierSource }
-];
+    CdkColumnResize.decorators = [
+        { type: Directive, args: [{
+                    selector: 'table[cdk-table][columnResize]',
+                    providers: [
+                        ...TABLE_PROVIDERS,
+                        { provide: ColumnResize, useExisting: CdkColumnResize },
+                    ],
+                },] }
+    ];
+    /** @nocollapse */
+    CdkColumnResize.ctorParameters = () => [
+        { type: ColumnResizeNotifier },
+        { type: ElementRef },
+        { type: HeaderRowEventDispatcher },
+        { type: NgZone },
+        { type: ColumnResizeNotifierSource }
+    ];
+    return CdkColumnResize;
+})();
 if (false) {
     /** @type {?} */
     CdkColumnResize.prototype.columnResizeNotifier;
@@ -957,40 +1018,47 @@ if (false) {
  * Explicitly enables column resizing for a flexbox-based cdk-table.
  * Individual columns must be annotated specifically.
  */
-class CdkColumnResizeFlex extends ColumnResize {
+let CdkColumnResizeFlex = /** @class */ (() => {
     /**
-     * @param {?} columnResizeNotifier
-     * @param {?} elementRef
-     * @param {?} eventDispatcher
-     * @param {?} ngZone
-     * @param {?} notifier
+     * Explicitly enables column resizing for a flexbox-based cdk-table.
+     * Individual columns must be annotated specifically.
      */
-    constructor(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
-        super();
-        this.columnResizeNotifier = columnResizeNotifier;
-        this.elementRef = elementRef;
-        this.eventDispatcher = eventDispatcher;
-        this.ngZone = ngZone;
-        this.notifier = notifier;
+    class CdkColumnResizeFlex extends ColumnResize {
+        /**
+         * @param {?} columnResizeNotifier
+         * @param {?} elementRef
+         * @param {?} eventDispatcher
+         * @param {?} ngZone
+         * @param {?} notifier
+         */
+        constructor(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
+            super();
+            this.columnResizeNotifier = columnResizeNotifier;
+            this.elementRef = elementRef;
+            this.eventDispatcher = eventDispatcher;
+            this.ngZone = ngZone;
+            this.notifier = notifier;
+        }
     }
-}
-CdkColumnResizeFlex.decorators = [
-    { type: Directive, args: [{
-                selector: 'cdk-table[columnResize]',
-                providers: [
-                    ...FLEX_PROVIDERS,
-                    { provide: ColumnResize, useExisting: CdkColumnResizeFlex },
-                ],
-            },] }
-];
-/** @nocollapse */
-CdkColumnResizeFlex.ctorParameters = () => [
-    { type: ColumnResizeNotifier },
-    { type: ElementRef },
-    { type: HeaderRowEventDispatcher },
-    { type: NgZone },
-    { type: ColumnResizeNotifierSource }
-];
+    CdkColumnResizeFlex.decorators = [
+        { type: Directive, args: [{
+                    selector: 'cdk-table[columnResize]',
+                    providers: [
+                        ...FLEX_PROVIDERS,
+                        { provide: ColumnResize, useExisting: CdkColumnResizeFlex },
+                    ],
+                },] }
+    ];
+    /** @nocollapse */
+    CdkColumnResizeFlex.ctorParameters = () => [
+        { type: ColumnResizeNotifier },
+        { type: ElementRef },
+        { type: HeaderRowEventDispatcher },
+        { type: NgZone },
+        { type: ColumnResizeNotifierSource }
+    ];
+    return CdkColumnResizeFlex;
+})();
 if (false) {
     /** @type {?} */
     CdkColumnResizeFlex.prototype.columnResizeNotifier;
@@ -1022,40 +1090,47 @@ if (false) {
  * Implicitly enables column resizing for a table-based cdk-table.
  * Individual columns will be resizable unless opted out.
  */
-class CdkDefaultEnabledColumnResize extends ColumnResize {
+let CdkDefaultEnabledColumnResize = /** @class */ (() => {
     /**
-     * @param {?} columnResizeNotifier
-     * @param {?} elementRef
-     * @param {?} eventDispatcher
-     * @param {?} ngZone
-     * @param {?} notifier
+     * Implicitly enables column resizing for a table-based cdk-table.
+     * Individual columns will be resizable unless opted out.
      */
-    constructor(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
-        super();
-        this.columnResizeNotifier = columnResizeNotifier;
-        this.elementRef = elementRef;
-        this.eventDispatcher = eventDispatcher;
-        this.ngZone = ngZone;
-        this.notifier = notifier;
+    class CdkDefaultEnabledColumnResize extends ColumnResize {
+        /**
+         * @param {?} columnResizeNotifier
+         * @param {?} elementRef
+         * @param {?} eventDispatcher
+         * @param {?} ngZone
+         * @param {?} notifier
+         */
+        constructor(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
+            super();
+            this.columnResizeNotifier = columnResizeNotifier;
+            this.elementRef = elementRef;
+            this.eventDispatcher = eventDispatcher;
+            this.ngZone = ngZone;
+            this.notifier = notifier;
+        }
     }
-}
-CdkDefaultEnabledColumnResize.decorators = [
-    { type: Directive, args: [{
-                selector: 'table[cdk-table]',
-                providers: [
-                    ...TABLE_PROVIDERS,
-                    { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResize },
-                ],
-            },] }
-];
-/** @nocollapse */
-CdkDefaultEnabledColumnResize.ctorParameters = () => [
-    { type: ColumnResizeNotifier },
-    { type: ElementRef },
-    { type: HeaderRowEventDispatcher },
-    { type: NgZone },
-    { type: ColumnResizeNotifierSource }
-];
+    CdkDefaultEnabledColumnResize.decorators = [
+        { type: Directive, args: [{
+                    selector: 'table[cdk-table]',
+                    providers: [
+                        ...TABLE_PROVIDERS,
+                        { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResize },
+                    ],
+                },] }
+    ];
+    /** @nocollapse */
+    CdkDefaultEnabledColumnResize.ctorParameters = () => [
+        { type: ColumnResizeNotifier },
+        { type: ElementRef },
+        { type: HeaderRowEventDispatcher },
+        { type: NgZone },
+        { type: ColumnResizeNotifierSource }
+    ];
+    return CdkDefaultEnabledColumnResize;
+})();
 if (false) {
     /** @type {?} */
     CdkDefaultEnabledColumnResize.prototype.columnResizeNotifier;
@@ -1087,40 +1162,47 @@ if (false) {
  * Implicitly enables column resizing for a flex cdk-table.
  * Individual columns will be resizable unless opted out.
  */
-class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
+let CdkDefaultEnabledColumnResizeFlex = /** @class */ (() => {
     /**
-     * @param {?} columnResizeNotifier
-     * @param {?} elementRef
-     * @param {?} eventDispatcher
-     * @param {?} ngZone
-     * @param {?} notifier
+     * Implicitly enables column resizing for a flex cdk-table.
+     * Individual columns will be resizable unless opted out.
      */
-    constructor(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
-        super();
-        this.columnResizeNotifier = columnResizeNotifier;
-        this.elementRef = elementRef;
-        this.eventDispatcher = eventDispatcher;
-        this.ngZone = ngZone;
-        this.notifier = notifier;
+    class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
+        /**
+         * @param {?} columnResizeNotifier
+         * @param {?} elementRef
+         * @param {?} eventDispatcher
+         * @param {?} ngZone
+         * @param {?} notifier
+         */
+        constructor(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
+            super();
+            this.columnResizeNotifier = columnResizeNotifier;
+            this.elementRef = elementRef;
+            this.eventDispatcher = eventDispatcher;
+            this.ngZone = ngZone;
+            this.notifier = notifier;
+        }
     }
-}
-CdkDefaultEnabledColumnResizeFlex.decorators = [
-    { type: Directive, args: [{
-                selector: 'cdk-table',
-                providers: [
-                    ...FLEX_PROVIDERS,
-                    { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResizeFlex },
-                ],
-            },] }
-];
-/** @nocollapse */
-CdkDefaultEnabledColumnResizeFlex.ctorParameters = () => [
-    { type: ColumnResizeNotifier },
-    { type: ElementRef },
-    { type: HeaderRowEventDispatcher },
-    { type: NgZone },
-    { type: ColumnResizeNotifierSource }
-];
+    CdkDefaultEnabledColumnResizeFlex.decorators = [
+        { type: Directive, args: [{
+                    selector: 'cdk-table',
+                    providers: [
+                        ...FLEX_PROVIDERS,
+                        { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResizeFlex },
+                    ],
+                },] }
+    ];
+    /** @nocollapse */
+    CdkDefaultEnabledColumnResizeFlex.ctorParameters = () => [
+        { type: ColumnResizeNotifier },
+        { type: ElementRef },
+        { type: HeaderRowEventDispatcher },
+        { type: NgZone },
+        { type: ColumnResizeNotifierSource }
+    ];
+    return CdkDefaultEnabledColumnResizeFlex;
+})();
 if (false) {
     /** @type {?} */
     CdkDefaultEnabledColumnResizeFlex.prototype.columnResizeNotifier;
@@ -1152,26 +1234,40 @@ if (false) {
  * One of two NgModules for use with CdkColumnResize.
  * When using this module, columns are resizable by default.
  */
-class CdkColumnResizeDefaultEnabledModule {
-}
-CdkColumnResizeDefaultEnabledModule.decorators = [
-    { type: NgModule, args: [{
-                declarations: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
-                exports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
-            },] }
-];
+let CdkColumnResizeDefaultEnabledModule = /** @class */ (() => {
+    /**
+     * One of two NgModules for use with CdkColumnResize.
+     * When using this module, columns are resizable by default.
+     */
+    class CdkColumnResizeDefaultEnabledModule {
+    }
+    CdkColumnResizeDefaultEnabledModule.decorators = [
+        { type: NgModule, args: [{
+                    declarations: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
+                    exports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
+                },] }
+    ];
+    return CdkColumnResizeDefaultEnabledModule;
+})();
 /**
  * One of two NgModules for use with CdkColumnResize.
  * When using this module, columns are not resizable by default.
  */
-class CdkColumnResizeModule {
-}
-CdkColumnResizeModule.decorators = [
-    { type: NgModule, args: [{
-                declarations: [CdkColumnResize, CdkColumnResizeFlex],
-                exports: [CdkColumnResize, CdkColumnResizeFlex],
-            },] }
-];
+let CdkColumnResizeModule = /** @class */ (() => {
+    /**
+     * One of two NgModules for use with CdkColumnResize.
+     * When using this module, columns are not resizable by default.
+     */
+    class CdkColumnResizeModule {
+    }
+    CdkColumnResizeModule.decorators = [
+        { type: NgModule, args: [{
+                    declarations: [CdkColumnResize, CdkColumnResizeFlex],
+                    exports: [CdkColumnResize, CdkColumnResizeFlex],
+                },] }
+    ];
+    return CdkColumnResizeModule;
+})();
 
 /**
  * @fileoverview added by tsickle
@@ -1182,11 +1278,18 @@ CdkColumnResizeModule.decorators = [
  * Can be provided by the host application to enable persistence of column resize state.
  * @abstract
  */
-class ColumnSizeStore {
-}
-ColumnSizeStore.decorators = [
-    { type: Injectable }
-];
+let ColumnSizeStore = /** @class */ (() => {
+    /**
+     * Can be provided by the host application to enable persistence of column resize state.
+     * @abstract
+     */
+    class ColumnSizeStore {
+    }
+    ColumnSizeStore.decorators = [
+        { type: Injectable }
+    ];
+    return ColumnSizeStore;
+})();
 if (false) {
     /**
      * Returns the persisted size of the specified column in the specified table.
@@ -1259,260 +1362,269 @@ const OVERLAY_ACTIVE_CLASS = 'cdk-resizable-overlay-thumb-active';
  * @abstract
  * @template HandleComponent
  */
-class Resizable {
-    constructor() {
-        this.minWidthPxInternal = 0;
-        this.maxWidthPxInternal = Number.MAX_SAFE_INTEGER;
-        this.destroyed = new ReplaySubject();
-    }
+let Resizable = /** @class */ (() => {
     /**
-     * The minimum width to allow the column to be sized to.
-     * @return {?}
+     * Base class for Resizable directives which are applied to column headers to make those columns
+     * resizable.
+     * @abstract
+     * @template HandleComponent
      */
-    get minWidthPx() {
-        return this.minWidthPxInternal;
-    }
-    /**
-     * @param {?} value
-     * @return {?}
-     */
-    set minWidthPx(value) {
-        this.minWidthPxInternal = value;
-        if (this.elementRef.nativeElement) {
-            this.columnResize.setResized();
-            this._applyMinWidthPx();
+    class Resizable {
+        constructor() {
+            this.minWidthPxInternal = 0;
+            this.maxWidthPxInternal = Number.MAX_SAFE_INTEGER;
+            this.destroyed = new ReplaySubject();
         }
-    }
-    /**
-     * The maximum width to allow the column to be sized to.
-     * @return {?}
-     */
-    get maxWidthPx() {
-        return this.maxWidthPxInternal;
-    }
-    /**
-     * @param {?} value
-     * @return {?}
-     */
-    set maxWidthPx(value) {
-        this.maxWidthPxInternal = value;
-        if (this.elementRef.nativeElement) {
-            this.columnResize.setResized();
+        /**
+         * The minimum width to allow the column to be sized to.
+         * @return {?}
+         */
+        get minWidthPx() {
+            return this.minWidthPxInternal;
+        }
+        /**
+         * @param {?} value
+         * @return {?}
+         */
+        set minWidthPx(value) {
+            this.minWidthPxInternal = value;
+            if (this.elementRef.nativeElement) {
+                this.columnResize.setResized();
+                this._applyMinWidthPx();
+            }
+        }
+        /**
+         * The maximum width to allow the column to be sized to.
+         * @return {?}
+         */
+        get maxWidthPx() {
+            return this.maxWidthPxInternal;
+        }
+        /**
+         * @param {?} value
+         * @return {?}
+         */
+        set maxWidthPx(value) {
+            this.maxWidthPxInternal = value;
+            if (this.elementRef.nativeElement) {
+                this.columnResize.setResized();
+                this._applyMaxWidthPx();
+            }
+        }
+        /**
+         * @return {?}
+         */
+        ngAfterViewInit() {
+            this._listenForRowHoverEvents();
+            this._listenForResizeEvents();
+            this._appendInlineHandle();
+            this._applyMinWidthPx();
             this._applyMaxWidthPx();
         }
-    }
-    /**
-     * @return {?}
-     */
-    ngAfterViewInit() {
-        this._listenForRowHoverEvents();
-        this._listenForResizeEvents();
-        this._appendInlineHandle();
-        this._applyMinWidthPx();
-        this._applyMaxWidthPx();
-    }
-    /**
-     * @return {?}
-     */
-    ngOnDestroy() {
-        this.destroyed.next();
-        this.destroyed.complete();
-        if (this.inlineHandle) {
-            (/** @type {?} */ (this.elementRef.nativeElement)).removeChild(this.inlineHandle);
+        /**
+         * @return {?}
+         */
+        ngOnDestroy() {
+            this.destroyed.next();
+            this.destroyed.complete();
+            if (this.inlineHandle) {
+                (/** @type {?} */ (this.elementRef.nativeElement)).removeChild(this.inlineHandle);
+            }
+            if (this.overlayRef) {
+                this.overlayRef.dispose();
+            }
         }
-        if (this.overlayRef) {
-            this.overlayRef.dispose();
-        }
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _createOverlayForHandle() {
-        // Use of overlays allows us to properly capture click events spanning parts
-        // of two table cells and is also useful for displaying a resize thumb
-        // over both cells and extending it down the table as needed.
-        // Use of overlays allows us to properly capture click events spanning parts
-        // of two table cells and is also useful for displaying a resize thumb
-        // over both cells and extending it down the table as needed.
-        /** @type {?} */
-        const isRtl = this.directionality.value === 'rtl';
-        /** @type {?} */
-        const positionStrategy = this.overlay.position()
-            .flexibleConnectedTo((/** @type {?} */ (this.elementRef.nativeElement)))
-            .withFlexibleDimensions(false)
-            .withGrowAfterOpen(false)
-            .withPush(false)
-            .withDefaultOffsetX(isRtl ? 1 : 0)
-            .withPositions([{
-                originX: isRtl ? 'start' : 'end',
-                originY: 'top',
-                overlayX: 'center',
-                overlayY: 'top',
-            }]);
-        return this.overlay.create({
-            // Always position the overlay based on left-indexed coordinates.
-            direction: 'ltr',
-            disposeOnNavigation: true,
-            positionStrategy,
-            scrollStrategy: this.overlay.scrollStrategies.reposition(),
-            width: '16px',
-        });
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _listenForRowHoverEvents() {
-        /** @type {?} */
-        const element = (/** @type {?} */ (this.elementRef.nativeElement));
-        /** @type {?} */
-        const takeUntilDestroyed = takeUntil(this.destroyed);
-        this.eventDispatcher.resizeOverlayVisibleForHeaderRow((/** @type {?} */ (_closest(element, HEADER_ROW_SELECTOR))))
-            .pipe(takeUntilDestroyed).subscribe((/**
-         * @param {?} hoveringRow
+        /**
+         * @private
          * @return {?}
          */
-        hoveringRow => {
-            if (hoveringRow) {
-                if (!this.overlayRef) {
-                    this.overlayRef = this._createOverlayForHandle();
-                }
-                this._showHandleOverlay();
-            }
-            else if (this.overlayRef) {
-                // todo - can't detach during an active resize - need to work that out
-                this.overlayRef.detach();
-            }
-        }));
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _listenForResizeEvents() {
-        /** @type {?} */
-        const takeUntilDestroyed = takeUntil(this.destroyed);
-        merge(this.resizeNotifier.resizeCanceled, this.resizeNotifier.triggerResize).pipe(takeUntilDestroyed, filter((/**
-         * @param {?} columnSize
-         * @return {?}
-         */
-        columnSize => columnSize.columnId === this.columnDef.name))).subscribe((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ({ size, previousSize, completeImmediately }) => {
-            (/** @type {?} */ (this.elementRef.nativeElement)).classList.add(OVERLAY_ACTIVE_CLASS);
-            this._applySize(size, previousSize);
-            if (completeImmediately) {
-                this._completeResizeOperation();
-            }
-        }));
-        merge(this.resizeNotifier.resizeCanceled, this.resizeNotifier.resizeCompleted).pipe(takeUntilDestroyed).subscribe((/**
-         * @param {?} columnSize
-         * @return {?}
-         */
-        columnSize => {
-            this._cleanUpAfterResize(columnSize);
-        }));
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _completeResizeOperation() {
-        this.ngZone.run((/**
-         * @return {?}
-         */
-        () => {
-            this.resizeNotifier.resizeCompleted.next({
-                columnId: this.columnDef.name,
-                size: (/** @type {?} */ (this.elementRef.nativeElement)).offsetWidth,
+        _createOverlayForHandle() {
+            // Use of overlays allows us to properly capture click events spanning parts
+            // of two table cells and is also useful for displaying a resize thumb
+            // over both cells and extending it down the table as needed.
+            // Use of overlays allows us to properly capture click events spanning parts
+            // of two table cells and is also useful for displaying a resize thumb
+            // over both cells and extending it down the table as needed.
+            /** @type {?} */
+            const isRtl = this.directionality.value === 'rtl';
+            /** @type {?} */
+            const positionStrategy = this.overlay.position()
+                .flexibleConnectedTo((/** @type {?} */ (this.elementRef.nativeElement)))
+                .withFlexibleDimensions(false)
+                .withGrowAfterOpen(false)
+                .withPush(false)
+                .withDefaultOffsetX(isRtl ? 1 : 0)
+                .withPositions([{
+                    originX: isRtl ? 'start' : 'end',
+                    originY: 'top',
+                    overlayX: 'center',
+                    overlayY: 'top',
+                }]);
+            return this.overlay.create({
+                // Always position the overlay based on left-indexed coordinates.
+                direction: 'ltr',
+                disposeOnNavigation: true,
+                positionStrategy,
+                scrollStrategy: this.overlay.scrollStrategies.reposition(),
+                width: '16px',
             });
-        }));
-    }
-    /**
-     * @private
-     * @param {?} columnSize
-     * @return {?}
-     */
-    _cleanUpAfterResize(columnSize) {
-        (/** @type {?} */ (this.elementRef.nativeElement)).classList.remove(OVERLAY_ACTIVE_CLASS);
-        if (this.overlayRef && this.overlayRef.hasAttached()) {
-            this._updateOverlayHandleHeight();
-            this.overlayRef.updatePosition();
-            if (columnSize.columnId === this.columnDef.name) {
-                (/** @type {?} */ (this.inlineHandle)).focus();
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _listenForRowHoverEvents() {
+            /** @type {?} */
+            const element = (/** @type {?} */ (this.elementRef.nativeElement));
+            /** @type {?} */
+            const takeUntilDestroyed = takeUntil(this.destroyed);
+            this.eventDispatcher.resizeOverlayVisibleForHeaderRow((/** @type {?} */ (_closest(element, HEADER_ROW_SELECTOR))))
+                .pipe(takeUntilDestroyed).subscribe((/**
+             * @param {?} hoveringRow
+             * @return {?}
+             */
+            hoveringRow => {
+                if (hoveringRow) {
+                    if (!this.overlayRef) {
+                        this.overlayRef = this._createOverlayForHandle();
+                    }
+                    this._showHandleOverlay();
+                }
+                else if (this.overlayRef) {
+                    // todo - can't detach during an active resize - need to work that out
+                    this.overlayRef.detach();
+                }
+            }));
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _listenForResizeEvents() {
+            /** @type {?} */
+            const takeUntilDestroyed = takeUntil(this.destroyed);
+            merge(this.resizeNotifier.resizeCanceled, this.resizeNotifier.triggerResize).pipe(takeUntilDestroyed, filter((/**
+             * @param {?} columnSize
+             * @return {?}
+             */
+            columnSize => columnSize.columnId === this.columnDef.name))).subscribe((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            ({ size, previousSize, completeImmediately }) => {
+                (/** @type {?} */ (this.elementRef.nativeElement)).classList.add(OVERLAY_ACTIVE_CLASS);
+                this._applySize(size, previousSize);
+                if (completeImmediately) {
+                    this._completeResizeOperation();
+                }
+            }));
+            merge(this.resizeNotifier.resizeCanceled, this.resizeNotifier.resizeCompleted).pipe(takeUntilDestroyed).subscribe((/**
+             * @param {?} columnSize
+             * @return {?}
+             */
+            columnSize => {
+                this._cleanUpAfterResize(columnSize);
+            }));
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _completeResizeOperation() {
+            this.ngZone.run((/**
+             * @return {?}
+             */
+            () => {
+                this.resizeNotifier.resizeCompleted.next({
+                    columnId: this.columnDef.name,
+                    size: (/** @type {?} */ (this.elementRef.nativeElement)).offsetWidth,
+                });
+            }));
+        }
+        /**
+         * @private
+         * @param {?} columnSize
+         * @return {?}
+         */
+        _cleanUpAfterResize(columnSize) {
+            (/** @type {?} */ (this.elementRef.nativeElement)).classList.remove(OVERLAY_ACTIVE_CLASS);
+            if (this.overlayRef && this.overlayRef.hasAttached()) {
+                this._updateOverlayHandleHeight();
+                this.overlayRef.updatePosition();
+                if (columnSize.columnId === this.columnDef.name) {
+                    (/** @type {?} */ (this.inlineHandle)).focus();
+                }
             }
         }
+        /**
+         * @private
+         * @return {?}
+         */
+        _createHandlePortal() {
+            /** @type {?} */
+            const injector = new PortalInjector(this.injector, new WeakMap([[
+                    ResizeRef,
+                    new ResizeRef(this.elementRef, (/** @type {?} */ (this.overlayRef)), this.minWidthPx, this.maxWidthPx),
+                ]]));
+            return new ComponentPortal(this.getOverlayHandleComponentType(), this.viewContainerRef, injector);
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _showHandleOverlay() {
+            this._updateOverlayHandleHeight();
+            (/** @type {?} */ (this.overlayRef)).attach(this._createHandlePortal());
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _updateOverlayHandleHeight() {
+            (/** @type {?} */ (this.overlayRef)).updateSize({ height: (/** @type {?} */ (this.elementRef.nativeElement)).offsetHeight });
+        }
+        /**
+         * @private
+         * @param {?} sizeInPixels
+         * @param {?=} previousSize
+         * @return {?}
+         */
+        _applySize(sizeInPixels, previousSize) {
+            /** @type {?} */
+            const sizeToApply = Math.min(Math.max(sizeInPixels, this.minWidthPx, 0), this.maxWidthPx);
+            this.resizeStrategy.applyColumnSize(this.columnDef.cssClassFriendlyName, (/** @type {?} */ (this.elementRef.nativeElement)), sizeToApply, previousSize);
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _applyMinWidthPx() {
+            this.resizeStrategy.applyMinColumnSize(this.columnDef.cssClassFriendlyName, this.elementRef.nativeElement, this.minWidthPx);
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _applyMaxWidthPx() {
+            this.resizeStrategy.applyMaxColumnSize(this.columnDef.cssClassFriendlyName, this.elementRef.nativeElement, this.maxWidthPx);
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _appendInlineHandle() {
+            this.inlineHandle = this.document.createElement('div');
+            this.inlineHandle.tabIndex = 0;
+            this.inlineHandle.className = this.getInlineHandleCssClassName();
+            // TODO: Apply correct aria role (probably slider) after a11y spec questions resolved.
+            (/** @type {?} */ (this.elementRef.nativeElement)).appendChild(this.inlineHandle);
+        }
     }
-    /**
-     * @private
-     * @return {?}
-     */
-    _createHandlePortal() {
-        /** @type {?} */
-        const injector = new PortalInjector(this.injector, new WeakMap([[
-                ResizeRef,
-                new ResizeRef(this.elementRef, (/** @type {?} */ (this.overlayRef)), this.minWidthPx, this.maxWidthPx),
-            ]]));
-        return new ComponentPortal(this.getOverlayHandleComponentType(), this.viewContainerRef, injector);
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _showHandleOverlay() {
-        this._updateOverlayHandleHeight();
-        (/** @type {?} */ (this.overlayRef)).attach(this._createHandlePortal());
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _updateOverlayHandleHeight() {
-        (/** @type {?} */ (this.overlayRef)).updateSize({ height: (/** @type {?} */ (this.elementRef.nativeElement)).offsetHeight });
-    }
-    /**
-     * @private
-     * @param {?} sizeInPixels
-     * @param {?=} previousSize
-     * @return {?}
-     */
-    _applySize(sizeInPixels, previousSize) {
-        /** @type {?} */
-        const sizeToApply = Math.min(Math.max(sizeInPixels, this.minWidthPx, 0), this.maxWidthPx);
-        this.resizeStrategy.applyColumnSize(this.columnDef.cssClassFriendlyName, (/** @type {?} */ (this.elementRef.nativeElement)), sizeToApply, previousSize);
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _applyMinWidthPx() {
-        this.resizeStrategy.applyMinColumnSize(this.columnDef.cssClassFriendlyName, this.elementRef.nativeElement, this.minWidthPx);
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _applyMaxWidthPx() {
-        this.resizeStrategy.applyMaxColumnSize(this.columnDef.cssClassFriendlyName, this.elementRef.nativeElement, this.maxWidthPx);
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _appendInlineHandle() {
-        this.inlineHandle = this.document.createElement('div');
-        this.inlineHandle.tabIndex = 0;
-        this.inlineHandle.className = this.getInlineHandleCssClassName();
-        // TODO: Apply correct aria role (probably slider) after a11y spec questions resolved.
-        (/** @type {?} */ (this.elementRef.nativeElement)).appendChild(this.inlineHandle);
-    }
-}
-Resizable.decorators = [
-    { type: Directive }
-];
+    Resizable.decorators = [
+        { type: Directive }
+    ];
+    return Resizable;
+})();
 if (false) {
     /**
      * @type {?}
@@ -1625,224 +1737,234 @@ if (false) {
  * for handling column resize mouse events and displaying any visible UI on the column edge.
  * @abstract
  */
-class ResizeOverlayHandle {
-    constructor() {
-        this.destroyed = new ReplaySubject();
-    }
+let ResizeOverlayHandle = /** @class */ (() => {
+    // TODO: Take another look at using cdk drag drop. IIRC I ran into a couple
+    // good reasons for not using it but I don't remember what they were at this point.
     /**
-     * @return {?}
+     * Base class for a component shown over the edge of a resizable column that is responsible
+     * for handling column resize mouse events and displaying any visible UI on the column edge.
+     * @abstract
      */
-    ngAfterViewInit() {
-        this._listenForMouseEvents();
-    }
-    /**
-     * @return {?}
-     */
-    ngOnDestroy() {
-        this.destroyed.next();
-        this.destroyed.complete();
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _listenForMouseEvents() {
-        this.ngZone.runOutsideAngular((/**
+    class ResizeOverlayHandle {
+        constructor() {
+            this.destroyed = new ReplaySubject();
+        }
+        /**
          * @return {?}
          */
-        () => {
-            /** @type {?} */
-            const takeUntilDestroyed = takeUntil(this.destroyed);
-            fromEvent((/** @type {?} */ (this.elementRef.nativeElement)), 'mouseenter').pipe(takeUntilDestroyed, mapTo((/** @type {?} */ (this.resizeRef.origin.nativeElement)))).subscribe((/**
-             * @param {?} cell
+        ngAfterViewInit() {
+            this._listenForMouseEvents();
+        }
+        /**
+         * @return {?}
+         */
+        ngOnDestroy() {
+            this.destroyed.next();
+            this.destroyed.complete();
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _listenForMouseEvents() {
+            this.ngZone.runOutsideAngular((/**
              * @return {?}
              */
-            cell => this.eventDispatcher.headerCellHovered.next(cell)));
-            fromEvent((/** @type {?} */ (this.elementRef.nativeElement)), 'mouseleave').pipe(takeUntilDestroyed, map((/**
+            () => {
+                /** @type {?} */
+                const takeUntilDestroyed = takeUntil(this.destroyed);
+                fromEvent((/** @type {?} */ (this.elementRef.nativeElement)), 'mouseenter').pipe(takeUntilDestroyed, mapTo((/** @type {?} */ (this.resizeRef.origin.nativeElement)))).subscribe((/**
+                 * @param {?} cell
+                 * @return {?}
+                 */
+                cell => this.eventDispatcher.headerCellHovered.next(cell)));
+                fromEvent((/** @type {?} */ (this.elementRef.nativeElement)), 'mouseleave').pipe(takeUntilDestroyed, map((/**
+                 * @param {?} event
+                 * @return {?}
+                 */
+                event => event.relatedTarget &&
+                    _closest((/** @type {?} */ (event.relatedTarget)), HEADER_CELL_SELECTOR)))).subscribe((/**
+                 * @param {?} cell
+                 * @return {?}
+                 */
+                cell => this.eventDispatcher.headerCellHovered.next(cell)));
+                fromEvent((/** @type {?} */ (this.elementRef.nativeElement)), 'mousedown')
+                    .pipe(takeUntilDestroyed).subscribe((/**
+                 * @param {?} mousedownEvent
+                 * @return {?}
+                 */
+                mousedownEvent => {
+                    this._dragStarted(mousedownEvent);
+                }));
+            }));
+        }
+        /**
+         * @private
+         * @param {?} mousedownEvent
+         * @return {?}
+         */
+        _dragStarted(mousedownEvent) {
+            // Only allow dragging using the left mouse button.
+            if (mousedownEvent.button !== 0) {
+                return;
+            }
+            /** @type {?} */
+            const mouseup = fromEvent(this.document, 'mouseup');
+            /** @type {?} */
+            const mousemove = fromEvent(this.document, 'mousemove');
+            /** @type {?} */
+            const escape = fromEvent(this.document, 'keyup')
+                .pipe(filter((/**
              * @param {?} event
              * @return {?}
              */
-            event => event.relatedTarget &&
-                _closest((/** @type {?} */ (event.relatedTarget)), HEADER_CELL_SELECTOR)))).subscribe((/**
-             * @param {?} cell
-             * @return {?}
-             */
-            cell => this.eventDispatcher.headerCellHovered.next(cell)));
-            fromEvent((/** @type {?} */ (this.elementRef.nativeElement)), 'mousedown')
-                .pipe(takeUntilDestroyed).subscribe((/**
-             * @param {?} mousedownEvent
-             * @return {?}
-             */
-            mousedownEvent => {
-                this._dragStarted(mousedownEvent);
-            }));
-        }));
-    }
-    /**
-     * @private
-     * @param {?} mousedownEvent
-     * @return {?}
-     */
-    _dragStarted(mousedownEvent) {
-        // Only allow dragging using the left mouse button.
-        if (mousedownEvent.button !== 0) {
-            return;
-        }
-        /** @type {?} */
-        const mouseup = fromEvent(this.document, 'mouseup');
-        /** @type {?} */
-        const mousemove = fromEvent(this.document, 'mousemove');
-        /** @type {?} */
-        const escape = fromEvent(this.document, 'keyup')
-            .pipe(filter((/**
-         * @param {?} event
-         * @return {?}
-         */
-        event => event.keyCode === ESCAPE)));
-        /** @type {?} */
-        const startX = mousedownEvent.screenX;
-        /** @type {?} */
-        const initialSize = this._getOriginWidth();
-        /** @type {?} */
-        let overlayOffset = this._getOverlayOffset();
-        /** @type {?} */
-        let originOffset = this._getOriginOffset();
-        /** @type {?} */
-        let size = initialSize;
-        /** @type {?} */
-        let overshot = 0;
-        this.updateResizeActive(true);
-        mouseup.pipe(takeUntil(escape), takeUntil(this.destroyed)).subscribe((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ({ screenX }) => {
-            this._notifyResizeEnded(size, screenX !== startX);
-        }));
-        escape.pipe(takeUntil(mouseup), takeUntil(this.destroyed)).subscribe((/**
-         * @return {?}
-         */
-        () => {
-            this._notifyResizeEnded(initialSize);
-        }));
-        mousemove.pipe(map((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ({ screenX }) => screenX)), startWith(startX), distinctUntilChanged(), pairwise(), takeUntil(mouseup), takeUntil(escape), takeUntil(this.destroyed)).subscribe((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([prevX, currX]) => {
+            event => event.keyCode === ESCAPE)));
             /** @type {?} */
-            let deltaX = currX - prevX;
-            // If the mouse moved further than the resize was able to match, limit the
-            // movement of the overlay to match the actual size and position of the origin.
-            if (overshot !== 0) {
-                if (overshot < 0 && deltaX < 0 || overshot > 0 && deltaX > 0) {
-                    overshot += deltaX;
-                    return;
-                }
-                else {
-                    /** @type {?} */
-                    const remainingOvershot = overshot + deltaX;
-                    overshot = overshot > 0 ?
-                        Math.max(remainingOvershot, 0) : Math.min(remainingOvershot, 0);
-                    deltaX = remainingOvershot - overshot;
-                    if (deltaX === 0) {
+            const startX = mousedownEvent.screenX;
+            /** @type {?} */
+            const initialSize = this._getOriginWidth();
+            /** @type {?} */
+            let overlayOffset = this._getOverlayOffset();
+            /** @type {?} */
+            let originOffset = this._getOriginOffset();
+            /** @type {?} */
+            let size = initialSize;
+            /** @type {?} */
+            let overshot = 0;
+            this.updateResizeActive(true);
+            mouseup.pipe(takeUntil(escape), takeUntil(this.destroyed)).subscribe((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            ({ screenX }) => {
+                this._notifyResizeEnded(size, screenX !== startX);
+            }));
+            escape.pipe(takeUntil(mouseup), takeUntil(this.destroyed)).subscribe((/**
+             * @return {?}
+             */
+            () => {
+                this._notifyResizeEnded(initialSize);
+            }));
+            mousemove.pipe(map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            ({ screenX }) => screenX)), startWith(startX), distinctUntilChanged(), pairwise(), takeUntil(mouseup), takeUntil(escape), takeUntil(this.destroyed)).subscribe((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            ([prevX, currX]) => {
+                /** @type {?} */
+                let deltaX = currX - prevX;
+                // If the mouse moved further than the resize was able to match, limit the
+                // movement of the overlay to match the actual size and position of the origin.
+                if (overshot !== 0) {
+                    if (overshot < 0 && deltaX < 0 || overshot > 0 && deltaX > 0) {
+                        overshot += deltaX;
                         return;
                     }
+                    else {
+                        /** @type {?} */
+                        const remainingOvershot = overshot + deltaX;
+                        overshot = overshot > 0 ?
+                            Math.max(remainingOvershot, 0) : Math.min(remainingOvershot, 0);
+                        deltaX = remainingOvershot - overshot;
+                        if (deltaX === 0) {
+                            return;
+                        }
+                    }
                 }
-            }
-            /** @type {?} */
-            let computedNewSize = size + (this._isLtr() ? deltaX : -deltaX);
-            computedNewSize = Math.min(Math.max(computedNewSize, this.resizeRef.minWidthPx, 0), this.resizeRef.maxWidthPx);
-            this.resizeNotifier.triggerResize.next({ columnId: this.columnDef.name, size: computedNewSize, previousSize: size });
-            /** @type {?} */
-            const originNewSize = this._getOriginWidth();
-            /** @type {?} */
-            const originNewOffset = this._getOriginOffset();
-            /** @type {?} */
-            const originOffsetDeltaX = originNewOffset - originOffset;
-            /** @type {?} */
-            const originSizeDeltaX = originNewSize - size;
-            size = originNewSize;
-            originOffset = originNewOffset;
-            overshot += deltaX + (this._isLtr() ? -originSizeDeltaX : originSizeDeltaX);
-            overlayOffset += originOffsetDeltaX + (this._isLtr() ? originSizeDeltaX : 0);
-            this._updateOverlayOffset(overlayOffset);
-        }));
-    }
-    /**
-     * @protected
-     * @param {?} active
-     * @return {?}
-     */
-    updateResizeActive(active) {
-        this.eventDispatcher.overlayHandleActiveForCell.next(active ? (/** @type {?} */ (this.resizeRef.origin.nativeElement)) : null);
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _getOriginWidth() {
-        return (/** @type {?} */ (this.resizeRef.origin.nativeElement)).offsetWidth;
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _getOriginOffset() {
-        return (/** @type {?} */ (this.resizeRef.origin.nativeElement)).offsetLeft;
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _getOverlayOffset() {
-        return parseInt((/** @type {?} */ (this.resizeRef.overlayRef.overlayElement.style.left)), 10);
-    }
-    /**
-     * @private
-     * @param {?} offset
-     * @return {?}
-     */
-    _updateOverlayOffset(offset) {
-        this.resizeRef.overlayRef.overlayElement.style.left = coerceCssPixelValue(offset);
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    _isLtr() {
-        return this.directionality.value === 'ltr';
-    }
-    /**
-     * @private
-     * @param {?} size
-     * @param {?=} completedSuccessfully
-     * @return {?}
-     */
-    _notifyResizeEnded(size, completedSuccessfully = false) {
-        this.updateResizeActive(false);
-        this.ngZone.run((/**
+                /** @type {?} */
+                let computedNewSize = size + (this._isLtr() ? deltaX : -deltaX);
+                computedNewSize = Math.min(Math.max(computedNewSize, this.resizeRef.minWidthPx, 0), this.resizeRef.maxWidthPx);
+                this.resizeNotifier.triggerResize.next({ columnId: this.columnDef.name, size: computedNewSize, previousSize: size });
+                /** @type {?} */
+                const originNewSize = this._getOriginWidth();
+                /** @type {?} */
+                const originNewOffset = this._getOriginOffset();
+                /** @type {?} */
+                const originOffsetDeltaX = originNewOffset - originOffset;
+                /** @type {?} */
+                const originSizeDeltaX = originNewSize - size;
+                size = originNewSize;
+                originOffset = originNewOffset;
+                overshot += deltaX + (this._isLtr() ? -originSizeDeltaX : originSizeDeltaX);
+                overlayOffset += originOffsetDeltaX + (this._isLtr() ? originSizeDeltaX : 0);
+                this._updateOverlayOffset(overlayOffset);
+            }));
+        }
+        /**
+         * @protected
+         * @param {?} active
          * @return {?}
          */
-        () => {
-            /** @type {?} */
-            const sizeMessage = { columnId: this.columnDef.name, size };
-            if (completedSuccessfully) {
-                this.resizeNotifier.resizeCompleted.next(sizeMessage);
-            }
-            else {
-                this.resizeNotifier.resizeCanceled.next(sizeMessage);
-            }
-        }));
+        updateResizeActive(active) {
+            this.eventDispatcher.overlayHandleActiveForCell.next(active ? (/** @type {?} */ (this.resizeRef.origin.nativeElement)) : null);
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _getOriginWidth() {
+            return (/** @type {?} */ (this.resizeRef.origin.nativeElement)).offsetWidth;
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _getOriginOffset() {
+            return (/** @type {?} */ (this.resizeRef.origin.nativeElement)).offsetLeft;
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _getOverlayOffset() {
+            return parseInt((/** @type {?} */ (this.resizeRef.overlayRef.overlayElement.style.left)), 10);
+        }
+        /**
+         * @private
+         * @param {?} offset
+         * @return {?}
+         */
+        _updateOverlayOffset(offset) {
+            this.resizeRef.overlayRef.overlayElement.style.left = coerceCssPixelValue(offset);
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        _isLtr() {
+            return this.directionality.value === 'ltr';
+        }
+        /**
+         * @private
+         * @param {?} size
+         * @param {?=} completedSuccessfully
+         * @return {?}
+         */
+        _notifyResizeEnded(size, completedSuccessfully = false) {
+            this.updateResizeActive(false);
+            this.ngZone.run((/**
+             * @return {?}
+             */
+            () => {
+                /** @type {?} */
+                const sizeMessage = { columnId: this.columnDef.name, size };
+                if (completedSuccessfully) {
+                    this.resizeNotifier.resizeCompleted.next(sizeMessage);
+                }
+                else {
+                    this.resizeNotifier.resizeCanceled.next(sizeMessage);
+                }
+            }));
+        }
     }
-}
-ResizeOverlayHandle.decorators = [
-    { type: Directive }
-];
+    ResizeOverlayHandle.decorators = [
+        { type: Directive }
+    ];
+    return ResizeOverlayHandle;
+})();
 if (false) {
     /**
      * @type {?}

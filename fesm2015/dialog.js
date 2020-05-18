@@ -235,304 +235,311 @@ function throwDialogContentAlreadyAttachedError() {
  * Internal component that wraps user-provided dialog content.
  * \@docs-private
  */
-class CdkDialogContainer extends BasePortalOutlet {
+let CdkDialogContainer = /** @class */ (() => {
     /**
-     * @param {?} _elementRef
-     * @param {?} _focusTrapFactory
-     * @param {?} _changeDetectorRef
-     * @param {?} _document
-     * @param {?} _config
+     * Internal component that wraps user-provided dialog content.
+     * \@docs-private
      */
-    constructor(_elementRef, _focusTrapFactory, _changeDetectorRef, _document, _config) {
-        super();
-        this._elementRef = _elementRef;
-        this._focusTrapFactory = _focusTrapFactory;
-        this._changeDetectorRef = _changeDetectorRef;
-        this._config = _config;
+    class CdkDialogContainer extends BasePortalOutlet {
         /**
-         * State of the dialog animation.
+         * @param {?} _elementRef
+         * @param {?} _focusTrapFactory
+         * @param {?} _changeDetectorRef
+         * @param {?} _document
+         * @param {?} _config
          */
-        this._state = 'enter';
+        constructor(_elementRef, _focusTrapFactory, _changeDetectorRef, _document, _config) {
+            super();
+            this._elementRef = _elementRef;
+            this._focusTrapFactory = _focusTrapFactory;
+            this._changeDetectorRef = _changeDetectorRef;
+            this._config = _config;
+            /**
+             * State of the dialog animation.
+             */
+            this._state = 'enter';
+            /**
+             * Element that was focused before the dialog was opened. Save this to restore upon close.
+             */
+            this._elementFocusedBeforeDialogWasOpened = null;
+            /**
+             * The class that traps and manages focus within the dialog.
+             */
+            this._focusTrap = this._focusTrapFactory.create(this._elementRef.nativeElement);
+            this._ariaModal = true;
+            /**
+             * A subject emitting before the dialog enters the view.
+             */
+            this._beforeEnter = new Subject();
+            /**
+             * A subject emitting after the dialog enters the view.
+             */
+            this._afterEnter = new Subject();
+            /**
+             * A subject emitting before the dialog exits the view.
+             */
+            this._beforeExit = new Subject();
+            /**
+             * A subject emitting after the dialog exits the view.
+             */
+            this._afterExit = new Subject();
+            /**
+             * Stream of animation `done` events.
+             */
+            this._animationDone = new Subject();
+            /**
+             * Attaches a DOM portal to the dialog container.
+             * @param portal Portal to be attached.
+             * @deprecated To be turned into a method.
+             * \@breaking-change 10.0.0
+             */
+            this.attachDomPortal = (/**
+             * @param {?} portal
+             * @return {?}
+             */
+            (portal) => {
+                if (this._portalHost.hasAttached()) {
+                    throwDialogContentAlreadyAttachedError();
+                }
+                this._savePreviouslyFocusedElement();
+                return this._portalHost.attachDomPortal(portal);
+            });
+            this._document = _document;
+            // We use a Subject with a distinctUntilChanged, rather than a callback attached to .done,
+            // because some browsers fire the done event twice and we don't want to emit duplicate events.
+            // See: https://github.com/angular/angular/issues/24084
+            this._animationDone.pipe(distinctUntilChanged((/**
+             * @param {?} x
+             * @param {?} y
+             * @return {?}
+             */
+            (x, y) => {
+                return x.fromState === y.fromState && x.toState === y.toState;
+            }))).subscribe((/**
+             * @param {?} event
+             * @return {?}
+             */
+            event => {
+                // Emit lifecycle events based on animation `done` callback.
+                if (event.toState === 'enter') {
+                    this._autoFocusFirstTabbableElement();
+                    this._afterEnter.next();
+                    this._afterEnter.complete();
+                }
+                if (event.fromState === 'enter' && (event.toState === 'void' || event.toState === 'exit')) {
+                    this._returnFocusAfterDialog();
+                    this._afterExit.next();
+                    this._afterExit.complete();
+                }
+            }));
+        }
+        // @HostBinding is used in the class as it is expected to be extended. Since @Component decorator
+        // metadata is not inherited by child classes, instead the host binding data is defined in a way
+        // that can be inherited.
+        // tslint:disable:no-host-decorator-in-concrete
         /**
-         * Element that was focused before the dialog was opened. Save this to restore upon close.
-         */
-        this._elementFocusedBeforeDialogWasOpened = null;
-        /**
-         * The class that traps and manages focus within the dialog.
-         */
-        this._focusTrap = this._focusTrapFactory.create(this._elementRef.nativeElement);
-        this._ariaModal = true;
-        /**
-         * A subject emitting before the dialog enters the view.
-         */
-        this._beforeEnter = new Subject();
-        /**
-         * A subject emitting after the dialog enters the view.
-         */
-        this._afterEnter = new Subject();
-        /**
-         * A subject emitting before the dialog exits the view.
-         */
-        this._beforeExit = new Subject();
-        /**
-         * A subject emitting after the dialog exits the view.
-         */
-        this._afterExit = new Subject();
-        /**
-         * Stream of animation `done` events.
-         */
-        this._animationDone = new Subject();
-        /**
-         * Attaches a DOM portal to the dialog container.
-         * @param portal Portal to be attached.
-         * @deprecated To be turned into a method.
-         * \@breaking-change 10.0.0
-         */
-        this.attachDomPortal = (/**
-         * @param {?} portal
          * @return {?}
          */
-        (portal) => {
+        get _ariaLabel() { return this._config.ariaLabel || null; }
+        /**
+         * @return {?}
+         */
+        get _ariaDescribedBy() { return this._config.ariaDescribedBy; }
+        /**
+         * @return {?}
+         */
+        get _role() { return this._config.role; }
+        /**
+         * @return {?}
+         */
+        get _tabindex() { return -1; }
+        /**
+         * Destroy focus trap to place focus back to the element focused before the dialog opened.
+         * @return {?}
+         */
+        ngOnDestroy() {
+            this._focusTrap.destroy();
+            this._animationDone.complete();
+        }
+        /**
+         * Attach a ComponentPortal as content to this dialog container.
+         * @template T
+         * @param {?} portal Portal to be attached as the dialog content.
+         * @return {?}
+         */
+        attachComponentPortal(portal) {
             if (this._portalHost.hasAttached()) {
                 throwDialogContentAlreadyAttachedError();
             }
             this._savePreviouslyFocusedElement();
-            return this._portalHost.attachDomPortal(portal);
-        });
-        this._document = _document;
-        // We use a Subject with a distinctUntilChanged, rather than a callback attached to .done,
-        // because some browsers fire the done event twice and we don't want to emit duplicate events.
-        // See: https://github.com/angular/angular/issues/24084
-        this._animationDone.pipe(distinctUntilChanged((/**
-         * @param {?} x
-         * @param {?} y
+            return this._portalHost.attachComponentPortal(portal);
+        }
+        /**
+         * Attach a TemplatePortal as content to this dialog container.
+         * @template C
+         * @param {?} portal Portal to be attached as the dialog content.
          * @return {?}
          */
-        (x, y) => {
-            return x.fromState === y.fromState && x.toState === y.toState;
-        }))).subscribe((/**
+        attachTemplatePortal(portal) {
+            if (this._portalHost.hasAttached()) {
+                throwDialogContentAlreadyAttachedError();
+            }
+            this._savePreviouslyFocusedElement();
+            return this._portalHost.attachTemplatePortal(portal);
+        }
+        /**
+         * Emit lifecycle events based on animation `start` callback.
          * @param {?} event
          * @return {?}
          */
-        event => {
-            // Emit lifecycle events based on animation `done` callback.
+        _onAnimationStart(event) {
             if (event.toState === 'enter') {
-                this._autoFocusFirstTabbableElement();
-                this._afterEnter.next();
-                this._afterEnter.complete();
+                this._beforeEnter.next();
+                this._beforeEnter.complete();
             }
             if (event.fromState === 'enter' && (event.toState === 'void' || event.toState === 'exit')) {
-                this._returnFocusAfterDialog();
-                this._afterExit.next();
-                this._afterExit.complete();
-            }
-        }));
-    }
-    // @HostBinding is used in the class as it is expected to be extended. Since @Component decorator
-    // metadata is not inherited by child classes, instead the host binding data is defined in a way
-    // that can be inherited.
-    // tslint:disable:no-host-decorator-in-concrete
-    /**
-     * @return {?}
-     */
-    get _ariaLabel() { return this._config.ariaLabel || null; }
-    /**
-     * @return {?}
-     */
-    get _ariaDescribedBy() { return this._config.ariaDescribedBy; }
-    /**
-     * @return {?}
-     */
-    get _role() { return this._config.role; }
-    /**
-     * @return {?}
-     */
-    get _tabindex() { return -1; }
-    /**
-     * Destroy focus trap to place focus back to the element focused before the dialog opened.
-     * @return {?}
-     */
-    ngOnDestroy() {
-        this._focusTrap.destroy();
-        this._animationDone.complete();
-    }
-    /**
-     * Attach a ComponentPortal as content to this dialog container.
-     * @template T
-     * @param {?} portal Portal to be attached as the dialog content.
-     * @return {?}
-     */
-    attachComponentPortal(portal) {
-        if (this._portalHost.hasAttached()) {
-            throwDialogContentAlreadyAttachedError();
-        }
-        this._savePreviouslyFocusedElement();
-        return this._portalHost.attachComponentPortal(portal);
-    }
-    /**
-     * Attach a TemplatePortal as content to this dialog container.
-     * @template C
-     * @param {?} portal Portal to be attached as the dialog content.
-     * @return {?}
-     */
-    attachTemplatePortal(portal) {
-        if (this._portalHost.hasAttached()) {
-            throwDialogContentAlreadyAttachedError();
-        }
-        this._savePreviouslyFocusedElement();
-        return this._portalHost.attachTemplatePortal(portal);
-    }
-    /**
-     * Emit lifecycle events based on animation `start` callback.
-     * @param {?} event
-     * @return {?}
-     */
-    _onAnimationStart(event) {
-        if (event.toState === 'enter') {
-            this._beforeEnter.next();
-            this._beforeEnter.complete();
-        }
-        if (event.fromState === 'enter' && (event.toState === 'void' || event.toState === 'exit')) {
-            this._beforeExit.next();
-            this._beforeExit.complete();
-        }
-    }
-    /**
-     * Starts the dialog exit animation.
-     * @return {?}
-     */
-    _startExiting() {
-        this._state = 'exit';
-        // Mark the container for check so it can react if the
-        // view container is using OnPush change detection.
-        this._changeDetectorRef.markForCheck();
-    }
-    /**
-     * Saves a reference to the element that was focused before the dialog was opened.
-     * @private
-     * @return {?}
-     */
-    _savePreviouslyFocusedElement() {
-        if (this._document) {
-            this._elementFocusedBeforeDialogWasOpened = (/** @type {?} */ (this._document.activeElement));
-            // Move focus onto the dialog immediately in order to prevent the user from accidentally
-            // opening multiple dialogs at the same time. Needs to be async, because the element
-            // may not be focusable immediately.
-            Promise.resolve().then((/**
-             * @return {?}
-             */
-            () => this._elementRef.nativeElement.focus()));
-        }
-    }
-    /**
-     * Autofocus the first tabbable element inside of the dialog, if there is not a tabbable element,
-     * focus the dialog instead.
-     * @private
-     * @return {?}
-     */
-    _autoFocusFirstTabbableElement() {
-        /** @type {?} */
-        const element = this._elementRef.nativeElement;
-        // If were to attempt to focus immediately, then the content of the dialog would not yet be
-        // ready in instances where change detection has to run first. To deal with this, we simply
-        // wait for the microtask queue to be empty.
-        if (this._config.autoFocus) {
-            this._focusTrap.focusInitialElementWhenReady().then((/**
-             * @param {?} hasMovedFocus
-             * @return {?}
-             */
-            hasMovedFocus => {
-                // If we didn't find any focusable elements inside the dialog, focus the
-                // container so the user can't tab into other elements behind it.
-                if (!hasMovedFocus) {
-                    element.focus();
-                }
-            }));
-        }
-        else {
-            /** @type {?} */
-            const activeElement = this._document.activeElement;
-            // Otherwise ensure that focus is on the dialog container. It's possible that a different
-            // component tried to move focus while the open animation was running. See:
-            // https://github.com/angular/components/issues/16215. Note that we only want to do this
-            // if the focus isn't inside the dialog already, because it's possible that the consumer
-            // turned off `autoFocus` in order to move focus themselves.
-            if (activeElement !== element && !element.contains(activeElement)) {
-                element.focus();
+                this._beforeExit.next();
+                this._beforeExit.complete();
             }
         }
-    }
-    /**
-     * Returns the focus to the element focused before the dialog was open.
-     * @private
-     * @return {?}
-     */
-    _returnFocusAfterDialog() {
-        /** @type {?} */
-        const toFocus = this._elementFocusedBeforeDialogWasOpened;
-        // We need the extra check, because IE can set the `activeElement` to null in some cases.
-        if (toFocus && typeof toFocus.focus === 'function') {
-            /** @type {?} */
-            const activeElement = this._document.activeElement;
+        /**
+         * Starts the dialog exit animation.
+         * @return {?}
+         */
+        _startExiting() {
+            this._state = 'exit';
+            // Mark the container for check so it can react if the
+            // view container is using OnPush change detection.
+            this._changeDetectorRef.markForCheck();
+        }
+        /**
+         * Saves a reference to the element that was focused before the dialog was opened.
+         * @private
+         * @return {?}
+         */
+        _savePreviouslyFocusedElement() {
+            if (this._document) {
+                this._elementFocusedBeforeDialogWasOpened = (/** @type {?} */ (this._document.activeElement));
+                // Move focus onto the dialog immediately in order to prevent the user from accidentally
+                // opening multiple dialogs at the same time. Needs to be async, because the element
+                // may not be focusable immediately.
+                Promise.resolve().then((/**
+                 * @return {?}
+                 */
+                () => this._elementRef.nativeElement.focus()));
+            }
+        }
+        /**
+         * Autofocus the first tabbable element inside of the dialog, if there is not a tabbable element,
+         * focus the dialog instead.
+         * @private
+         * @return {?}
+         */
+        _autoFocusFirstTabbableElement() {
             /** @type {?} */
             const element = this._elementRef.nativeElement;
-            // Make sure that focus is still inside the dialog or is on the body (usually because a
-            // non-focusable element like the backdrop was clicked) before moving it. It's possible that
-            // the consumer moved it themselves before the animation was done, in which case we shouldn't
-            // do anything.
-            if (!activeElement || activeElement === this._document.body || activeElement === element ||
-                element.contains(activeElement)) {
-                toFocus.focus();
+            // If were to attempt to focus immediately, then the content of the dialog would not yet be
+            // ready in instances where change detection has to run first. To deal with this, we simply
+            // wait for the microtask queue to be empty.
+            if (this._config.autoFocus) {
+                this._focusTrap.focusInitialElementWhenReady().then((/**
+                 * @param {?} hasMovedFocus
+                 * @return {?}
+                 */
+                hasMovedFocus => {
+                    // If we didn't find any focusable elements inside the dialog, focus the
+                    // container so the user can't tab into other elements behind it.
+                    if (!hasMovedFocus) {
+                        element.focus();
+                    }
+                }));
+            }
+            else {
+                /** @type {?} */
+                const activeElement = this._document.activeElement;
+                // Otherwise ensure that focus is on the dialog container. It's possible that a different
+                // component tried to move focus while the open animation was running. See:
+                // https://github.com/angular/components/issues/16215. Note that we only want to do this
+                // if the focus isn't inside the dialog already, because it's possible that the consumer
+                // turned off `autoFocus` in order to move focus themselves.
+                if (activeElement !== element && !element.contains(activeElement)) {
+                    element.focus();
+                }
+            }
+        }
+        /**
+         * Returns the focus to the element focused before the dialog was open.
+         * @private
+         * @return {?}
+         */
+        _returnFocusAfterDialog() {
+            /** @type {?} */
+            const toFocus = this._elementFocusedBeforeDialogWasOpened;
+            // We need the extra check, because IE can set the `activeElement` to null in some cases.
+            if (toFocus && typeof toFocus.focus === 'function') {
+                /** @type {?} */
+                const activeElement = this._document.activeElement;
+                /** @type {?} */
+                const element = this._elementRef.nativeElement;
+                // Make sure that focus is still inside the dialog or is on the body (usually because a
+                // non-focusable element like the backdrop was clicked) before moving it. It's possible that
+                // the consumer moved it themselves before the animation was done, in which case we shouldn't
+                // do anything.
+                if (!activeElement || activeElement === this._document.body || activeElement === element ||
+                    element.contains(activeElement)) {
+                    toFocus.focus();
+                }
             }
         }
     }
-}
-CdkDialogContainer.decorators = [
-    { type: Component, args: [{
-                selector: 'cdk-dialog-container',
-                template: "<ng-template cdkPortalOutlet></ng-template>\n",
-                encapsulation: ViewEncapsulation.None,
-                // Using OnPush for dialogs caused some G3 sync issues. Disabled until we can track them down.
-                // tslint:disable-next-line:validate-decorators
-                changeDetection: ChangeDetectionStrategy.Default,
-                animations: [
-                    trigger('dialog', [
-                        state('enter', style({ opacity: 1 })),
-                        state('exit, void', style({ opacity: 0 })),
-                        transition('* => enter', animate('{{enterAnimationDuration}}')),
-                        transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
-                    ])
-                ],
-                host: {
-                    '[@dialog]': `{
+    CdkDialogContainer.decorators = [
+        { type: Component, args: [{
+                    selector: 'cdk-dialog-container',
+                    template: "<ng-template cdkPortalOutlet></ng-template>\n",
+                    encapsulation: ViewEncapsulation.None,
+                    // Using OnPush for dialogs caused some G3 sync issues. Disabled until we can track them down.
+                    // tslint:disable-next-line:validate-decorators
+                    changeDetection: ChangeDetectionStrategy.Default,
+                    animations: [
+                        trigger('dialog', [
+                            state('enter', style({ opacity: 1 })),
+                            state('exit, void', style({ opacity: 0 })),
+                            transition('* => enter', animate('{{enterAnimationDuration}}')),
+                            transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
+                        ])
+                    ],
+                    host: {
+                        '[@dialog]': `{
       value: _state,
       params: {
         enterAnimationDuration: _config.enterAnimationDuration,
         exitAnimationDuration: _config.exitAnimationDuration
       }
     }`,
-                    '(@dialog.start)': '_onAnimationStart($event)',
-                    '(@dialog.done)': '_animationDone.next($event)',
-                },
-                styles: ["cdk-dialog-container{background:#fff;border-radius:5px;display:block;padding:10px}\n"]
-            }] }
-];
-/** @nocollapse */
-CdkDialogContainer.ctorParameters = () => [
-    { type: ElementRef },
-    { type: FocusTrapFactory },
-    { type: ChangeDetectorRef },
-    { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [DOCUMENT,] }] },
-    { type: DialogConfig }
-];
-CdkDialogContainer.propDecorators = {
-    _ariaLabel: [{ type: HostBinding, args: ['attr.aria-label',] }],
-    _ariaDescribedBy: [{ type: HostBinding, args: ['attr.aria-describedby',] }],
-    _role: [{ type: HostBinding, args: ['attr.role',] }],
-    _ariaModal: [{ type: HostBinding, args: ['attr.aria-modal',] }],
-    _tabindex: [{ type: HostBinding, args: ['attr.tabindex',] }],
-    _portalHost: [{ type: ViewChild, args: [CdkPortalOutlet, { static: true },] }]
-};
+                        '(@dialog.start)': '_onAnimationStart($event)',
+                        '(@dialog.done)': '_animationDone.next($event)',
+                    },
+                    styles: ["cdk-dialog-container{background:#fff;border-radius:5px;display:block;padding:10px}\n"]
+                }] }
+    ];
+    /** @nocollapse */
+    CdkDialogContainer.ctorParameters = () => [
+        { type: ElementRef },
+        { type: FocusTrapFactory },
+        { type: ChangeDetectorRef },
+        { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [DOCUMENT,] }] },
+        { type: DialogConfig }
+    ];
+    CdkDialogContainer.propDecorators = {
+        _ariaLabel: [{ type: HostBinding, args: ['attr.aria-label',] }],
+        _ariaDescribedBy: [{ type: HostBinding, args: ['attr.aria-describedby',] }],
+        _role: [{ type: HostBinding, args: ['attr.role',] }],
+        _ariaModal: [{ type: HostBinding, args: ['attr.aria-modal',] }],
+        _tabindex: [{ type: HostBinding, args: ['attr.tabindex',] }],
+        _portalHost: [{ type: ViewChild, args: [CdkPortalOutlet, { static: true },] }]
+    };
+    return CdkDialogContainer;
+})();
 if (false) {
     /**
      * @type {?}
@@ -881,329 +888,335 @@ const MAT_DIALOG_SCROLL_STRATEGY_PROVIDER = {
 /**
  * Service to open modal dialogs.
  */
-class Dialog {
+let Dialog = /** @class */ (() => {
     /**
-     * @param {?} _overlay
-     * @param {?} _injector
-     * @param {?} _dialogRefConstructor
-     * @param {?} scrollStrategy
-     * @param {?} _parentDialog
-     * @param {?} location
+     * Service to open modal dialogs.
      */
-    constructor(_overlay, _injector, _dialogRefConstructor, 
-    // TODO(crisbeto): the `any` here can be replaced
-    // with the proper type once we start using Ivy.
-    scrollStrategy, _parentDialog, location) {
-        this._overlay = _overlay;
-        this._injector = _injector;
-        this._dialogRefConstructor = _dialogRefConstructor;
-        this._parentDialog = _parentDialog;
-        this._afterAllClosedBase = new Subject();
-        // TODO(jelbourn): tighten the type on the right-hand side of this expression.
-        this.afterAllClosed = defer((/**
-         * @return {?}
+    class Dialog {
+        /**
+         * @param {?} _overlay
+         * @param {?} _injector
+         * @param {?} _dialogRefConstructor
+         * @param {?} scrollStrategy
+         * @param {?} _parentDialog
+         * @param {?} location
          */
-        () => this.openDialogs.length ?
-            this._afterAllClosed : this._afterAllClosed.pipe(startWith(undefined))));
-        this._afterOpened = new Subject();
-        this._openDialogs = [];
-        // Close all of the dialogs when the user goes forwards/backwards in history or when the
-        // location hash changes. Note that this usually doesn't include clicking on links (unless
-        // the user is using the `HashLocationStrategy`).
-        if (!_parentDialog && location) {
-            location.subscribe((/**
+        constructor(_overlay, _injector, _dialogRefConstructor, 
+        // TODO(crisbeto): the `any` here can be replaced
+        // with the proper type once we start using Ivy.
+        scrollStrategy, _parentDialog, location) {
+            this._overlay = _overlay;
+            this._injector = _injector;
+            this._dialogRefConstructor = _dialogRefConstructor;
+            this._parentDialog = _parentDialog;
+            this._afterAllClosedBase = new Subject();
+            // TODO(jelbourn): tighten the type on the right-hand side of this expression.
+            this.afterAllClosed = defer((/**
              * @return {?}
              */
-            () => this.closeAll()));
+            () => this.openDialogs.length ?
+                this._afterAllClosed : this._afterAllClosed.pipe(startWith(undefined))));
+            this._afterOpened = new Subject();
+            this._openDialogs = [];
+            // Close all of the dialogs when the user goes forwards/backwards in history or when the
+            // location hash changes. Note that this usually doesn't include clicking on links (unless
+            // the user is using the `HashLocationStrategy`).
+            if (!_parentDialog && location) {
+                location.subscribe((/**
+                 * @return {?}
+                 */
+                () => this.closeAll()));
+            }
+            this._scrollStrategy = scrollStrategy;
         }
-        this._scrollStrategy = scrollStrategy;
-    }
-    /**
-     * Stream that emits when all dialogs are closed.
-     * @return {?}
-     */
-    get _afterAllClosed() {
-        return this._parentDialog ? this._parentDialog.afterAllClosed : this._afterAllClosedBase;
-    }
-    /**
-     * Stream that emits when a dialog is opened.
-     * @return {?}
-     */
-    get afterOpened() {
-        return this._parentDialog ? this._parentDialog.afterOpened : this._afterOpened;
-    }
-    /**
-     * Stream that emits when a dialog is opened.
-     * @return {?}
-     */
-    get openDialogs() {
-        return this._parentDialog ? this._parentDialog.openDialogs : this._openDialogs;
-    }
-    /**
-     * Gets an open dialog by id.
-     * @param {?} id
-     * @return {?}
-     */
-    getById(id) {
-        return this._openDialogs.find((/**
-         * @param {?} ref
+        /**
+         * Stream that emits when all dialogs are closed.
          * @return {?}
          */
-        ref => ref.id === id));
-    }
-    /**
-     * Closes all open dialogs.
-     * @return {?}
-     */
-    closeAll() {
-        this.openDialogs.forEach((/**
-         * @param {?} ref
-         * @return {?}
-         */
-        ref => ref.close()));
-    }
-    /**
-     * Opens a dialog from a component.
-     * @template T
-     * @param {?} component
-     * @param {?=} config
-     * @return {?}
-     */
-    openFromComponent(component, config) {
-        config = this._applyConfigDefaults(config);
-        if (config.id && this.getById(config.id)) {
-            throw Error(`Dialog with id "${config.id}" exists already. The dialog id must be unique.`);
+        get _afterAllClosed() {
+            return this._parentDialog ? this._parentDialog.afterAllClosed : this._afterAllClosedBase;
         }
-        /** @type {?} */
-        const overlayRef = this._createOverlay(config);
-        /** @type {?} */
-        const dialogContainer = this._attachDialogContainer(overlayRef, config);
-        /** @type {?} */
-        const dialogRef = this._attachDialogContentForComponent(component, dialogContainer, overlayRef, config);
-        this._registerDialogRef(dialogRef);
-        return dialogRef;
-    }
-    /**
-     * Opens a dialog from a template.
-     * @template T
-     * @param {?} template
-     * @param {?=} config
-     * @return {?}
-     */
-    openFromTemplate(template, config) {
-        config = this._applyConfigDefaults(config);
-        if (config.id && this.getById(config.id)) {
-            throw Error(`Dialog with id "${config.id}" exists already. The dialog id must be unique.`);
+        /**
+         * Stream that emits when a dialog is opened.
+         * @return {?}
+         */
+        get afterOpened() {
+            return this._parentDialog ? this._parentDialog.afterOpened : this._afterOpened;
         }
-        /** @type {?} */
-        const overlayRef = this._createOverlay(config);
-        /** @type {?} */
-        const dialogContainer = this._attachDialogContainer(overlayRef, config);
-        /** @type {?} */
-        const dialogRef = this._attachDialogContentForTemplate(template, dialogContainer, overlayRef, config);
-        this._registerDialogRef(dialogRef);
-        return dialogRef;
-    }
-    /**
-     * @return {?}
-     */
-    ngOnDestroy() {
-        // Only close all the dialogs at this level.
-        this._openDialogs.forEach((/**
-         * @param {?} ref
+        /**
+         * Stream that emits when a dialog is opened.
          * @return {?}
          */
-        ref => ref.close()));
-    }
-    /**
-     * Forwards emitting events for when dialogs are opened and all dialogs are closed.
-     * @private
-     * @param {?} dialogRef
-     * @return {?}
-     */
-    _registerDialogRef(dialogRef) {
-        this.openDialogs.push(dialogRef);
-        /** @type {?} */
-        const dialogOpenSub = dialogRef.afterOpened().subscribe((/**
+        get openDialogs() {
+            return this._parentDialog ? this._parentDialog.openDialogs : this._openDialogs;
+        }
+        /**
+         * Gets an open dialog by id.
+         * @param {?} id
          * @return {?}
          */
-        () => {
-            this.afterOpened.next(dialogRef);
-            dialogOpenSub.unsubscribe();
-        }));
-        /** @type {?} */
-        const dialogCloseSub = dialogRef.afterClosed().subscribe((/**
+        getById(id) {
+            return this._openDialogs.find((/**
+             * @param {?} ref
+             * @return {?}
+             */
+            ref => ref.id === id));
+        }
+        /**
+         * Closes all open dialogs.
          * @return {?}
          */
-        () => {
+        closeAll() {
+            this.openDialogs.forEach((/**
+             * @param {?} ref
+             * @return {?}
+             */
+            ref => ref.close()));
+        }
+        /**
+         * Opens a dialog from a component.
+         * @template T
+         * @param {?} component
+         * @param {?=} config
+         * @return {?}
+         */
+        openFromComponent(component, config) {
+            config = this._applyConfigDefaults(config);
+            if (config.id && this.getById(config.id)) {
+                throw Error(`Dialog with id "${config.id}" exists already. The dialog id must be unique.`);
+            }
             /** @type {?} */
-            let dialogIndex = this._openDialogs.indexOf(dialogRef);
-            if (dialogIndex > -1) {
-                this._openDialogs.splice(dialogIndex, 1);
-            }
-            if (!this._openDialogs.length) {
-                this._afterAllClosedBase.next();
-                dialogCloseSub.unsubscribe();
-            }
-        }));
-    }
-    /**
-     * Creates an overlay config from a dialog config.
-     * @protected
-     * @param {?} config The dialog configuration.
-     * @return {?} The overlay configuration.
-     */
-    _createOverlay(config) {
-        /** @type {?} */
-        const overlayConfig = new OverlayConfig({
-            positionStrategy: this._overlay.position().global(),
-            scrollStrategy: this._scrollStrategy(),
-            panelClass: config.panelClass,
-            hasBackdrop: config.hasBackdrop,
-            direction: config.direction,
-            minWidth: config.minWidth,
-            minHeight: config.minHeight,
-            maxWidth: config.maxWidth,
-            maxHeight: config.maxHeight
-        });
-        if (config.backdropClass) {
-            overlayConfig.backdropClass = config.backdropClass;
+            const overlayRef = this._createOverlay(config);
+            /** @type {?} */
+            const dialogContainer = this._attachDialogContainer(overlayRef, config);
+            /** @type {?} */
+            const dialogRef = this._attachDialogContentForComponent(component, dialogContainer, overlayRef, config);
+            this._registerDialogRef(dialogRef);
+            return dialogRef;
         }
-        return this._overlay.create(overlayConfig);
-    }
-    /**
-     * Attaches an MatDialogContainer to a dialog's already-created overlay.
-     * @protected
-     * @param {?} overlay Reference to the dialog's underlying overlay.
-     * @param {?} config The dialog configuration.
-     * @return {?} A promise resolving to a ComponentRef for the attached container.
-     */
-    _attachDialogContainer(overlay, config) {
-        /** @type {?} */
-        const container = config.containerComponent || this._injector.get(DIALOG_CONTAINER);
-        /** @type {?} */
-        const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
-        /** @type {?} */
-        const injector = new PortalInjector(userInjector || this._injector, new WeakMap([
-            [DialogConfig, config]
-        ]));
-        /** @type {?} */
-        const containerPortal = new ComponentPortal(container, config.viewContainerRef, injector);
-        /** @type {?} */
-        const containerRef = overlay.attach(containerPortal);
-        containerRef.instance._config = config;
-        return containerRef.instance;
-    }
-    /**
-     * Attaches the user-provided component to the already-created MatDialogContainer.
-     * @protected
-     * @template T
-     * @param {?} componentOrTemplateRef The type of component being loaded into the dialog,
-     *     or a TemplateRef to instantiate as the content.
-     * @param {?} dialogContainer Reference to the wrapping MatDialogContainer.
-     * @param {?} overlayRef Reference to the overlay in which the dialog resides.
-     * @param {?} config The dialog configuration.
-     * @return {?} A promise resolving to the MatDialogRef that should be returned to the user.
-     */
-    _attachDialogContentForComponent(componentOrTemplateRef, dialogContainer, overlayRef, config) {
-        // Create a reference to the dialog we're creating in order to give the user a handle
-        // to modify and close it.
-        /** @type {?} */
-        const dialogRef = this._createDialogRef(overlayRef, dialogContainer, config);
-        /** @type {?} */
-        const injector = this._createInjector(config, dialogRef, dialogContainer);
-        /** @type {?} */
-        const contentRef = dialogContainer.attachComponentPortal(new ComponentPortal(componentOrTemplateRef, undefined, injector));
-        dialogRef.componentInstance = contentRef.instance;
-        return dialogRef;
-    }
-    /**
-     * Attaches the user-provided component to the already-created MatDialogContainer.
-     * @protected
-     * @template T
-     * @param {?} componentOrTemplateRef The type of component being loaded into the dialog,
-     *     or a TemplateRef to instantiate as the content.
-     * @param {?} dialogContainer Reference to the wrapping MatDialogContainer.
-     * @param {?} overlayRef Reference to the overlay in which the dialog resides.
-     * @param {?} config The dialog configuration.
-     * @return {?} A promise resolving to the MatDialogRef that should be returned to the user.
-     */
-    _attachDialogContentForTemplate(componentOrTemplateRef, dialogContainer, overlayRef, config) {
-        // Create a reference to the dialog we're creating in order to give the user a handle
-        // to modify and close it.
-        /** @type {?} */
-        const dialogRef = this._createDialogRef(overlayRef, dialogContainer, config);
-        dialogContainer.attachTemplatePortal(new TemplatePortal(componentOrTemplateRef, (/** @type {?} */ (null)), (/** @type {?} */ ({ $implicit: config.data, dialogRef }))));
-        return dialogRef;
-    }
-    /**
-     * Creates a custom injector to be used inside the dialog. This allows a component loaded inside
-     * of a dialog to close itself and, optionally, to return a value.
-     * @private
-     * @template T
-     * @param {?} config Config object that is used to construct the dialog.
-     * @param {?} dialogRef Reference to the dialog.
-     * @param {?} dialogContainer
-     * @return {?} The custom injector that can be used inside the dialog.
-     */
-    _createInjector(config, dialogRef, dialogContainer) {
-        /** @type {?} */
-        const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
-        /** @type {?} */
-        const injectionTokens = new WeakMap([
-            [this._injector.get(DIALOG_REF), dialogRef],
-            [this._injector.get(DIALOG_CONTAINER), dialogContainer],
-            [DIALOG_DATA, config.data]
-        ]);
-        if (config.direction &&
-            (!userInjector || !userInjector.get(Directionality, null))) {
-            injectionTokens.set(Directionality, {
-                value: config.direction,
-                change: of()
+        /**
+         * Opens a dialog from a template.
+         * @template T
+         * @param {?} template
+         * @param {?=} config
+         * @return {?}
+         */
+        openFromTemplate(template, config) {
+            config = this._applyConfigDefaults(config);
+            if (config.id && this.getById(config.id)) {
+                throw Error(`Dialog with id "${config.id}" exists already. The dialog id must be unique.`);
+            }
+            /** @type {?} */
+            const overlayRef = this._createOverlay(config);
+            /** @type {?} */
+            const dialogContainer = this._attachDialogContainer(overlayRef, config);
+            /** @type {?} */
+            const dialogRef = this._attachDialogContentForTemplate(template, dialogContainer, overlayRef, config);
+            this._registerDialogRef(dialogRef);
+            return dialogRef;
+        }
+        /**
+         * @return {?}
+         */
+        ngOnDestroy() {
+            // Only close all the dialogs at this level.
+            this._openDialogs.forEach((/**
+             * @param {?} ref
+             * @return {?}
+             */
+            ref => ref.close()));
+        }
+        /**
+         * Forwards emitting events for when dialogs are opened and all dialogs are closed.
+         * @private
+         * @param {?} dialogRef
+         * @return {?}
+         */
+        _registerDialogRef(dialogRef) {
+            this.openDialogs.push(dialogRef);
+            /** @type {?} */
+            const dialogOpenSub = dialogRef.afterOpened().subscribe((/**
+             * @return {?}
+             */
+            () => {
+                this.afterOpened.next(dialogRef);
+                dialogOpenSub.unsubscribe();
+            }));
+            /** @type {?} */
+            const dialogCloseSub = dialogRef.afterClosed().subscribe((/**
+             * @return {?}
+             */
+            () => {
+                /** @type {?} */
+                let dialogIndex = this._openDialogs.indexOf(dialogRef);
+                if (dialogIndex > -1) {
+                    this._openDialogs.splice(dialogIndex, 1);
+                }
+                if (!this._openDialogs.length) {
+                    this._afterAllClosedBase.next();
+                    dialogCloseSub.unsubscribe();
+                }
+            }));
+        }
+        /**
+         * Creates an overlay config from a dialog config.
+         * @protected
+         * @param {?} config The dialog configuration.
+         * @return {?} The overlay configuration.
+         */
+        _createOverlay(config) {
+            /** @type {?} */
+            const overlayConfig = new OverlayConfig({
+                positionStrategy: this._overlay.position().global(),
+                scrollStrategy: this._scrollStrategy(),
+                panelClass: config.panelClass,
+                hasBackdrop: config.hasBackdrop,
+                direction: config.direction,
+                minWidth: config.minWidth,
+                minHeight: config.minHeight,
+                maxWidth: config.maxWidth,
+                maxHeight: config.maxHeight
             });
+            if (config.backdropClass) {
+                overlayConfig.backdropClass = config.backdropClass;
+            }
+            return this._overlay.create(overlayConfig);
         }
-        return new PortalInjector(userInjector || this._injector, injectionTokens);
+        /**
+         * Attaches an MatDialogContainer to a dialog's already-created overlay.
+         * @protected
+         * @param {?} overlay Reference to the dialog's underlying overlay.
+         * @param {?} config The dialog configuration.
+         * @return {?} A promise resolving to a ComponentRef for the attached container.
+         */
+        _attachDialogContainer(overlay, config) {
+            /** @type {?} */
+            const container = config.containerComponent || this._injector.get(DIALOG_CONTAINER);
+            /** @type {?} */
+            const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
+            /** @type {?} */
+            const injector = new PortalInjector(userInjector || this._injector, new WeakMap([
+                [DialogConfig, config]
+            ]));
+            /** @type {?} */
+            const containerPortal = new ComponentPortal(container, config.viewContainerRef, injector);
+            /** @type {?} */
+            const containerRef = overlay.attach(containerPortal);
+            containerRef.instance._config = config;
+            return containerRef.instance;
+        }
+        /**
+         * Attaches the user-provided component to the already-created MatDialogContainer.
+         * @protected
+         * @template T
+         * @param {?} componentOrTemplateRef The type of component being loaded into the dialog,
+         *     or a TemplateRef to instantiate as the content.
+         * @param {?} dialogContainer Reference to the wrapping MatDialogContainer.
+         * @param {?} overlayRef Reference to the overlay in which the dialog resides.
+         * @param {?} config The dialog configuration.
+         * @return {?} A promise resolving to the MatDialogRef that should be returned to the user.
+         */
+        _attachDialogContentForComponent(componentOrTemplateRef, dialogContainer, overlayRef, config) {
+            // Create a reference to the dialog we're creating in order to give the user a handle
+            // to modify and close it.
+            /** @type {?} */
+            const dialogRef = this._createDialogRef(overlayRef, dialogContainer, config);
+            /** @type {?} */
+            const injector = this._createInjector(config, dialogRef, dialogContainer);
+            /** @type {?} */
+            const contentRef = dialogContainer.attachComponentPortal(new ComponentPortal(componentOrTemplateRef, undefined, injector));
+            dialogRef.componentInstance = contentRef.instance;
+            return dialogRef;
+        }
+        /**
+         * Attaches the user-provided component to the already-created MatDialogContainer.
+         * @protected
+         * @template T
+         * @param {?} componentOrTemplateRef The type of component being loaded into the dialog,
+         *     or a TemplateRef to instantiate as the content.
+         * @param {?} dialogContainer Reference to the wrapping MatDialogContainer.
+         * @param {?} overlayRef Reference to the overlay in which the dialog resides.
+         * @param {?} config The dialog configuration.
+         * @return {?} A promise resolving to the MatDialogRef that should be returned to the user.
+         */
+        _attachDialogContentForTemplate(componentOrTemplateRef, dialogContainer, overlayRef, config) {
+            // Create a reference to the dialog we're creating in order to give the user a handle
+            // to modify and close it.
+            /** @type {?} */
+            const dialogRef = this._createDialogRef(overlayRef, dialogContainer, config);
+            dialogContainer.attachTemplatePortal(new TemplatePortal(componentOrTemplateRef, (/** @type {?} */ (null)), (/** @type {?} */ ({ $implicit: config.data, dialogRef }))));
+            return dialogRef;
+        }
+        /**
+         * Creates a custom injector to be used inside the dialog. This allows a component loaded inside
+         * of a dialog to close itself and, optionally, to return a value.
+         * @private
+         * @template T
+         * @param {?} config Config object that is used to construct the dialog.
+         * @param {?} dialogRef Reference to the dialog.
+         * @param {?} dialogContainer
+         * @return {?} The custom injector that can be used inside the dialog.
+         */
+        _createInjector(config, dialogRef, dialogContainer) {
+            /** @type {?} */
+            const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
+            /** @type {?} */
+            const injectionTokens = new WeakMap([
+                [this._injector.get(DIALOG_REF), dialogRef],
+                [this._injector.get(DIALOG_CONTAINER), dialogContainer],
+                [DIALOG_DATA, config.data]
+            ]);
+            if (config.direction &&
+                (!userInjector || !userInjector.get(Directionality, null))) {
+                injectionTokens.set(Directionality, {
+                    value: config.direction,
+                    change: of()
+                });
+            }
+            return new PortalInjector(userInjector || this._injector, injectionTokens);
+        }
+        /**
+         * Creates a new dialog ref.
+         * @private
+         * @param {?} overlayRef
+         * @param {?} dialogContainer
+         * @param {?} config
+         * @return {?}
+         */
+        _createDialogRef(overlayRef, dialogContainer, config) {
+            /** @type {?} */
+            const dialogRef = new this._dialogRefConstructor(overlayRef, dialogContainer, config.id);
+            dialogRef.disableClose = config.disableClose;
+            dialogRef.updateSize(config).updatePosition(config.position);
+            return dialogRef;
+        }
+        /**
+         * Expands the provided configuration object to include the default values for properties which
+         * are undefined.
+         * @private
+         * @param {?=} config
+         * @return {?}
+         */
+        _applyConfigDefaults(config) {
+            /** @type {?} */
+            const dialogConfig = (/** @type {?} */ (this._injector.get(DIALOG_CONFIG)));
+            return Object.assign(Object.assign({}, new dialogConfig()), config);
+        }
     }
-    /**
-     * Creates a new dialog ref.
-     * @private
-     * @param {?} overlayRef
-     * @param {?} dialogContainer
-     * @param {?} config
-     * @return {?}
-     */
-    _createDialogRef(overlayRef, dialogContainer, config) {
-        /** @type {?} */
-        const dialogRef = new this._dialogRefConstructor(overlayRef, dialogContainer, config.id);
-        dialogRef.disableClose = config.disableClose;
-        dialogRef.updateSize(config).updatePosition(config.position);
-        return dialogRef;
-    }
-    /**
-     * Expands the provided configuration object to include the default values for properties which
-     * are undefined.
-     * @private
-     * @param {?=} config
-     * @return {?}
-     */
-    _applyConfigDefaults(config) {
-        /** @type {?} */
-        const dialogConfig = (/** @type {?} */ (this._injector.get(DIALOG_CONFIG)));
-        return Object.assign(Object.assign({}, new dialogConfig()), config);
-    }
-}
-Dialog.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-Dialog.ctorParameters = () => [
-    { type: Overlay },
-    { type: Injector },
-    { type: Type, decorators: [{ type: Inject, args: [DIALOG_REF,] }] },
-    { type: undefined, decorators: [{ type: Inject, args: [DIALOG_SCROLL_STRATEGY,] }] },
-    { type: Dialog, decorators: [{ type: Optional }, { type: SkipSelf }] },
-    { type: Location, decorators: [{ type: Optional }] }
-];
+    Dialog.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    Dialog.ctorParameters = () => [
+        { type: Overlay },
+        { type: Injector },
+        { type: Type, decorators: [{ type: Inject, args: [DIALOG_REF,] }] },
+        { type: undefined, decorators: [{ type: Inject, args: [DIALOG_SCROLL_STRATEGY,] }] },
+        { type: Dialog, decorators: [{ type: Optional }, { type: SkipSelf }] },
+        { type: Location, decorators: [{ type: Optional }] }
+    ];
+    return Dialog;
+})();
 if (false) {
     /**
      * @type {?}
@@ -1246,34 +1259,37 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 const ɵ0 = DialogRef, ɵ1 = CdkDialogContainer, ɵ2 = DialogConfig;
-class DialogModule {
-}
-DialogModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    OverlayModule,
-                    PortalModule,
-                    A11yModule,
-                ],
-                exports: [
-                    // Re-export the PortalModule so that people extending the `CdkDialogContainer`
-                    // don't have to remember to import it or be faced with an unhelpful error.
-                    PortalModule,
-                    CdkDialogContainer,
-                ],
-                declarations: [
-                    CdkDialogContainer,
-                ],
-                providers: [
-                    Dialog,
-                    MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
-                    { provide: DIALOG_REF, useValue: ɵ0 },
-                    { provide: DIALOG_CONTAINER, useValue: ɵ1 },
-                    { provide: DIALOG_CONFIG, useValue: ɵ2 },
-                ],
-                entryComponents: [CdkDialogContainer],
-            },] }
-];
+let DialogModule = /** @class */ (() => {
+    class DialogModule {
+    }
+    DialogModule.decorators = [
+        { type: NgModule, args: [{
+                    imports: [
+                        OverlayModule,
+                        PortalModule,
+                        A11yModule,
+                    ],
+                    exports: [
+                        // Re-export the PortalModule so that people extending the `CdkDialogContainer`
+                        // don't have to remember to import it or be faced with an unhelpful error.
+                        PortalModule,
+                        CdkDialogContainer,
+                    ],
+                    declarations: [
+                        CdkDialogContainer,
+                    ],
+                    providers: [
+                        Dialog,
+                        MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
+                        { provide: DIALOG_REF, useValue: ɵ0 },
+                        { provide: DIALOG_CONTAINER, useValue: ɵ1 },
+                        { provide: DIALOG_CONFIG, useValue: ɵ2 },
+                    ],
+                    entryComponents: [CdkDialogContainer],
+                },] }
+    ];
+    return DialogModule;
+})();
 
 /**
  * @fileoverview added by tsickle

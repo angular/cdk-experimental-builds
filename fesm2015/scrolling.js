@@ -534,63 +534,69 @@ function _autoSizeVirtualScrollStrategyFactory(autoSizeDir) {
 /**
  * A virtual scroll strategy that supports unknown or dynamic size items.
  */
-class CdkAutoSizeVirtualScroll {
-    constructor() {
-        this._minBufferPx = 100;
-        this._maxBufferPx = 200;
+let CdkAutoSizeVirtualScroll = /** @class */ (() => {
+    /**
+     * A virtual scroll strategy that supports unknown or dynamic size items.
+     */
+    class CdkAutoSizeVirtualScroll {
+        constructor() {
+            this._minBufferPx = 100;
+            this._maxBufferPx = 200;
+            /**
+             * The scroll strategy used by this directive.
+             */
+            this._scrollStrategy = new AutoSizeVirtualScrollStrategy(this.minBufferPx, this.maxBufferPx);
+        }
         /**
-         * The scroll strategy used by this directive.
+         * The minimum amount of buffer rendered beyond the viewport (in pixels).
+         * If the amount of buffer dips below this number, more items will be rendered. Defaults to 100px.
+         * @return {?}
          */
-        this._scrollStrategy = new AutoSizeVirtualScrollStrategy(this.minBufferPx, this.maxBufferPx);
+        get minBufferPx() { return this._minBufferPx; }
+        /**
+         * @param {?} value
+         * @return {?}
+         */
+        set minBufferPx(value) { this._minBufferPx = coerceNumberProperty(value); }
+        /**
+         * The number of pixels worth of buffer to shoot for when rendering new items.
+         * If the actual amount turns out to be less it will not necessarily trigger an additional
+         * rendering cycle (as long as the amount of buffer is still greater than `minBufferPx`).
+         * Defaults to 200px.
+         * @return {?}
+         */
+        get maxBufferPx() { return this._maxBufferPx; }
+        /**
+         * @param {?} value
+         * @return {?}
+         */
+        set maxBufferPx(value) { this._maxBufferPx = coerceNumberProperty(value); }
+        /**
+         * @return {?}
+         */
+        ngOnChanges() {
+            this._scrollStrategy.updateBufferSize(this.minBufferPx, this.maxBufferPx);
+        }
     }
-    /**
-     * The minimum amount of buffer rendered beyond the viewport (in pixels).
-     * If the amount of buffer dips below this number, more items will be rendered. Defaults to 100px.
-     * @return {?}
-     */
-    get minBufferPx() { return this._minBufferPx; }
-    /**
-     * @param {?} value
-     * @return {?}
-     */
-    set minBufferPx(value) { this._minBufferPx = coerceNumberProperty(value); }
-    /**
-     * The number of pixels worth of buffer to shoot for when rendering new items.
-     * If the actual amount turns out to be less it will not necessarily trigger an additional
-     * rendering cycle (as long as the amount of buffer is still greater than `minBufferPx`).
-     * Defaults to 200px.
-     * @return {?}
-     */
-    get maxBufferPx() { return this._maxBufferPx; }
-    /**
-     * @param {?} value
-     * @return {?}
-     */
-    set maxBufferPx(value) { this._maxBufferPx = coerceNumberProperty(value); }
-    /**
-     * @return {?}
-     */
-    ngOnChanges() {
-        this._scrollStrategy.updateBufferSize(this.minBufferPx, this.maxBufferPx);
-    }
-}
-CdkAutoSizeVirtualScroll.decorators = [
-    { type: Directive, args: [{
-                selector: 'cdk-virtual-scroll-viewport[autosize]',
-                providers: [{
-                        provide: VIRTUAL_SCROLL_STRATEGY,
-                        useFactory: _autoSizeVirtualScrollStrategyFactory,
-                        deps: [forwardRef((/**
-                             * @return {?}
-                             */
-                            () => CdkAutoSizeVirtualScroll))],
-                    }],
-            },] }
-];
-CdkAutoSizeVirtualScroll.propDecorators = {
-    minBufferPx: [{ type: Input }],
-    maxBufferPx: [{ type: Input }]
-};
+    CdkAutoSizeVirtualScroll.decorators = [
+        { type: Directive, args: [{
+                    selector: 'cdk-virtual-scroll-viewport[autosize]',
+                    providers: [{
+                            provide: VIRTUAL_SCROLL_STRATEGY,
+                            useFactory: _autoSizeVirtualScrollStrategyFactory,
+                            deps: [forwardRef((/**
+                                 * @return {?}
+                                 */
+                                () => CdkAutoSizeVirtualScroll))],
+                        }],
+                },] }
+    ];
+    CdkAutoSizeVirtualScroll.propDecorators = {
+        minBufferPx: [{ type: Input }],
+        maxBufferPx: [{ type: Input }]
+    };
+    return CdkAutoSizeVirtualScroll;
+})();
 if (false) {
     /** @type {?} */
     CdkAutoSizeVirtualScroll.ngAcceptInputType_minBufferPx;
@@ -612,14 +618,17 @@ if (false) {
  * Generated from: src/cdk-experimental/scrolling/scrolling-module.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class ScrollingModule {
-}
-ScrollingModule.decorators = [
-    { type: NgModule, args: [{
-                exports: [CdkAutoSizeVirtualScroll],
-                declarations: [CdkAutoSizeVirtualScroll],
-            },] }
-];
+let ScrollingModule = /** @class */ (() => {
+    class ScrollingModule {
+    }
+    ScrollingModule.decorators = [
+        { type: NgModule, args: [{
+                    exports: [CdkAutoSizeVirtualScroll],
+                    declarations: [CdkAutoSizeVirtualScroll],
+                },] }
+    ];
+    return ScrollingModule;
+})();
 
 /**
  * @fileoverview added by tsickle
