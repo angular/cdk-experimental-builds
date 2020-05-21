@@ -1,49 +1,22 @@
 /**
- * @fileoverview added by tsickle
- * Generated from: src/cdk-experimental/column-resize/column-size-store.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
  * @license
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+import { __decorate } from "tslib";
 import { Injectable } from '@angular/core';
 /**
  * Can be provided by the host application to enable persistence of column resize state.
- * @abstract
  */
 let ColumnSizeStore = /** @class */ (() => {
-    /**
-     * Can be provided by the host application to enable persistence of column resize state.
-     * @abstract
-     */
-    class ColumnSizeStore {
-    }
-    ColumnSizeStore.decorators = [
-        { type: Injectable }
-    ];
+    let ColumnSizeStore = class ColumnSizeStore {
+    };
+    ColumnSizeStore = __decorate([
+        Injectable()
+    ], ColumnSizeStore);
     return ColumnSizeStore;
 })();
 export { ColumnSizeStore };
-if (false) {
-    /**
-     * Returns the persisted size of the specified column in the specified table.
-     * @abstract
-     * @param {?} tableId
-     * @param {?} columnId
-     * @return {?}
-     */
-    ColumnSizeStore.prototype.getSize = function (tableId, columnId) { };
-    /**
-     * Persists the size of the specified column in the specified table.
-     * @abstract
-     * @param {?} tableId
-     * @param {?} columnId
-     * @return {?}
-     */
-    ColumnSizeStore.prototype.setSize = function (tableId, columnId) { };
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29sdW1uLXNpemUtc3RvcmUuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi8uLi9zcmMvY2RrLWV4cGVyaW1lbnRhbC9jb2x1bW4tcmVzaXplL2NvbHVtbi1zaXplLXN0b3JlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OztBQVFBLE9BQU8sRUFBQyxVQUFVLEVBQUMsTUFBTSxlQUFlLENBQUM7Ozs7O0FBS3pDOzs7OztJQUFBLE1BQ3NCLGVBQWU7OztnQkFEcEMsVUFBVTs7SUFPWCxzQkFBQztLQUFBO1NBTnFCLGVBQWU7Ozs7Ozs7OztJQUVuQyxxRUFBNEQ7Ozs7Ozs7O0lBRzVELHFFQUEwRCIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGxpY2Vuc2VcbiAqIENvcHlyaWdodCBHb29nbGUgTExDIEFsbCBSaWdodHMgUmVzZXJ2ZWQuXG4gKlxuICogVXNlIG9mIHRoaXMgc291cmNlIGNvZGUgaXMgZ292ZXJuZWQgYnkgYW4gTUlULXN0eWxlIGxpY2Vuc2UgdGhhdCBjYW4gYmVcbiAqIGZvdW5kIGluIHRoZSBMSUNFTlNFIGZpbGUgYXQgaHR0cHM6Ly9hbmd1bGFyLmlvL2xpY2Vuc2VcbiAqL1xuXG5pbXBvcnQge0luamVjdGFibGV9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuXG4vKipcbiAqIENhbiBiZSBwcm92aWRlZCBieSB0aGUgaG9zdCBhcHBsaWNhdGlvbiB0byBlbmFibGUgcGVyc2lzdGVuY2Ugb2YgY29sdW1uIHJlc2l6ZSBzdGF0ZS5cbiAqL1xuQEluamVjdGFibGUoKVxuZXhwb3J0IGFic3RyYWN0IGNsYXNzIENvbHVtblNpemVTdG9yZSB7XG4gIC8qKiBSZXR1cm5zIHRoZSBwZXJzaXN0ZWQgc2l6ZSBvZiB0aGUgc3BlY2lmaWVkIGNvbHVtbiBpbiB0aGUgc3BlY2lmaWVkIHRhYmxlLiAqL1xuICBhYnN0cmFjdCBnZXRTaXplKHRhYmxlSWQ6IHN0cmluZywgY29sdW1uSWQ6IHN0cmluZyk6IG51bWJlcjtcblxuICAvKiogUGVyc2lzdHMgdGhlIHNpemUgb2YgdGhlIHNwZWNpZmllZCBjb2x1bW4gaW4gdGhlIHNwZWNpZmllZCB0YWJsZS4gKi9cbiAgYWJzdHJhY3Qgc2V0U2l6ZSh0YWJsZUlkOiBzdHJpbmcsIGNvbHVtbklkOiBzdHJpbmcpOiB2b2lkO1xufVxuIl19
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29sdW1uLXNpemUtc3RvcmUuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi8uLi9zcmMvY2RrLWV4cGVyaW1lbnRhbC9jb2x1bW4tcmVzaXplL2NvbHVtbi1zaXplLXN0b3JlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7Ozs7R0FNRzs7QUFFSCxPQUFPLEVBQUMsVUFBVSxFQUFDLE1BQU0sZUFBZSxDQUFDO0FBRXpDOztHQUVHO0FBRUg7SUFBQSxJQUFzQixlQUFlLEdBQXJDLE1BQXNCLGVBQWU7S0FNcEMsQ0FBQTtJQU5xQixlQUFlO1FBRHBDLFVBQVUsRUFBRTtPQUNTLGVBQWUsQ0FNcEM7SUFBRCxzQkFBQztLQUFBO1NBTnFCLGVBQWUiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEBsaWNlbnNlXG4gKiBDb3B5cmlnaHQgR29vZ2xlIExMQyBBbGwgUmlnaHRzIFJlc2VydmVkLlxuICpcbiAqIFVzZSBvZiB0aGlzIHNvdXJjZSBjb2RlIGlzIGdvdmVybmVkIGJ5IGFuIE1JVC1zdHlsZSBsaWNlbnNlIHRoYXQgY2FuIGJlXG4gKiBmb3VuZCBpbiB0aGUgTElDRU5TRSBmaWxlIGF0IGh0dHBzOi8vYW5ndWxhci5pby9saWNlbnNlXG4gKi9cblxuaW1wb3J0IHtJbmplY3RhYmxlfSBmcm9tICdAYW5ndWxhci9jb3JlJztcblxuLyoqXG4gKiBDYW4gYmUgcHJvdmlkZWQgYnkgdGhlIGhvc3QgYXBwbGljYXRpb24gdG8gZW5hYmxlIHBlcnNpc3RlbmNlIG9mIGNvbHVtbiByZXNpemUgc3RhdGUuXG4gKi9cbkBJbmplY3RhYmxlKClcbmV4cG9ydCBhYnN0cmFjdCBjbGFzcyBDb2x1bW5TaXplU3RvcmUge1xuICAvKiogUmV0dXJucyB0aGUgcGVyc2lzdGVkIHNpemUgb2YgdGhlIHNwZWNpZmllZCBjb2x1bW4gaW4gdGhlIHNwZWNpZmllZCB0YWJsZS4gKi9cbiAgYWJzdHJhY3QgZ2V0U2l6ZSh0YWJsZUlkOiBzdHJpbmcsIGNvbHVtbklkOiBzdHJpbmcpOiBudW1iZXI7XG5cbiAgLyoqIFBlcnNpc3RzIHRoZSBzaXplIG9mIHRoZSBzcGVjaWZpZWQgY29sdW1uIGluIHRoZSBzcGVjaWZpZWQgdGFibGUuICovXG4gIGFic3RyYWN0IHNldFNpemUodGFibGVJZDogc3RyaW5nLCBjb2x1bW5JZDogc3RyaW5nKTogdm9pZDtcbn1cbiJdfQ==
