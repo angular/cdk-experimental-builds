@@ -309,9 +309,9 @@
                 }
             });
         };
-        ColumnResize.decorators = [
-            { type: core.Directive }
-        ];
+        ColumnResize = __decorate([
+            core.Directive()
+        ], ColumnResize);
         return ColumnResize;
     }());
 
@@ -335,9 +335,9 @@
             /** Triggers a resize action. */
             this.triggerResize = new rxjs.Subject();
         }
-        ColumnResizeNotifierSource.decorators = [
-            { type: core.Injectable }
-        ];
+        ColumnResizeNotifierSource = __decorate([
+            core.Injectable()
+        ], ColumnResizeNotifierSource);
         return ColumnResizeNotifierSource;
     }());
     /** Service for triggering column resizes imperatively or being notified of them. */
@@ -351,13 +351,10 @@
         ColumnResizeNotifier.prototype.resize = function (columnId, size) {
             this._source.triggerResize.next({ columnId: columnId, size: size, completeImmediately: true });
         };
-        ColumnResizeNotifier.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ColumnResizeNotifier.ctorParameters = function () { return [
-            { type: ColumnResizeNotifierSource }
-        ]; };
+        ColumnResizeNotifier = __decorate([
+            core.Injectable(),
+            __metadata("design:paramtypes", [ColumnResizeNotifierSource])
+        ], ColumnResizeNotifier);
         return ColumnResizeNotifier;
     }());
 
@@ -421,13 +418,10 @@
                 }); });
             };
         };
-        HeaderRowEventDispatcher.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        HeaderRowEventDispatcher.ctorParameters = function () { return [
-            { type: core.NgZone }
-        ]; };
+        HeaderRowEventDispatcher = __decorate([
+            core.Injectable(),
+            __metadata("design:paramtypes", [core.NgZone])
+        ], HeaderRowEventDispatcher);
         return HeaderRowEventDispatcher;
     }());
 
@@ -451,9 +445,9 @@
             var tableWidth = getElementWidth(table);
             table.style.width = coercion.coerceCssPixelValue(tableWidth + delta);
         };
-        ResizeStrategy.decorators = [
-            { type: core.Injectable }
-        ];
+        ResizeStrategy = __decorate([
+            core.Injectable()
+        ], ResizeStrategy);
         return ResizeStrategy;
     }());
     /**
@@ -485,13 +479,10 @@
             var newWidth = Math.min(currentWidth, sizeInPx);
             this.applyColumnSize(_, columnHeader, newWidth, currentWidth);
         };
-        TableLayoutFixedResizeStrategy.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        TableLayoutFixedResizeStrategy.ctorParameters = function () { return [
-            { type: ColumnResize }
-        ]; };
+        TableLayoutFixedResizeStrategy = __decorate([
+            core.Injectable(),
+            __metadata("design:paramtypes", [ColumnResize])
+        ], TableLayoutFixedResizeStrategy);
         return TableLayoutFixedResizeStrategy;
     }(ResizeStrategy));
     /**
@@ -594,14 +585,11 @@
             var body = propertyKeys.map(function (key) { return key + ":" + properties.get(key); }).join(';');
             this._getStyleSheet().insertRule(selector + " {" + body + "}", index);
         };
-        CdkFlexTableResizeStrategy.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        CdkFlexTableResizeStrategy.ctorParameters = function () { return [
-            { type: ColumnResize },
-            { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
-        ]; };
+        CdkFlexTableResizeStrategy = __decorate([
+            core.Injectable(),
+            __param(1, core.Inject(common.DOCUMENT)),
+            __metadata("design:paramtypes", [ColumnResize, Object])
+        ], CdkFlexTableResizeStrategy);
         return CdkFlexTableResizeStrategy;
     }(ResizeStrategy));
     /** Converts CSS pixel values to numbers, eg "123px" to 123. Returns NaN for non pixel values. */
@@ -671,22 +659,21 @@
             _this.notifier = notifier;
             return _this;
         }
-        CdkColumnResize.decorators = [
-            { type: core.Directive, args: [{
-                        selector: 'table[cdk-table][columnResize]',
-                        providers: __spread(TABLE_PROVIDERS, [
-                            { provide: ColumnResize, useExisting: CdkColumnResize },
-                        ]),
-                    },] }
-        ];
-        /** @nocollapse */
-        CdkColumnResize.ctorParameters = function () { return [
-            { type: ColumnResizeNotifier },
-            { type: core.ElementRef },
-            { type: HeaderRowEventDispatcher },
-            { type: core.NgZone },
-            { type: ColumnResizeNotifierSource }
-        ]; };
+        CdkColumnResize_1 = CdkColumnResize;
+        var CdkColumnResize_1;
+        CdkColumnResize = CdkColumnResize_1 = __decorate([
+            core.Directive({
+                selector: 'table[cdk-table][columnResize]',
+                providers: __spread(TABLE_PROVIDERS, [
+                    { provide: ColumnResize, useExisting: CdkColumnResize_1 },
+                ]),
+            }),
+            __metadata("design:paramtypes", [ColumnResizeNotifier,
+                core.ElementRef,
+                HeaderRowEventDispatcher,
+                core.NgZone,
+                ColumnResizeNotifierSource])
+        ], CdkColumnResize);
         return CdkColumnResize;
     }(ColumnResize));
 
@@ -712,22 +699,21 @@
             _this.notifier = notifier;
             return _this;
         }
-        CdkColumnResizeFlex.decorators = [
-            { type: core.Directive, args: [{
-                        selector: 'cdk-table[columnResize]',
-                        providers: __spread(FLEX_PROVIDERS, [
-                            { provide: ColumnResize, useExisting: CdkColumnResizeFlex },
-                        ]),
-                    },] }
-        ];
-        /** @nocollapse */
-        CdkColumnResizeFlex.ctorParameters = function () { return [
-            { type: ColumnResizeNotifier },
-            { type: core.ElementRef },
-            { type: HeaderRowEventDispatcher },
-            { type: core.NgZone },
-            { type: ColumnResizeNotifierSource }
-        ]; };
+        CdkColumnResizeFlex_1 = CdkColumnResizeFlex;
+        var CdkColumnResizeFlex_1;
+        CdkColumnResizeFlex = CdkColumnResizeFlex_1 = __decorate([
+            core.Directive({
+                selector: 'cdk-table[columnResize]',
+                providers: __spread(FLEX_PROVIDERS, [
+                    { provide: ColumnResize, useExisting: CdkColumnResizeFlex_1 },
+                ]),
+            }),
+            __metadata("design:paramtypes", [ColumnResizeNotifier,
+                core.ElementRef,
+                HeaderRowEventDispatcher,
+                core.NgZone,
+                ColumnResizeNotifierSource])
+        ], CdkColumnResizeFlex);
         return CdkColumnResizeFlex;
     }(ColumnResize));
 
@@ -753,22 +739,21 @@
             _this.notifier = notifier;
             return _this;
         }
-        CdkDefaultEnabledColumnResize.decorators = [
-            { type: core.Directive, args: [{
-                        selector: 'table[cdk-table]',
-                        providers: __spread(TABLE_PROVIDERS, [
-                            { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResize },
-                        ]),
-                    },] }
-        ];
-        /** @nocollapse */
-        CdkDefaultEnabledColumnResize.ctorParameters = function () { return [
-            { type: ColumnResizeNotifier },
-            { type: core.ElementRef },
-            { type: HeaderRowEventDispatcher },
-            { type: core.NgZone },
-            { type: ColumnResizeNotifierSource }
-        ]; };
+        CdkDefaultEnabledColumnResize_1 = CdkDefaultEnabledColumnResize;
+        var CdkDefaultEnabledColumnResize_1;
+        CdkDefaultEnabledColumnResize = CdkDefaultEnabledColumnResize_1 = __decorate([
+            core.Directive({
+                selector: 'table[cdk-table]',
+                providers: __spread(TABLE_PROVIDERS, [
+                    { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResize_1 },
+                ]),
+            }),
+            __metadata("design:paramtypes", [ColumnResizeNotifier,
+                core.ElementRef,
+                HeaderRowEventDispatcher,
+                core.NgZone,
+                ColumnResizeNotifierSource])
+        ], CdkDefaultEnabledColumnResize);
         return CdkDefaultEnabledColumnResize;
     }(ColumnResize));
 
@@ -794,22 +779,21 @@
             _this.notifier = notifier;
             return _this;
         }
-        CdkDefaultEnabledColumnResizeFlex.decorators = [
-            { type: core.Directive, args: [{
-                        selector: 'cdk-table',
-                        providers: __spread(FLEX_PROVIDERS, [
-                            { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResizeFlex },
-                        ]),
-                    },] }
-        ];
-        /** @nocollapse */
-        CdkDefaultEnabledColumnResizeFlex.ctorParameters = function () { return [
-            { type: ColumnResizeNotifier },
-            { type: core.ElementRef },
-            { type: HeaderRowEventDispatcher },
-            { type: core.NgZone },
-            { type: ColumnResizeNotifierSource }
-        ]; };
+        CdkDefaultEnabledColumnResizeFlex_1 = CdkDefaultEnabledColumnResizeFlex;
+        var CdkDefaultEnabledColumnResizeFlex_1;
+        CdkDefaultEnabledColumnResizeFlex = CdkDefaultEnabledColumnResizeFlex_1 = __decorate([
+            core.Directive({
+                selector: 'cdk-table',
+                providers: __spread(FLEX_PROVIDERS, [
+                    { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResizeFlex_1 },
+                ]),
+            }),
+            __metadata("design:paramtypes", [ColumnResizeNotifier,
+                core.ElementRef,
+                HeaderRowEventDispatcher,
+                core.NgZone,
+                ColumnResizeNotifierSource])
+        ], CdkDefaultEnabledColumnResizeFlex);
         return CdkDefaultEnabledColumnResizeFlex;
     }(ColumnResize));
 
@@ -827,12 +811,12 @@
     var CdkColumnResizeDefaultEnabledModule = /** @class */ (function () {
         function CdkColumnResizeDefaultEnabledModule() {
         }
-        CdkColumnResizeDefaultEnabledModule.decorators = [
-            { type: core.NgModule, args: [{
-                        declarations: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
-                        exports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
-                    },] }
-        ];
+        CdkColumnResizeDefaultEnabledModule = __decorate([
+            core.NgModule({
+                declarations: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
+                exports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
+            })
+        ], CdkColumnResizeDefaultEnabledModule);
         return CdkColumnResizeDefaultEnabledModule;
     }());
     /**
@@ -842,12 +826,12 @@
     var CdkColumnResizeModule = /** @class */ (function () {
         function CdkColumnResizeModule() {
         }
-        CdkColumnResizeModule.decorators = [
-            { type: core.NgModule, args: [{
-                        declarations: [CdkColumnResize, CdkColumnResizeFlex],
-                        exports: [CdkColumnResize, CdkColumnResizeFlex],
-                    },] }
-        ];
+        CdkColumnResizeModule = __decorate([
+            core.NgModule({
+                declarations: [CdkColumnResize, CdkColumnResizeFlex],
+                exports: [CdkColumnResize, CdkColumnResizeFlex],
+            })
+        ], CdkColumnResizeModule);
         return CdkColumnResizeModule;
     }());
 
@@ -864,9 +848,9 @@
     var ColumnSizeStore = /** @class */ (function () {
         function ColumnSizeStore() {
         }
-        ColumnSizeStore.decorators = [
-            { type: core.Injectable }
-        ];
+        ColumnSizeStore = __decorate([
+            core.Injectable()
+        ], ColumnSizeStore);
         return ColumnSizeStore;
     }());
 
@@ -1062,9 +1046,9 @@
             // TODO: Apply correct aria role (probably slider) after a11y spec questions resolved.
             this.elementRef.nativeElement.appendChild(this.inlineHandle);
         };
-        Resizable.decorators = [
-            { type: core.Directive }
-        ];
+        Resizable = __decorate([
+            core.Directive()
+        ], Resizable);
         return Resizable;
     }());
 
@@ -1198,9 +1182,9 @@
                 }
             });
         };
-        ResizeOverlayHandle.decorators = [
-            { type: core.Directive }
-        ];
+        ResizeOverlayHandle = __decorate([
+            core.Directive()
+        ], ResizeOverlayHandle);
         return ResizeOverlayHandle;
     }());
 
