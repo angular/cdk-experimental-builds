@@ -1,7 +1,6 @@
-import { __decorate, __metadata } from 'tslib';
 import { coerceNumberProperty } from '@angular/cdk/coercion';
 import { VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
-import { Input, Directive, forwardRef, NgModule } from '@angular/core';
+import { Directive, forwardRef, Input, NgModule } from '@angular/core';
 import { Observable } from 'rxjs';
 
 /**
@@ -360,8 +359,7 @@ function _autoSizeVirtualScrollStrategyFactory(autoSizeDir) {
 }
 /** A virtual scroll strategy that supports unknown or dynamic size items. */
 let CdkAutoSizeVirtualScroll = /** @class */ (() => {
-    var CdkAutoSizeVirtualScroll_1;
-    let CdkAutoSizeVirtualScroll = CdkAutoSizeVirtualScroll_1 = class CdkAutoSizeVirtualScroll {
+    class CdkAutoSizeVirtualScroll {
         constructor() {
             this._minBufferPx = 100;
             this._maxBufferPx = 200;
@@ -385,27 +383,21 @@ let CdkAutoSizeVirtualScroll = /** @class */ (() => {
         ngOnChanges() {
             this._scrollStrategy.updateBufferSize(this.minBufferPx, this.maxBufferPx);
         }
+    }
+    CdkAutoSizeVirtualScroll.decorators = [
+        { type: Directive, args: [{
+                    selector: 'cdk-virtual-scroll-viewport[autosize]',
+                    providers: [{
+                            provide: VIRTUAL_SCROLL_STRATEGY,
+                            useFactory: _autoSizeVirtualScrollStrategyFactory,
+                            deps: [forwardRef(() => CdkAutoSizeVirtualScroll)],
+                        }],
+                },] }
+    ];
+    CdkAutoSizeVirtualScroll.propDecorators = {
+        minBufferPx: [{ type: Input }],
+        maxBufferPx: [{ type: Input }]
     };
-    __decorate([
-        Input(),
-        __metadata("design:type", Number),
-        __metadata("design:paramtypes", [Number])
-    ], CdkAutoSizeVirtualScroll.prototype, "minBufferPx", null);
-    __decorate([
-        Input(),
-        __metadata("design:type", Number),
-        __metadata("design:paramtypes", [Number])
-    ], CdkAutoSizeVirtualScroll.prototype, "maxBufferPx", null);
-    CdkAutoSizeVirtualScroll = CdkAutoSizeVirtualScroll_1 = __decorate([
-        Directive({
-            selector: 'cdk-virtual-scroll-viewport[autosize]',
-            providers: [{
-                    provide: VIRTUAL_SCROLL_STRATEGY,
-                    useFactory: _autoSizeVirtualScrollStrategyFactory,
-                    deps: [forwardRef(() => CdkAutoSizeVirtualScroll_1)],
-                }],
-        })
-    ], CdkAutoSizeVirtualScroll);
     return CdkAutoSizeVirtualScroll;
 })();
 
@@ -417,14 +409,14 @@ let CdkAutoSizeVirtualScroll = /** @class */ (() => {
  * found in the LICENSE file at https://angular.io/license
  */
 let ScrollingModule = /** @class */ (() => {
-    let ScrollingModule = class ScrollingModule {
-    };
-    ScrollingModule = __decorate([
-        NgModule({
-            exports: [CdkAutoSizeVirtualScroll],
-            declarations: [CdkAutoSizeVirtualScroll],
-        })
-    ], ScrollingModule);
+    class ScrollingModule {
+    }
+    ScrollingModule.decorators = [
+        { type: NgModule, args: [{
+                    exports: [CdkAutoSizeVirtualScroll],
+                    declarations: [CdkAutoSizeVirtualScroll],
+                },] }
+    ];
     return ScrollingModule;
 })();
 

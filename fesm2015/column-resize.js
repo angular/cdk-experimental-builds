@@ -1,4 +1,3 @@
-import { __decorate, __metadata, __param } from 'tslib';
 import { Directive, Injectable, NgZone, Inject, ElementRef, NgModule } from '@angular/core';
 import { ReplaySubject, fromEvent, merge, Subject, combineLatest, Observable } from 'rxjs';
 import { map, takeUntil, filter, mapTo, take, startWith, pairwise, distinctUntilChanged, share, skip } from 'rxjs/operators';
@@ -36,7 +35,7 @@ let nextId = 0;
  * provide common events and services for column resizing.
  */
 let ColumnResize = /** @class */ (() => {
-    let ColumnResize = class ColumnResize {
+    class ColumnResize {
         constructor() {
             this.destroyed = new ReplaySubject();
             /** Unique ID for this table instance. */
@@ -83,10 +82,10 @@ let ColumnResize = /** @class */ (() => {
                 }
             });
         }
-    };
-    ColumnResize = __decorate([
-        Directive()
-    ], ColumnResize);
+    }
+    ColumnResize.decorators = [
+        { type: Directive }
+    ];
     return ColumnResize;
 })();
 
@@ -102,7 +101,7 @@ let ColumnResize = /** @class */ (() => {
  * @docs-private
  */
 let ColumnResizeNotifierSource = /** @class */ (() => {
-    let ColumnResizeNotifierSource = class ColumnResizeNotifierSource {
+    class ColumnResizeNotifierSource {
         constructor() {
             /** Emits when an in-progress resize is canceled. */
             this.resizeCanceled = new Subject();
@@ -111,15 +110,15 @@ let ColumnResizeNotifierSource = /** @class */ (() => {
             /** Triggers a resize action. */
             this.triggerResize = new Subject();
         }
-    };
-    ColumnResizeNotifierSource = __decorate([
-        Injectable()
-    ], ColumnResizeNotifierSource);
+    }
+    ColumnResizeNotifierSource.decorators = [
+        { type: Injectable }
+    ];
     return ColumnResizeNotifierSource;
 })();
 /** Service for triggering column resizes imperatively or being notified of them. */
 let ColumnResizeNotifier = /** @class */ (() => {
-    let ColumnResizeNotifier = class ColumnResizeNotifier {
+    class ColumnResizeNotifier {
         constructor(_source) {
             this._source = _source;
             /** Emits whenever a column is resized. */
@@ -129,11 +128,14 @@ let ColumnResizeNotifier = /** @class */ (() => {
         resize(columnId, size) {
             this._source.triggerResize.next({ columnId, size, completeImmediately: true });
         }
-    };
-    ColumnResizeNotifier = __decorate([
-        Injectable(),
-        __metadata("design:paramtypes", [ColumnResizeNotifierSource])
-    ], ColumnResizeNotifier);
+    }
+    ColumnResizeNotifier.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    ColumnResizeNotifier.ctorParameters = () => [
+        { type: ColumnResizeNotifierSource }
+    ];
     return ColumnResizeNotifier;
 })();
 
@@ -146,7 +148,7 @@ let ColumnResizeNotifier = /** @class */ (() => {
  */
 /** Coordinates events between the column resize directives. */
 let HeaderRowEventDispatcher = /** @class */ (() => {
-    let HeaderRowEventDispatcher = class HeaderRowEventDispatcher {
+    class HeaderRowEventDispatcher {
         constructor(_ngZone) {
             this._ngZone = _ngZone;
             /**
@@ -192,11 +194,14 @@ let HeaderRowEventDispatcher = /** @class */ (() => {
                 complete: () => observer.complete()
             }));
         }
-    };
-    HeaderRowEventDispatcher = __decorate([
-        Injectable(),
-        __metadata("design:paramtypes", [NgZone])
-    ], HeaderRowEventDispatcher);
+    }
+    HeaderRowEventDispatcher.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    HeaderRowEventDispatcher.ctorParameters = () => [
+        { type: NgZone }
+    ];
     return HeaderRowEventDispatcher;
 })();
 
@@ -212,17 +217,17 @@ let HeaderRowEventDispatcher = /** @class */ (() => {
  * The details of how resizing works for tables for flex mat-tables are quite different.
  */
 let ResizeStrategy = /** @class */ (() => {
-    let ResizeStrategy = class ResizeStrategy {
+    class ResizeStrategy {
         /** Adjusts the width of the table element by the specified delta. */
         updateTableWidth(delta) {
             const table = this.columnResize.elementRef.nativeElement;
             const tableWidth = getElementWidth(table);
             table.style.width = coerceCssPixelValue(tableWidth + delta);
         }
-    };
-    ResizeStrategy = __decorate([
-        Injectable()
-    ], ResizeStrategy);
+    }
+    ResizeStrategy.decorators = [
+        { type: Injectable }
+    ];
     return ResizeStrategy;
 })();
 /**
@@ -233,7 +238,7 @@ let ResizeStrategy = /** @class */ (() => {
  *   Updating all cell nodes
  */
 let TableLayoutFixedResizeStrategy = /** @class */ (() => {
-    let TableLayoutFixedResizeStrategy = class TableLayoutFixedResizeStrategy extends ResizeStrategy {
+    class TableLayoutFixedResizeStrategy extends ResizeStrategy {
         constructor(columnResize) {
             super();
             this.columnResize = columnResize;
@@ -253,11 +258,14 @@ let TableLayoutFixedResizeStrategy = /** @class */ (() => {
             const newWidth = Math.min(currentWidth, sizeInPx);
             this.applyColumnSize(_, columnHeader, newWidth, currentWidth);
         }
-    };
-    TableLayoutFixedResizeStrategy = __decorate([
-        Injectable(),
-        __metadata("design:paramtypes", [ColumnResize])
-    ], TableLayoutFixedResizeStrategy);
+    }
+    TableLayoutFixedResizeStrategy.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    TableLayoutFixedResizeStrategy.ctorParameters = () => [
+        { type: ColumnResize }
+    ];
     return TableLayoutFixedResizeStrategy;
 })();
 /**
@@ -267,7 +275,7 @@ let TableLayoutFixedResizeStrategy = /** @class */ (() => {
  *   Updating all mat-cell nodes
  */
 let CdkFlexTableResizeStrategy = /** @class */ (() => {
-    let CdkFlexTableResizeStrategy = class CdkFlexTableResizeStrategy extends ResizeStrategy {
+    class CdkFlexTableResizeStrategy extends ResizeStrategy {
         constructor(columnResize, document) {
             super();
             this.columnResize = columnResize;
@@ -358,12 +366,15 @@ let CdkFlexTableResizeStrategy = /** @class */ (() => {
             const body = propertyKeys.map(key => `${key}:${properties.get(key)}`).join(';');
             this._getStyleSheet().insertRule(`${selector} {${body}}`, index);
         }
-    };
-    CdkFlexTableResizeStrategy = __decorate([
-        Injectable(),
-        __param(1, Inject(DOCUMENT)),
-        __metadata("design:paramtypes", [ColumnResize, Object])
-    ], CdkFlexTableResizeStrategy);
+    }
+    CdkFlexTableResizeStrategy.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    CdkFlexTableResizeStrategy.ctorParameters = () => [
+        { type: ColumnResize },
+        { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
+    ];
     return CdkFlexTableResizeStrategy;
 })();
 /** Converts CSS pixel values to numbers, eg "123px" to 123. Returns NaN for non pixel values. */
@@ -424,8 +435,7 @@ const FLEX_PROVIDERS = [...PROVIDERS, FLEX_RESIZE_STRATEGY_PROVIDER];
  * Individual columns must be annotated specifically.
  */
 let CdkColumnResize = /** @class */ (() => {
-    var CdkColumnResize_1;
-    let CdkColumnResize = CdkColumnResize_1 = class CdkColumnResize extends ColumnResize {
+    class CdkColumnResize extends ColumnResize {
         constructor(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
             super();
             this.columnResizeNotifier = columnResizeNotifier;
@@ -434,21 +444,24 @@ let CdkColumnResize = /** @class */ (() => {
             this.ngZone = ngZone;
             this.notifier = notifier;
         }
-    };
-    CdkColumnResize = CdkColumnResize_1 = __decorate([
-        Directive({
-            selector: 'table[cdk-table][columnResize]',
-            providers: [
-                ...TABLE_PROVIDERS,
-                { provide: ColumnResize, useExisting: CdkColumnResize_1 },
-            ],
-        }),
-        __metadata("design:paramtypes", [ColumnResizeNotifier,
-            ElementRef,
-            HeaderRowEventDispatcher,
-            NgZone,
-            ColumnResizeNotifierSource])
-    ], CdkColumnResize);
+    }
+    CdkColumnResize.decorators = [
+        { type: Directive, args: [{
+                    selector: 'table[cdk-table][columnResize]',
+                    providers: [
+                        ...TABLE_PROVIDERS,
+                        { provide: ColumnResize, useExisting: CdkColumnResize },
+                    ],
+                },] }
+    ];
+    /** @nocollapse */
+    CdkColumnResize.ctorParameters = () => [
+        { type: ColumnResizeNotifier },
+        { type: ElementRef },
+        { type: HeaderRowEventDispatcher },
+        { type: NgZone },
+        { type: ColumnResizeNotifierSource }
+    ];
     return CdkColumnResize;
 })();
 
@@ -464,8 +477,7 @@ let CdkColumnResize = /** @class */ (() => {
  * Individual columns must be annotated specifically.
  */
 let CdkColumnResizeFlex = /** @class */ (() => {
-    var CdkColumnResizeFlex_1;
-    let CdkColumnResizeFlex = CdkColumnResizeFlex_1 = class CdkColumnResizeFlex extends ColumnResize {
+    class CdkColumnResizeFlex extends ColumnResize {
         constructor(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
             super();
             this.columnResizeNotifier = columnResizeNotifier;
@@ -474,21 +486,24 @@ let CdkColumnResizeFlex = /** @class */ (() => {
             this.ngZone = ngZone;
             this.notifier = notifier;
         }
-    };
-    CdkColumnResizeFlex = CdkColumnResizeFlex_1 = __decorate([
-        Directive({
-            selector: 'cdk-table[columnResize]',
-            providers: [
-                ...FLEX_PROVIDERS,
-                { provide: ColumnResize, useExisting: CdkColumnResizeFlex_1 },
-            ],
-        }),
-        __metadata("design:paramtypes", [ColumnResizeNotifier,
-            ElementRef,
-            HeaderRowEventDispatcher,
-            NgZone,
-            ColumnResizeNotifierSource])
-    ], CdkColumnResizeFlex);
+    }
+    CdkColumnResizeFlex.decorators = [
+        { type: Directive, args: [{
+                    selector: 'cdk-table[columnResize]',
+                    providers: [
+                        ...FLEX_PROVIDERS,
+                        { provide: ColumnResize, useExisting: CdkColumnResizeFlex },
+                    ],
+                },] }
+    ];
+    /** @nocollapse */
+    CdkColumnResizeFlex.ctorParameters = () => [
+        { type: ColumnResizeNotifier },
+        { type: ElementRef },
+        { type: HeaderRowEventDispatcher },
+        { type: NgZone },
+        { type: ColumnResizeNotifierSource }
+    ];
     return CdkColumnResizeFlex;
 })();
 
@@ -504,8 +519,7 @@ let CdkColumnResizeFlex = /** @class */ (() => {
  * Individual columns will be resizable unless opted out.
  */
 let CdkDefaultEnabledColumnResize = /** @class */ (() => {
-    var CdkDefaultEnabledColumnResize_1;
-    let CdkDefaultEnabledColumnResize = CdkDefaultEnabledColumnResize_1 = class CdkDefaultEnabledColumnResize extends ColumnResize {
+    class CdkDefaultEnabledColumnResize extends ColumnResize {
         constructor(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
             super();
             this.columnResizeNotifier = columnResizeNotifier;
@@ -514,21 +528,24 @@ let CdkDefaultEnabledColumnResize = /** @class */ (() => {
             this.ngZone = ngZone;
             this.notifier = notifier;
         }
-    };
-    CdkDefaultEnabledColumnResize = CdkDefaultEnabledColumnResize_1 = __decorate([
-        Directive({
-            selector: 'table[cdk-table]',
-            providers: [
-                ...TABLE_PROVIDERS,
-                { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResize_1 },
-            ],
-        }),
-        __metadata("design:paramtypes", [ColumnResizeNotifier,
-            ElementRef,
-            HeaderRowEventDispatcher,
-            NgZone,
-            ColumnResizeNotifierSource])
-    ], CdkDefaultEnabledColumnResize);
+    }
+    CdkDefaultEnabledColumnResize.decorators = [
+        { type: Directive, args: [{
+                    selector: 'table[cdk-table]',
+                    providers: [
+                        ...TABLE_PROVIDERS,
+                        { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResize },
+                    ],
+                },] }
+    ];
+    /** @nocollapse */
+    CdkDefaultEnabledColumnResize.ctorParameters = () => [
+        { type: ColumnResizeNotifier },
+        { type: ElementRef },
+        { type: HeaderRowEventDispatcher },
+        { type: NgZone },
+        { type: ColumnResizeNotifierSource }
+    ];
     return CdkDefaultEnabledColumnResize;
 })();
 
@@ -544,8 +561,7 @@ let CdkDefaultEnabledColumnResize = /** @class */ (() => {
  * Individual columns will be resizable unless opted out.
  */
 let CdkDefaultEnabledColumnResizeFlex = /** @class */ (() => {
-    var CdkDefaultEnabledColumnResizeFlex_1;
-    let CdkDefaultEnabledColumnResizeFlex = CdkDefaultEnabledColumnResizeFlex_1 = class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
+    class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
         constructor(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
             super();
             this.columnResizeNotifier = columnResizeNotifier;
@@ -554,21 +570,24 @@ let CdkDefaultEnabledColumnResizeFlex = /** @class */ (() => {
             this.ngZone = ngZone;
             this.notifier = notifier;
         }
-    };
-    CdkDefaultEnabledColumnResizeFlex = CdkDefaultEnabledColumnResizeFlex_1 = __decorate([
-        Directive({
-            selector: 'cdk-table',
-            providers: [
-                ...FLEX_PROVIDERS,
-                { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResizeFlex_1 },
-            ],
-        }),
-        __metadata("design:paramtypes", [ColumnResizeNotifier,
-            ElementRef,
-            HeaderRowEventDispatcher,
-            NgZone,
-            ColumnResizeNotifierSource])
-    ], CdkDefaultEnabledColumnResizeFlex);
+    }
+    CdkDefaultEnabledColumnResizeFlex.decorators = [
+        { type: Directive, args: [{
+                    selector: 'cdk-table',
+                    providers: [
+                        ...FLEX_PROVIDERS,
+                        { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResizeFlex },
+                    ],
+                },] }
+    ];
+    /** @nocollapse */
+    CdkDefaultEnabledColumnResizeFlex.ctorParameters = () => [
+        { type: ColumnResizeNotifier },
+        { type: ElementRef },
+        { type: HeaderRowEventDispatcher },
+        { type: NgZone },
+        { type: ColumnResizeNotifierSource }
+    ];
     return CdkDefaultEnabledColumnResizeFlex;
 })();
 
@@ -584,14 +603,14 @@ let CdkDefaultEnabledColumnResizeFlex = /** @class */ (() => {
  * When using this module, columns are resizable by default.
  */
 let CdkColumnResizeDefaultEnabledModule = /** @class */ (() => {
-    let CdkColumnResizeDefaultEnabledModule = class CdkColumnResizeDefaultEnabledModule {
-    };
-    CdkColumnResizeDefaultEnabledModule = __decorate([
-        NgModule({
-            declarations: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
-            exports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
-        })
-    ], CdkColumnResizeDefaultEnabledModule);
+    class CdkColumnResizeDefaultEnabledModule {
+    }
+    CdkColumnResizeDefaultEnabledModule.decorators = [
+        { type: NgModule, args: [{
+                    declarations: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
+                    exports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
+                },] }
+    ];
     return CdkColumnResizeDefaultEnabledModule;
 })();
 /**
@@ -599,14 +618,14 @@ let CdkColumnResizeDefaultEnabledModule = /** @class */ (() => {
  * When using this module, columns are not resizable by default.
  */
 let CdkColumnResizeModule = /** @class */ (() => {
-    let CdkColumnResizeModule = class CdkColumnResizeModule {
-    };
-    CdkColumnResizeModule = __decorate([
-        NgModule({
-            declarations: [CdkColumnResize, CdkColumnResizeFlex],
-            exports: [CdkColumnResize, CdkColumnResizeFlex],
-        })
-    ], CdkColumnResizeModule);
+    class CdkColumnResizeModule {
+    }
+    CdkColumnResizeModule.decorators = [
+        { type: NgModule, args: [{
+                    declarations: [CdkColumnResize, CdkColumnResizeFlex],
+                    exports: [CdkColumnResize, CdkColumnResizeFlex],
+                },] }
+    ];
     return CdkColumnResizeModule;
 })();
 
@@ -621,11 +640,11 @@ let CdkColumnResizeModule = /** @class */ (() => {
  * Can be provided by the host application to enable persistence of column resize state.
  */
 let ColumnSizeStore = /** @class */ (() => {
-    let ColumnSizeStore = class ColumnSizeStore {
-    };
-    ColumnSizeStore = __decorate([
-        Injectable()
-    ], ColumnSizeStore);
+    class ColumnSizeStore {
+    }
+    ColumnSizeStore.decorators = [
+        { type: Injectable }
+    ];
     return ColumnSizeStore;
 })();
 
@@ -659,7 +678,7 @@ const OVERLAY_ACTIVE_CLASS = 'cdk-resizable-overlay-thumb-active';
  * resizable.
  */
 let Resizable = /** @class */ (() => {
-    let Resizable = class Resizable {
+    class Resizable {
         constructor() {
             this.minWidthPxInternal = 0;
             this.maxWidthPxInternal = Number.MAX_SAFE_INTEGER;
@@ -809,10 +828,10 @@ let Resizable = /** @class */ (() => {
             // TODO: Apply correct aria role (probably slider) after a11y spec questions resolved.
             this.elementRef.nativeElement.appendChild(this.inlineHandle);
         }
-    };
-    Resizable = __decorate([
-        Directive()
-    ], Resizable);
+    }
+    Resizable.decorators = [
+        { type: Directive }
+    ];
     return Resizable;
 })();
 
@@ -830,7 +849,7 @@ let Resizable = /** @class */ (() => {
  * for handling column resize mouse events and displaying any visible UI on the column edge.
  */
 let ResizeOverlayHandle = /** @class */ (() => {
-    let ResizeOverlayHandle = class ResizeOverlayHandle {
+    class ResizeOverlayHandle {
         constructor() {
             this.destroyed = new ReplaySubject();
         }
@@ -938,10 +957,10 @@ let ResizeOverlayHandle = /** @class */ (() => {
                 }
             });
         }
-    };
-    ResizeOverlayHandle = __decorate([
-        Directive()
-    ], ResizeOverlayHandle);
+    }
+    ResizeOverlayHandle.decorators = [
+        { type: Directive }
+    ];
     return ResizeOverlayHandle;
 })();
 

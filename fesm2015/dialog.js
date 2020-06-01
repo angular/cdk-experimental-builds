@@ -1,9 +1,8 @@
-import { __decorate, __metadata, __param } from 'tslib';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FocusTrapFactory, A11yModule } from '@angular/cdk/a11y';
 import { BasePortalOutlet, CdkPortalOutlet, PortalInjector, ComponentPortal, TemplatePortal, PortalModule } from '@angular/cdk/portal';
 import { DOCUMENT, Location } from '@angular/common';
-import { HostBinding, ViewChild, Component, ViewEncapsulation, ChangeDetectionStrategy, Optional, Inject, ElementRef, ChangeDetectorRef, InjectionToken, Injectable, SkipSelf, Injector, Type, NgModule } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, Optional, Inject, HostBinding, ViewChild, InjectionToken, Injectable, Injector, Type, SkipSelf, NgModule } from '@angular/core';
 import { Subject, defer, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { ESCAPE, hasModifierKey } from '@angular/cdk/keycodes';
@@ -64,7 +63,7 @@ function throwDialogContentAlreadyAttachedError() {
  * @docs-private
  */
 let CdkDialogContainer = /** @class */ (() => {
-    let CdkDialogContainer = class CdkDialogContainer extends BasePortalOutlet {
+    class CdkDialogContainer extends BasePortalOutlet {
         constructor(_elementRef, _focusTrapFactory, _changeDetectorRef, _document, 
         /** The dialog configuration. */
         _config) {
@@ -233,69 +232,53 @@ let CdkDialogContainer = /** @class */ (() => {
                 }
             }
         }
-    };
-    __decorate([
-        HostBinding('attr.aria-label'),
-        __metadata("design:type", Object),
-        __metadata("design:paramtypes", [])
-    ], CdkDialogContainer.prototype, "_ariaLabel", null);
-    __decorate([
-        HostBinding('attr.aria-describedby'),
-        __metadata("design:type", Object),
-        __metadata("design:paramtypes", [])
-    ], CdkDialogContainer.prototype, "_ariaDescribedBy", null);
-    __decorate([
-        HostBinding('attr.role'),
-        __metadata("design:type", Object),
-        __metadata("design:paramtypes", [])
-    ], CdkDialogContainer.prototype, "_role", null);
-    __decorate([
-        HostBinding('attr.aria-modal'),
-        __metadata("design:type", Boolean)
-    ], CdkDialogContainer.prototype, "_ariaModal", void 0);
-    __decorate([
-        HostBinding('attr.tabindex'),
-        __metadata("design:type", Object),
-        __metadata("design:paramtypes", [])
-    ], CdkDialogContainer.prototype, "_tabindex", null);
-    __decorate([
-        ViewChild(CdkPortalOutlet, { static: true }),
-        __metadata("design:type", CdkPortalOutlet)
-    ], CdkDialogContainer.prototype, "_portalHost", void 0);
-    CdkDialogContainer = __decorate([
-        Component({
-            selector: 'cdk-dialog-container',
-            template: "<ng-template cdkPortalOutlet></ng-template>\n",
-            encapsulation: ViewEncapsulation.None,
-            // Using OnPush for dialogs caused some G3 sync issues. Disabled until we can track them down.
-            // tslint:disable-next-line:validate-decorators
-            changeDetection: ChangeDetectionStrategy.Default,
-            animations: [
-                trigger('dialog', [
-                    state('enter', style({ opacity: 1 })),
-                    state('exit, void', style({ opacity: 0 })),
-                    transition('* => enter', animate('{{enterAnimationDuration}}')),
-                    transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
-                ])
-            ],
-            host: {
-                '[@dialog]': `{
+    }
+    CdkDialogContainer.decorators = [
+        { type: Component, args: [{
+                    selector: 'cdk-dialog-container',
+                    template: "<ng-template cdkPortalOutlet></ng-template>\n",
+                    encapsulation: ViewEncapsulation.None,
+                    // Using OnPush for dialogs caused some G3 sync issues. Disabled until we can track them down.
+                    // tslint:disable-next-line:validate-decorators
+                    changeDetection: ChangeDetectionStrategy.Default,
+                    animations: [
+                        trigger('dialog', [
+                            state('enter', style({ opacity: 1 })),
+                            state('exit, void', style({ opacity: 0 })),
+                            transition('* => enter', animate('{{enterAnimationDuration}}')),
+                            transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
+                        ])
+                    ],
+                    host: {
+                        '[@dialog]': `{
       value: _state,
       params: {
         enterAnimationDuration: _config.enterAnimationDuration,
         exitAnimationDuration: _config.exitAnimationDuration
       }
     }`,
-                '(@dialog.start)': '_onAnimationStart($event)',
-                '(@dialog.done)': '_animationDone.next($event)',
-            },
-            styles: ["cdk-dialog-container{background:#fff;border-radius:5px;display:block;padding:10px}\n"]
-        }),
-        __param(3, Optional()), __param(3, Inject(DOCUMENT)),
-        __metadata("design:paramtypes", [ElementRef,
-            FocusTrapFactory,
-            ChangeDetectorRef, Object, DialogConfig])
-    ], CdkDialogContainer);
+                        '(@dialog.start)': '_onAnimationStart($event)',
+                        '(@dialog.done)': '_animationDone.next($event)',
+                    },
+                    styles: ["cdk-dialog-container{background:#fff;border-radius:5px;display:block;padding:10px}\n"]
+                }] }
+    ];
+    /** @nocollapse */
+    CdkDialogContainer.ctorParameters = () => [
+        { type: ElementRef },
+        { type: FocusTrapFactory },
+        { type: ChangeDetectorRef },
+        { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [DOCUMENT,] }] },
+        { type: DialogConfig }
+    ];
+    CdkDialogContainer.propDecorators = {
+        _ariaLabel: [{ type: HostBinding, args: ['attr.aria-label',] }],
+        _ariaDescribedBy: [{ type: HostBinding, args: ['attr.aria-describedby',] }],
+        _role: [{ type: HostBinding, args: ['attr.role',] }],
+        _ariaModal: [{ type: HostBinding, args: ['attr.aria-modal',] }],
+        _tabindex: [{ type: HostBinding, args: ['attr.tabindex',] }],
+        _portalHost: [{ type: ViewChild, args: [CdkPortalOutlet, { static: true },] }]
+    };
     return CdkDialogContainer;
 })();
 
@@ -457,7 +440,7 @@ const MAT_DIALOG_SCROLL_STRATEGY_PROVIDER = {
  * Service to open modal dialogs.
  */
 let Dialog = /** @class */ (() => {
-    let Dialog = class Dialog {
+    class Dialog {
         constructor(_overlay, _injector, _dialogRefConstructor, 
         // TODO(crisbeto): the `any` here can be replaced
         // with the proper type once we start using Ivy.
@@ -660,18 +643,19 @@ let Dialog = /** @class */ (() => {
             const dialogConfig = this._injector.get(DIALOG_CONFIG);
             return Object.assign(Object.assign({}, new dialogConfig()), config);
         }
-    };
-    Dialog = __decorate([
-        Injectable(),
-        __param(2, Inject(DIALOG_REF)),
-        __param(3, Inject(DIALOG_SCROLL_STRATEGY)),
-        __param(4, Optional()), __param(4, SkipSelf()),
-        __param(5, Optional()),
-        __metadata("design:paramtypes", [Overlay,
-            Injector,
-            Type, Object, Dialog,
-            Location])
-    ], Dialog);
+    }
+    Dialog.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    Dialog.ctorParameters = () => [
+        { type: Overlay },
+        { type: Injector },
+        { type: Type, decorators: [{ type: Inject, args: [DIALOG_REF,] }] },
+        { type: undefined, decorators: [{ type: Inject, args: [DIALOG_SCROLL_STRATEGY,] }] },
+        { type: Dialog, decorators: [{ type: Optional }, { type: SkipSelf }] },
+        { type: Location, decorators: [{ type: Optional }] }
+    ];
     return Dialog;
 })();
 
@@ -684,34 +668,34 @@ let Dialog = /** @class */ (() => {
  */
 const ɵ0 = DialogRef, ɵ1 = CdkDialogContainer, ɵ2 = DialogConfig;
 let DialogModule = /** @class */ (() => {
-    let DialogModule = class DialogModule {
-    };
-    DialogModule = __decorate([
-        NgModule({
-            imports: [
-                OverlayModule,
-                PortalModule,
-                A11yModule,
-            ],
-            exports: [
-                // Re-export the PortalModule so that people extending the `CdkDialogContainer`
-                // don't have to remember to import it or be faced with an unhelpful error.
-                PortalModule,
-                CdkDialogContainer,
-            ],
-            declarations: [
-                CdkDialogContainer,
-            ],
-            providers: [
-                Dialog,
-                MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
-                { provide: DIALOG_REF, useValue: ɵ0 },
-                { provide: DIALOG_CONTAINER, useValue: ɵ1 },
-                { provide: DIALOG_CONFIG, useValue: ɵ2 },
-            ],
-            entryComponents: [CdkDialogContainer],
-        })
-    ], DialogModule);
+    class DialogModule {
+    }
+    DialogModule.decorators = [
+        { type: NgModule, args: [{
+                    imports: [
+                        OverlayModule,
+                        PortalModule,
+                        A11yModule,
+                    ],
+                    exports: [
+                        // Re-export the PortalModule so that people extending the `CdkDialogContainer`
+                        // don't have to remember to import it or be faced with an unhelpful error.
+                        PortalModule,
+                        CdkDialogContainer,
+                    ],
+                    declarations: [
+                        CdkDialogContainer,
+                    ],
+                    providers: [
+                        Dialog,
+                        MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
+                        { provide: DIALOG_REF, useValue: ɵ0 },
+                        { provide: DIALOG_CONTAINER, useValue: ɵ1 },
+                        { provide: DIALOG_CONFIG, useValue: ɵ2 },
+                    ],
+                    entryComponents: [CdkDialogContainer],
+                },] }
+    ];
     return DialogModule;
 })();
 

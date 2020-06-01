@@ -466,10 +466,13 @@
         EditEventDispatcher.prototype._mapAllRowsToSingleRow = function (mapper) {
             return this.allRows.pipe(operators.map(mapper), this._startWithNullDistinct);
         };
-        EditEventDispatcher = __decorate([
-            i0.Injectable(),
-            __metadata("design:paramtypes", [i0.NgZone])
-        ], EditEventDispatcher);
+        EditEventDispatcher.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        EditEventDispatcher.ctorParameters = function () { return [
+            { type: i0.NgZone }
+        ]; };
         return EditEventDispatcher;
     }());
     function computeHoverContentState(_a) {
@@ -607,16 +610,25 @@
         EditRef.prototype.reset = function (value) {
             this._form.reset(value || this._revertFormValue);
         };
-        EditRef = __decorate([
-            i0.Injectable(),
-            __param(0, i0.Self()),
-            __metadata("design:paramtypes", [forms.ControlContainer,
-                EditEventDispatcher,
-                i0.NgZone])
-        ], EditRef);
+        EditRef.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        EditRef.ctorParameters = function () { return [
+            { type: forms.ControlContainer, decorators: [{ type: i0.Self }] },
+            { type: EditEventDispatcher },
+            { type: i0.NgZone }
+        ]; };
         return EditRef;
     }());
 
+    /**
+     * @license
+     * Copyright Google LLC All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
     /**
      * Service responsible for moving cell focus around in response to keyboard events.
      * May be overridden to customize the keyboard behavior of popover edit.
@@ -678,11 +690,14 @@
             }
             event.preventDefault();
         };
+        FocusDispatcher.decorators = [
+            { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */
+        FocusDispatcher.ctorParameters = function () { return [
+            { type: i1.Directionality }
+        ]; };
         FocusDispatcher.ɵprov = i0.ɵɵdefineInjectable({ factory: function FocusDispatcher_Factory() { return new FocusDispatcher(i0.ɵɵinject(i1.Directionality)); }, token: FocusDispatcher, providedIn: "root" });
-        FocusDispatcher = __decorate([
-            i0.Injectable({ providedIn: 'root' }),
-            __metadata("design:paramtypes", [i1.Directionality])
-        ], FocusDispatcher);
         return FocusDispatcher;
     }());
 
@@ -827,37 +842,28 @@
         CdkEditControl.prototype._triggerFormSubmit = function () {
             this.elementRef.nativeElement.dispatchEvent(new Event('submit'));
         };
-        __decorate([
-            i0.HostListener('ngSubmit'),
-            __metadata("design:type", Function),
-            __metadata("design:paramtypes", []),
-            __metadata("design:returntype", void 0)
-        ], CdkEditControl.prototype, "handleFormSubmit", null);
-        __decorate([
-            i0.HostListener('document:click', ['$event']),
-            __metadata("design:type", Function),
-            __metadata("design:paramtypes", [Event]),
-            __metadata("design:returntype", void 0)
-        ], CdkEditControl.prototype, "handlePossibleClickOut", null);
-        __decorate([
-            i0.HostListener('keydown', ['$event']),
-            __metadata("design:type", Function),
-            __metadata("design:paramtypes", [KeyboardEvent]),
-            __metadata("design:returntype", void 0)
-        ], CdkEditControl.prototype, "_handleKeydown", null);
-        CdkEditControl = __decorate([
-            i0.Directive({
-                selector: 'form[cdkEditControl]',
-                inputs: [
-                    'clickOutBehavior: cdkEditControlClickOutBehavior',
-                    'preservedFormValue: cdkEditControlPreservedFormValue',
-                    'ignoreSubmitUnlessValid: cdkEditControlIgnoreSubmitUnlessValid',
-                ],
-                outputs: ['preservedFormValueChange: cdkEditControlPreservedFormValueChange'],
-                providers: [EditRef],
-            }),
-            __metadata("design:paramtypes", [i0.ElementRef, EditRef])
-        ], CdkEditControl);
+        CdkEditControl.decorators = [
+            { type: i0.Directive, args: [{
+                        selector: 'form[cdkEditControl]',
+                        inputs: [
+                            'clickOutBehavior: cdkEditControlClickOutBehavior',
+                            'preservedFormValue: cdkEditControlPreservedFormValue',
+                            'ignoreSubmitUnlessValid: cdkEditControlIgnoreSubmitUnlessValid',
+                        ],
+                        outputs: ['preservedFormValueChange: cdkEditControlPreservedFormValueChange'],
+                        providers: [EditRef],
+                    },] }
+        ];
+        /** @nocollapse */
+        CdkEditControl.ctorParameters = function () { return [
+            { type: i0.ElementRef },
+            { type: EditRef }
+        ]; };
+        CdkEditControl.propDecorators = {
+            handleFormSubmit: [{ type: i0.HostListener, args: ['ngSubmit',] }],
+            handlePossibleClickOut: [{ type: i0.HostListener, args: ['document:click', ['$event'],] }],
+            _handleKeydown: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }]
+        };
         return CdkEditControl;
     }());
     /** Reverts the form to its initial or previously submitted state on click. */
@@ -874,25 +880,22 @@
         CdkEditRevert.prototype.revertEdit = function () {
             this.editRef.reset();
         };
-        __decorate([
-            i0.Input(),
-            __metadata("design:type", String)
-        ], CdkEditRevert.prototype, "type", void 0);
-        __decorate([
-            i0.HostListener('click'),
-            __metadata("design:type", Function),
-            __metadata("design:paramtypes", []),
-            __metadata("design:returntype", void 0)
-        ], CdkEditRevert.prototype, "revertEdit", null);
-        CdkEditRevert = __decorate([
-            i0.Directive({
-                selector: 'button[cdkEditRevert]',
-                host: {
-                    'type': 'button',
-                }
-            }),
-            __metadata("design:paramtypes", [EditRef])
-        ], CdkEditRevert);
+        CdkEditRevert.decorators = [
+            { type: i0.Directive, args: [{
+                        selector: 'button[cdkEditRevert]',
+                        host: {
+                            'type': 'button',
+                        }
+                    },] }
+        ];
+        /** @nocollapse */
+        CdkEditRevert.ctorParameters = function () { return [
+            { type: EditRef }
+        ]; };
+        CdkEditRevert.propDecorators = {
+            type: [{ type: i0.Input }],
+            revertEdit: [{ type: i0.HostListener, args: ['click',] }]
+        };
         return CdkEditRevert;
     }());
     /** Closes the lens on click. */
@@ -915,19 +918,17 @@
             // will emit a fake click event instead of an enter keyboard event on buttons.
             this.editRef.close();
         };
-        __decorate([
-            i0.HostListener('click'),
-            i0.HostListener('keyup.enter'),
-            i0.HostListener('keyup.space'),
-            __metadata("design:type", Function),
-            __metadata("design:paramtypes", []),
-            __metadata("design:returntype", void 0)
-        ], CdkEditClose.prototype, "closeEdit", null);
-        CdkEditClose = __decorate([
-            i0.Directive({ selector: '[cdkEditClose]' }),
-            __metadata("design:paramtypes", [i0.ElementRef,
-                EditRef])
-        ], CdkEditClose);
+        CdkEditClose.decorators = [
+            { type: i0.Directive, args: [{ selector: '[cdkEditClose]' },] }
+        ];
+        /** @nocollapse */
+        CdkEditClose.ctorParameters = function () { return [
+            { type: i0.ElementRef },
+            { type: EditRef }
+        ]; };
+        CdkEditClose.propDecorators = {
+            closeEdit: [{ type: i0.HostListener, args: ['click',] }, { type: i0.HostListener, args: ['keyup.enter',] }, { type: i0.HostListener, args: ['keyup.space',] }]
+        };
         return CdkEditClose;
     }());
 
@@ -945,9 +946,9 @@
     var PopoverEditPositionStrategyFactory = /** @class */ (function () {
         function PopoverEditPositionStrategyFactory() {
         }
-        PopoverEditPositionStrategyFactory = __decorate([
-            i0.Injectable()
-        ], PopoverEditPositionStrategyFactory);
+        PopoverEditPositionStrategyFactory.decorators = [
+            { type: i0.Injectable }
+        ];
         return PopoverEditPositionStrategyFactory;
     }());
     /**
@@ -994,10 +995,14 @@
             }
             return { width: lastCell.getBoundingClientRect().right - firstCell.getBoundingClientRect().left };
         };
-        DefaultPopoverEditPositionStrategyFactory = __decorate([
-            i0.Injectable(),
-            __metadata("design:paramtypes", [i1.Directionality, overlay.Overlay])
-        ], DefaultPopoverEditPositionStrategyFactory);
+        DefaultPopoverEditPositionStrategyFactory.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        DefaultPopoverEditPositionStrategyFactory.ctorParameters = function () { return [
+            { type: i1.Directionality },
+            { type: overlay.Overlay }
+        ]; };
         return DefaultPopoverEditPositionStrategyFactory;
     }(PopoverEditPositionStrategyFactory));
 
@@ -1026,14 +1031,21 @@
             this.scrollDispatcher = scrollDispatcher;
             this.viewportRuler = viewportRuler;
         }
-        EditServices = __decorate([
-            i0.Injectable(),
-            __metadata("design:paramtypes", [i1.Directionality,
-                EditEventDispatcher, FocusDispatcher,
-                i1$1.FocusTrapFactory, i0.NgZone,
-                overlay.Overlay, PopoverEditPositionStrategyFactory,
-                scrolling.ScrollDispatcher, scrolling.ViewportRuler])
-        ], EditServices);
+        EditServices.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        EditServices.ctorParameters = function () { return [
+            { type: i1.Directionality },
+            { type: EditEventDispatcher },
+            { type: FocusDispatcher },
+            { type: i1$1.FocusTrapFactory },
+            { type: i0.NgZone },
+            { type: overlay.Overlay },
+            { type: PopoverEditPositionStrategyFactory },
+            { type: scrolling.ScrollDispatcher },
+            { type: scrolling.ViewportRuler }
+        ]; };
         return EditServices;
     }());
 
@@ -1079,13 +1091,16 @@
         FocusEscapeNotifierFactory.prototype.create = function (element) {
             return new FocusEscapeNotifier(element, this._checker, this._ngZone, this._document);
         };
+        FocusEscapeNotifierFactory.decorators = [
+            { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */
+        FocusEscapeNotifierFactory.ctorParameters = function () { return [
+            { type: i1$1.InteractivityChecker },
+            { type: i0.NgZone },
+            { type: undefined, decorators: [{ type: i0.Inject, args: [i2.DOCUMENT,] }] }
+        ]; };
         FocusEscapeNotifierFactory.ɵprov = i0.ɵɵdefineInjectable({ factory: function FocusEscapeNotifierFactory_Factory() { return new FocusEscapeNotifierFactory(i0.ɵɵinject(i1$1.InteractivityChecker), i0.ɵɵinject(i0.NgZone), i0.ɵɵinject(i2.DOCUMENT)); }, token: FocusEscapeNotifierFactory, providedIn: "root" });
-        FocusEscapeNotifierFactory = __decorate([
-            i0.Injectable({ providedIn: 'root' }),
-            __param(2, i0.Inject(i2.DOCUMENT)),
-            __metadata("design:paramtypes", [i1$1.InteractivityChecker,
-                i0.NgZone, Object])
-        ], FocusEscapeNotifierFactory);
         return FocusEscapeNotifierFactory;
     }());
 
@@ -1142,15 +1157,19 @@
                     .subscribe(_this.focusDispatcher.keyObserver);
             });
         };
-        CdkEditable = __decorate([
-            i0.Directive({
-                selector: 'table[editable], cdk-table[editable], mat-table[editable]',
-                providers: [EditEventDispatcher, EditServices],
-            }),
-            __metadata("design:paramtypes", [i0.ElementRef,
-                EditEventDispatcher,
-                FocusDispatcher, i0.NgZone])
-        ], CdkEditable);
+        CdkEditable.decorators = [
+            { type: i0.Directive, args: [{
+                        selector: 'table[editable], cdk-table[editable], mat-table[editable]',
+                        providers: [EditEventDispatcher, EditServices],
+                    },] }
+        ];
+        /** @nocollapse */
+        CdkEditable.ctorParameters = function () { return [
+            { type: i0.ElementRef },
+            { type: EditEventDispatcher },
+            { type: FocusDispatcher },
+            { type: i0.NgZone }
+        ]; };
         return CdkEditable;
     }());
     var POPOVER_EDIT_HOST_BINDINGS = {
@@ -1312,15 +1331,19 @@
                 this.elementRef.nativeElement.focus();
             }
         };
-        CdkPopoverEdit = __decorate([
-            i0.Directive({
-                selector: '[cdkPopoverEdit]:not([cdkPopoverEditTabOut])',
-                host: POPOVER_EDIT_HOST_BINDINGS,
-                inputs: POPOVER_EDIT_INPUTS,
-            }),
-            __metadata("design:paramtypes", [EditServices, i0.ElementRef,
-                i0.ViewContainerRef])
-        ], CdkPopoverEdit);
+        CdkPopoverEdit.decorators = [
+            { type: i0.Directive, args: [{
+                        selector: '[cdkPopoverEdit]:not([cdkPopoverEditTabOut])',
+                        host: POPOVER_EDIT_HOST_BINDINGS,
+                        inputs: POPOVER_EDIT_INPUTS,
+                    },] }
+        ];
+        /** @nocollapse */
+        CdkPopoverEdit.ctorParameters = function () { return [
+            { type: EditServices },
+            { type: i0.ElementRef },
+            { type: i0.ViewContainerRef }
+        ]; };
         return CdkPopoverEdit;
     }());
     /**
@@ -1346,15 +1369,20 @@
                 _this.closeEditOverlay();
             });
         };
-        CdkPopoverEditTabOut = __decorate([
-            i0.Directive({
-                selector: '[cdkPopoverEdit][cdkPopoverEditTabOut]',
-                host: POPOVER_EDIT_HOST_BINDINGS,
-                inputs: POPOVER_EDIT_INPUTS,
-            }),
-            __metadata("design:paramtypes", [i0.ElementRef, i0.ViewContainerRef, EditServices,
-                FocusEscapeNotifierFactory])
-        ], CdkPopoverEditTabOut);
+        CdkPopoverEditTabOut.decorators = [
+            { type: i0.Directive, args: [{
+                        selector: '[cdkPopoverEdit][cdkPopoverEditTabOut]',
+                        host: POPOVER_EDIT_HOST_BINDINGS,
+                        inputs: POPOVER_EDIT_INPUTS,
+                    },] }
+        ];
+        /** @nocollapse */
+        CdkPopoverEditTabOut.ctorParameters = function () { return [
+            { type: i0.ElementRef },
+            { type: i0.ViewContainerRef },
+            { type: EditServices },
+            { type: FocusEscapeNotifierFactory }
+        ]; };
         return CdkPopoverEditTabOut;
     }(CdkPopoverEdit));
     /**
@@ -1435,14 +1463,18 @@
                 }
             });
         };
-        CdkRowHoverContent = __decorate([
-            i0.Directive({
-                selector: '[cdkRowHoverContent]',
-            }),
-            __metadata("design:paramtypes", [EditServices, i0.ElementRef,
-                i0.TemplateRef,
-                i0.ViewContainerRef])
-        ], CdkRowHoverContent);
+        CdkRowHoverContent.decorators = [
+            { type: i0.Directive, args: [{
+                        selector: '[cdkRowHoverContent]',
+                    },] }
+        ];
+        /** @nocollapse */
+        CdkRowHoverContent.ctorParameters = function () { return [
+            { type: EditServices },
+            { type: i0.ElementRef },
+            { type: i0.TemplateRef },
+            { type: i0.ViewContainerRef }
+        ]; };
         return CdkRowHoverContent;
     }());
     /**
@@ -1467,19 +1499,19 @@
             this.editEventDispatcher.editing.next(closest(this.elementRef.nativeElement, CELL_SELECTOR));
             evt.stopPropagation();
         };
-        __decorate([
-            i0.HostListener('click', ['$event']),
-            __metadata("design:type", Function),
-            __metadata("design:paramtypes", [Event]),
-            __metadata("design:returntype", void 0)
-        ], CdkEditOpen.prototype, "openEdit", null);
-        CdkEditOpen = __decorate([
-            i0.Directive({
-                selector: '[cdkEditOpen]',
-            }),
-            __metadata("design:paramtypes", [i0.ElementRef,
-                EditEventDispatcher])
-        ], CdkEditOpen);
+        CdkEditOpen.decorators = [
+            { type: i0.Directive, args: [{
+                        selector: '[cdkEditOpen]',
+                    },] }
+        ];
+        /** @nocollapse */
+        CdkEditOpen.ctorParameters = function () { return [
+            { type: i0.ElementRef },
+            { type: EditEventDispatcher }
+        ]; };
+        CdkEditOpen.propDecorators = {
+            openEdit: [{ type: i0.HostListener, args: ['click', ['$event'],] }]
+        };
         return CdkEditOpen;
     }());
 
@@ -1503,19 +1535,19 @@
     var CdkPopoverEditModule = /** @class */ (function () {
         function CdkPopoverEditModule() {
         }
-        CdkPopoverEditModule = __decorate([
-            i0.NgModule({
-                imports: [
-                    overlay.OverlayModule,
-                ],
-                exports: EXPORTED_DECLARATIONS,
-                declarations: EXPORTED_DECLARATIONS,
-                providers: [{
-                        provide: PopoverEditPositionStrategyFactory,
-                        useClass: DefaultPopoverEditPositionStrategyFactory
-                    }],
-            })
-        ], CdkPopoverEditModule);
+        CdkPopoverEditModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [
+                            overlay.OverlayModule,
+                        ],
+                        exports: EXPORTED_DECLARATIONS,
+                        declarations: EXPORTED_DECLARATIONS,
+                        providers: [{
+                                provide: PopoverEditPositionStrategyFactory,
+                                useClass: DefaultPopoverEditPositionStrategyFactory
+                            }],
+                    },] }
+        ];
         return CdkPopoverEditModule;
     }());
 
