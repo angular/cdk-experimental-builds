@@ -236,7 +236,6 @@ let EditEventDispatcher = /** @class */ (() => {
     EditEventDispatcher.decorators = [
         { type: Injectable }
     ];
-    /** @nocollapse */
     EditEventDispatcher.ctorParameters = () => [
         { type: NgZone }
     ];
@@ -348,7 +347,6 @@ let EditRef = /** @class */ (() => {
     EditRef.decorators = [
         { type: Injectable }
     ];
-    /** @nocollapse */
     EditRef.ctorParameters = () => [
         { type: ControlContainer, decorators: [{ type: Self }] },
         { type: EditEventDispatcher },
@@ -426,14 +424,13 @@ let FocusDispatcher = /** @class */ (() => {
             event.preventDefault();
         }
     }
+    FocusDispatcher.ɵprov = ɵɵdefineInjectable({ factory: function FocusDispatcher_Factory() { return new FocusDispatcher(ɵɵinject(Directionality)); }, token: FocusDispatcher, providedIn: "root" });
     FocusDispatcher.decorators = [
         { type: Injectable, args: [{ providedIn: 'root' },] }
     ];
-    /** @nocollapse */
     FocusDispatcher.ctorParameters = () => [
         { type: Directionality }
     ];
-    FocusDispatcher.ɵprov = ɵɵdefineInjectable({ factory: function FocusDispatcher_Factory() { return new FocusDispatcher(ɵɵinject(Directionality)); }, token: FocusDispatcher, providedIn: "root" });
     return FocusDispatcher;
 })();
 
@@ -590,7 +587,6 @@ let CdkEditControl = /** @class */ (() => {
                     providers: [EditRef],
                 },] }
     ];
-    /** @nocollapse */
     CdkEditControl.ctorParameters = () => [
         { type: ElementRef },
         { type: EditRef }
@@ -626,7 +622,6 @@ let CdkEditRevert = /** @class */ (() => {
                     }
                 },] }
     ];
-    /** @nocollapse */
     CdkEditRevert.ctorParameters = () => [
         { type: EditRef }
     ];
@@ -661,7 +656,6 @@ let CdkEditClose = /** @class */ (() => {
     CdkEditClose.decorators = [
         { type: Directive, args: [{ selector: '[cdkEditClose]' },] }
     ];
-    /** @nocollapse */
     CdkEditClose.ctorParameters = () => [
         { type: ElementRef },
         { type: EditRef }
@@ -738,7 +732,6 @@ let DefaultPopoverEditPositionStrategyFactory = /** @class */ (() => {
     DefaultPopoverEditPositionStrategyFactory.decorators = [
         { type: Injectable }
     ];
-    /** @nocollapse */
     DefaultPopoverEditPositionStrategyFactory.ctorParameters = () => [
         { type: Directionality },
         { type: Overlay }
@@ -776,7 +769,6 @@ let EditServices = /** @class */ (() => {
     EditServices.decorators = [
         { type: Injectable }
     ];
-    /** @nocollapse */
     EditServices.ctorParameters = () => [
         { type: Directionality },
         { type: EditEventDispatcher },
@@ -839,16 +831,15 @@ let FocusEscapeNotifierFactory = /** @class */ (() => {
             return new FocusEscapeNotifier(element, this._checker, this._ngZone, this._document);
         }
     }
+    FocusEscapeNotifierFactory.ɵprov = ɵɵdefineInjectable({ factory: function FocusEscapeNotifierFactory_Factory() { return new FocusEscapeNotifierFactory(ɵɵinject(InteractivityChecker), ɵɵinject(NgZone), ɵɵinject(DOCUMENT)); }, token: FocusEscapeNotifierFactory, providedIn: "root" });
     FocusEscapeNotifierFactory.decorators = [
         { type: Injectable, args: [{ providedIn: 'root' },] }
     ];
-    /** @nocollapse */
     FocusEscapeNotifierFactory.ctorParameters = () => [
         { type: InteractivityChecker },
         { type: NgZone },
         { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
     ];
-    FocusEscapeNotifierFactory.ɵprov = ɵɵdefineInjectable({ factory: function FocusEscapeNotifierFactory_Factory() { return new FocusEscapeNotifierFactory(ɵɵinject(InteractivityChecker), ɵɵinject(NgZone), ɵɵinject(DOCUMENT)); }, token: FocusEscapeNotifierFactory, providedIn: "root" });
     return FocusEscapeNotifierFactory;
 })();
 
@@ -907,7 +898,6 @@ let CdkEditable = /** @class */ (() => {
                     providers: [EditEventDispatcher, EditServices],
                 },] }
     ];
-    /** @nocollapse */
     CdkEditable.ctorParameters = () => [
         { type: ElementRef },
         { type: EditEventDispatcher },
@@ -1073,7 +1063,6 @@ let CdkPopoverEdit = /** @class */ (() => {
                     inputs: POPOVER_EDIT_INPUTS,
                 },] }
     ];
-    /** @nocollapse */
     CdkPopoverEdit.ctorParameters = () => [
         { type: EditServices },
         { type: ElementRef },
@@ -1110,7 +1099,6 @@ let CdkPopoverEditTabOut = /** @class */ (() => {
                     inputs: POPOVER_EDIT_INPUTS,
                 },] }
     ];
-    /** @nocollapse */
     CdkPopoverEditTabOut.ctorParameters = () => [
         { type: ElementRef },
         { type: ViewContainerRef },
@@ -1203,7 +1191,6 @@ let CdkRowHoverContent = /** @class */ (() => {
                     selector: '[cdkRowHoverContent]',
                 },] }
     ];
-    /** @nocollapse */
     CdkRowHoverContent.ctorParameters = () => [
         { type: EditServices },
         { type: ElementRef },
@@ -1241,7 +1228,6 @@ let CdkEditOpen = /** @class */ (() => {
                     selector: '[cdkEditOpen]',
                 },] }
     ];
-    /** @nocollapse */
     CdkEditOpen.ctorParameters = () => [
         { type: ElementRef },
         { type: EditEventDispatcher }

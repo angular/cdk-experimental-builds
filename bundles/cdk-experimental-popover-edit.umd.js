@@ -469,7 +469,6 @@
         EditEventDispatcher.decorators = [
             { type: i0.Injectable }
         ];
-        /** @nocollapse */
         EditEventDispatcher.ctorParameters = function () { return [
             { type: i0.NgZone }
         ]; };
@@ -613,7 +612,6 @@
         EditRef.decorators = [
             { type: i0.Injectable }
         ];
-        /** @nocollapse */
         EditRef.ctorParameters = function () { return [
             { type: forms.ControlContainer, decorators: [{ type: i0.Self }] },
             { type: EditEventDispatcher },
@@ -690,14 +688,13 @@
             }
             event.preventDefault();
         };
+        FocusDispatcher.ɵprov = i0.ɵɵdefineInjectable({ factory: function FocusDispatcher_Factory() { return new FocusDispatcher(i0.ɵɵinject(i1.Directionality)); }, token: FocusDispatcher, providedIn: "root" });
         FocusDispatcher.decorators = [
             { type: i0.Injectable, args: [{ providedIn: 'root' },] }
         ];
-        /** @nocollapse */
         FocusDispatcher.ctorParameters = function () { return [
             { type: i1.Directionality }
         ]; };
-        FocusDispatcher.ɵprov = i0.ɵɵdefineInjectable({ factory: function FocusDispatcher_Factory() { return new FocusDispatcher(i0.ɵɵinject(i1.Directionality)); }, token: FocusDispatcher, providedIn: "root" });
         return FocusDispatcher;
     }());
 
@@ -854,7 +851,6 @@
                         providers: [EditRef],
                     },] }
         ];
-        /** @nocollapse */
         CdkEditControl.ctorParameters = function () { return [
             { type: i0.ElementRef },
             { type: EditRef }
@@ -888,7 +884,6 @@
                         }
                     },] }
         ];
-        /** @nocollapse */
         CdkEditRevert.ctorParameters = function () { return [
             { type: EditRef }
         ]; };
@@ -921,7 +916,6 @@
         CdkEditClose.decorators = [
             { type: i0.Directive, args: [{ selector: '[cdkEditClose]' },] }
         ];
-        /** @nocollapse */
         CdkEditClose.ctorParameters = function () { return [
             { type: i0.ElementRef },
             { type: EditRef }
@@ -998,7 +992,6 @@
         DefaultPopoverEditPositionStrategyFactory.decorators = [
             { type: i0.Injectable }
         ];
-        /** @nocollapse */
         DefaultPopoverEditPositionStrategyFactory.ctorParameters = function () { return [
             { type: i1.Directionality },
             { type: overlay.Overlay }
@@ -1034,7 +1027,6 @@
         EditServices.decorators = [
             { type: i0.Injectable }
         ];
-        /** @nocollapse */
         EditServices.ctorParameters = function () { return [
             { type: i1.Directionality },
             { type: EditEventDispatcher },
@@ -1091,16 +1083,15 @@
         FocusEscapeNotifierFactory.prototype.create = function (element) {
             return new FocusEscapeNotifier(element, this._checker, this._ngZone, this._document);
         };
+        FocusEscapeNotifierFactory.ɵprov = i0.ɵɵdefineInjectable({ factory: function FocusEscapeNotifierFactory_Factory() { return new FocusEscapeNotifierFactory(i0.ɵɵinject(i1$1.InteractivityChecker), i0.ɵɵinject(i0.NgZone), i0.ɵɵinject(i2.DOCUMENT)); }, token: FocusEscapeNotifierFactory, providedIn: "root" });
         FocusEscapeNotifierFactory.decorators = [
             { type: i0.Injectable, args: [{ providedIn: 'root' },] }
         ];
-        /** @nocollapse */
         FocusEscapeNotifierFactory.ctorParameters = function () { return [
             { type: i1$1.InteractivityChecker },
             { type: i0.NgZone },
             { type: undefined, decorators: [{ type: i0.Inject, args: [i2.DOCUMENT,] }] }
         ]; };
-        FocusEscapeNotifierFactory.ɵprov = i0.ɵɵdefineInjectable({ factory: function FocusEscapeNotifierFactory_Factory() { return new FocusEscapeNotifierFactory(i0.ɵɵinject(i1$1.InteractivityChecker), i0.ɵɵinject(i0.NgZone), i0.ɵɵinject(i2.DOCUMENT)); }, token: FocusEscapeNotifierFactory, providedIn: "root" });
         return FocusEscapeNotifierFactory;
     }());
 
@@ -1163,7 +1154,6 @@
                         providers: [EditEventDispatcher, EditServices],
                     },] }
         ];
-        /** @nocollapse */
         CdkEditable.ctorParameters = function () { return [
             { type: i0.ElementRef },
             { type: EditEventDispatcher },
@@ -1338,7 +1328,6 @@
                         inputs: POPOVER_EDIT_INPUTS,
                     },] }
         ];
-        /** @nocollapse */
         CdkPopoverEdit.ctorParameters = function () { return [
             { type: EditServices },
             { type: i0.ElementRef },
@@ -1376,7 +1365,6 @@
                         inputs: POPOVER_EDIT_INPUTS,
                     },] }
         ];
-        /** @nocollapse */
         CdkPopoverEditTabOut.ctorParameters = function () { return [
             { type: i0.ElementRef },
             { type: i0.ViewContainerRef },
@@ -1468,7 +1456,6 @@
                         selector: '[cdkRowHoverContent]',
                     },] }
         ];
-        /** @nocollapse */
         CdkRowHoverContent.ctorParameters = function () { return [
             { type: EditServices },
             { type: i0.ElementRef },
@@ -1504,7 +1491,6 @@
                         selector: '[cdkEditOpen]',
                     },] }
         ];
-        /** @nocollapse */
         CdkEditOpen.ctorParameters = function () { return [
             { type: i0.ElementRef },
             { type: EditEventDispatcher }

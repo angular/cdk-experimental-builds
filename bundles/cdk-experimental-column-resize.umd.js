@@ -354,7 +354,6 @@
         ColumnResizeNotifier.decorators = [
             { type: core.Injectable }
         ];
-        /** @nocollapse */
         ColumnResizeNotifier.ctorParameters = function () { return [
             { type: ColumnResizeNotifierSource }
         ]; };
@@ -424,7 +423,6 @@
         HeaderRowEventDispatcher.decorators = [
             { type: core.Injectable }
         ];
-        /** @nocollapse */
         HeaderRowEventDispatcher.ctorParameters = function () { return [
             { type: core.NgZone }
         ]; };
@@ -488,7 +486,6 @@
         TableLayoutFixedResizeStrategy.decorators = [
             { type: core.Injectable }
         ];
-        /** @nocollapse */
         TableLayoutFixedResizeStrategy.ctorParameters = function () { return [
             { type: ColumnResize }
         ]; };
@@ -597,7 +594,6 @@
         CdkFlexTableResizeStrategy.decorators = [
             { type: core.Injectable }
         ];
-        /** @nocollapse */
         CdkFlexTableResizeStrategy.ctorParameters = function () { return [
             { type: ColumnResize },
             { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
@@ -679,7 +675,6 @@
                         ]),
                     },] }
         ];
-        /** @nocollapse */
         CdkColumnResize.ctorParameters = function () { return [
             { type: ColumnResizeNotifier },
             { type: core.ElementRef },
@@ -720,7 +715,6 @@
                         ]),
                     },] }
         ];
-        /** @nocollapse */
         CdkColumnResizeFlex.ctorParameters = function () { return [
             { type: ColumnResizeNotifier },
             { type: core.ElementRef },
@@ -761,7 +755,6 @@
                         ]),
                     },] }
         ];
-        /** @nocollapse */
         CdkDefaultEnabledColumnResize.ctorParameters = function () { return [
             { type: ColumnResizeNotifier },
             { type: core.ElementRef },
@@ -802,7 +795,6 @@
                         ]),
                     },] }
         ];
-        /** @nocollapse */
         CdkDefaultEnabledColumnResizeFlex.ctorParameters = function () { return [
             { type: ColumnResizeNotifier },
             { type: core.ElementRef },

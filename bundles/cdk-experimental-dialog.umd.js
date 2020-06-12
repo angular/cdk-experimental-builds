@@ -496,9 +496,8 @@
                             '(@dialog.done)': '_animationDone.next($event)',
                         },
                         styles: ["cdk-dialog-container{background:#fff;border-radius:5px;display:block;padding:10px}\n"]
-                    }] }
+                    },] }
         ];
-        /** @nocollapse */
         CdkDialogContainer.ctorParameters = function () { return [
             { type: core.ElementRef },
             { type: a11y.FocusTrapFactory },
@@ -899,7 +898,6 @@
         Dialog.decorators = [
             { type: core.Injectable }
         ];
-        /** @nocollapse */
         Dialog.ctorParameters = function () { return [
             { type: overlay.Overlay },
             { type: core.Injector },

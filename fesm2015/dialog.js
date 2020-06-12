@@ -261,9 +261,8 @@ let CdkDialogContainer = /** @class */ (() => {
                         '(@dialog.done)': '_animationDone.next($event)',
                     },
                     styles: ["cdk-dialog-container{background:#fff;border-radius:5px;display:block;padding:10px}\n"]
-                }] }
+                },] }
     ];
-    /** @nocollapse */
     CdkDialogContainer.ctorParameters = () => [
         { type: ElementRef },
         { type: FocusTrapFactory },
@@ -647,7 +646,6 @@ let Dialog = /** @class */ (() => {
     Dialog.decorators = [
         { type: Injectable }
     ];
-    /** @nocollapse */
     Dialog.ctorParameters = () => [
         { type: Overlay },
         { type: Injector },

@@ -132,7 +132,6 @@ let ColumnResizeNotifier = /** @class */ (() => {
     ColumnResizeNotifier.decorators = [
         { type: Injectable }
     ];
-    /** @nocollapse */
     ColumnResizeNotifier.ctorParameters = () => [
         { type: ColumnResizeNotifierSource }
     ];
@@ -198,7 +197,6 @@ let HeaderRowEventDispatcher = /** @class */ (() => {
     HeaderRowEventDispatcher.decorators = [
         { type: Injectable }
     ];
-    /** @nocollapse */
     HeaderRowEventDispatcher.ctorParameters = () => [
         { type: NgZone }
     ];
@@ -262,7 +260,6 @@ let TableLayoutFixedResizeStrategy = /** @class */ (() => {
     TableLayoutFixedResizeStrategy.decorators = [
         { type: Injectable }
     ];
-    /** @nocollapse */
     TableLayoutFixedResizeStrategy.ctorParameters = () => [
         { type: ColumnResize }
     ];
@@ -370,7 +367,6 @@ let CdkFlexTableResizeStrategy = /** @class */ (() => {
     CdkFlexTableResizeStrategy.decorators = [
         { type: Injectable }
     ];
-    /** @nocollapse */
     CdkFlexTableResizeStrategy.ctorParameters = () => [
         { type: ColumnResize },
         { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
@@ -454,7 +450,6 @@ let CdkColumnResize = /** @class */ (() => {
                     ],
                 },] }
     ];
-    /** @nocollapse */
     CdkColumnResize.ctorParameters = () => [
         { type: ColumnResizeNotifier },
         { type: ElementRef },
@@ -496,7 +491,6 @@ let CdkColumnResizeFlex = /** @class */ (() => {
                     ],
                 },] }
     ];
-    /** @nocollapse */
     CdkColumnResizeFlex.ctorParameters = () => [
         { type: ColumnResizeNotifier },
         { type: ElementRef },
@@ -538,7 +532,6 @@ let CdkDefaultEnabledColumnResize = /** @class */ (() => {
                     ],
                 },] }
     ];
-    /** @nocollapse */
     CdkDefaultEnabledColumnResize.ctorParameters = () => [
         { type: ColumnResizeNotifier },
         { type: ElementRef },
@@ -580,7 +573,6 @@ let CdkDefaultEnabledColumnResizeFlex = /** @class */ (() => {
                     ],
                 },] }
     ];
-    /** @nocollapse */
     CdkDefaultEnabledColumnResizeFlex.ctorParameters = () => [
         { type: ColumnResizeNotifier },
         { type: ElementRef },
