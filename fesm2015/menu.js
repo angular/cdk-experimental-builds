@@ -1,5 +1,48 @@
-import { EventEmitter, Directive, Input, Output, NgModule } from '@angular/core';
+import { EventEmitter, Directive, Output, Input, NgModule } from '@angular/core';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { takeUntil } from 'rxjs/operators';
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * Directive which acts as a grouping container for `CdkMenuItem` instances with
+ * `role="menuitemradio"`, similar to a `role="radiogroup"` element.
+ */
+let CdkMenuGroup = /** @class */ (() => {
+    class CdkMenuGroup {
+        constructor() {
+            /** Emits the element when checkbox or radiobutton state changed  */
+            this.change = new EventEmitter();
+        }
+        /**
+         * Emits events for the clicked MenuItem
+         * @param menuItem The clicked MenuItem to handle
+         */
+        _registerTriggeredItem(menuItem) {
+            if (menuItem.role !== 'menuitem') {
+                this.change.emit(menuItem);
+            }
+        }
+    }
+    CdkMenuGroup.decorators = [
+        { type: Directive, args: [{
+                    selector: '[cdkMenuGroup]',
+                    exportAs: 'cdkMenuGroup',
+                    host: {
+                        'role': 'group',
+                    },
+                },] }
+    ];
+    CdkMenuGroup.propDecorators = {
+        change: [{ type: Output }]
+    };
+    return CdkMenuGroup;
+})();
 
 /**
  * @license
@@ -16,8 +59,9 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
  * It also acts as a RadioGroup for elements marked with role `menuitemradio`.
  */
 let CdkMenu = /** @class */ (() => {
-    class CdkMenu {
+    class CdkMenu extends CdkMenuGroup {
         constructor() {
+            super(...arguments);
             /**
              * Sets the aria-orientation attribute and determines where sub-menus will be opened.
              * Does not affect styling/layout.
@@ -32,15 +76,15 @@ let CdkMenu = /** @class */ (() => {
                     selector: '[cdkMenu]',
                     exportAs: 'cdkMenu',
                     host: {
-                        'role': 'menubar',
+                        'role': 'menu',
                         '[attr.aria-orientation]': 'orientation',
                     },
+                    providers: [{ provide: CdkMenuGroup, useExisting: CdkMenu }],
                 },] }
     ];
     CdkMenu.propDecorators = {
         orientation: [{ type: Input, args: ['cdkMenuOrientation',] }],
-        closed: [{ type: Output }],
-        change: [{ type: Output }]
+        closed: [{ type: Output }]
     };
     return CdkMenu;
 })();
@@ -59,8 +103,9 @@ let CdkMenu = /** @class */ (() => {
  *
  */
 let CdkMenuBar = /** @class */ (() => {
-    class CdkMenuBar {
+    class CdkMenuBar extends CdkMenuGroup {
         constructor() {
+            super(...arguments);
             /**
              * Sets the aria-orientation attribute and determines where sub-menus will be opened.
              * Does not affect styling/layout.
@@ -76,6 +121,7 @@ let CdkMenuBar = /** @class */ (() => {
                         'role': 'menubar',
                         '[attr.aria-orientation]': 'orientation',
                     },
+                    providers: [{ provide: CdkMenuGroup, useExisting: CdkMenuBar }],
                 },] }
     ];
     CdkMenuBar.propDecorators = {
@@ -127,12 +173,18 @@ let CdkMenuPanel = /** @class */ (() => {
  */
 let CdkMenuItem = /** @class */ (() => {
     class CdkMenuItem {
-        constructor() {
+        constructor(
+        /** reference a parent CdkMenuGroup component */
+        _menuGroup) {
+            this._menuGroup = _menuGroup;
             /** ARIA role for the menu item. */
             this.role = 'menuitem';
             this._checked = false;
+            this._disabled = false;
             /** Emits when the attached submenu is opened */
             this.opened = new EventEmitter();
+            /** Emits when the component gets destroyed */
+            this._destroyed = new EventEmitter();
         }
         /** Whether the checkbox or radiobutton is checked */
         get checked() {
@@ -141,6 +193,38 @@ let CdkMenuItem = /** @class */ (() => {
         set checked(value) {
             this._checked = coerceBooleanProperty(value);
         }
+        /**  Whether the CdkMenuItem is disabled - defaults to false */
+        get disabled() {
+            return this._disabled;
+        }
+        set disabled(value) {
+            this._disabled = coerceBooleanProperty(value);
+        }
+        /** Configure event subscriptions */
+        ngAfterContentInit() {
+            if (this.role !== 'menuitem') {
+                this._menuGroup.change
+                    .pipe(takeUntil(this._destroyed))
+                    .subscribe((button) => this._toggleCheckedState(button));
+            }
+        }
+        /**
+         * If the role is menuitemcheckbox or menuitemradio and not disabled, emits a change event
+         * on the enclosing parent MenuGroup.
+         */
+        trigger() {
+            if (this.disabled) {
+                return;
+            }
+            if (this.hasSubmenu()) {
+                // TODO(andy): open the menu
+            }
+            this._menuGroup._registerTriggeredItem(this);
+        }
+        /** Whether the menu item opens a menu */
+        hasSubmenu() {
+            return !!this._menuPanel;
+        }
         /** get the aria-checked value only if element is `menuitemradio` or `menuitemcheckbox` */
         _getAriaChecked() {
             if (this.role === 'menuitem') {
@@ -148,9 +232,20 @@ let CdkMenuItem = /** @class */ (() => {
             }
             return this.checked;
         }
-        /** Whether the menu item opens a menu */
-        hasSubmenu() {
-            return !!this._menuPanel;
+        /**
+         * Toggle the checked state of the menuitemradio or menuitemcheckbox component
+         */
+        _toggleCheckedState(selected) {
+            if (this.role === 'menuitemradio') {
+                this.checked = selected === this;
+            }
+            else if (this.role === 'menuitemcheckbox' && selected === this) {
+                this.checked = !this.checked;
+            }
+        }
+        ngOnDestroy() {
+            this._destroyed.next();
+            this._destroyed.complete();
         }
     }
     CdkMenuItem.decorators = [
@@ -161,49 +256,21 @@ let CdkMenuItem = /** @class */ (() => {
                         'type': 'button',
                         '[attr.role]': 'role',
                         '[attr.aria-checked]': '_getAriaChecked()',
+                        '[attr.aria-disabled]': 'disabled || null',
                     },
                 },] }
+    ];
+    CdkMenuItem.ctorParameters = () => [
+        { type: CdkMenuGroup }
     ];
     CdkMenuItem.propDecorators = {
         _menuPanel: [{ type: Input, args: ['cdkMenuTriggerFor',] }],
         role: [{ type: Input }],
         checked: [{ type: Input }],
+        disabled: [{ type: Input }],
         opened: [{ type: Output }]
     };
     return CdkMenuItem;
-})();
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-/**
- * Directive which acts as a grouping container for `CdkMenuItem` instances with
- * `role="menuitemradio"`, similar to a `role="radiogroup"` element.
- */
-let CdkMenuGroup = /** @class */ (() => {
-    class CdkMenuGroup {
-        constructor() {
-            /** Emits the element when checkbox or radiobutton state changed  */
-            this.change = new EventEmitter();
-        }
-    }
-    CdkMenuGroup.decorators = [
-        { type: Directive, args: [{
-                    selector: '[cdkMenuGroup]',
-                    exportAs: 'cdkMenuGroup',
-                    host: {
-                        'role': 'group',
-                    },
-                },] }
-    ];
-    CdkMenuGroup.propDecorators = {
-        change: [{ type: Output }]
-    };
-    return CdkMenuGroup;
 })();
 
 /**
