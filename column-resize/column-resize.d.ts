@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { AfterViewInit, ElementRef, NgZone, OnDestroy } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { ColumnResizeNotifier, ColumnResizeNotifierSource } from './column-resize-notifier';
 import { HeaderRowEventDispatcher } from './event-dispatcher';
 /**
@@ -14,7 +14,7 @@ import { HeaderRowEventDispatcher } from './event-dispatcher';
  * provide common events and services for column resizing.
  */
 export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
-    protected readonly destroyed: ReplaySubject<void>;
+    protected readonly destroyed: Subject<void>;
     abstract readonly columnResizeNotifier: ColumnResizeNotifier;
     abstract readonly elementRef: ElementRef<HTMLElement>;
     protected abstract readonly eventDispatcher: HeaderRowEventDispatcher;

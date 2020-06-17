@@ -261,7 +261,7 @@
      */
     var ColumnResize = /** @class */ (function () {
         function ColumnResize() {
-            this.destroyed = new rxjs.ReplaySubject();
+            this.destroyed = new rxjs.Subject();
             /** Unique ID for this table instance. */
             this.selectorId = "" + ++nextId;
         }
@@ -896,7 +896,7 @@
         function Resizable() {
             this.minWidthPxInternal = 0;
             this.maxWidthPxInternal = Number.MAX_SAFE_INTEGER;
-            this.destroyed = new rxjs.ReplaySubject();
+            this.destroyed = new rxjs.Subject();
         }
         Object.defineProperty(Resizable.prototype, "minWidthPx", {
             /** The minimum width to allow the column to be sized to. */
@@ -1077,7 +1077,7 @@
      */
     var ResizeOverlayHandle = /** @class */ (function () {
         function ResizeOverlayHandle() {
-            this.destroyed = new rxjs.ReplaySubject();
+            this.destroyed = new rxjs.Subject();
         }
         ResizeOverlayHandle.prototype.ngAfterViewInit = function () {
             this._listenForMouseEvents();

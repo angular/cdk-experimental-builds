@@ -9,7 +9,7 @@ import { AfterViewInit, ElementRef, Injector, NgZone, OnDestroy, Type, ViewConta
 import { Directionality } from '@angular/cdk/bidi';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { CdkColumnDef } from '@angular/cdk/table';
-import { ReplaySubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { ResizeOverlayHandle } from './overlay-handle';
 import { ColumnResize } from './column-resize';
 import { ColumnResizeNotifierSource } from './column-resize-notifier';
@@ -24,7 +24,7 @@ export declare abstract class Resizable<HandleComponent extends ResizeOverlayHan
     protected maxWidthPxInternal: number;
     protected inlineHandle?: HTMLElement;
     protected overlayRef?: OverlayRef;
-    protected readonly destroyed: ReplaySubject<void>;
+    protected readonly destroyed: Subject<void>;
     protected abstract readonly columnDef: CdkColumnDef;
     protected abstract readonly columnResize: ColumnResize;
     protected abstract readonly directionality: Directionality;

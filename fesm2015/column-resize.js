@@ -1,5 +1,5 @@
 import { Directive, Injectable, NgZone, Inject, ElementRef, NgModule } from '@angular/core';
-import { ReplaySubject, fromEvent, merge, Subject, combineLatest, Observable } from 'rxjs';
+import { Subject, fromEvent, merge, combineLatest, Observable } from 'rxjs';
 import { map, takeUntil, filter, mapTo, take, startWith, pairwise, distinctUntilChanged, share, skip } from 'rxjs/operators';
 import { _closest, _matches } from '@angular/cdk-experimental/popover-edit';
 import { DOCUMENT } from '@angular/common';
@@ -37,7 +37,7 @@ let nextId = 0;
 let ColumnResize = /** @class */ (() => {
     class ColumnResize {
         constructor() {
-            this.destroyed = new ReplaySubject();
+            this.destroyed = new Subject();
             /** Unique ID for this table instance. */
             this.selectorId = `${++nextId}`;
         }
@@ -674,7 +674,7 @@ let Resizable = /** @class */ (() => {
         constructor() {
             this.minWidthPxInternal = 0;
             this.maxWidthPxInternal = Number.MAX_SAFE_INTEGER;
-            this.destroyed = new ReplaySubject();
+            this.destroyed = new Subject();
         }
         /** The minimum width to allow the column to be sized to. */
         get minWidthPx() {
@@ -845,7 +845,7 @@ let Resizable = /** @class */ (() => {
 let ResizeOverlayHandle = /** @class */ (() => {
     class ResizeOverlayHandle {
         constructor() {
-            this.destroyed = new ReplaySubject();
+            this.destroyed = new Subject();
         }
         ngAfterViewInit() {
             this._listenForMouseEvents();
