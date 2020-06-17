@@ -1033,6 +1033,8 @@
         Resizable.prototype._showHandleOverlay = function () {
             this._updateOverlayHandleHeight();
             this.overlayRef.attach(this._createHandlePortal());
+            // Needed to ensure that all of the lifecycle hooks inside the overlay run immediately.
+            this.changeDetectorRef.markForCheck();
         };
         Resizable.prototype._updateOverlayHandleHeight = function () {
             this.overlayRef.updateSize({ height: this.elementRef.nativeElement.offsetHeight });

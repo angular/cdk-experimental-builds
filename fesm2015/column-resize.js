@@ -799,6 +799,8 @@ let Resizable = /** @class */ (() => {
         _showHandleOverlay() {
             this._updateOverlayHandleHeight();
             this.overlayRef.attach(this._createHandlePortal());
+            // Needed to ensure that all of the lifecycle hooks inside the overlay run immediately.
+            this.changeDetectorRef.markForCheck();
         }
         _updateOverlayHandleHeight() {
             this.overlayRef.updateSize({ height: this.elementRef.nativeElement.offsetHeight });

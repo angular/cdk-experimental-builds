@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AfterViewInit, ElementRef, Injector, NgZone, OnDestroy, Type, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ElementRef, Injector, NgZone, OnDestroy, Type, ViewContainerRef, ChangeDetectorRef } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { CdkColumnDef } from '@angular/cdk/table';
@@ -37,6 +37,7 @@ export declare abstract class Resizable<HandleComponent extends ResizeOverlayHan
     protected abstract readonly resizeNotifier: ColumnResizeNotifierSource;
     protected abstract readonly resizeStrategy: ResizeStrategy;
     protected abstract readonly viewContainerRef: ViewContainerRef;
+    protected abstract readonly changeDetectorRef: ChangeDetectorRef;
     /** The minimum width to allow the column to be sized to. */
     get minWidthPx(): number;
     set minWidthPx(value: number);
