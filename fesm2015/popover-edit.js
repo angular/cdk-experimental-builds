@@ -649,7 +649,10 @@ let CdkEditClose = /** @class */ (() => {
         // tslint:disable:no-host-decorator-in-concrete
         closeEdit() {
             // Note that we use `click` here, rather than a keyboard event, because some screen readers
-            // will emit a fake click event instead of an enter keyboard event on buttons.
+            // will emit a fake click event instead of an enter keyboard event on buttons. For the keyboard
+            // events we use `keydown`, rather than `keyup`, because we use `keydown` to open the overlay
+            // as well. If we were to use `keyup`, the user could end up opening and closing within
+            // the same event sequence if focus was moved quickly.
             this.editRef.close();
         }
     }
@@ -661,7 +664,7 @@ let CdkEditClose = /** @class */ (() => {
         { type: EditRef }
     ];
     CdkEditClose.propDecorators = {
-        closeEdit: [{ type: HostListener, args: ['click',] }, { type: HostListener, args: ['keyup.enter',] }, { type: HostListener, args: ['keyup.space',] }]
+        closeEdit: [{ type: HostListener, args: ['click',] }, { type: HostListener, args: ['keydown.enter',] }, { type: HostListener, args: ['keydown.space',] }]
     };
     return CdkEditClose;
 })();
