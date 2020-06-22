@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/coercion'), require('rxjs/operators')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', '@angular/cdk/coercion', 'rxjs/operators'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.ng.cdk.coercion, global.rxjs.operators));
-}(this, (function (exports, core, coercion, operators) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('rxjs/operators'), require('@angular/cdk/collections'), require('@angular/cdk/coercion')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', 'rxjs/operators', '@angular/cdk/collections', '@angular/cdk/coercion'], factory) :
+    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.rxjs.operators, global.ng.cdk.collections, global.ng.cdk.coercion));
+}(this, (function (exports, core, operators, collections, coercion) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -240,6 +240,107 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
+     * Directive which provides the ability for an element to be focused and navigated to using the
+     * keyboard when residing in a CdkMenu, CdkMenuBar, or CdkMenuGroup. It performs user defined
+     * behavior when clicked.
+     */
+    var CdkMenuItem = /** @class */ (function () {
+        function CdkMenuItem() {
+            this._disabled = false;
+            /** Whether the menu item opens a menu */
+            this.hasSubmenu = false;
+        }
+        Object.defineProperty(CdkMenuItem.prototype, "disabled", {
+            /**  Whether the CdkMenuItem is disabled - defaults to false */
+            get: function () {
+                return this._disabled;
+            },
+            set: function (value) {
+                this._disabled = coercion.coerceBooleanProperty(value);
+            },
+            enumerable: false,
+            configurable: true
+        });
+        CdkMenuItem.decorators = [
+            { type: core.Directive, args: [{
+                        selector: '[cdkMenuItem]',
+                        exportAs: 'cdkMenuItem',
+                        host: {
+                            'type': 'button',
+                            'role': 'menuitem',
+                            '[attr.aria-disabled]': 'disabled || null',
+                        },
+                    },] }
+        ];
+        CdkMenuItem.propDecorators = {
+            disabled: [{ type: core.Input }]
+        };
+        return CdkMenuItem;
+    }());
+
+    /**
+     * @license
+     * Copyright Google LLC All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
+    /** Counter used to set a unique id and name for a selectable item */
+    var nextId = 0;
+    /**
+     * Base class providing checked state for MenuItems along with outputting a clicked event when the
+     * element is triggered. It provides functionality for selectable elements.
+     */
+    var CdkMenuItemSelectable = /** @class */ (function (_super) {
+        __extends(CdkMenuItemSelectable, _super);
+        function CdkMenuItemSelectable() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            /** Event emitted when the selectable item is clicked */
+            _this.clicked = new core.EventEmitter();
+            _this._checked = false;
+            /** The name of the selectable element with a default value */
+            _this.name = "cdk-selectable-item-" + nextId++;
+            /** The id of the selectable element with a default value */
+            _this.id = "cdk-selectable-item-" + nextId++;
+            return _this;
+        }
+        Object.defineProperty(CdkMenuItemSelectable.prototype, "checked", {
+            /** Whether the element is checked */
+            get: function () {
+                return this._checked;
+            },
+            set: function (value) {
+                this._checked = coercion.coerceBooleanProperty(value);
+            },
+            enumerable: false,
+            configurable: true
+        });
+        /** If the element is not disabled emit the click event */
+        CdkMenuItemSelectable.prototype.trigger = function () {
+            if (!this.disabled) {
+                this.clicked.next(this);
+            }
+        };
+        CdkMenuItemSelectable.decorators = [
+            { type: core.Directive }
+        ];
+        CdkMenuItemSelectable.propDecorators = {
+            clicked: [{ type: core.Output }],
+            checked: [{ type: core.Input }],
+            name: [{ type: core.Input }],
+            id: [{ type: core.Input }]
+        };
+        return CdkMenuItemSelectable;
+    }(CdkMenuItem));
+
+    /**
+     * @license
+     * Copyright Google LLC All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
+    /**
      * Directive which acts as a grouping container for `CdkMenuItem` instances with
      * `role="menuitemradio"`, similar to a `role="radiogroup"` element.
      */
@@ -247,15 +348,34 @@
         function CdkMenuGroup() {
             /** Emits the element when checkbox or radiobutton state changed  */
             this.change = new core.EventEmitter();
+            /** Emits when the _selectableItems QueryList triggers a change */
+            this._selectableChanges = new core.EventEmitter();
         }
+        CdkMenuGroup.prototype.ngAfterContentInit = function () {
+            this._registerMenuSelectionListeners();
+        };
         /**
-         * Emits events for the clicked MenuItem
-         * @param menuItem The clicked MenuItem to handle
+         * Register the child selectable elements with the change emitter and ensure any new child
+         * elements do so as well.
          */
-        CdkMenuGroup.prototype._registerTriggeredItem = function (menuItem) {
-            if (menuItem.role !== 'menuitem') {
-                this.change.emit(menuItem);
-            }
+        CdkMenuGroup.prototype._registerMenuSelectionListeners = function () {
+            var _this = this;
+            this._selectableItems.forEach(function (selectable) { return _this._registerClickListener(selectable); });
+            this._selectableItems.changes.subscribe(function (selectableItems) {
+                _this._selectableChanges.next();
+                selectableItems.forEach(function (selectable) { return _this._registerClickListener(selectable); });
+            });
+        };
+        /** Register each selectable to emit on the change Emitter when clicked */
+        CdkMenuGroup.prototype._registerClickListener = function (selectable) {
+            var _this = this;
+            selectable.clicked
+                .pipe(operators.takeUntil(this._selectableChanges))
+                .subscribe(function () { return _this.change.next(selectable); });
+        };
+        CdkMenuGroup.prototype.ngOnDestroy = function () {
+            this._selectableChanges.next();
+            this._selectableChanges.complete();
         };
         CdkMenuGroup.decorators = [
             { type: core.Directive, args: [{
@@ -264,10 +384,12 @@
                         host: {
                             'role': 'group',
                         },
+                        providers: [{ provide: collections.UniqueSelectionDispatcher, useClass: collections.UniqueSelectionDispatcher }],
                     },] }
         ];
         CdkMenuGroup.propDecorators = {
-            change: [{ type: core.Output }]
+            change: [{ type: core.Output }],
+            _selectableItems: [{ type: core.ContentChildren, args: [CdkMenuItemSelectable, { descendants: true },] }]
         };
         return CdkMenuGroup;
     }());
@@ -282,7 +404,7 @@
     /**
      * Directive which configures the element as a Menu which should contain child elements marked as
      * CdkMenuItem or CdkMenuGroup. Sets the appropriate role and aria-attributes for a menu and
-     * contains accessable keyboard and mouse handling logic.
+     * contains accessible keyboard and mouse handling logic.
      *
      * It also acts as a RadioGroup for elements marked with role `menuitemradio`.
      */
@@ -299,6 +421,31 @@
             _this.closed = new core.EventEmitter();
             return _this;
         }
+        CdkMenu.prototype.ngAfterContentInit = function () {
+            _super.prototype.ngAfterContentInit.call(this);
+            this._completeChangeEmitter();
+        };
+        /**
+         * Complete the change emitter if there are any nested MenuGroups or register to complete the
+         * change emitter if a MenuGroup is rendered at some point
+         */
+        CdkMenu.prototype._completeChangeEmitter = function () {
+            var _this = this;
+            if (this._hasNestedGroups()) {
+                this.change.complete();
+            }
+            else {
+                this._nestedGroups.changes.pipe(operators.take(1)).subscribe(function () { return _this.change.complete(); });
+            }
+        };
+        /** Return true if there are nested CdkMenuGroup elements within the Menu */
+        CdkMenu.prototype._hasNestedGroups = function () {
+            // view engine has a bug where @ContentChildren will return the current element
+            // along with children if the selectors match - not just the children.
+            // Here, if there is at least one element, we check to see if the first element is a CdkMenu in
+            // order to ensure that we return true iff there are child CdkMenuGroup elements.
+            return this._nestedGroups.length > 0 && !(this._nestedGroups.first instanceof CdkMenu);
+        };
         CdkMenu.decorators = [
             { type: core.Directive, args: [{
                         selector: '[cdkMenu]',
@@ -312,7 +459,8 @@
         ];
         CdkMenu.propDecorators = {
             orientation: [{ type: core.Input, args: ['cdkMenuOrientation',] }],
-            closed: [{ type: core.Output }]
+            closed: [{ type: core.Output }],
+            _nestedGroups: [{ type: core.ContentChildren, args: [CdkMenuGroup, { descendants: true },] }]
         };
         return CdkMenu;
     }(CdkMenuGroup));
@@ -326,7 +474,7 @@
      */
     /**
      * Directive applied to an element which configures it as a MenuBar by setting the appropriate
-     * role, aria attributes, and accessable keyboard and mouse handling logic. The component that
+     * role, aria attributes, and accessible keyboard and mouse handling logic. The component that
      * this directive is applied to should contain components marked with CdkMenuItem.
      *
      */
@@ -379,6 +527,54 @@
     }());
 
     /**
+     * A directive providing behavior for the the "menuitemradio" ARIA role, which behaves similarly to
+     * a conventional radio-button. Any sibling `CdkMenuItemRadio` instances within the same `CdkMenu`
+     * or `CdkMenuGroup` comprise a radio group with unique selection enforced.
+     */
+    var CdkMenuItemRadio = /** @class */ (function (_super) {
+        __extends(CdkMenuItemRadio, _super);
+        function CdkMenuItemRadio(_selectionDispatcher) {
+            var _this = _super.call(this) || this;
+            _this._selectionDispatcher = _selectionDispatcher;
+            _this._registerDispatcherListener();
+            return _this;
+        }
+        /** Configure the unique selection dispatcher listener in order to toggle the checked state  */
+        CdkMenuItemRadio.prototype._registerDispatcherListener = function () {
+            var _this = this;
+            this._removeDispatcherListener = this._selectionDispatcher.listen(function (id, name) { return (_this.checked = _this.id === id && _this.name === name); });
+        };
+        /** Toggles the checked state of the radio-button. */
+        CdkMenuItemRadio.prototype.trigger = function () {
+            _super.prototype.trigger.call(this);
+            if (!this.disabled) {
+                this._selectionDispatcher.notify(this.id, this.name);
+            }
+        };
+        CdkMenuItemRadio.prototype.ngOnDestroy = function () {
+            this._removeDispatcherListener();
+        };
+        CdkMenuItemRadio.decorators = [
+            { type: core.Directive, args: [{
+                        selector: '[cdkMenuItemRadio]',
+                        exportAs: 'cdkMenuItemRadio',
+                        host: {
+                            '(click)': 'trigger()',
+                            'type': 'button',
+                            'role': 'menuitemradio',
+                            '[attr.aria-checked]': 'checked || null',
+                            '[attr.aria-disabled]': 'disabled || null',
+                        },
+                        providers: [{ provide: CdkMenuItemSelectable, useExisting: CdkMenuItemRadio }],
+                    },] }
+        ];
+        CdkMenuItemRadio.ctorParameters = function () { return [
+            { type: collections.UniqueSelectionDispatcher }
+        ]; };
+        return CdkMenuItemRadio;
+    }(CdkMenuItemSelectable));
+
+    /**
      * @license
      * Copyright Google LLC All Rights Reserved.
      *
@@ -386,126 +582,88 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
-     * Directive which provides behavior for an element which when clicked:
-     *  If located in a CdkMenuBar:
-     *    - opens up an attached submenu
-     *
-     *  If located in a CdkMenu/CdkMenuGroup, one of:
-     *    - executes the user defined click handler
-     *    - toggles its checkbox state
-     *    - toggles its radio button state (in relation to siblings)
-     *
-     * If it's in a CdkMenu and it triggers a sub-menu, hovering over the
-     * CdkMenuItem will open the submenu.
-     *
+     * A directive providing behavior for the "menuitemcheckbox" ARIA role, which behaves similarly to a
+     * conventional checkbox.
      */
-    var CdkMenuItem = /** @class */ (function () {
-        function CdkMenuItem(
-        /** reference a parent CdkMenuGroup component */
-        _menuGroup) {
-            this._menuGroup = _menuGroup;
-            /** ARIA role for the menu item. */
-            this.role = 'menuitem';
-            this._checked = false;
-            this._disabled = false;
-            /** Emits when the attached submenu is opened */
-            this.opened = new core.EventEmitter();
-            /** Emits when the component gets destroyed */
-            this._destroyed = new core.EventEmitter();
+    var CdkMenuItemCheckbox = /** @class */ (function (_super) {
+        __extends(CdkMenuItemCheckbox, _super);
+        function CdkMenuItemCheckbox() {
+            return _super !== null && _super.apply(this, arguments) || this;
         }
-        Object.defineProperty(CdkMenuItem.prototype, "checked", {
-            /** Whether the checkbox or radiobutton is checked */
-            get: function () {
-                return this._checked;
-            },
-            set: function (value) {
-                this._checked = coercion.coerceBooleanProperty(value);
-            },
-            enumerable: false,
-            configurable: true
-        });
-        Object.defineProperty(CdkMenuItem.prototype, "disabled", {
-            /**  Whether the CdkMenuItem is disabled - defaults to false */
-            get: function () {
-                return this._disabled;
-            },
-            set: function (value) {
-                this._disabled = coercion.coerceBooleanProperty(value);
-            },
-            enumerable: false,
-            configurable: true
-        });
-        /** Configure event subscriptions */
-        CdkMenuItem.prototype.ngAfterContentInit = function () {
-            var _this = this;
-            if (this.role !== 'menuitem') {
-                this._menuGroup.change
-                    .pipe(operators.takeUntil(this._destroyed))
-                    .subscribe(function (button) { return _this._toggleCheckedState(button); });
-            }
-        };
-        /**
-         * If the role is menuitemcheckbox or menuitemradio and not disabled, emits a change event
-         * on the enclosing parent MenuGroup.
-         */
-        CdkMenuItem.prototype.trigger = function () {
-            if (this.disabled) {
-                return;
-            }
-            if (this.hasSubmenu()) {
-                // TODO(andy): open the menu
-            }
-            this._menuGroup._registerTriggeredItem(this);
-        };
-        /** Whether the menu item opens a menu */
-        CdkMenuItem.prototype.hasSubmenu = function () {
-            return !!this._menuPanel;
-        };
-        /** get the aria-checked value only if element is `menuitemradio` or `menuitemcheckbox` */
-        CdkMenuItem.prototype._getAriaChecked = function () {
-            if (this.role === 'menuitem') {
-                return null;
-            }
-            return this.checked;
-        };
-        /**
-         * Toggle the checked state of the menuitemradio or menuitemcheckbox component
-         */
-        CdkMenuItem.prototype._toggleCheckedState = function (selected) {
-            if (this.role === 'menuitemradio') {
-                this.checked = selected === this;
-            }
-            else if (this.role === 'menuitemcheckbox' && selected === this) {
+        CdkMenuItemCheckbox.prototype.trigger = function () {
+            _super.prototype.trigger.call(this);
+            if (!this.disabled) {
                 this.checked = !this.checked;
             }
         };
-        CdkMenuItem.prototype.ngOnDestroy = function () {
-            this._destroyed.next();
-            this._destroyed.complete();
-        };
-        CdkMenuItem.decorators = [
+        CdkMenuItemCheckbox.decorators = [
             { type: core.Directive, args: [{
-                        selector: '[cdkMenuItem], [cdkMenuTriggerFor]',
-                        exportAs: 'cdkMenuItem',
+                        selector: '[cdkMenuItemCheckbox]',
+                        exportAs: 'cdkMenuItemCheckbox',
                         host: {
+                            '(click)': 'trigger()',
                             'type': 'button',
-                            '[attr.role]': 'role',
-                            '[attr.aria-checked]': '_getAriaChecked()',
+                            'role': 'menuitemcheckbox',
+                            '[attr.aria-checked]': 'checked || null',
                             '[attr.aria-disabled]': 'disabled || null',
+                        },
+                        providers: [{ provide: CdkMenuItemSelectable, useExisting: CdkMenuItemCheckbox }],
+                    },] }
+        ];
+        return CdkMenuItemCheckbox;
+    }(CdkMenuItemSelectable));
+
+    /**
+     * @license
+     * Copyright Google LLC All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
+    /**
+     * A directive to be combined with CdkMenuItem which opens the Menu it is bound to. If the
+     * element is in a top level MenuBar it will open the menu on click, or if a sibling is already
+     * opened it will open on hover. If it is inside of a Menu it will open the attached Submenu on
+     * hover regardless of its sibling state.
+     *
+     * The directive must be placed along with the `cdkMenuItem` directive in order to enable full
+     * functionality.
+     */
+    var CdkMenuItemTrigger = /** @class */ (function () {
+        function CdkMenuItemTrigger(
+        /** The MenuItem instance which is the trigger  */
+        _menuItemInstance) {
+            this._menuItemInstance = _menuItemInstance;
+        }
+        CdkMenuItemTrigger.prototype.ngAfterContentInit = function () {
+            this._setHasSubmenu();
+        };
+        /** Set the hasSubmenu property on the menuitem  */
+        CdkMenuItemTrigger.prototype._setHasSubmenu = function () {
+            if (this._menuItemInstance) {
+                this._menuItemInstance.hasSubmenu = this._hasSubmenu();
+            }
+        };
+        /** Return true if the trigger has an attached menu */
+        CdkMenuItemTrigger.prototype._hasSubmenu = function () {
+            return !!this._menuPanel;
+        };
+        CdkMenuItemTrigger.decorators = [
+            { type: core.Directive, args: [{
+                        selector: '[cdkMenuItem][cdkMenuTriggerFor]',
+                        exportAs: 'cdkMenuTriggerFor',
+                        host: {
+                            'aria-haspopup': 'menu',
                         },
                     },] }
         ];
-        CdkMenuItem.ctorParameters = function () { return [
-            { type: CdkMenuGroup }
+        CdkMenuItemTrigger.ctorParameters = function () { return [
+            { type: CdkMenuItem, decorators: [{ type: core.Self }, { type: core.Optional }] }
         ]; };
-        CdkMenuItem.propDecorators = {
-            _menuPanel: [{ type: core.Input, args: ['cdkMenuTriggerFor',] }],
-            role: [{ type: core.Input }],
-            checked: [{ type: core.Input }],
-            disabled: [{ type: core.Input }],
-            opened: [{ type: core.Output }]
+        CdkMenuItemTrigger.propDecorators = {
+            _menuPanel: [{ type: core.Input, args: ['cdkMenuTriggerFor',] }]
         };
-        return CdkMenuItem;
+        return CdkMenuItemTrigger;
     }());
 
     /**
@@ -515,7 +673,16 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    var EXPORTED_DECLARATIONS = [CdkMenuBar, CdkMenu, CdkMenuPanel, CdkMenuItem, CdkMenuGroup];
+    var EXPORTED_DECLARATIONS = [
+        CdkMenuBar,
+        CdkMenu,
+        CdkMenuPanel,
+        CdkMenuItem,
+        CdkMenuItemRadio,
+        CdkMenuItemCheckbox,
+        CdkMenuItemTrigger,
+        CdkMenuGroup,
+    ];
     var CdkMenuModule = /** @class */ (function () {
         function CdkMenuModule() {
         }
@@ -544,8 +711,12 @@
     exports.CdkMenuBar = CdkMenuBar;
     exports.CdkMenuGroup = CdkMenuGroup;
     exports.CdkMenuItem = CdkMenuItem;
+    exports.CdkMenuItemCheckbox = CdkMenuItemCheckbox;
+    exports.CdkMenuItemRadio = CdkMenuItemRadio;
+    exports.CdkMenuItemTrigger = CdkMenuItemTrigger;
     exports.CdkMenuModule = CdkMenuModule;
     exports.CdkMenuPanel = CdkMenuPanel;
+    exports.ɵangular_material_src_cdk_experimental_menu_menu_a = CdkMenuItemSelectable;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
