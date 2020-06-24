@@ -93,7 +93,7 @@ let CdkDialogContainer = /** @class */ (() => {
              * Attaches a DOM portal to the dialog container.
              * @param portal Portal to be attached.
              * @deprecated To be turned into a method.
-             * @breaking-change 10.0.0
+             * @breaking-change 10.0.0-sha-d3f287d65
              */
             this.attachDomPortal = (portal) => {
                 if (this._portalHost.hasAttached()) {

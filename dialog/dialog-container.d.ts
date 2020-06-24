@@ -65,7 +65,7 @@ export declare class CdkDialogContainer extends BasePortalOutlet implements OnDe
      * Attaches a DOM portal to the dialog container.
      * @param portal Portal to be attached.
      * @deprecated To be turned into a method.
-     * @breaking-change 10.0.0
+     * @breaking-change 10.0.0-sha-d3f287d65
      */
     attachDomPortal: (portal: DomPortal) => void;
     /** Emit lifecycle events based on animation `start` callback. */
