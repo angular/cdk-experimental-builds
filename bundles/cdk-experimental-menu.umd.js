@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('rxjs/operators'), require('@angular/cdk/collections'), require('@angular/cdk/coercion')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', 'rxjs/operators', '@angular/cdk/collections', '@angular/cdk/coercion'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.rxjs.operators, global.ng.cdk.collections, global.ng.cdk.coercion));
-}(this, (function (exports, core, operators, collections, coercion) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('rxjs/operators'), require('@angular/cdk/collections'), require('@angular/cdk/coercion'), require('@angular/cdk/bidi'), require('@angular/cdk/portal')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', '@angular/cdk/overlay', 'rxjs/operators', '@angular/cdk/collections', '@angular/cdk/coercion', '@angular/cdk/bidi', '@angular/cdk/portal'], factory) :
+    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.ng.cdk.overlay, global.rxjs.operators, global.ng.cdk.collections, global.ng.cdk.coercion, global.ng.cdk.bidi, global.ng.cdk.portal));
+}(this, (function (exports, core, overlay, operators, collections, coercion, bidi, portal) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -240,15 +240,192 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
+     * Directive applied to an ng-template which wraps a CdkMenu and provides a reference to the
+     * child element it wraps which allows for opening of the CdkMenu in an overlay.
+     */
+    var CdkMenuPanel = /** @class */ (function () {
+        function CdkMenuPanel(_templateRef) {
+            this._templateRef = _templateRef;
+        }
+        /**
+         * Set the Menu component on the menu panel. Since we cannot use ContentChild to fetch the
+         * child Menu component, the child Menu must register its self with the parent MenuPanel.
+         */
+        CdkMenuPanel.prototype._registerMenu = function (child) {
+            this._menu = child;
+        };
+        CdkMenuPanel.decorators = [
+            { type: core.Directive, args: [{ selector: 'ng-template[cdkMenuPanel]', exportAs: 'cdkMenuPanel' },] }
+        ];
+        CdkMenuPanel.ctorParameters = function () { return [
+            { type: core.TemplateRef }
+        ]; };
+        return CdkMenuPanel;
+    }());
+
+    /**
+     * @license
+     * Copyright Google LLC All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
+    /** Injection token used to return classes implementing the Menu interface */
+    var CDK_MENU = new core.InjectionToken('cdk-menu');
+
+    /**
+     * @license
+     * Copyright Google LLC All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
+    /**
+     * A directive to be combined with CdkMenuItem which opens the Menu it is bound to. If the
+     * element is in a top level MenuBar it will open the menu on click, or if a sibling is already
+     * opened it will open on hover. If it is inside of a Menu it will open the attached Submenu on
+     * hover regardless of its sibling state.
+     *
+     * The directive must be placed along with the `cdkMenuItem` directive in order to enable full
+     * functionality.
+     */
+    var CdkMenuItemTrigger = /** @class */ (function () {
+        function CdkMenuItemTrigger(_elementRef, _viewContainerRef, _overlay, _directionality, _parentMenu) {
+            this._elementRef = _elementRef;
+            this._viewContainerRef = _viewContainerRef;
+            this._overlay = _overlay;
+            this._directionality = _directionality;
+            this._parentMenu = _parentMenu;
+            /** Emits when the attached submenu is requested to open */
+            this.opened = new core.EventEmitter();
+            /** Emits when the attached submenu is requested to close  */
+            this.closed = new core.EventEmitter();
+            /** A reference to the overlay which manages the triggered submenu */
+            this._overlayRef = null;
+        }
+        /** Open/close the attached submenu if the trigger has been configured with one */
+        CdkMenuItemTrigger.prototype.toggle = function () {
+            if (this.hasSubmenu()) {
+                this.isSubmenuOpen() ? this._closeSubmenu() : this._openSubmenu();
+            }
+        };
+        /** Return true if the trigger has an attached menu */
+        CdkMenuItemTrigger.prototype.hasSubmenu = function () {
+            return !!this._menuPanel;
+        };
+        /** Whether the submenu this button is a trigger for is open */
+        CdkMenuItemTrigger.prototype.isSubmenuOpen = function () {
+            return this._overlayRef ? this._overlayRef.hasAttached() : false;
+        };
+        /** Open the attached submenu */
+        CdkMenuItemTrigger.prototype._openSubmenu = function () {
+            this.opened.next();
+            this._overlayRef = this._overlay.create(this._getOverlayConfig());
+            this._overlayRef.attach(this._getPortal());
+        };
+        /** Close the opened submenu */
+        CdkMenuItemTrigger.prototype._closeSubmenu = function () {
+            if (this.isSubmenuOpen()) {
+                this.closed.next();
+                this._overlayRef.detach();
+            }
+        };
+        /** Get the configuration object used to create the overlay */
+        CdkMenuItemTrigger.prototype._getOverlayConfig = function () {
+            return new overlay.OverlayConfig({
+                positionStrategy: this._getOverlayPositionStrategy(),
+                scrollStrategy: this._overlay.scrollStrategies.block(),
+                direction: this._directionality,
+            });
+        };
+        /** Build the position strategy for the overlay which specifies where to place the submenu */
+        CdkMenuItemTrigger.prototype._getOverlayPositionStrategy = function () {
+            return this._overlay
+                .position()
+                .flexibleConnectedTo(this._elementRef)
+                .withPositions(this._getOverlayPositions());
+        };
+        /** Determine and return where to position the submenu relative to the menu item */
+        CdkMenuItemTrigger.prototype._getOverlayPositions = function () {
+            // TODO: use a common positioning config from (possibly) cdk/overlay
+            return this._parentMenu.orientation === 'horizontal'
+                ? [
+                    { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top' },
+                    { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom' },
+                    { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top' },
+                    { originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'bottom' },
+                ]
+                : [
+                    { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
+                    { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
+                    { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
+                    { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' },
+                ];
+        };
+        /**
+         * Get the portal to be attached to the overlay which contains the menu. Allows for the menu
+         * content to change dynamically and be reflected in the application.
+         */
+        CdkMenuItemTrigger.prototype._getPortal = function () {
+            var _a;
+            if (!this._panelContent || this._panelContent.templateRef !== ((_a = this._menuPanel) === null || _a === void 0 ? void 0 : _a._templateRef)) {
+                this._panelContent = new portal.TemplatePortal(this._menuPanel._templateRef, this._viewContainerRef);
+            }
+            return this._panelContent;
+        };
+        CdkMenuItemTrigger.prototype.ngOnDestroy = function () {
+            this._destroyOverlay();
+        };
+        /** Destroy and unset the overlay reference it if exists */
+        CdkMenuItemTrigger.prototype._destroyOverlay = function () {
+            if (this._overlayRef) {
+                this._overlayRef.dispose();
+                this._overlayRef = null;
+            }
+        };
+        CdkMenuItemTrigger.decorators = [
+            { type: core.Directive, args: [{
+                        selector: '[cdkMenuItem][cdkMenuTriggerFor]',
+                        exportAs: 'cdkMenuTriggerFor',
+                        host: {
+                            'aria-haspopup': 'menu',
+                            '[attr.aria-expanded]': 'isSubmenuOpen()',
+                        },
+                    },] }
+        ];
+        CdkMenuItemTrigger.ctorParameters = function () { return [
+            { type: core.ElementRef },
+            { type: core.ViewContainerRef },
+            { type: overlay.Overlay },
+            { type: bidi.Directionality },
+            { type: undefined, decorators: [{ type: core.Inject, args: [CDK_MENU,] }] }
+        ]; };
+        CdkMenuItemTrigger.propDecorators = {
+            _menuPanel: [{ type: core.Input, args: ['cdkMenuTriggerFor',] }],
+            opened: [{ type: core.Output, args: ['cdkMenuOpened',] }],
+            closed: [{ type: core.Output, args: ['cdkMenuClosed',] }]
+        };
+        return CdkMenuItemTrigger;
+    }());
+
+    /**
+     * @license
+     * Copyright Google LLC All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
+    /**
      * Directive which provides the ability for an element to be focused and navigated to using the
      * keyboard when residing in a CdkMenu, CdkMenuBar, or CdkMenuGroup. It performs user defined
      * behavior when clicked.
      */
     var CdkMenuItem = /** @class */ (function () {
-        function CdkMenuItem() {
+        function CdkMenuItem(
+        /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
+        _menuTrigger) {
+            this._menuTrigger = _menuTrigger;
             this._disabled = false;
-            /** Whether the menu item opens a menu */
-            this.hasSubmenu = false;
         }
         Object.defineProperty(CdkMenuItem.prototype, "disabled", {
             /**  Whether the CdkMenuItem is disabled - defaults to false */
@@ -261,6 +438,16 @@
             enumerable: false,
             configurable: true
         });
+        /** Open the submenu if one is attached */
+        CdkMenuItem.prototype.trigger = function () {
+            if (!this.disabled && this.hasSubmenu()) {
+                this._menuTrigger.toggle();
+            }
+        };
+        /** Whether the menu item opens a menu. */
+        CdkMenuItem.prototype.hasSubmenu = function () {
+            return !!this._menuTrigger && this._menuTrigger.hasSubmenu();
+        };
         CdkMenuItem.decorators = [
             { type: core.Directive, args: [{
                         selector: '[cdkMenuItem]',
@@ -272,6 +459,9 @@
                         },
                     },] }
         ];
+        CdkMenuItem.ctorParameters = function () { return [
+            { type: CdkMenuItemTrigger, decorators: [{ type: core.Self }, { type: core.Optional }] }
+        ]; };
         CdkMenuItem.propDecorators = {
             disabled: [{ type: core.Input }]
         };
@@ -402,6 +592,23 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
+     * Throws an exception when the CdkMenuPanel cannot be injected and the developer did not
+     * explicitly provide a reference to the enclosing CdkMenuPanel.
+     * @docs-private
+     */
+    function throwMissingMenuPanelError() {
+        throw Error('CdkMenu must be placed inside a CdkMenuPanel or a reference to CdkMenuPanel' +
+            ' must be explicitly provided if using ViewEngine');
+    }
+
+    /**
+     * @license
+     * Copyright Google LLC All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
+    /**
      * Directive which configures the element as a Menu which should contain child elements marked as
      * CdkMenuItem or CdkMenuGroup. Sets the appropriate role and aria-attributes for a menu and
      * contains accessible keyboard and mouse handling logic.
@@ -410,8 +617,9 @@
      */
     var CdkMenu = /** @class */ (function (_super) {
         __extends(CdkMenu, _super);
-        function CdkMenu() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
+        function CdkMenu(_menuPanel) {
+            var _this = _super.call(this) || this;
+            _this._menuPanel = _menuPanel;
             /**
              * Sets the aria-orientation attribute and determines where sub-menus will be opened.
              * Does not affect styling/layout.
@@ -424,6 +632,24 @@
         CdkMenu.prototype.ngAfterContentInit = function () {
             _super.prototype.ngAfterContentInit.call(this);
             this._completeChangeEmitter();
+            this._registerWithParentPanel();
+        };
+        /** Register this menu with its enclosing parent menu panel */
+        CdkMenu.prototype._registerWithParentPanel = function () {
+            var parent = this._getMenuPanel();
+            if (parent) {
+                parent._registerMenu(this);
+            }
+            else {
+                throwMissingMenuPanelError();
+            }
+        };
+        /**
+         * Get the enclosing CdkMenuPanel defaulting to the injected reference over the developer
+         * provided reference.
+         */
+        CdkMenu.prototype._getMenuPanel = function () {
+            return this._menuPanel || this._explicitPanel;
         };
         /**
          * Complete the change emitter if there are any nested MenuGroups or register to complete the
@@ -446,6 +672,14 @@
             // order to ensure that we return true iff there are child CdkMenuGroup elements.
             return this._nestedGroups.length > 0 && !(this._nestedGroups.first instanceof CdkMenu);
         };
+        CdkMenu.prototype.ngOnDestroy = function () {
+            this._emitClosedEvent();
+        };
+        /** Emit and complete the closed event emitter */
+        CdkMenu.prototype._emitClosedEvent = function () {
+            this.closed.next();
+            this.closed.complete();
+        };
         CdkMenu.decorators = [
             { type: core.Directive, args: [{
                         selector: '[cdkMenu]',
@@ -454,13 +688,20 @@
                             'role': 'menu',
                             '[attr.aria-orientation]': 'orientation',
                         },
-                        providers: [{ provide: CdkMenuGroup, useExisting: CdkMenu }],
+                        providers: [
+                            { provide: CdkMenuGroup, useExisting: CdkMenu },
+                            { provide: CDK_MENU, useExisting: CdkMenu },
+                        ],
                     },] }
         ];
+        CdkMenu.ctorParameters = function () { return [
+            { type: CdkMenuPanel, decorators: [{ type: core.Optional }] }
+        ]; };
         CdkMenu.propDecorators = {
             orientation: [{ type: core.Input, args: ['cdkMenuOrientation',] }],
             closed: [{ type: core.Output }],
-            _nestedGroups: [{ type: core.ContentChildren, args: [CdkMenuGroup, { descendants: true },] }]
+            _nestedGroups: [{ type: core.ContentChildren, args: [CdkMenuGroup, { descendants: true },] }],
+            _explicitPanel: [{ type: core.Input, args: ['cdkMenuPanel',] }]
         };
         return CdkMenu;
     }(CdkMenuGroup));
@@ -497,7 +738,10 @@
                             'role': 'menubar',
                             '[attr.aria-orientation]': 'orientation',
                         },
-                        providers: [{ provide: CdkMenuGroup, useExisting: CdkMenuBar }],
+                        providers: [
+                            { provide: CdkMenuGroup, useExisting: CdkMenuBar },
+                            { provide: CDK_MENU, useExisting: CdkMenuBar },
+                        ],
                     },] }
         ];
         CdkMenuBar.propDecorators = {
@@ -505,26 +749,6 @@
         };
         return CdkMenuBar;
     }(CdkMenuGroup));
-
-    /**
-     * @license
-     * Copyright Google LLC All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
-    /**
-     * Directive applied to an ng-template which wraps a CdkMenu and provides a reference to the
-     * child element it wraps which allows for opening of the CdkMenu in an overlay.
-     */
-    var CdkMenuPanel = /** @class */ (function () {
-        function CdkMenuPanel() {
-        }
-        CdkMenuPanel.decorators = [
-            { type: core.Directive, args: [{ selector: 'ng-template[cdkMenuPanel]', exportAs: 'cdkMenuPanel' },] }
-        ];
-        return CdkMenuPanel;
-    }());
 
     /**
      * A directive providing behavior for the the "menuitemradio" ARIA role, which behaves similarly to
@@ -620,59 +844,6 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    /**
-     * A directive to be combined with CdkMenuItem which opens the Menu it is bound to. If the
-     * element is in a top level MenuBar it will open the menu on click, or if a sibling is already
-     * opened it will open on hover. If it is inside of a Menu it will open the attached Submenu on
-     * hover regardless of its sibling state.
-     *
-     * The directive must be placed along with the `cdkMenuItem` directive in order to enable full
-     * functionality.
-     */
-    var CdkMenuItemTrigger = /** @class */ (function () {
-        function CdkMenuItemTrigger(
-        /** The MenuItem instance which is the trigger  */
-        _menuItemInstance) {
-            this._menuItemInstance = _menuItemInstance;
-        }
-        CdkMenuItemTrigger.prototype.ngAfterContentInit = function () {
-            this._setHasSubmenu();
-        };
-        /** Set the hasSubmenu property on the menuitem  */
-        CdkMenuItemTrigger.prototype._setHasSubmenu = function () {
-            if (this._menuItemInstance) {
-                this._menuItemInstance.hasSubmenu = this._hasSubmenu();
-            }
-        };
-        /** Return true if the trigger has an attached menu */
-        CdkMenuItemTrigger.prototype._hasSubmenu = function () {
-            return !!this._menuPanel;
-        };
-        CdkMenuItemTrigger.decorators = [
-            { type: core.Directive, args: [{
-                        selector: '[cdkMenuItem][cdkMenuTriggerFor]',
-                        exportAs: 'cdkMenuTriggerFor',
-                        host: {
-                            'aria-haspopup': 'menu',
-                        },
-                    },] }
-        ];
-        CdkMenuItemTrigger.ctorParameters = function () { return [
-            { type: CdkMenuItem, decorators: [{ type: core.Self }, { type: core.Optional }] }
-        ]; };
-        CdkMenuItemTrigger.propDecorators = {
-            _menuPanel: [{ type: core.Input, args: ['cdkMenuTriggerFor',] }]
-        };
-        return CdkMenuItemTrigger;
-    }());
-
-    /**
-     * @license
-     * Copyright Google LLC All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
     var EXPORTED_DECLARATIONS = [
         CdkMenuBar,
         CdkMenu,
@@ -688,6 +859,7 @@
         }
         CdkMenuModule.decorators = [
             { type: core.NgModule, args: [{
+                        imports: [overlay.OverlayModule],
                         exports: EXPORTED_DECLARATIONS,
                         declarations: EXPORTED_DECLARATIONS,
                     },] }
@@ -717,6 +889,7 @@
     exports.CdkMenuModule = CdkMenuModule;
     exports.CdkMenuPanel = CdkMenuPanel;
     exports.ɵangular_material_src_cdk_experimental_menu_menu_a = CdkMenuItemSelectable;
+    exports.ɵangular_material_src_cdk_experimental_menu_menu_b = CDK_MENU;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

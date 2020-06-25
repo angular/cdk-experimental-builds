@@ -6,17 +6,25 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { BooleanInput } from '@angular/cdk/coercion';
+import { CdkMenuItemTrigger } from './menu-item-trigger';
 /**
  * Directive which provides the ability for an element to be focused and navigated to using the
  * keyboard when residing in a CdkMenu, CdkMenuBar, or CdkMenuGroup. It performs user defined
  * behavior when clicked.
  */
 export declare class CdkMenuItem {
+    /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
+    private readonly _menuTrigger?;
     /**  Whether the CdkMenuItem is disabled - defaults to false */
     get disabled(): boolean;
     set disabled(value: boolean);
     private _disabled;
-    /** Whether the menu item opens a menu */
-    hasSubmenu: boolean;
+    constructor(
+    /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
+    _menuTrigger?: CdkMenuItemTrigger | undefined);
+    /** Open the submenu if one is attached */
+    trigger(): void;
+    /** Whether the menu item opens a menu. */
+    hasSubmenu(): boolean;
     static ngAcceptInputType_disabled: BooleanInput;
 }
