@@ -1132,18 +1132,18 @@
                 rxjs.fromEvent(element, 'mouseleave').pipe(operators.mapTo(null), operators.takeUntil(_this.destroyed)).subscribe(_this.editEventDispatcher.hovering);
                 rxjs.fromEvent(element, 'mousemove').pipe(operators.throttleTime(MOUSE_MOVE_THROTTLE_TIME_MS), toClosest(ROW_SELECTOR), operators.takeUntil(_this.destroyed)).subscribe(_this.editEventDispatcher.mouseMove);
                 // Track focus within the table to hide/show/make focusable hover content.
-                rxjs.fromEventPattern(function (handler) { return element.addEventListener('focus', handler, true); }, function (handler) { return element.removeEventListener('focus', handler, true); }).pipe(operators.takeUntil(_this.destroyed), toClosest(ROW_SELECTOR), operators.share()).subscribe(_this.editEventDispatcher.focused);
-                rxjs.merge(rxjs.fromEventPattern(function (handler) { return element.addEventListener('blur', handler, true); }, function (handler) { return element.removeEventListener('blur', handler, true); }), rxjs.fromEvent(element, 'keydown').pipe(operators.filter(function (event) { return event.key === 'Escape'; }))).pipe(operators.takeUntil(_this.destroyed), operators.mapTo(null), operators.share()).subscribe(_this.editEventDispatcher.focused);
+                rxjs.fromEventPattern(function (handler) { return element.addEventListener('focus', handler, true); }, function (handler) { return element.removeEventListener('focus', handler, true); }).pipe(toClosest(ROW_SELECTOR), operators.share(), operators.takeUntil(_this.destroyed)).subscribe(_this.editEventDispatcher.focused);
+                rxjs.merge(rxjs.fromEventPattern(function (handler) { return element.addEventListener('blur', handler, true); }, function (handler) { return element.removeEventListener('blur', handler, true); }), rxjs.fromEvent(element, 'keydown').pipe(operators.filter(function (event) { return event.key === 'Escape'; }))).pipe(operators.mapTo(null), operators.share(), operators.takeUntil(_this.destroyed)).subscribe(_this.editEventDispatcher.focused);
                 // Keep track of rows within the table. This is used to know which rows with hover content
                 // are first or last in the table. They are kept focusable in case focus enters from above
                 // or below the table.
-                _this.ngZone.onStable.pipe(operators.takeUntil(_this.destroyed), 
+                _this.ngZone.onStable.pipe(
                 // Optimization: ignore dom changes while focus is within the table as we already
                 // ensure that rows above and below the focused/active row are tabbable.
                 operators.withLatestFrom(_this.editEventDispatcher.editingOrFocused), operators.filter(function (_a) {
                     var _b = __read(_a, 2), _ = _b[0], activeRow = _b[1];
                     return activeRow == null;
-                }), operators.map(function () { return element.querySelectorAll(ROW_SELECTOR); }), operators.share()).subscribe(_this.editEventDispatcher.allRows);
+                }), operators.map(function () { return element.querySelectorAll(ROW_SELECTOR); }), operators.share(), operators.takeUntil(_this.destroyed)).subscribe(_this.editEventDispatcher.allRows);
                 rxjs.fromEvent(element, 'keydown').pipe(operators.filter(function (event) { return event.key === 'Enter'; }), toClosest(CELL_SELECTOR), operators.takeUntil(_this.destroyed)).subscribe(_this.editEventDispatcher.editing);
                 // Keydown must be used here or else key autorepeat does not work properly on some platforms.
                 rxjs.fromEvent(element, 'keydown')
@@ -1297,7 +1297,7 @@
             // Update the size of the popup initially and on subsequent changes to
             // scroll position and viewport size.
             rxjs.merge(this.services.scrollDispatcher.scrolled(), this.services.viewportRuler.change())
-                .pipe(operators.startWith(null), operators.takeUntil(this.overlayRef.detachments()), operators.takeUntil(this.destroyed))
+                .pipe(operators.startWith(null), operators.takeUntil(rxjs.merge(this.overlayRef.detachments(), this.destroyed)))
                 .subscribe(function () {
                 _this._updateOverlaySize();
             });

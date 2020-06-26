@@ -878,15 +878,15 @@ let CdkEditable = /** @class */ (() => {
                 fromEvent(element, 'mouseleave').pipe(mapTo(null), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.hovering);
                 fromEvent(element, 'mousemove').pipe(throttleTime(MOUSE_MOVE_THROTTLE_TIME_MS), toClosest(ROW_SELECTOR), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.mouseMove);
                 // Track focus within the table to hide/show/make focusable hover content.
-                fromEventPattern(handler => element.addEventListener('focus', handler, true), handler => element.removeEventListener('focus', handler, true)).pipe(takeUntil(this.destroyed), toClosest(ROW_SELECTOR), share()).subscribe(this.editEventDispatcher.focused);
-                merge(fromEventPattern(handler => element.addEventListener('blur', handler, true), handler => element.removeEventListener('blur', handler, true)), fromEvent(element, 'keydown').pipe(filter(event => event.key === 'Escape'))).pipe(takeUntil(this.destroyed), mapTo(null), share()).subscribe(this.editEventDispatcher.focused);
+                fromEventPattern(handler => element.addEventListener('focus', handler, true), handler => element.removeEventListener('focus', handler, true)).pipe(toClosest(ROW_SELECTOR), share(), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.focused);
+                merge(fromEventPattern(handler => element.addEventListener('blur', handler, true), handler => element.removeEventListener('blur', handler, true)), fromEvent(element, 'keydown').pipe(filter(event => event.key === 'Escape'))).pipe(mapTo(null), share(), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.focused);
                 // Keep track of rows within the table. This is used to know which rows with hover content
                 // are first or last in the table. They are kept focusable in case focus enters from above
                 // or below the table.
-                this.ngZone.onStable.pipe(takeUntil(this.destroyed), 
+                this.ngZone.onStable.pipe(
                 // Optimization: ignore dom changes while focus is within the table as we already
                 // ensure that rows above and below the focused/active row are tabbable.
-                withLatestFrom(this.editEventDispatcher.editingOrFocused), filter(([_, activeRow]) => activeRow == null), map(() => element.querySelectorAll(ROW_SELECTOR)), share()).subscribe(this.editEventDispatcher.allRows);
+                withLatestFrom(this.editEventDispatcher.editingOrFocused), filter(([_, activeRow]) => activeRow == null), map(() => element.querySelectorAll(ROW_SELECTOR)), share(), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.allRows);
                 fromEvent(element, 'keydown').pipe(filter(event => event.key === 'Enter'), toClosest(CELL_SELECTOR), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.editing);
                 // Keydown must be used here or else key autorepeat does not work properly on some platforms.
                 fromEvent(element, 'keydown')
@@ -1031,7 +1031,7 @@ let CdkPopoverEdit = /** @class */ (() => {
             // Update the size of the popup initially and on subsequent changes to
             // scroll position and viewport size.
             merge(this.services.scrollDispatcher.scrolled(), this.services.viewportRuler.change())
-                .pipe(startWith(null), takeUntil(this.overlayRef.detachments()), takeUntil(this.destroyed))
+                .pipe(startWith(null), takeUntil(merge(this.overlayRef.detachments(), this.destroyed)))
                 .subscribe(() => {
                 this._updateOverlaySize();
             });

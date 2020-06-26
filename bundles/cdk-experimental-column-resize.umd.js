@@ -294,7 +294,7 @@
         };
         ColumnResize.prototype._listenForResizeActivity = function () {
             var _this = this;
-            rxjs.merge(this.eventDispatcher.overlayHandleActiveForCell.pipe(operators.mapTo(undefined)), this.notifier.triggerResize.pipe(operators.mapTo(undefined)), this.notifier.resizeCompleted.pipe(operators.mapTo(undefined))).pipe(operators.takeUntil(this.destroyed), operators.take(1)).subscribe(function () {
+            rxjs.merge(this.eventDispatcher.overlayHandleActiveForCell.pipe(operators.mapTo(undefined)), this.notifier.triggerResize.pipe(operators.mapTo(undefined)), this.notifier.resizeCompleted.pipe(operators.mapTo(undefined))).pipe(operators.take(1), operators.takeUntil(this.destroyed)).subscribe(function () {
                 _this.setResized();
             });
         };
@@ -1089,12 +1089,11 @@
         ResizeOverlayHandle.prototype._listenForMouseEvents = function () {
             var _this = this;
             this.ngZone.runOutsideAngular(function () {
-                var takeUntilDestroyed = operators.takeUntil(_this.destroyed);
-                rxjs.fromEvent(_this.elementRef.nativeElement, 'mouseenter').pipe(takeUntilDestroyed, operators.mapTo(_this.resizeRef.origin.nativeElement)).subscribe(function (cell) { return _this.eventDispatcher.headerCellHovered.next(cell); });
-                rxjs.fromEvent(_this.elementRef.nativeElement, 'mouseleave').pipe(takeUntilDestroyed, operators.map(function (event) { return event.relatedTarget &&
-                    popoverEdit._closest(event.relatedTarget, HEADER_CELL_SELECTOR); })).subscribe(function (cell) { return _this.eventDispatcher.headerCellHovered.next(cell); });
+                rxjs.fromEvent(_this.elementRef.nativeElement, 'mouseenter').pipe(operators.mapTo(_this.resizeRef.origin.nativeElement), operators.takeUntil(_this.destroyed)).subscribe(function (cell) { return _this.eventDispatcher.headerCellHovered.next(cell); });
+                rxjs.fromEvent(_this.elementRef.nativeElement, 'mouseleave').pipe(operators.map(function (event) { return event.relatedTarget &&
+                    popoverEdit._closest(event.relatedTarget, HEADER_CELL_SELECTOR); }), operators.takeUntil(_this.destroyed)).subscribe(function (cell) { return _this.eventDispatcher.headerCellHovered.next(cell); });
                 rxjs.fromEvent(_this.elementRef.nativeElement, 'mousedown')
-                    .pipe(takeUntilDestroyed).subscribe(function (mousedownEvent) {
+                    .pipe(operators.takeUntil(_this.destroyed)).subscribe(function (mousedownEvent) {
                     _this._dragStarted(mousedownEvent);
                 });
             });
@@ -1116,17 +1115,17 @@
             var size = initialSize;
             var overshot = 0;
             this.updateResizeActive(true);
-            mouseup.pipe(operators.takeUntil(escape), operators.takeUntil(this.destroyed)).subscribe(function (_a) {
+            mouseup.pipe(operators.takeUntil(rxjs.merge(escape, this.destroyed))).subscribe(function (_a) {
                 var screenX = _a.screenX;
                 _this._notifyResizeEnded(size, screenX !== startX);
             });
-            escape.pipe(operators.takeUntil(mouseup), operators.takeUntil(this.destroyed)).subscribe(function () {
+            escape.pipe(operators.takeUntil(rxjs.merge(mouseup, this.destroyed))).subscribe(function () {
                 _this._notifyResizeEnded(initialSize);
             });
             mousemove.pipe(operators.map(function (_a) {
                 var screenX = _a.screenX;
                 return screenX;
-            }), operators.startWith(startX), operators.distinctUntilChanged(), operators.pairwise(), operators.takeUntil(mouseup), operators.takeUntil(escape), operators.takeUntil(this.destroyed)).subscribe(function (_a) {
+            }), operators.startWith(startX), operators.distinctUntilChanged(), operators.pairwise(), operators.takeUntil(rxjs.merge(mouseup, escape, this.destroyed))).subscribe(function (_a) {
                 var _b = __read(_a, 2), prevX = _b[0], currX = _b[1];
                 var deltaX = currX - prevX;
                 // If the mouse moved further than the resize was able to match, limit the

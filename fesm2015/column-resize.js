@@ -68,7 +68,7 @@ let ColumnResize = /** @class */ (() => {
             });
         }
         _listenForResizeActivity() {
-            merge(this.eventDispatcher.overlayHandleActiveForCell.pipe(mapTo(undefined)), this.notifier.triggerResize.pipe(mapTo(undefined)), this.notifier.resizeCompleted.pipe(mapTo(undefined))).pipe(takeUntil(this.destroyed), take(1)).subscribe(() => {
+            merge(this.eventDispatcher.overlayHandleActiveForCell.pipe(mapTo(undefined)), this.notifier.triggerResize.pipe(mapTo(undefined)), this.notifier.resizeCompleted.pipe(mapTo(undefined))).pipe(take(1), takeUntil(this.destroyed)).subscribe(() => {
                 this.setResized();
             });
         }
@@ -856,12 +856,11 @@ let ResizeOverlayHandle = /** @class */ (() => {
         }
         _listenForMouseEvents() {
             this.ngZone.runOutsideAngular(() => {
-                const takeUntilDestroyed = takeUntil(this.destroyed);
-                fromEvent(this.elementRef.nativeElement, 'mouseenter').pipe(takeUntilDestroyed, mapTo(this.resizeRef.origin.nativeElement)).subscribe(cell => this.eventDispatcher.headerCellHovered.next(cell));
-                fromEvent(this.elementRef.nativeElement, 'mouseleave').pipe(takeUntilDestroyed, map(event => event.relatedTarget &&
-                    _closest(event.relatedTarget, HEADER_CELL_SELECTOR))).subscribe(cell => this.eventDispatcher.headerCellHovered.next(cell));
+                fromEvent(this.elementRef.nativeElement, 'mouseenter').pipe(mapTo(this.resizeRef.origin.nativeElement), takeUntil(this.destroyed)).subscribe(cell => this.eventDispatcher.headerCellHovered.next(cell));
+                fromEvent(this.elementRef.nativeElement, 'mouseleave').pipe(map(event => event.relatedTarget &&
+                    _closest(event.relatedTarget, HEADER_CELL_SELECTOR)), takeUntil(this.destroyed)).subscribe(cell => this.eventDispatcher.headerCellHovered.next(cell));
                 fromEvent(this.elementRef.nativeElement, 'mousedown')
-                    .pipe(takeUntilDestroyed).subscribe(mousedownEvent => {
+                    .pipe(takeUntil(this.destroyed)).subscribe(mousedownEvent => {
                     this._dragStarted(mousedownEvent);
                 });
             });
@@ -882,13 +881,13 @@ let ResizeOverlayHandle = /** @class */ (() => {
             let size = initialSize;
             let overshot = 0;
             this.updateResizeActive(true);
-            mouseup.pipe(takeUntil(escape), takeUntil(this.destroyed)).subscribe(({ screenX }) => {
+            mouseup.pipe(takeUntil(merge(escape, this.destroyed))).subscribe(({ screenX }) => {
                 this._notifyResizeEnded(size, screenX !== startX);
             });
-            escape.pipe(takeUntil(mouseup), takeUntil(this.destroyed)).subscribe(() => {
+            escape.pipe(takeUntil(merge(mouseup, this.destroyed))).subscribe(() => {
                 this._notifyResizeEnded(initialSize);
             });
-            mousemove.pipe(map(({ screenX }) => screenX), startWith(startX), distinctUntilChanged(), pairwise(), takeUntil(mouseup), takeUntil(escape), takeUntil(this.destroyed)).subscribe(([prevX, currX]) => {
+            mousemove.pipe(map(({ screenX }) => screenX), startWith(startX), distinctUntilChanged(), pairwise(), takeUntil(merge(mouseup, escape, this.destroyed))).subscribe(([prevX, currX]) => {
                 let deltaX = currX - prevX;
                 // If the mouse moved further than the resize was able to match, limit the
                 // movement of the overlay to match the actual size and position of the origin.
