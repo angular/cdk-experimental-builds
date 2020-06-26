@@ -19,7 +19,7 @@ import { Menu } from './menu-interface';
 export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentInit, OnDestroy {
     private readonly _menuPanel?;
     /**
-     * Sets the aria-orientation attribute and determines where sub-menus will be opened.
+     * Sets the aria-orientation attribute and determines where menus will be opened.
      * Does not affect styling/layout.
      */
     orientation: 'horizontal' | 'vertical';

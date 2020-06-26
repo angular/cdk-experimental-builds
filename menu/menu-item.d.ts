@@ -22,9 +22,9 @@ export declare class CdkMenuItem {
     constructor(
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     _menuTrigger?: CdkMenuItemTrigger | undefined);
-    /** Open the submenu if one is attached */
+    /** Open the menu if one is attached */
     trigger(): void;
     /** Whether the menu item opens a menu. */
-    hasSubmenu(): boolean;
+    hasMenu(): boolean;
     static ngAcceptInputType_disabled: BooleanInput;
 }

@@ -27,30 +27,30 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
     private readonly _parentMenu;
     /** Template reference variable to the menu this trigger opens */
     _menuPanel?: CdkMenuPanel;
-    /** Emits when the attached submenu is requested to open */
+    /** Emits when the attached menu is requested to open */
     readonly opened: EventEmitter<void>;
-    /** Emits when the attached submenu is requested to close  */
+    /** Emits when the attached menu is requested to close */
     readonly closed: EventEmitter<void>;
-    /** A reference to the overlay which manages the triggered submenu */
+    /** A reference to the overlay which manages the triggered menu */
     private _overlayRef;
     /** The content of the menu panel opened by this trigger. */
     private _panelContent;
     constructor(_elementRef: ElementRef<HTMLElement>, _viewContainerRef: ViewContainerRef, _overlay: Overlay, _directionality: Directionality, _parentMenu: Menu);
-    /** Open/close the attached submenu if the trigger has been configured with one */
+    /** Open/close the attached menu if the trigger has been configured with one */
     toggle(): void;
     /** Return true if the trigger has an attached menu */
-    hasSubmenu(): boolean;
-    /** Whether the submenu this button is a trigger for is open */
-    isSubmenuOpen(): boolean;
-    /** Open the attached submenu */
-    private _openSubmenu;
-    /** Close the opened submenu */
-    private _closeSubmenu;
+    hasMenu(): boolean;
+    /** Whether the menu this button is a trigger for is open */
+    isMenuOpen(): boolean;
+    /** Open the attached menu */
+    private _openMenu;
+    /** Close the opened menu */
+    private _closeMenu;
     /** Get the configuration object used to create the overlay */
     private _getOverlayConfig;
-    /** Build the position strategy for the overlay which specifies where to place the submenu */
+    /** Build the position strategy for the overlay which specifies where to place the menu */
     private _getOverlayPositionStrategy;
-    /** Determine and return where to position the submenu relative to the menu item */
+    /** Determine and return where to position the opened menu relative to the menu item */
     private _getOverlayPositions;
     /**
      * Get the portal to be attached to the overlay which contains the menu. Allows for the menu

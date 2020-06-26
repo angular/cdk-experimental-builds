@@ -73,36 +73,36 @@ let CdkMenuItemTrigger = /** @class */ (() => {
             this._overlay = _overlay;
             this._directionality = _directionality;
             this._parentMenu = _parentMenu;
-            /** Emits when the attached submenu is requested to open */
+            /** Emits when the attached menu is requested to open */
             this.opened = new EventEmitter();
-            /** Emits when the attached submenu is requested to close  */
+            /** Emits when the attached menu is requested to close */
             this.closed = new EventEmitter();
-            /** A reference to the overlay which manages the triggered submenu */
+            /** A reference to the overlay which manages the triggered menu */
             this._overlayRef = null;
         }
-        /** Open/close the attached submenu if the trigger has been configured with one */
+        /** Open/close the attached menu if the trigger has been configured with one */
         toggle() {
-            if (this.hasSubmenu()) {
-                this.isSubmenuOpen() ? this._closeSubmenu() : this._openSubmenu();
+            if (this.hasMenu()) {
+                this.isMenuOpen() ? this._closeMenu() : this._openMenu();
             }
         }
         /** Return true if the trigger has an attached menu */
-        hasSubmenu() {
+        hasMenu() {
             return !!this._menuPanel;
         }
-        /** Whether the submenu this button is a trigger for is open */
-        isSubmenuOpen() {
+        /** Whether the menu this button is a trigger for is open */
+        isMenuOpen() {
             return this._overlayRef ? this._overlayRef.hasAttached() : false;
         }
-        /** Open the attached submenu */
-        _openSubmenu() {
+        /** Open the attached menu */
+        _openMenu() {
             this.opened.next();
             this._overlayRef = this._overlay.create(this._getOverlayConfig());
             this._overlayRef.attach(this._getPortal());
         }
-        /** Close the opened submenu */
-        _closeSubmenu() {
-            if (this.isSubmenuOpen()) {
+        /** Close the opened menu */
+        _closeMenu() {
+            if (this.isMenuOpen()) {
                 this.closed.next();
                 this._overlayRef.detach();
             }
@@ -115,14 +115,14 @@ let CdkMenuItemTrigger = /** @class */ (() => {
                 direction: this._directionality,
             });
         }
-        /** Build the position strategy for the overlay which specifies where to place the submenu */
+        /** Build the position strategy for the overlay which specifies where to place the menu */
         _getOverlayPositionStrategy() {
             return this._overlay
                 .position()
                 .flexibleConnectedTo(this._elementRef)
                 .withPositions(this._getOverlayPositions());
         }
-        /** Determine and return where to position the submenu relative to the menu item */
+        /** Determine and return where to position the opened menu relative to the menu item */
         _getOverlayPositions() {
             // TODO: use a common positioning config from (possibly) cdk/overlay
             return this._parentMenu.orientation === 'horizontal'
@@ -167,7 +167,7 @@ let CdkMenuItemTrigger = /** @class */ (() => {
                     exportAs: 'cdkMenuTriggerFor',
                     host: {
                         'aria-haspopup': 'menu',
-                        '[attr.aria-expanded]': 'isSubmenuOpen()',
+                        '[attr.aria-expanded]': 'isMenuOpen()',
                     },
                 },] }
     ];
@@ -213,15 +213,15 @@ let CdkMenuItem = /** @class */ (() => {
         set disabled(value) {
             this._disabled = coerceBooleanProperty(value);
         }
-        /** Open the submenu if one is attached */
+        /** Open the menu if one is attached */
         trigger() {
-            if (!this.disabled && this.hasSubmenu()) {
+            if (!this.disabled && this.hasMenu()) {
                 this._menuTrigger.toggle();
             }
         }
         /** Whether the menu item opens a menu. */
-        hasSubmenu() {
-            return !!this._menuTrigger && this._menuTrigger.hasSubmenu();
+        hasMenu() {
+            return !!this._menuTrigger && this._menuTrigger.hasMenu();
         }
     }
     CdkMenuItem.decorators = [
@@ -393,7 +393,7 @@ let CdkMenu = /** @class */ (() => {
             super();
             this._menuPanel = _menuPanel;
             /**
-             * Sets the aria-orientation attribute and determines where sub-menus will be opened.
+             * Sets the aria-orientation attribute and determines where menus will be opened.
              * Does not affect styling/layout.
              */
             this.orientation = 'vertical';
@@ -495,7 +495,7 @@ let CdkMenuBar = /** @class */ (() => {
         constructor() {
             super(...arguments);
             /**
-             * Sets the aria-orientation attribute and determines where sub-menus will be opened.
+             * Sets the aria-orientation attribute and determines where menus will be opened.
              * Does not affect styling/layout.
              */
             this.orientation = 'horizontal';

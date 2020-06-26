@@ -296,36 +296,36 @@
             this._overlay = _overlay;
             this._directionality = _directionality;
             this._parentMenu = _parentMenu;
-            /** Emits when the attached submenu is requested to open */
+            /** Emits when the attached menu is requested to open */
             this.opened = new core.EventEmitter();
-            /** Emits when the attached submenu is requested to close  */
+            /** Emits when the attached menu is requested to close */
             this.closed = new core.EventEmitter();
-            /** A reference to the overlay which manages the triggered submenu */
+            /** A reference to the overlay which manages the triggered menu */
             this._overlayRef = null;
         }
-        /** Open/close the attached submenu if the trigger has been configured with one */
+        /** Open/close the attached menu if the trigger has been configured with one */
         CdkMenuItemTrigger.prototype.toggle = function () {
-            if (this.hasSubmenu()) {
-                this.isSubmenuOpen() ? this._closeSubmenu() : this._openSubmenu();
+            if (this.hasMenu()) {
+                this.isMenuOpen() ? this._closeMenu() : this._openMenu();
             }
         };
         /** Return true if the trigger has an attached menu */
-        CdkMenuItemTrigger.prototype.hasSubmenu = function () {
+        CdkMenuItemTrigger.prototype.hasMenu = function () {
             return !!this._menuPanel;
         };
-        /** Whether the submenu this button is a trigger for is open */
-        CdkMenuItemTrigger.prototype.isSubmenuOpen = function () {
+        /** Whether the menu this button is a trigger for is open */
+        CdkMenuItemTrigger.prototype.isMenuOpen = function () {
             return this._overlayRef ? this._overlayRef.hasAttached() : false;
         };
-        /** Open the attached submenu */
-        CdkMenuItemTrigger.prototype._openSubmenu = function () {
+        /** Open the attached menu */
+        CdkMenuItemTrigger.prototype._openMenu = function () {
             this.opened.next();
             this._overlayRef = this._overlay.create(this._getOverlayConfig());
             this._overlayRef.attach(this._getPortal());
         };
-        /** Close the opened submenu */
-        CdkMenuItemTrigger.prototype._closeSubmenu = function () {
-            if (this.isSubmenuOpen()) {
+        /** Close the opened menu */
+        CdkMenuItemTrigger.prototype._closeMenu = function () {
+            if (this.isMenuOpen()) {
                 this.closed.next();
                 this._overlayRef.detach();
             }
@@ -338,14 +338,14 @@
                 direction: this._directionality,
             });
         };
-        /** Build the position strategy for the overlay which specifies where to place the submenu */
+        /** Build the position strategy for the overlay which specifies where to place the menu */
         CdkMenuItemTrigger.prototype._getOverlayPositionStrategy = function () {
             return this._overlay
                 .position()
                 .flexibleConnectedTo(this._elementRef)
                 .withPositions(this._getOverlayPositions());
         };
-        /** Determine and return where to position the submenu relative to the menu item */
+        /** Determine and return where to position the opened menu relative to the menu item */
         CdkMenuItemTrigger.prototype._getOverlayPositions = function () {
             // TODO: use a common positioning config from (possibly) cdk/overlay
             return this._parentMenu.orientation === 'horizontal'
@@ -389,7 +389,7 @@
                         exportAs: 'cdkMenuTriggerFor',
                         host: {
                             'aria-haspopup': 'menu',
-                            '[attr.aria-expanded]': 'isSubmenuOpen()',
+                            '[attr.aria-expanded]': 'isMenuOpen()',
                         },
                     },] }
         ];
@@ -438,15 +438,15 @@
             enumerable: false,
             configurable: true
         });
-        /** Open the submenu if one is attached */
+        /** Open the menu if one is attached */
         CdkMenuItem.prototype.trigger = function () {
-            if (!this.disabled && this.hasSubmenu()) {
+            if (!this.disabled && this.hasMenu()) {
                 this._menuTrigger.toggle();
             }
         };
         /** Whether the menu item opens a menu. */
-        CdkMenuItem.prototype.hasSubmenu = function () {
-            return !!this._menuTrigger && this._menuTrigger.hasSubmenu();
+        CdkMenuItem.prototype.hasMenu = function () {
+            return !!this._menuTrigger && this._menuTrigger.hasMenu();
         };
         CdkMenuItem.decorators = [
             { type: core.Directive, args: [{
@@ -621,7 +621,7 @@
             var _this = _super.call(this) || this;
             _this._menuPanel = _menuPanel;
             /**
-             * Sets the aria-orientation attribute and determines where sub-menus will be opened.
+             * Sets the aria-orientation attribute and determines where menus will be opened.
              * Does not affect styling/layout.
              */
             _this.orientation = 'vertical';
@@ -724,7 +724,7 @@
         function CdkMenuBar() {
             var _this = _super !== null && _super.apply(this, arguments) || this;
             /**
-             * Sets the aria-orientation attribute and determines where sub-menus will be opened.
+             * Sets the aria-orientation attribute and determines where menus will be opened.
              * Does not affect styling/layout.
              */
             _this.orientation = 'horizontal';

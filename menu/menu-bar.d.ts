@@ -15,7 +15,7 @@ import { Menu } from './menu-interface';
  */
 export declare class CdkMenuBar extends CdkMenuGroup implements Menu {
     /**
-     * Sets the aria-orientation attribute and determines where sub-menus will be opened.
+     * Sets the aria-orientation attribute and determines where menus will be opened.
      * Does not affect styling/layout.
      */
     orientation: 'horizontal' | 'vertical';
