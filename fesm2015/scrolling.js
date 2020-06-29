@@ -358,48 +358,45 @@ function _autoSizeVirtualScrollStrategyFactory(autoSizeDir) {
     return autoSizeDir._scrollStrategy;
 }
 /** A virtual scroll strategy that supports unknown or dynamic size items. */
-let CdkAutoSizeVirtualScroll = /** @class */ (() => {
-    class CdkAutoSizeVirtualScroll {
-        constructor() {
-            this._minBufferPx = 100;
-            this._maxBufferPx = 200;
-            /** The scroll strategy used by this directive. */
-            this._scrollStrategy = new AutoSizeVirtualScrollStrategy(this.minBufferPx, this.maxBufferPx);
-        }
-        /**
-         * The minimum amount of buffer rendered beyond the viewport (in pixels).
-         * If the amount of buffer dips below this number, more items will be rendered. Defaults to 100px.
-         */
-        get minBufferPx() { return this._minBufferPx; }
-        set minBufferPx(value) { this._minBufferPx = coerceNumberProperty(value); }
-        /**
-         * The number of pixels worth of buffer to shoot for when rendering new items.
-         * If the actual amount turns out to be less it will not necessarily trigger an additional
-         * rendering cycle (as long as the amount of buffer is still greater than `minBufferPx`).
-         * Defaults to 200px.
-         */
-        get maxBufferPx() { return this._maxBufferPx; }
-        set maxBufferPx(value) { this._maxBufferPx = coerceNumberProperty(value); }
-        ngOnChanges() {
-            this._scrollStrategy.updateBufferSize(this.minBufferPx, this.maxBufferPx);
-        }
+class CdkAutoSizeVirtualScroll {
+    constructor() {
+        this._minBufferPx = 100;
+        this._maxBufferPx = 200;
+        /** The scroll strategy used by this directive. */
+        this._scrollStrategy = new AutoSizeVirtualScrollStrategy(this.minBufferPx, this.maxBufferPx);
     }
-    CdkAutoSizeVirtualScroll.decorators = [
-        { type: Directive, args: [{
-                    selector: 'cdk-virtual-scroll-viewport[autosize]',
-                    providers: [{
-                            provide: VIRTUAL_SCROLL_STRATEGY,
-                            useFactory: _autoSizeVirtualScrollStrategyFactory,
-                            deps: [forwardRef(() => CdkAutoSizeVirtualScroll)],
-                        }],
-                },] }
-    ];
-    CdkAutoSizeVirtualScroll.propDecorators = {
-        minBufferPx: [{ type: Input }],
-        maxBufferPx: [{ type: Input }]
-    };
-    return CdkAutoSizeVirtualScroll;
-})();
+    /**
+     * The minimum amount of buffer rendered beyond the viewport (in pixels).
+     * If the amount of buffer dips below this number, more items will be rendered. Defaults to 100px.
+     */
+    get minBufferPx() { return this._minBufferPx; }
+    set minBufferPx(value) { this._minBufferPx = coerceNumberProperty(value); }
+    /**
+     * The number of pixels worth of buffer to shoot for when rendering new items.
+     * If the actual amount turns out to be less it will not necessarily trigger an additional
+     * rendering cycle (as long as the amount of buffer is still greater than `minBufferPx`).
+     * Defaults to 200px.
+     */
+    get maxBufferPx() { return this._maxBufferPx; }
+    set maxBufferPx(value) { this._maxBufferPx = coerceNumberProperty(value); }
+    ngOnChanges() {
+        this._scrollStrategy.updateBufferSize(this.minBufferPx, this.maxBufferPx);
+    }
+}
+CdkAutoSizeVirtualScroll.decorators = [
+    { type: Directive, args: [{
+                selector: 'cdk-virtual-scroll-viewport[autosize]',
+                providers: [{
+                        provide: VIRTUAL_SCROLL_STRATEGY,
+                        useFactory: _autoSizeVirtualScrollStrategyFactory,
+                        deps: [forwardRef(() => CdkAutoSizeVirtualScroll)],
+                    }],
+            },] }
+];
+CdkAutoSizeVirtualScroll.propDecorators = {
+    minBufferPx: [{ type: Input }],
+    maxBufferPx: [{ type: Input }]
+};
 
 /**
  * @license
@@ -408,17 +405,14 @@ let CdkAutoSizeVirtualScroll = /** @class */ (() => {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-let ScrollingModule = /** @class */ (() => {
-    class ScrollingModule {
-    }
-    ScrollingModule.decorators = [
-        { type: NgModule, args: [{
-                    exports: [CdkAutoSizeVirtualScroll],
-                    declarations: [CdkAutoSizeVirtualScroll],
-                },] }
-    ];
-    return ScrollingModule;
-})();
+class ScrollingModule {
+}
+ScrollingModule.decorators = [
+    { type: NgModule, args: [{
+                exports: [CdkAutoSizeVirtualScroll],
+                declarations: [CdkAutoSizeVirtualScroll],
+            },] }
+];
 
 /**
  * @license
