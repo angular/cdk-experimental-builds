@@ -15,35 +15,32 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
  *
  * It also acts as a RadioGroup for elements marked with role `menuitemradio`.
  */
-let CdkMenu = /** @class */ (() => {
-    class CdkMenu {
-        constructor() {
-            /**
-             * Sets the aria-orientation attribute and determines where sub-menus will be opened.
-             * Does not affect styling/layout.
-             */
-            this.orientation = 'vertical';
-            /** Event emitted when the menu is closed. */
-            this.closed = new EventEmitter();
-        }
+class CdkMenu {
+    constructor() {
+        /**
+         * Sets the aria-orientation attribute and determines where sub-menus will be opened.
+         * Does not affect styling/layout.
+         */
+        this.orientation = 'vertical';
+        /** Event emitted when the menu is closed. */
+        this.closed = new EventEmitter();
     }
-    CdkMenu.decorators = [
-        { type: Directive, args: [{
-                    selector: '[cdkMenu]',
-                    exportAs: 'cdkMenu',
-                    host: {
-                        'role': 'menubar',
-                        '[attr.aria-orientation]': 'orientation',
-                    },
-                },] }
-    ];
-    CdkMenu.propDecorators = {
-        orientation: [{ type: Input, args: ['cdkMenuOrientation',] }],
-        closed: [{ type: Output }],
-        change: [{ type: Output }]
-    };
-    return CdkMenu;
-})();
+}
+CdkMenu.decorators = [
+    { type: Directive, args: [{
+                selector: '[cdkMenu]',
+                exportAs: 'cdkMenu',
+                host: {
+                    'role': 'menubar',
+                    '[attr.aria-orientation]': 'orientation',
+                },
+            },] }
+];
+CdkMenu.propDecorators = {
+    orientation: [{ type: Input, args: ['cdkMenuOrientation',] }],
+    closed: [{ type: Output }],
+    change: [{ type: Output }]
+};
 
 /**
  * @license
@@ -58,31 +55,28 @@ let CdkMenu = /** @class */ (() => {
  * this directive is applied to should contain components marked with CdkMenuItem.
  *
  */
-let CdkMenuBar = /** @class */ (() => {
-    class CdkMenuBar {
-        constructor() {
-            /**
-             * Sets the aria-orientation attribute and determines where sub-menus will be opened.
-             * Does not affect styling/layout.
-             */
-            this.orientation = 'horizontal';
-        }
+class CdkMenuBar {
+    constructor() {
+        /**
+         * Sets the aria-orientation attribute and determines where sub-menus will be opened.
+         * Does not affect styling/layout.
+         */
+        this.orientation = 'horizontal';
     }
-    CdkMenuBar.decorators = [
-        { type: Directive, args: [{
-                    selector: '[cdkMenuBar]',
-                    exportAs: 'cdkMenuBar',
-                    host: {
-                        'role': 'menubar',
-                        '[attr.aria-orientation]': 'orientation',
-                    },
-                },] }
-    ];
-    CdkMenuBar.propDecorators = {
-        orientation: [{ type: Input, args: ['cdkMenuBarOrientation',] }]
-    };
-    return CdkMenuBar;
-})();
+}
+CdkMenuBar.decorators = [
+    { type: Directive, args: [{
+                selector: '[cdkMenuBar]',
+                exportAs: 'cdkMenuBar',
+                host: {
+                    'role': 'menubar',
+                    '[attr.aria-orientation]': 'orientation',
+                },
+            },] }
+];
+CdkMenuBar.propDecorators = {
+    orientation: [{ type: Input, args: ['cdkMenuBarOrientation',] }]
+};
 
 /**
  * @license
@@ -95,14 +89,11 @@ let CdkMenuBar = /** @class */ (() => {
  * Directive applied to an ng-template which wraps a CdkMenu and provides a reference to the
  * child element it wraps which allows for opening of the CdkMenu in an overlay.
  */
-let CdkMenuPanel = /** @class */ (() => {
-    class CdkMenuPanel {
-    }
-    CdkMenuPanel.decorators = [
-        { type: Directive, args: [{ selector: 'ng-template[cdkMenuPanel]', exportAs: 'cdkMenuPanel' },] }
-    ];
-    return CdkMenuPanel;
-})();
+class CdkMenuPanel {
+}
+CdkMenuPanel.decorators = [
+    { type: Directive, args: [{ selector: 'ng-template[cdkMenuPanel]', exportAs: 'cdkMenuPanel' },] }
+];
 
 /**
  * @license
@@ -125,53 +116,50 @@ let CdkMenuPanel = /** @class */ (() => {
  * CdkMenuItem will open the submenu.
  *
  */
-let CdkMenuItem = /** @class */ (() => {
-    class CdkMenuItem {
-        constructor() {
-            /** ARIA role for the menu item. */
-            this.role = 'menuitem';
-            this._checked = false;
-            /** Emits when the attached submenu is opened */
-            this.opened = new EventEmitter();
-        }
-        /** Whether the checkbox or radiobutton is checked */
-        get checked() {
-            return this._checked;
-        }
-        set checked(value) {
-            this._checked = coerceBooleanProperty(value);
-        }
-        /** get the aria-checked value only if element is `menuitemradio` or `menuitemcheckbox` */
-        _getAriaChecked() {
-            if (this.role === 'menuitem') {
-                return null;
-            }
-            return this.checked;
-        }
-        /** Whether the menu item opens a menu */
-        hasSubmenu() {
-            return !!this._menuPanel;
-        }
+class CdkMenuItem {
+    constructor() {
+        /** ARIA role for the menu item. */
+        this.role = 'menuitem';
+        this._checked = false;
+        /** Emits when the attached submenu is opened */
+        this.opened = new EventEmitter();
     }
-    CdkMenuItem.decorators = [
-        { type: Directive, args: [{
-                    selector: '[cdkMenuItem], [cdkMenuTriggerFor]',
-                    exportAs: 'cdkMenuItem',
-                    host: {
-                        'type': 'button',
-                        '[attr.role]': 'role',
-                        '[attr.aria-checked]': '_getAriaChecked()',
-                    },
-                },] }
-    ];
-    CdkMenuItem.propDecorators = {
-        _menuPanel: [{ type: Input, args: ['cdkMenuTriggerFor',] }],
-        role: [{ type: Input }],
-        checked: [{ type: Input }],
-        opened: [{ type: Output }]
-    };
-    return CdkMenuItem;
-})();
+    /** Whether the checkbox or radiobutton is checked */
+    get checked() {
+        return this._checked;
+    }
+    set checked(value) {
+        this._checked = coerceBooleanProperty(value);
+    }
+    /** get the aria-checked value only if element is `menuitemradio` or `menuitemcheckbox` */
+    _getAriaChecked() {
+        if (this.role === 'menuitem') {
+            return null;
+        }
+        return this.checked;
+    }
+    /** Whether the menu item opens a menu */
+    hasSubmenu() {
+        return !!this._menuPanel;
+    }
+}
+CdkMenuItem.decorators = [
+    { type: Directive, args: [{
+                selector: '[cdkMenuItem], [cdkMenuTriggerFor]',
+                exportAs: 'cdkMenuItem',
+                host: {
+                    'type': 'button',
+                    '[attr.role]': 'role',
+                    '[attr.aria-checked]': '_getAriaChecked()',
+                },
+            },] }
+];
+CdkMenuItem.propDecorators = {
+    _menuPanel: [{ type: Input, args: ['cdkMenuTriggerFor',] }],
+    role: [{ type: Input }],
+    checked: [{ type: Input }],
+    opened: [{ type: Output }]
+};
 
 /**
  * @license
@@ -184,27 +172,24 @@ let CdkMenuItem = /** @class */ (() => {
  * Directive which acts as a grouping container for `CdkMenuItem` instances with
  * `role="menuitemradio"`, similar to a `role="radiogroup"` element.
  */
-let CdkMenuGroup = /** @class */ (() => {
-    class CdkMenuGroup {
-        constructor() {
-            /** Emits the element when checkbox or radiobutton state changed  */
-            this.change = new EventEmitter();
-        }
+class CdkMenuGroup {
+    constructor() {
+        /** Emits the element when checkbox or radiobutton state changed  */
+        this.change = new EventEmitter();
     }
-    CdkMenuGroup.decorators = [
-        { type: Directive, args: [{
-                    selector: '[cdkMenuGroup]',
-                    exportAs: 'cdkMenuGroup',
-                    host: {
-                        'role': 'group',
-                    },
-                },] }
-    ];
-    CdkMenuGroup.propDecorators = {
-        change: [{ type: Output }]
-    };
-    return CdkMenuGroup;
-})();
+}
+CdkMenuGroup.decorators = [
+    { type: Directive, args: [{
+                selector: '[cdkMenuGroup]',
+                exportAs: 'cdkMenuGroup',
+                host: {
+                    'role': 'group',
+                },
+            },] }
+];
+CdkMenuGroup.propDecorators = {
+    change: [{ type: Output }]
+};
 
 /**
  * @license
@@ -214,17 +199,14 @@ let CdkMenuGroup = /** @class */ (() => {
  * found in the LICENSE file at https://angular.io/license
  */
 const EXPORTED_DECLARATIONS = [CdkMenuBar, CdkMenu, CdkMenuPanel, CdkMenuItem, CdkMenuGroup];
-let CdkMenuModule = /** @class */ (() => {
-    class CdkMenuModule {
-    }
-    CdkMenuModule.decorators = [
-        { type: NgModule, args: [{
-                    exports: EXPORTED_DECLARATIONS,
-                    declarations: EXPORTED_DECLARATIONS,
-                },] }
-    ];
-    return CdkMenuModule;
-})();
+class CdkMenuModule {
+}
+CdkMenuModule.decorators = [
+    { type: NgModule, args: [{
+                exports: EXPORTED_DECLARATIONS,
+                declarations: EXPORTED_DECLARATIONS,
+            },] }
+];
 
 /**
  * @license
