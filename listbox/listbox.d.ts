@@ -5,41 +5,58 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { EventEmitter, QueryList } from '@angular/core';
+import { AfterContentInit, ElementRef, EventEmitter, OnDestroy, QueryList } from '@angular/core';
+import { ActiveDescendantKeyManager, Highlightable, ListKeyManagerOption } from '@angular/cdk/a11y';
 import { BooleanInput } from '@angular/cdk/coercion';
-/**
- * Directive that applies interaction patterns to an element following the aria role of option.
- * Typically meant to be placed inside a listbox. Logic handling selection, disabled state, and
- * value is built in.
- */
-export declare class CdkOption {
+export declare class CdkOption implements ListKeyManagerOption, Highlightable {
+    private _elementRef;
     listbox: CdkListbox;
     private _selected;
-    /** Whether the option is selected or not */
+    private _disabled;
+    _active: boolean;
     get selected(): boolean;
     set selected(value: boolean);
-    /** The id of the option, set to a uniqueid if the user does not provide one */
+    /** The id of the option, set to a uniqueid if the user does not provide one. */
     id: string;
-    constructor(listbox: CdkListbox);
-    /** Toggles the selected state, emits a change event through the injected listbox */
+    get disabled(): boolean;
+    set disabled(value: boolean);
+    constructor(_elementRef: ElementRef, listbox: CdkListbox);
+    /** Toggles the selected state, emits a change event through the injected listbox. */
     toggle(): void;
+    /** Sets the active property true if the option and listbox aren't disabled. */
+    activate(): void;
+    /** Sets the active property false. */
+    deactivate(): void;
+    /** Returns true if the option or listbox are disabled, and false otherwise. */
+    _isInteractionDisabled(): boolean;
+    /** Returns the tab index which depends on the disabled property. */
+    _getTabIndex(): string | null;
+    getLabel(): string;
+    setActiveStyles(): void;
+    setInactiveStyles(): void;
     static ngAcceptInputType_selected: BooleanInput;
+    static ngAcceptInputType_disabled: BooleanInput;
 }
-/**
- * Directive that applies interaction patterns to an element following the aria role of listbox.
- * Typically CdkOption elements are placed inside the listbox. Logic to handle keyboard navigation,
- * selection of options, active options, and disabled states is built in.
- */
-export declare class CdkListbox {
-    /** A query list containing all CdkOption elements within this listbox */
+export declare class CdkListbox implements AfterContentInit, OnDestroy {
+    _listKeyManager: ActiveDescendantKeyManager<CdkOption>;
+    private _disabled;
     _options: QueryList<CdkOption>;
     readonly selectionChange: EventEmitter<ListboxSelectionChangeEvent>;
-    /** Emits a selection change event, called when an option has its selected state changed */
+    get disabled(): boolean;
+    set disabled(value: boolean);
+    ngAfterContentInit(): void;
+    ngOnDestroy(): void;
+    _keydown(event: KeyboardEvent): void;
+    /** Emits a selection change event, called when an option has its selected state changed. */
     _emitChangeEvent(option: CdkOption): void;
-    /** Sets the given option's selected state to true */
+    private _toggleActiveOption;
+    /** Selects the given option if the option and listbox aren't disabled. */
     select(option: CdkOption): void;
-    /** Sets the given option's selected state to null. Null is preferable for screen readers */
+    /** Deselects the given option if the option and listbox aren't disabled. */
     deselect(option: CdkOption): void;
+    /** Updates the key manager's active item to the given option. */
+    setActiveOption(option: CdkOption): void;
+    static ngAcceptInputType_disabled: BooleanInput;
 }
 /** Change event that is being fired whenever the selected state of an option changes. */
 export declare class ListboxSelectionChangeEvent {
