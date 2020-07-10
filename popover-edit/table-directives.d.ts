@@ -13,6 +13,7 @@ import { EditEventDispatcher } from './edit-event-dispatcher';
 import { EditServices } from './edit-services';
 import { FocusDispatcher } from './focus-dispatcher';
 import { FocusEscapeNotifier, FocusEscapeNotifierFactory } from './focus-escape-notifier';
+import { EditRef } from './edit-ref';
 /**
  * Describes the number of columns before and after the originating cell that the
  * edit popup should span. In left to right locales, before means left and after means
@@ -29,11 +30,11 @@ export interface CdkPopoverEditColspan {
  */
 export declare class CdkEditable implements AfterViewInit, OnDestroy {
     protected readonly elementRef: ElementRef;
-    protected readonly editEventDispatcher: EditEventDispatcher;
+    protected readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
     protected readonly focusDispatcher: FocusDispatcher;
     protected readonly ngZone: NgZone;
     protected readonly destroyed: Subject<void>;
-    constructor(elementRef: ElementRef, editEventDispatcher: EditEventDispatcher, focusDispatcher: FocusDispatcher, ngZone: NgZone);
+    constructor(elementRef: ElementRef, editEventDispatcher: EditEventDispatcher<EditRef<unknown>>, focusDispatcher: FocusDispatcher, ngZone: NgZone);
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     private _listenForTableEvents;
@@ -132,7 +133,7 @@ export declare class CdkRowHoverContent implements AfterViewInit, OnDestroy {
  */
 export declare class CdkEditOpen {
     protected readonly elementRef: ElementRef<HTMLElement>;
-    protected readonly editEventDispatcher: EditEventDispatcher;
-    constructor(elementRef: ElementRef<HTMLElement>, editEventDispatcher: EditEventDispatcher);
+    protected readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
+    constructor(elementRef: ElementRef<HTMLElement>, editEventDispatcher: EditEventDispatcher<EditRef<unknown>>);
     openEdit(evt: Event): void;
 }

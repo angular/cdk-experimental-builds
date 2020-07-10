@@ -76,6 +76,9 @@ const hasNativeClosest = !!Element.prototype.closest;
 const MOUSE_EVENT_DELAY_MS = 40;
 /** The delay for reacting to focus/blur changes. */
 const FOCUS_DELAY = 0;
+// Note: this class is generic, rather than referencing EditRef directly, in order to avoid
+// circular imports. If we were to reference it here, importing the registry into the
+// class that is registering itself will introduce a circular import.
 /**
  * Service for sharing delegated events and state for triggering table edits.
  */

@@ -7,7 +7,6 @@
  */
 import { NgZone } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { EditRef } from './edit-ref';
 /**
  * The possible states for hover content:
  * OFF - Not rendered.
@@ -22,7 +21,7 @@ export declare const enum HoverContentState {
 /**
  * Service for sharing delegated events and state for triggering table edits.
  */
-export declare class EditEventDispatcher {
+export declare class EditEventDispatcher<R> {
     private readonly _ngZone;
     /** A subject that indicates which table cell is currently editing (unless it is disabled). */
     readonly editing: Subject<Element | null>;
@@ -40,7 +39,7 @@ export declare class EditEventDispatcher {
      */
     readonly disabledCells: WeakMap<Element, boolean>;
     /** The EditRef for the currently active edit lens (if any). */
-    get editRef(): EditRef<any> | null;
+    get editRef(): R | null;
     private _editRef;
     private readonly _distinctUntilChanged;
     private readonly _startWithNull;
@@ -70,9 +69,9 @@ export declare class EditEventDispatcher {
      */
     doneEditingCell(element: Element | EventTarget): void;
     /** Sets the currently active EditRef. */
-    setActiveEditRef(ref: EditRef<any>): void;
+    setActiveEditRef(ref: R): void;
     /** Unsets the currently active EditRef, if the specified editRef is active. */
-    unsetActiveEditRef(ref: EditRef<any>): void;
+    unsetActiveEditRef(ref: R): void;
     /** Adds the specified table row to be tracked for first/last row comparisons. */
     registerRowWithHoverContent(row: Element): void;
     /**

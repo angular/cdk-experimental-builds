@@ -13,6 +13,7 @@ import { ScrollDispatcher, ViewportRuler } from '@angular/cdk/scrolling';
 import { EditEventDispatcher } from './edit-event-dispatcher';
 import { FocusDispatcher } from './focus-dispatcher';
 import { PopoverEditPositionStrategyFactory } from './popover-edit-position-strategy-factory';
+import { EditRef } from './edit-ref';
 /**
  * Optimization
  * Collects multiple Injectables into a singleton shared across the table. By reducing the
@@ -21,7 +22,7 @@ import { PopoverEditPositionStrategyFactory } from './popover-edit-position-stra
  */
 export declare class EditServices {
     readonly directionality: Directionality;
-    readonly editEventDispatcher: EditEventDispatcher;
+    readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
     readonly focusDispatcher: FocusDispatcher;
     readonly focusTrapFactory: FocusTrapFactory;
     readonly ngZone: NgZone;
@@ -29,5 +30,5 @@ export declare class EditServices {
     readonly positionFactory: PopoverEditPositionStrategyFactory;
     readonly scrollDispatcher: ScrollDispatcher;
     readonly viewportRuler: ViewportRuler;
-    constructor(directionality: Directionality, editEventDispatcher: EditEventDispatcher, focusDispatcher: FocusDispatcher, focusTrapFactory: FocusTrapFactory, ngZone: NgZone, overlay: Overlay, positionFactory: PopoverEditPositionStrategyFactory, scrollDispatcher: ScrollDispatcher, viewportRuler: ViewportRuler);
+    constructor(directionality: Directionality, editEventDispatcher: EditEventDispatcher<EditRef<unknown>>, focusDispatcher: FocusDispatcher, focusTrapFactory: FocusTrapFactory, ngZone: NgZone, overlay: Overlay, positionFactory: PopoverEditPositionStrategyFactory, scrollDispatcher: ScrollDispatcher, viewportRuler: ViewportRuler);
 }

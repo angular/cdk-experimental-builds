@@ -25,7 +25,7 @@ export declare class EditRef<FormValue> implements OnDestroy {
     readonly blurred: Observable<void>;
     /** The value to set the form back to on revert. */
     private _revertFormValue;
-    constructor(_form: ControlContainer, _editEventDispatcher: EditEventDispatcher, _ngZone: NgZone);
+    constructor(_form: ControlContainer, _editEventDispatcher: EditEventDispatcher<EditRef<FormValue>>, _ngZone: NgZone);
     /**
      * Called by the host directive's OnInit hook. Reads the initial state of the
      * form and overrides it with persisted state from previous openings, if
