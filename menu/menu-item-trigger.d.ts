@@ -23,10 +23,13 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
     private readonly _elementRef;
     protected readonly _viewContainerRef: ViewContainerRef;
     private readonly _overlay;
-    private readonly _directionality;
     private readonly _parentMenu;
+    private readonly _directionality?;
     /** Template reference variable to the menu this trigger opens */
-    _menuPanel?: CdkMenuPanel;
+    get menuPanel(): CdkMenuPanel | undefined;
+    set menuPanel(panel: CdkMenuPanel | undefined);
+    /** Reference to the MenuPanel this trigger toggles. */
+    private _menuPanel?;
     /** Emits when the attached menu is requested to open */
     readonly opened: EventEmitter<void>;
     /** Emits when the attached menu is requested to close */
@@ -35,17 +38,28 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
     private _overlayRef;
     /** The content of the menu panel opened by this trigger. */
     private _panelContent;
-    constructor(_elementRef: ElementRef<HTMLElement>, _viewContainerRef: ViewContainerRef, _overlay: Overlay, _directionality: Directionality, _parentMenu: Menu);
+    constructor(_elementRef: ElementRef<HTMLElement>, _viewContainerRef: ViewContainerRef, _overlay: Overlay, _parentMenu: Menu, _directionality?: Directionality | undefined);
     /** Open/close the attached menu if the trigger has been configured with one */
     toggle(): void;
+    /** Open the attached menu. */
+    openMenu(): void;
+    /** Close the opened menu. */
+    closeMenu(): void;
     /** Return true if the trigger has an attached menu */
     hasMenu(): boolean;
     /** Whether the menu this button is a trigger for is open */
     isMenuOpen(): boolean;
-    /** Open the attached menu */
-    private _openMenu;
-    /** Close the opened menu */
-    private _closeMenu;
+    /**
+     * Get a reference to the rendered Menu if the Menu is open and it is visible in the DOM.
+     * @return the menu if it is open, otherwise undefined.
+     */
+    getMenu(): Menu | undefined;
+    /**
+     * Handles keyboard events for the menu item, specifically opening/closing the attached menu and
+     * focusing the appropriate submenu item.
+     * @param event the keyboard event to handle
+     */
+    _toggleOnKeydown(event: KeyboardEvent): void;
     /** Get the configuration object used to create the overlay */
     private _getOverlayConfig;
     /** Build the position strategy for the overlay which specifies where to place the menu */
@@ -57,6 +71,12 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
      * content to change dynamically and be reflected in the application.
      */
     private _getPortal;
+    /**
+     * @return true if if the enclosing parent menu is configured in a vertical orientation.
+     */
+    private _isParentVertical;
+    /** Get the menu stack from the parent. */
+    private _getMenuStack;
     ngOnDestroy(): void;
     /** Destroy and unset the overlay reference it if exists */
     private _destroyOverlay;

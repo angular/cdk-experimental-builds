@@ -5,26 +5,65 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+import { ElementRef, EventEmitter } from '@angular/core';
 import { BooleanInput } from '@angular/cdk/coercion';
+import { FocusableOption } from '@angular/cdk/a11y';
+import { Directionality } from '@angular/cdk/bidi';
 import { CdkMenuItemTrigger } from './menu-item-trigger';
+import { Menu } from './menu-interface';
 /**
  * Directive which provides the ability for an element to be focused and navigated to using the
  * keyboard when residing in a CdkMenu, CdkMenuBar, or CdkMenuGroup. It performs user defined
  * behavior when clicked.
  */
-export declare class CdkMenuItem {
+export declare class CdkMenuItem implements FocusableOption {
+    private readonly _elementRef;
+    private readonly _parentMenu;
+    private readonly _dir?;
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     private readonly _menuTrigger?;
     /**  Whether the CdkMenuItem is disabled - defaults to false */
     get disabled(): boolean;
     set disabled(value: boolean);
     private _disabled;
-    constructor(
+    /**
+     * If this MenuItem is a regular MenuItem, outputs when it is triggered by a keyboard or mouse
+     * event.
+     */
+    triggered: EventEmitter<void>;
+    constructor(_elementRef: ElementRef<HTMLElement>, _parentMenu: Menu, _dir?: Directionality | undefined, 
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     _menuTrigger?: CdkMenuItemTrigger | undefined);
-    /** Open the menu if one is attached */
+    /** Place focus on the element. */
+    focus(): void;
+    /**
+     * If the menu item is not disabled and the element does not have a menu trigger attached, emit
+     * on the cdkMenuItemTriggered emitter and close all open menus.
+     */
     trigger(): void;
     /** Whether the menu item opens a menu. */
     hasMenu(): boolean;
+    /** Return true if this MenuItem has an attached menu and it is open. */
+    isMenuOpen(): boolean;
+    /**
+     * Get a reference to the rendered Menu if the Menu is open and it is visible in the DOM.
+     * @return the menu if it is open, otherwise undefined.
+     */
+    getMenu(): Menu | undefined;
+    /** Get the MenuItemTrigger associated with this element. */
+    getMenuTrigger(): CdkMenuItemTrigger | undefined;
+    /** Get the label for this element which is required by the FocusableOption interface. */
+    getLabel(): string;
+    /**
+     * Handles keyboard events for the menu item, specifically either triggering the user defined
+     * callback or opening/closing the current menu based on whether the left or right arrow key was
+     * pressed.
+     * @param event the keyboard event to handle
+     */
+    _onKeydown(event: KeyboardEvent): void;
+    /** Return true if the enclosing parent menu is configured in a horizontal orientation. */
+    private _isParentVertical;
+    /** Get the MenuStack from the parent menu. */
+    private _getMenuStack;
     static ngAcceptInputType_disabled: BooleanInput;
 }

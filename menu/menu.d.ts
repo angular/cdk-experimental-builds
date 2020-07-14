@@ -5,10 +5,13 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { EventEmitter, AfterContentInit, OnDestroy } from '@angular/core';
+import { EventEmitter, AfterContentInit, OnDestroy, OnInit } from '@angular/core';
+import { FocusOrigin } from '@angular/cdk/a11y';
+import { Directionality } from '@angular/cdk/bidi';
 import { CdkMenuGroup } from './menu-group';
 import { CdkMenuPanel } from './menu-panel';
 import { Menu } from './menu-interface';
+import { MenuStack } from './menu-stack';
 /**
  * Directive which configures the element as a Menu which should contain child elements marked as
  * CdkMenuItem or CdkMenuGroup. Sets the appropriate role and aria-attributes for a menu and
@@ -16,7 +19,8 @@ import { Menu } from './menu-interface';
  *
  * It also acts as a RadioGroup for elements marked with role `menuitemradio`.
  */
-export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentInit, OnDestroy {
+export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentInit, OnInit, OnDestroy {
+    private readonly _dir?;
     private readonly _menuPanel?;
     /**
      * Sets the aria-orientation attribute and determines where menus will be opened.
@@ -25,8 +29,14 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
     orientation: 'horizontal' | 'vertical';
     /** Event emitted when the menu is closed. */
     readonly closed: EventEmitter<void | 'click' | 'tab' | 'escape'>;
+    /** Track the Menus making up the open menu stack. */
+    _menuStack: MenuStack;
+    /** Handles keyboard events for the menu. */
+    private _keyManager;
     /** List of nested CdkMenuGroup elements */
     private readonly _nestedGroups;
+    /** All child MenuItem elements nested in this Menu. */
+    private readonly _allItems;
     /**
      * A reference to the enclosing parent menu panel.
      *
@@ -35,8 +45,15 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
      * injected value will be used over this one.
      */
     private readonly _explicitPanel?;
-    constructor(_menuPanel?: CdkMenuPanel | undefined);
+    constructor(_dir?: Directionality | undefined, _menuPanel?: CdkMenuPanel | undefined);
+    ngOnInit(): void;
     ngAfterContentInit(): void;
+    /** Place focus on the first MenuItem in the menu and set the focus origin. */
+    focusFirstItem(focusOrigin?: FocusOrigin): void;
+    /** Place focus on the last MenuItem in the menu and set the focus origin. */
+    focusLastItem(focusOrigin?: FocusOrigin): void;
+    /** Handle keyboard events for the Menu. */
+    _handleKeyEvent(event: KeyboardEvent): void;
     /** Register this menu with its enclosing parent menu panel */
     private _registerWithParentPanel;
     /**
@@ -51,6 +68,19 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
     private _completeChangeEmitter;
     /** Return true if there are nested CdkMenuGroup elements within the Menu */
     private _hasNestedGroups;
+    /** Setup the FocusKeyManager with the correct orientation for the menu. */
+    private _setKeyManager;
+    /** Subscribe to the MenuStack close and empty observables. */
+    private _subscribeToMenuStack;
+    /**
+     * Close the open menu if the current active item opened the requested MenuStackItem.
+     * @param item the MenuStackItem requested to be closed.
+     */
+    private _closeOpenMenu;
+    /** Set focus the either the current, previous or next item based on the FocusNext event. */
+    private _toggleMenuFocus;
+    /** Return true if this menu has been configured in a horizontal orientation. */
+    private _isHorizontal;
     ngOnDestroy(): void;
     /** Emit and complete the closed event emitter */
     private _emitClosedEvent;
