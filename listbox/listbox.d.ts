@@ -5,21 +5,24 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AfterContentInit, ElementRef, EventEmitter, OnDestroy, QueryList } from '@angular/core';
+import { AfterContentInit, ElementRef, EventEmitter, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { ActiveDescendantKeyManager, Highlightable, ListKeyManagerOption } from '@angular/cdk/a11y';
 import { BooleanInput } from '@angular/cdk/coercion';
+import { SelectionModel } from '@angular/cdk/collections';
+import { Observable } from 'rxjs';
 export declare class CdkOption implements ListKeyManagerOption, Highlightable {
-    private _elementRef;
-    listbox: CdkListbox;
+    private readonly _elementRef;
+    readonly listbox: CdkListbox;
     private _selected;
     private _disabled;
     _active: boolean;
-    get selected(): boolean;
-    set selected(value: boolean);
     /** The id of the option, set to a uniqueid if the user does not provide one. */
     id: string;
+    get selected(): boolean;
+    set selected(value: boolean);
     get disabled(): boolean;
     set disabled(value: boolean);
+    readonly selectionChange: EventEmitter<OptionSelectionChangeEvent>;
     constructor(_elementRef: ElementRef, listbox: CdkListbox);
     /** Toggles the selected state, emits a change event through the injected listbox. */
     toggle(): void;
@@ -27,46 +30,92 @@ export declare class CdkOption implements ListKeyManagerOption, Highlightable {
     activate(): void;
     /** Sets the active property false. */
     deactivate(): void;
+    /** Sets the selected property true if it was false. */
+    select(): void;
+    /** Sets the selected property false if it was true. */
+    deselect(): void;
+    /** Applies focus to the option. */
+    focus(): void;
     /** Returns true if the option or listbox are disabled, and false otherwise. */
     _isInteractionDisabled(): boolean;
+    /** Emits a change event extending the Option Selection Change Event interface. */
+    private _emitSelectionChange;
     /** Returns the tab index which depends on the disabled property. */
     _getTabIndex(): string | null;
+    /** Get the label for this element which is required by the FocusableOption interface. */
     getLabel(): string;
+    /** Remove any child from the given element which can be identified as an icon. */
+    private _removeIcons;
+    /** Sets the active property to true to enable the active css class. */
     setActiveStyles(): void;
+    /** Sets the active property to false to disable the active css class. */
     setInactiveStyles(): void;
     static ngAcceptInputType_selected: BooleanInput;
     static ngAcceptInputType_disabled: BooleanInput;
 }
-export declare class CdkListbox implements AfterContentInit, OnDestroy {
+export declare class CdkListbox implements AfterContentInit, OnDestroy, OnInit {
     _listKeyManager: ActiveDescendantKeyManager<CdkOption>;
+    _selectionModel: SelectionModel<CdkOption>;
+    readonly optionSelectionChanges: Observable<OptionSelectionChangeEvent>;
     private _disabled;
+    private _multiple;
+    private _useActiveDescendant;
+    private _activeOption;
+    private readonly _destroyed;
     _options: QueryList<CdkOption>;
     readonly selectionChange: EventEmitter<ListboxSelectionChangeEvent>;
+    /**
+     * Whether the listbox allows multiple options to be selected.
+     * If `multiple` switches from `true` to `false`, all options are deselected.
+     */
+    get multiple(): boolean;
+    set multiple(value: boolean);
     get disabled(): boolean;
     set disabled(value: boolean);
+    /** Whether the listbox will use active descendant or will move focus onto the options. */
+    get useActiveDescendant(): boolean;
+    set useActiveDescendant(shouldUseActiveDescendant: boolean);
+    ngOnInit(): void;
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
+    private _initKeyManager;
+    private _initSelectionModel;
     _keydown(event: KeyboardEvent): void;
     /** Emits a selection change event, called when an option has its selected state changed. */
     _emitChangeEvent(option: CdkOption): void;
+    /** Updates the selection model after a toggle. */
+    _updateSelectionModel(option: CdkOption): void;
+    /** Toggles the selected state of the active option if not disabled. */
     private _toggleActiveOption;
+    /** Returns the id of the active option if active descendant is being used. */
+    _getAriaActiveDescendant(): string | null | undefined;
+    /** Updates the activeOption and the active and focus properties of the option. */
+    private _updateActiveOption;
+    /** Updates selection states of options when the 'multiple' property changes. */
+    private _updateSelectionOnMultiSelectionChange;
     /** Selects the given option if the option and listbox aren't disabled. */
     select(option: CdkOption): void;
     /** Deselects the given option if the option and listbox aren't disabled. */
     deselect(option: CdkOption): void;
+    /** Sets the selected state of all options to be the given value. */
+    setAllSelected(isSelected: boolean): void;
     /** Updates the key manager's active item to the given option. */
     setActiveOption(option: CdkOption): void;
     static ngAcceptInputType_disabled: BooleanInput;
+    static ngAcceptInputType_multiple: BooleanInput;
+    static ngAcceptInputType_useActiveDescendant: BooleanInput;
 }
 /** Change event that is being fired whenever the selected state of an option changes. */
-export declare class ListboxSelectionChangeEvent {
+export interface ListboxSelectionChangeEvent {
     /** Reference to the listbox that emitted the event. */
-    source: CdkListbox;
+    readonly source: CdkListbox;
     /** Reference to the option that has been changed. */
-    option: CdkOption;
-    constructor(
-    /** Reference to the listbox that emitted the event. */
-    source: CdkListbox, 
-    /** Reference to the option that has been changed. */
-    option: CdkOption);
+    readonly option: CdkOption;
+}
+/** Event object emitted by MatOption when selected or deselected. */
+export interface OptionSelectionChangeEvent {
+    /** Reference to the option that emitted the event. */
+    source: CdkOption;
+    /** Whether the change in the option's value was a result of a user action. */
+    isUserInput: boolean;
 }
