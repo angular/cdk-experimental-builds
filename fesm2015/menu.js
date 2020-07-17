@@ -246,6 +246,14 @@ CdkMenuItemTrigger.propDecorators = {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+// TODO refactor this to be configurable allowing for custom elements to be removed
+/** Removes all icons from within the given element. */
+function removeIcons(element) {
+    var _a;
+    for (const icon of Array.from(element.querySelectorAll('mat-icon, .material-icons'))) {
+        (_a = icon.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(icon);
+    }
+}
 /**
  * Directive which provides the ability for an element to be focused and navigated to using the
  * keyboard when residing in a CdkMenu, CdkMenuBar, or CdkMenuGroup. It performs user defined
@@ -311,8 +319,12 @@ class CdkMenuItem {
     }
     /** Get the label for this element which is required by the FocusableOption interface. */
     getLabel() {
-        // TODO(andy): implement a more robust algorithm for determining nested text
-        return this._elementRef.nativeElement.textContent || '';
+        var _a;
+        // TODO cloning the tree may be expensive; implement a better method
+        // we know that the current node is an element type
+        const clone = this._elementRef.nativeElement.cloneNode(true);
+        removeIcons(clone);
+        return ((_a = clone.textContent) === null || _a === void 0 ? void 0 : _a.trim()) || '';
     }
     // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
     // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
