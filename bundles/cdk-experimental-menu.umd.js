@@ -1029,13 +1029,13 @@
             /** Emits once the MenuStack has become empty after popping off elements. */
             this._empty = new rxjs.Subject();
             /** Observable which emits the MenuStackItem which has been requested to close. */
-            this.close = this._close.asObservable();
+            this.close = this._close;
             /**
              * Observable which emits when the MenuStack is empty after popping off the last element. It
              * emits a FocusNext event which specifies the action the closer has requested the listener
              * perform.
              */
-            this.empty = this._empty.asObservable();
+            this.empty = this._empty;
         }
         /** @param menu the MenuStackItem to put on the stack. */
         MenuStack.prototype.push = function (menu) {
