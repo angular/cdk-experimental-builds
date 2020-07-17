@@ -1,6 +1,6 @@
 {
   "name": "@angular/cdk-experimental",
-  "version": "10.1.0-next.0-sha-23170afae",
+  "version": "10.1.0-next.0-sha-d00cb1258",
   "description": "Experimental components for Angular CDK",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
   },
   "homepage": "https://github.com/angular/components#readme",
   "peerDependencies": {
-    "@angular/cdk": "10.1.0-next.0-sha-23170afae",
+    "@angular/cdk": "10.1.0-next.0-sha-d00cb1258",
     "@angular/core": "^10.0.0 || ^11.0.0-0"
   },
   "dependencies": {
