@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/bidi'), require('rxjs/operators'), require('@angular/cdk/collections'), require('@angular/cdk/coercion'), require('@angular/cdk/portal'), require('rxjs')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/bidi', 'rxjs/operators', '@angular/cdk/collections', '@angular/cdk/coercion', '@angular/cdk/portal', 'rxjs'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.rxjs.operators, global.ng.cdk.collections, global.ng.cdk.coercion, global.ng.cdk.portal, global.rxjs));
-}(this, (function (exports, core, overlay, a11y, keycodes, bidi, operators, collections, coercion, portal, rxjs) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/bidi'), require('rxjs/operators'), require('rxjs'), require('@angular/cdk/collections'), require('@angular/cdk/coercion'), require('@angular/cdk/portal')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/bidi', 'rxjs/operators', 'rxjs', '@angular/cdk/collections', '@angular/cdk/coercion', '@angular/cdk/portal'], factory) :
+    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.rxjs.operators, global.rxjs, global.ng.cdk.collections, global.ng.cdk.coercion, global.ng.cdk.portal));
+}(this, (function (exports, core, overlay, a11y, keycodes, bidi, operators, rxjs, collections, coercion, portal) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -847,6 +847,7 @@
             _super.prototype.ngAfterContentInit.call(this);
             this._completeChangeEmitter();
             this._setKeyManager();
+            this._subscribeToMenuOpen();
             this._subscribeToMenuStack();
         };
         /** Place focus on the first MenuItem in the menu and set the focus origin. */
@@ -960,13 +961,14 @@
          * Close the open menu if the current active item opened the requested MenuStackItem.
          * @param item the MenuStackItem requested to be closed.
          */
-        CdkMenu.prototype._closeOpenMenu = function (item) {
+        CdkMenu.prototype._closeOpenMenu = function (menu) {
             var _a, _b;
             var keyManager = this._keyManager;
-            if (item === ((_a = keyManager.activeItem) === null || _a === void 0 ? void 0 : _a.getMenu())) {
-                (_b = keyManager.activeItem.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
+            var trigger = this._openItem;
+            if (menu === ((_a = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _a === void 0 ? void 0 : _a.getMenu())) {
+                (_b = trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
                 keyManager.setFocusOrigin('keyboard');
-                keyManager.setActiveItem(keyManager.activeItem);
+                keyManager.setActiveItem(trigger);
             }
         };
         /** Set focus the either the current, previous or next item based on the FocusNext event. */
@@ -988,6 +990,25 @@
                     }
                     break;
             }
+        };
+        // TODO(andy9775): remove duplicate logic between menu an menu bar
+        /**
+         * Subscribe to the menu trigger's open events in order to track the trigger which opened the menu
+         * and stop tracking it when the menu is closed.
+         */
+        CdkMenu.prototype._subscribeToMenuOpen = function () {
+            var _this = this;
+            var exitCondition = rxjs.merge(this._allItems.changes, this.closed);
+            this._allItems.changes
+                .pipe(operators.startWith(this._allItems), operators.mergeMap(function (list) {
+                return list
+                    .filter(function (item) { return item.hasMenu(); })
+                    .map(function (item) { return item.getMenuTrigger().opened.pipe(operators.mapTo(item), operators.takeUntil(exitCondition)); });
+            }), operators.mergeAll(), operators.switchMap(function (item) {
+                _this._openItem = item;
+                return item.getMenuTrigger().closed;
+            }), operators.takeUntil(this.closed))
+                .subscribe(function () { return (_this._openItem = undefined); });
         };
         /** Return true if this menu has been configured in a horizontal orientation. */
         CdkMenu.prototype._isHorizontal = function () {
@@ -1128,6 +1149,7 @@
         CdkMenuBar.prototype.ngAfterContentInit = function () {
             _super.prototype.ngAfterContentInit.call(this);
             this._setKeyManager();
+            this._subscribeToMenuOpen();
             this._subscribeToMenuStack();
         };
         /** Place focus on the first MenuItem in the menu and set the focus origin. */
@@ -1210,13 +1232,14 @@
          * Close the open menu if the current active item opened the requested MenuStackItem.
          * @param item the MenuStackItem requested to be closed.
          */
-        CdkMenuBar.prototype._closeOpenMenu = function (item) {
+        CdkMenuBar.prototype._closeOpenMenu = function (menu) {
             var _a, _b;
+            var trigger = this._openItem;
             var keyManager = this._keyManager;
-            if (item === ((_a = keyManager.activeItem) === null || _a === void 0 ? void 0 : _a.getMenu())) {
-                (_b = keyManager.activeItem.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
+            if (menu === ((_a = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _a === void 0 ? void 0 : _a.getMenu())) {
+                (_b = trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
                 keyManager.setFocusOrigin('keyboard');
-                keyManager.setActiveItem(keyManager.activeItem);
+                keyManager.setActiveItem(trigger);
             }
         };
         /**
@@ -1250,6 +1273,24 @@
          */
         CdkMenuBar.prototype._isHorizontal = function () {
             return this.orientation === 'horizontal';
+        };
+        /**
+         * Subscribe to the menu trigger's open events in order to track the trigger which opened the menu
+         * and stop tracking it when the menu is closed.
+         */
+        CdkMenuBar.prototype._subscribeToMenuOpen = function () {
+            var _this = this;
+            var exitCondition = rxjs.merge(this._allItems.changes, this._destroyed);
+            this._allItems.changes
+                .pipe(operators.startWith(this._allItems), operators.mergeMap(function (list) {
+                return list
+                    .filter(function (item) { return item.hasMenu(); })
+                    .map(function (item) { return item.getMenuTrigger().opened.pipe(operators.mapTo(item), operators.takeUntil(exitCondition)); });
+            }), operators.mergeAll(), operators.switchMap(function (item) {
+                _this._openItem = item;
+                return item.getMenuTrigger().closed;
+            }), operators.takeUntil(this._destroyed))
+                .subscribe(function () { return (_this._openItem = undefined); });
         };
         CdkMenuBar.prototype.ngOnDestroy = function () {
             _super.prototype.ngOnDestroy.call(this);

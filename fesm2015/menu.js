@@ -3,11 +3,11 @@ import { OverlayConfig, Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW, ENTER, SPACE, TAB, ESCAPE, hasModifierKey } from '@angular/cdk/keycodes';
 import { Directionality } from '@angular/cdk/bidi';
-import { takeUntil, take } from 'rxjs/operators';
+import { takeUntil, take, startWith, mergeMap, mapTo, mergeAll, switchMap } from 'rxjs/operators';
+import { merge, Subject } from 'rxjs';
 import { UniqueSelectionDispatcher } from '@angular/cdk/collections';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Subject } from 'rxjs';
 
 /**
  * @license
@@ -590,6 +590,7 @@ class CdkMenu extends CdkMenuGroup {
         super.ngAfterContentInit();
         this._completeChangeEmitter();
         this._setKeyManager();
+        this._subscribeToMenuOpen();
         this._subscribeToMenuStack();
     }
     /** Place focus on the first MenuItem in the menu and set the focus origin. */
@@ -699,13 +700,14 @@ class CdkMenu extends CdkMenuGroup {
      * Close the open menu if the current active item opened the requested MenuStackItem.
      * @param item the MenuStackItem requested to be closed.
      */
-    _closeOpenMenu(item) {
+    _closeOpenMenu(menu) {
         var _a, _b;
         const keyManager = this._keyManager;
-        if (item === ((_a = keyManager.activeItem) === null || _a === void 0 ? void 0 : _a.getMenu())) {
-            (_b = keyManager.activeItem.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
+        const trigger = this._openItem;
+        if (menu === ((_a = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _a === void 0 ? void 0 : _a.getMenu())) {
+            (_b = trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
             keyManager.setFocusOrigin('keyboard');
-            keyManager.setActiveItem(keyManager.activeItem);
+            keyManager.setActiveItem(trigger);
         }
     }
     /** Set focus the either the current, previous or next item based on the FocusNext event. */
@@ -727,6 +729,22 @@ class CdkMenu extends CdkMenuGroup {
                 }
                 break;
         }
+    }
+    // TODO(andy9775): remove duplicate logic between menu an menu bar
+    /**
+     * Subscribe to the menu trigger's open events in order to track the trigger which opened the menu
+     * and stop tracking it when the menu is closed.
+     */
+    _subscribeToMenuOpen() {
+        const exitCondition = merge(this._allItems.changes, this.closed);
+        this._allItems.changes
+            .pipe(startWith(this._allItems), mergeMap((list) => list
+            .filter(item => item.hasMenu())
+            .map(item => item.getMenuTrigger().opened.pipe(mapTo(item), takeUntil(exitCondition)))), mergeAll(), switchMap((item) => {
+            this._openItem = item;
+            return item.getMenuTrigger().closed;
+        }), takeUntil(this.closed))
+            .subscribe(() => (this._openItem = undefined));
     }
     /** Return true if this menu has been configured in a horizontal orientation. */
     _isHorizontal() {
@@ -863,6 +881,7 @@ class CdkMenuBar extends CdkMenuGroup {
     ngAfterContentInit() {
         super.ngAfterContentInit();
         this._setKeyManager();
+        this._subscribeToMenuOpen();
         this._subscribeToMenuStack();
     }
     /** Place focus on the first MenuItem in the menu and set the focus origin. */
@@ -942,13 +961,14 @@ class CdkMenuBar extends CdkMenuGroup {
      * Close the open menu if the current active item opened the requested MenuStackItem.
      * @param item the MenuStackItem requested to be closed.
      */
-    _closeOpenMenu(item) {
+    _closeOpenMenu(menu) {
         var _a, _b;
+        const trigger = this._openItem;
         const keyManager = this._keyManager;
-        if (item === ((_a = keyManager.activeItem) === null || _a === void 0 ? void 0 : _a.getMenu())) {
-            (_b = keyManager.activeItem.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
+        if (menu === ((_a = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _a === void 0 ? void 0 : _a.getMenu())) {
+            (_b = trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
             keyManager.setFocusOrigin('keyboard');
-            keyManager.setActiveItem(keyManager.activeItem);
+            keyManager.setActiveItem(trigger);
         }
     }
     /**
@@ -982,6 +1002,21 @@ class CdkMenuBar extends CdkMenuGroup {
      */
     _isHorizontal() {
         return this.orientation === 'horizontal';
+    }
+    /**
+     * Subscribe to the menu trigger's open events in order to track the trigger which opened the menu
+     * and stop tracking it when the menu is closed.
+     */
+    _subscribeToMenuOpen() {
+        const exitCondition = merge(this._allItems.changes, this._destroyed);
+        this._allItems.changes
+            .pipe(startWith(this._allItems), mergeMap((list) => list
+            .filter(item => item.hasMenu())
+            .map(item => item.getMenuTrigger().opened.pipe(mapTo(item), takeUntil(exitCondition)))), mergeAll(), switchMap((item) => {
+            this._openItem = item;
+            return item.getMenuTrigger().closed;
+        }), takeUntil(this._destroyed))
+            .subscribe(() => (this._openItem = undefined));
     }
     ngOnDestroy() {
         super.ngOnDestroy();
