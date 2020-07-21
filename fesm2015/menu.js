@@ -79,6 +79,7 @@ class CdkMenuItemTrigger {
             this.closed.next();
             this._overlayRef.detach();
         }
+        this._getMenuStack().closeSubMenuOf(this._parentMenu);
     }
     /** Return true if the trigger has an attached menu */
     hasMenu() {
@@ -115,7 +116,7 @@ class CdkMenuItemTrigger {
                 if (this._isParentVertical()) {
                     event.preventDefault();
                     if (((_c = this._directionality) === null || _c === void 0 ? void 0 : _c.value) === 'rtl') {
-                        this._getMenuStack().closeLatest(2 /* currentItem */);
+                        this._getMenuStack().close(this._parentMenu, 2 /* currentItem */);
                     }
                     else {
                         this.openMenu();
@@ -131,7 +132,7 @@ class CdkMenuItemTrigger {
                         (_h = (_g = this.menuPanel) === null || _g === void 0 ? void 0 : _g._menu) === null || _h === void 0 ? void 0 : _h.focusFirstItem('keyboard');
                     }
                     else {
-                        this._getMenuStack().closeLatest(2 /* currentItem */);
+                        this._getMenuStack().close(this._parentMenu, 2 /* currentItem */);
                     }
                 }
                 break;
@@ -348,7 +349,7 @@ class CdkMenuItem {
                 if (this._isParentVertical() && !this.hasMenu()) {
                     event.preventDefault();
                     ((_a = this._dir) === null || _a === void 0 ? void 0 : _a.value) === 'rtl'
-                        ? this._getMenuStack().closeLatest(1 /* previousItem */)
+                        ? this._getMenuStack().close(this._parentMenu, 1 /* previousItem */)
                         : this._getMenuStack().closeAll(0 /* nextItem */);
                 }
                 break;
@@ -357,7 +358,7 @@ class CdkMenuItem {
                     event.preventDefault();
                     ((_b = this._dir) === null || _b === void 0 ? void 0 : _b.value) === 'rtl'
                         ? this._getMenuStack().closeAll(0 /* nextItem */)
-                        : this._getMenuStack().closeLatest(1 /* previousItem */);
+                        : this._getMenuStack().close(this._parentMenu, 1 /* previousItem */);
                 }
                 break;
         }
@@ -626,7 +627,7 @@ class CdkMenu extends CdkMenuGroup {
             case ESCAPE:
                 if (!hasModifierKey(event)) {
                     event.preventDefault();
-                    this._menuStack.closeLatest(2 /* currentItem */);
+                    this._menuStack.close(this, 2 /* currentItem */);
                 }
                 break;
             case TAB:
@@ -689,10 +690,10 @@ class CdkMenu extends CdkMenuGroup {
     }
     /** Subscribe to the MenuStack close and empty observables. */
     _subscribeToMenuStack() {
-        this._menuStack.close
+        this._menuStack.closed
             .pipe(takeUntil(this.closed))
             .subscribe((item) => this._closeOpenMenu(item));
-        this._menuStack.empty
+        this._menuStack.emptied
             .pipe(takeUntil(this.closed))
             .subscribe((event) => this._toggleMenuFocus(event));
     }
@@ -808,29 +809,47 @@ class MenuStack {
         /** Emits once the MenuStack has become empty after popping off elements. */
         this._empty = new Subject();
         /** Observable which emits the MenuStackItem which has been requested to close. */
-        this.close = this._close;
+        this.closed = this._close.asObservable();
         /**
          * Observable which emits when the MenuStack is empty after popping off the last element. It
          * emits a FocusNext event which specifies the action the closer has requested the listener
          * perform.
          */
-        this.empty = this._empty;
+        this.emptied = this._empty.asObservable();
     }
     /** @param menu the MenuStackItem to put on the stack. */
     push(menu) {
         this._elements.push(menu);
     }
     /**
-     *  Pop off the top most MenuStackItem and emit it on the close observable.
-     *  @param focusNext the event to emit on the `empty` observable if the method call resulted in an
-     *  empty stack. Does not emit if the stack was initially empty.
+     * Pop items off of the stack up to and including `lastItem` and emit each on the close
+     * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
+     * @param lastItem the last item to pop off the stack.
+     * @param focusNext the event to emit on the `empty` observable if the method call resulted in an
+     * empty stack. Does not emit if the stack was initially empty or if `lastItem` was not on the
+     * stack.
      */
-    closeLatest(focusNext) {
-        const menuStackItem = this._elements.pop();
-        if (menuStackItem) {
-            this._close.next(menuStackItem);
-            if (this._elements.length === 0) {
+    close(lastItem, focusNext) {
+        if (this._elements.indexOf(lastItem) >= 0) {
+            let poppedElement;
+            do {
+                poppedElement = this._elements.pop();
+                this._close.next(poppedElement);
+            } while (poppedElement !== lastItem);
+            if (this.isEmpty()) {
                 this._empty.next(focusNext);
+            }
+        }
+    }
+    /**
+     * Pop items off of the stack up to but excluding `lastItem` and emit each on the close
+     * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
+     * @param lastItem the element which should be left on the stack
+     */
+    closeSubMenuOf(lastItem) {
+        if (this._elements.indexOf(lastItem) >= 0) {
+            while (this.peek() !== lastItem) {
+                this._close.next(this._elements.pop());
             }
         }
     }
@@ -840,8 +859,8 @@ class MenuStack {
      * not emit if the stack was initially empty.
      */
     closeAll(focusNext) {
-        if (this._elements.length) {
-            while (this._elements.length) {
+        if (!this.isEmpty()) {
+            while (!this.isEmpty()) {
                 const menuStackItem = this._elements.pop();
                 if (menuStackItem) {
                     this._close.next(menuStackItem);
@@ -849,6 +868,18 @@ class MenuStack {
             }
             this._empty.next(focusNext);
         }
+    }
+    /** Return true if this stack is empty. */
+    isEmpty() {
+        return !this._elements.length;
+    }
+    /** Return the length of the stack. */
+    length() {
+        return this._elements.length;
+    }
+    /** Get the top most element on the stack. */
+    peek() {
+        return this._elements[this._elements.length - 1];
     }
 }
 
@@ -950,10 +981,10 @@ class CdkMenuBar extends CdkMenuGroup {
     }
     /** Subscribe to the MenuStack close and empty observables. */
     _subscribeToMenuStack() {
-        this._menuStack.close
+        this._menuStack.closed
             .pipe(takeUntil(this._destroyed))
             .subscribe((item) => this._closeOpenMenu(item));
-        this._menuStack.empty
+        this._menuStack.emptied
             .pipe(takeUntil(this._destroyed))
             .subscribe((event) => this._toggleOpenMenu(event));
     }

@@ -33,25 +33,40 @@ export declare class MenuStack {
     /** Emits once the MenuStack has become empty after popping off elements. */
     private readonly _empty;
     /** Observable which emits the MenuStackItem which has been requested to close. */
-    readonly close: Observable<MenuStackItem>;
+    readonly closed: Observable<MenuStackItem>;
     /**
      * Observable which emits when the MenuStack is empty after popping off the last element. It
      * emits a FocusNext event which specifies the action the closer has requested the listener
      * perform.
      */
-    readonly empty: Observable<FocusNext>;
+    readonly emptied: Observable<FocusNext>;
     /** @param menu the MenuStackItem to put on the stack. */
     push(menu: MenuStackItem): void;
     /**
-     *  Pop off the top most MenuStackItem and emit it on the close observable.
-     *  @param focusNext the event to emit on the `empty` observable if the method call resulted in an
-     *  empty stack. Does not emit if the stack was initially empty.
+     * Pop items off of the stack up to and including `lastItem` and emit each on the close
+     * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
+     * @param lastItem the last item to pop off the stack.
+     * @param focusNext the event to emit on the `empty` observable if the method call resulted in an
+     * empty stack. Does not emit if the stack was initially empty or if `lastItem` was not on the
+     * stack.
      */
-    closeLatest(focusNext?: FocusNext): void;
+    close(lastItem: MenuStackItem, focusNext?: FocusNext): void;
+    /**
+     * Pop items off of the stack up to but excluding `lastItem` and emit each on the close
+     * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
+     * @param lastItem the element which should be left on the stack
+     */
+    closeSubMenuOf(lastItem: MenuStackItem): void;
     /**
      * Pop off all MenuStackItems and emit each one on the `close` observable one by one.
      * @param focusNext the event to emit on the `empty` observable once the stack is emptied. Does
      * not emit if the stack was initially empty.
      */
     closeAll(focusNext?: FocusNext): void;
+    /** Return true if this stack is empty. */
+    isEmpty(): boolean;
+    /** Return the length of the stack. */
+    length(): number;
+    /** Get the top most element on the stack. */
+    peek(): MenuStackItem;
 }
