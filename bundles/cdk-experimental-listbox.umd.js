@@ -371,11 +371,12 @@
                             '(focus)': 'activate()',
                             '(blur)': 'deactivate()',
                             '[id]': 'id',
-                            '[attr.aria-selected]': '_selected || null',
+                            '[attr.aria-selected]': 'selected || null',
                             '[attr.tabindex]': '_getTabIndex()',
                             '[attr.aria-disabled]': '_isInteractionDisabled()',
                             '[class.cdk-option-disabled]': '_isInteractionDisabled()',
-                            '[class.cdk-option-active]': '_active'
+                            '[class.cdk-option-active]': '_active',
+                            '[class.cdk-option-selected]': 'selected'
                         }
                     },] }
         ];
@@ -394,6 +395,7 @@
     var CdkListbox = /** @class */ (function () {
         function CdkListbox() {
             var _this = this;
+            this._tabIndex = 0;
             this.optionSelectionChanges = rxjs.defer(function () {
                 var options = _this._options;
                 return options.changes.pipe(operators.startWith(options), operators.switchMap(function () { return rxjs.merge.apply(void 0, __spread(options.map(function (option) { return option.selectionChange; }))); }));
@@ -461,7 +463,10 @@
         CdkListbox.prototype._initKeyManager = function () {
             var _this = this;
             this._listKeyManager = new a11y.ActiveDescendantKeyManager(this._options)
-                .withWrap().withVerticalOrientation().withTypeAhead();
+                .withWrap()
+                .withVerticalOrientation()
+                .withTypeAhead()
+                .withAllowedModifierKeys(['shiftKey']);
             this._listKeyManager.change.pipe(operators.takeUntil(this._destroyed)).subscribe(function () {
                 _this._updateActiveOption();
             });
@@ -504,6 +509,7 @@
             }
             var manager = this._listKeyManager;
             var keyCode = event.keyCode;
+            var previousActiveIndex = manager.activeItemIndex;
             if (keyCode === keycodes.HOME || keyCode === keycodes.END) {
                 event.preventDefault();
                 keyCode === keycodes.HOME ? manager.setFirstItemActive() : manager.setLastItemActive();
@@ -515,6 +521,11 @@
             }
             else {
                 manager.onKeydown(event);
+            }
+            /** Will select an option if shift was pressed while navigating to the option */
+            var isArrow = (keyCode === keycodes.UP_ARROW || keyCode === keycodes.DOWN_ARROW);
+            if (isArrow && event.shiftKey && previousActiveIndex !== this._listKeyManager.activeItemIndex) {
+                this._toggleActiveOption();
             }
         };
         /** Emits a selection change event, called when an option has its selected state changed. */
@@ -613,8 +624,9 @@
                         host: {
                             'role': 'listbox',
                             '(keydown)': '_keydown($event)',
-                            '[attr.aria-disabled]': '_disabled',
-                            '[attr.aria-multiselectable]': '_multiple',
+                            '[attr.tabindex]': '_tabIndex',
+                            '[attr.aria-disabled]': 'disabled',
+                            '[attr.aria-multiselectable]': 'multiple',
                             '[attr.aria-activedescendant]': '_getAriaActiveDescendant()'
                         }
                     },] }

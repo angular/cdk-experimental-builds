@@ -37,6 +37,8 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
     private readonly _nestedGroups;
     /** All child MenuItem elements nested in this Menu. */
     private readonly _allItems;
+    /** The Menu Item which triggered the open submenu. */
+    private _openItem?;
     /**
      * A reference to the enclosing parent menu panel.
      *
@@ -79,6 +81,11 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
     private _closeOpenMenu;
     /** Set focus the either the current, previous or next item based on the FocusNext event. */
     private _toggleMenuFocus;
+    /**
+     * Subscribe to the menu trigger's open events in order to track the trigger which opened the menu
+     * and stop tracking it when the menu is closed.
+     */
+    private _subscribeToMenuOpen;
     /** Return true if this menu has been configured in a horizontal orientation. */
     private _isHorizontal;
     ngOnDestroy(): void;
