@@ -56,6 +56,7 @@ export declare class CdkOption implements ListKeyManagerOption, Highlightable {
 export declare class CdkListbox implements AfterContentInit, OnDestroy, OnInit {
     _listKeyManager: ActiveDescendantKeyManager<CdkOption>;
     _selectionModel: SelectionModel<CdkOption>;
+    _tabIndex: number;
     readonly optionSelectionChanges: Observable<OptionSelectionChangeEvent>;
     private _disabled;
     private _multiple;

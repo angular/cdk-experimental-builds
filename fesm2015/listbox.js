@@ -1,6 +1,6 @@
 import { EventEmitter, Directive, ElementRef, Inject, forwardRef, Input, Output, ContentChildren, NgModule } from '@angular/core';
 import { ActiveDescendantKeyManager } from '@angular/cdk/a11y';
-import { HOME, END, SPACE, ENTER } from '@angular/cdk/keycodes';
+import { HOME, END, SPACE, ENTER, UP_ARROW, DOWN_ARROW } from '@angular/cdk/keycodes';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { SelectionModel } from '@angular/cdk/collections';
 import { defer, merge, Subject } from 'rxjs';
@@ -126,11 +126,12 @@ CdkOption.decorators = [
                     '(focus)': 'activate()',
                     '(blur)': 'deactivate()',
                     '[id]': 'id',
-                    '[attr.aria-selected]': '_selected || null',
+                    '[attr.aria-selected]': 'selected || null',
                     '[attr.tabindex]': '_getTabIndex()',
                     '[attr.aria-disabled]': '_isInteractionDisabled()',
                     '[class.cdk-option-disabled]': '_isInteractionDisabled()',
-                    '[class.cdk-option-active]': '_active'
+                    '[class.cdk-option-active]': '_active',
+                    '[class.cdk-option-selected]': 'selected'
                 }
             },] }
 ];
@@ -146,6 +147,7 @@ CdkOption.propDecorators = {
 };
 class CdkListbox {
     constructor() {
+        this._tabIndex = 0;
         this.optionSelectionChanges = defer(() => {
             const options = this._options;
             return options.changes.pipe(startWith(options), switchMap(() => merge(...options.map(option => option.selectionChange))));
@@ -199,7 +201,10 @@ class CdkListbox {
     }
     _initKeyManager() {
         this._listKeyManager = new ActiveDescendantKeyManager(this._options)
-            .withWrap().withVerticalOrientation().withTypeAhead();
+            .withWrap()
+            .withVerticalOrientation()
+            .withTypeAhead()
+            .withAllowedModifierKeys(['shiftKey']);
         this._listKeyManager.change.pipe(takeUntil(this._destroyed)).subscribe(() => {
             this._updateActiveOption();
         });
@@ -221,6 +226,7 @@ class CdkListbox {
         }
         const manager = this._listKeyManager;
         const { keyCode } = event;
+        const previousActiveIndex = manager.activeItemIndex;
         if (keyCode === HOME || keyCode === END) {
             event.preventDefault();
             keyCode === HOME ? manager.setFirstItemActive() : manager.setLastItemActive();
@@ -232,6 +238,11 @@ class CdkListbox {
         }
         else {
             manager.onKeydown(event);
+        }
+        /** Will select an option if shift was pressed while navigating to the option */
+        const isArrow = (keyCode === UP_ARROW || keyCode === DOWN_ARROW);
+        if (isArrow && event.shiftKey && previousActiveIndex !== this._listKeyManager.activeItemIndex) {
+            this._toggleActiveOption();
         }
     }
     /** Emits a selection change event, called when an option has its selected state changed. */
@@ -320,8 +331,9 @@ CdkListbox.decorators = [
                 host: {
                     'role': 'listbox',
                     '(keydown)': '_keydown($event)',
-                    '[attr.aria-disabled]': '_disabled',
-                    '[attr.aria-multiselectable]': '_multiple',
+                    '[attr.tabindex]': '_tabIndex',
+                    '[attr.aria-disabled]': 'disabled',
+                    '[attr.aria-multiselectable]': 'multiple',
                     '[attr.aria-activedescendant]': '_getAriaActiveDescendant()'
                 }
             },] }
