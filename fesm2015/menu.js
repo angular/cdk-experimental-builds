@@ -263,6 +263,8 @@ function removeIcons(element) {
 class CdkMenuItem {
     constructor(_elementRef, _parentMenu, _dir, 
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
+    // `CdkMenuItem` is commonly used in combination with a `CdkMenuItemTrigger`.
+    // tslint:disable-next-line: lightweight-tokens
     _menuTrigger) {
         this._elementRef = _elementRef;
         this._parentMenu = _parentMenu;
@@ -572,7 +574,10 @@ function throwMissingMenuPanelError() {
  * It also acts as a RadioGroup for elements marked with role `menuitemradio`.
  */
 class CdkMenu extends CdkMenuGroup {
-    constructor(_dir, _menuPanel) {
+    constructor(_dir, 
+    // `CdkMenuPanel` is always used in combination with a `CdkMenu`.
+    // tslint:disable-next-line: lightweight-tokens
+    _menuPanel) {
         super();
         this._dir = _dir;
         this._menuPanel = _menuPanel;
@@ -1097,6 +1102,8 @@ CdkMenuBar.propDecorators = {
 class CdkMenuItemRadio extends CdkMenuItemSelectable {
     constructor(_selectionDispatcher, element, parentMenu, dir, 
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
+    // `CdkMenuItemRadio` is commonly used in combination with a `CdkMenuItemTrigger`.
+    // tslint:disable-next-line: lightweight-tokens
     menuTrigger) {
         super(element, parentMenu, dir, menuTrigger);
         this._selectionDispatcher = _selectionDispatcher;

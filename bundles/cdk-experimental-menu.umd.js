@@ -502,6 +502,8 @@
     var CdkMenuItem = /** @class */ (function () {
         function CdkMenuItem(_elementRef, _parentMenu, _dir, 
         /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
+        // `CdkMenuItem` is commonly used in combination with a `CdkMenuItemTrigger`.
+        // tslint:disable-next-line: lightweight-tokens
         _menuTrigger) {
             this._elementRef = _elementRef;
             this._parentMenu = _parentMenu;
@@ -828,7 +830,10 @@
      */
     var CdkMenu = /** @class */ (function (_super) {
         __extends(CdkMenu, _super);
-        function CdkMenu(_dir, _menuPanel) {
+        function CdkMenu(_dir, 
+        // `CdkMenuPanel` is always used in combination with a `CdkMenu`.
+        // tslint:disable-next-line: lightweight-tokens
+        _menuPanel) {
             var _this = _super.call(this) || this;
             _this._dir = _dir;
             _this._menuPanel = _menuPanel;
@@ -1366,6 +1371,8 @@
         __extends(CdkMenuItemRadio, _super);
         function CdkMenuItemRadio(_selectionDispatcher, element, parentMenu, dir, 
         /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
+        // `CdkMenuItemRadio` is commonly used in combination with a `CdkMenuItemTrigger`.
+        // tslint:disable-next-line: lightweight-tokens
         menuTrigger) {
             var _this = _super.call(this, element, parentMenu, dir, menuTrigger) || this;
             _this._selectionDispatcher = _selectionDispatcher;
