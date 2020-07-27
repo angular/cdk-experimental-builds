@@ -63,10 +63,14 @@ export declare class CdkMenuBar extends CdkMenuGroup implements Menu, AfterConte
      * @return true if the menu bar is configured to be horizontal.
      */
     private _isHorizontal;
+    /** Close any open submenu if there was a click event which occurred outside the menu stack. */
+    _closeOnBackgroundClick(event: MouseEvent): void;
     /**
      * Subscribe to the menu trigger's open events in order to track the trigger which opened the menu
      * and stop tracking it when the menu is closed.
      */
     private _subscribeToMenuOpen;
+    /** Return true if the MenuBar has an open submenu. */
+    private _hasOpenSubmenu;
     ngOnDestroy(): void;
 }

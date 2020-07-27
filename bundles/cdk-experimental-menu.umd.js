@@ -627,6 +627,7 @@
                             'tabindex': '-1',
                             'type': 'button',
                             'role': 'menuitem',
+                            'class': 'cdk-menu-item',
                             '[attr.aria-disabled]': 'disabled || null',
                         },
                     },] }
@@ -750,6 +751,7 @@
                         exportAs: 'cdkMenuGroup',
                         host: {
                             'role': 'group',
+                            'class': 'cdk-menu-group',
                         },
                         providers: [{ provide: collections.UniqueSelectionDispatcher, useClass: collections.UniqueSelectionDispatcher }],
                     },] }
@@ -1035,6 +1037,7 @@
                         host: {
                             '(keydown)': '_handleKeyEvent($event)',
                             'role': 'menu',
+                            'class': 'cdk-menu',
                             '[attr.aria-orientation]': 'orientation',
                         },
                         providers: [
@@ -1161,6 +1164,14 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
+    /**
+     * Check if the given element is part of the cdk menu module.
+     * @param target the element to check.
+     * @return true if the given element is part of the menu module.
+     */
+    function isMenuElement(target) {
+        return target.className.indexOf('cdk-menu') !== -1;
+    }
     /**
      * Directive applied to an element which configures it as a MenuBar by setting the appropriate
      * role, aria attributes, and accessible keyboard and mouse handling logic. The component that
@@ -1310,6 +1321,21 @@
         CdkMenuBar.prototype._isHorizontal = function () {
             return this.orientation === 'horizontal';
         };
+        /** Close any open submenu if there was a click event which occurred outside the menu stack. */
+        CdkMenuBar.prototype._closeOnBackgroundClick = function (event) {
+            var _a, _b;
+            if (this._hasOpenSubmenu()) {
+                // get target from composed path to account for shadow dom
+                var target = event.composedPath ? event.composedPath()[0] : event.target;
+                while (target instanceof Element) {
+                    if (isMenuElement(target)) {
+                        return;
+                    }
+                    target = target.parentElement;
+                }
+                (_b = (_a = this._openItem) === null || _a === void 0 ? void 0 : _a.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.toggle();
+            }
+        };
         /**
          * Subscribe to the menu trigger's open events in order to track the trigger which opened the menu
          * and stop tracking it when the menu is closed.
@@ -1328,6 +1354,10 @@
             }), operators.takeUntil(this._destroyed))
                 .subscribe(function () { return (_this._openItem = undefined); });
         };
+        /** Return true if the MenuBar has an open submenu. */
+        CdkMenuBar.prototype._hasOpenSubmenu = function () {
+            return !!this._openItem;
+        };
         CdkMenuBar.prototype.ngOnDestroy = function () {
             _super.prototype.ngOnDestroy.call(this);
             this._destroyed.next();
@@ -1339,8 +1369,10 @@
                         exportAs: 'cdkMenuBar',
                         host: {
                             '(keydown)': '_handleKeyEvent($event)',
+                            '(document:click)': '_closeOnBackgroundClick($event)',
                             '(focus)': 'focusFirstItem()',
                             'role': 'menubar',
+                            'class': 'cdk-menu-bar',
                             'tabindex': '0',
                             '[attr.aria-orientation]': 'orientation',
                         },
