@@ -124,7 +124,7 @@ class CdkDialogContainer extends BasePortalOutlet {
     // @HostBinding is used in the class as it is expected to be extended. Since @Component decorator
     // metadata is not inherited by child classes, instead the host binding data is defined in a way
     // that can be inherited.
-    // tslint:disable:no-host-decorator-in-concrete
+    // tslint:disable:no-host-decorator-in-concrete no-private-getters
     get _ariaLabel() { return this._config.ariaLabel || null; }
     get _ariaDescribedBy() { return this._config.ariaDescribedBy; }
     get _role() { return this._config.role; }
@@ -447,7 +447,7 @@ class Dialog {
         this._afterAllClosedBase = new Subject();
         // TODO(jelbourn): tighten the type on the right-hand side of this expression.
         this.afterAllClosed = defer(() => this.openDialogs.length ?
-            this._afterAllClosed : this._afterAllClosed.pipe(startWith(undefined)));
+            this._getAfterAllClosed() : this._getAfterAllClosed().pipe(startWith(undefined)));
         this._afterOpened = new Subject();
         this._openDialogs = [];
         // Close all of the dialogs when the user goes forwards/backwards in history or when the
@@ -459,7 +459,7 @@ class Dialog {
         this._scrollStrategy = scrollStrategy;
     }
     /** Stream that emits when all dialogs are closed. */
-    get _afterAllClosed() {
+    _getAfterAllClosed() {
         return this._parentDialog ? this._parentDialog.afterAllClosed : this._afterAllClosedBase;
     }
     /** Stream that emits when a dialog is opened. */

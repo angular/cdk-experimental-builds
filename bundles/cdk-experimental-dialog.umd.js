@@ -351,7 +351,7 @@
             // @HostBinding is used in the class as it is expected to be extended. Since @Component decorator
             // metadata is not inherited by child classes, instead the host binding data is defined in a way
             // that can be inherited.
-            // tslint:disable:no-host-decorator-in-concrete
+            // tslint:disable:no-host-decorator-in-concrete no-private-getters
             get: function () { return this._config.ariaLabel || null; },
             enumerable: false,
             configurable: true
@@ -691,7 +691,7 @@
             this._afterAllClosedBase = new rxjs.Subject();
             // TODO(jelbourn): tighten the type on the right-hand side of this expression.
             this.afterAllClosed = rxjs.defer(function () { return _this.openDialogs.length ?
-                _this._afterAllClosed : _this._afterAllClosed.pipe(operators.startWith(undefined)); });
+                _this._getAfterAllClosed() : _this._getAfterAllClosed().pipe(operators.startWith(undefined)); });
             this._afterOpened = new rxjs.Subject();
             this._openDialogs = [];
             // Close all of the dialogs when the user goes forwards/backwards in history or when the
@@ -702,14 +702,10 @@
             }
             this._scrollStrategy = scrollStrategy;
         }
-        Object.defineProperty(Dialog.prototype, "_afterAllClosed", {
-            /** Stream that emits when all dialogs are closed. */
-            get: function () {
-                return this._parentDialog ? this._parentDialog.afterAllClosed : this._afterAllClosedBase;
-            },
-            enumerable: false,
-            configurable: true
-        });
+        /** Stream that emits when all dialogs are closed. */
+        Dialog.prototype._getAfterAllClosed = function () {
+            return this._parentDialog ? this._parentDialog.afterAllClosed : this._afterAllClosedBase;
+        };
         Object.defineProperty(Dialog.prototype, "afterOpened", {
             /** Stream that emits when a dialog is opened. */
             get: function () {
