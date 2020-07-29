@@ -1352,5 +1352,5 @@ CdkMenuModule.decorators = [
  * Generated bundle index. Do not edit.
  */
 
-export { CdkMenu, CdkMenuBar, CdkMenuGroup, CdkMenuItem, CdkMenuItemCheckbox, CdkMenuItemRadio, CdkMenuItemTrigger, CdkMenuModule, CdkMenuPanel, CdkMenuItemSelectable as ɵangular_material_src_cdk_experimental_menu_menu_a, CDK_MENU as ɵangular_material_src_cdk_experimental_menu_menu_b, MenuStack as ɵangular_material_src_cdk_experimental_menu_menu_d };
+export { CDK_MENU, CdkMenu, CdkMenuBar, CdkMenuGroup, CdkMenuItem, CdkMenuItemCheckbox, CdkMenuItemRadio, CdkMenuItemTrigger, CdkMenuModule, CdkMenuPanel, MenuStack, CdkMenuItemSelectable as ɵangular_material_src_cdk_experimental_menu_menu_b };
 //# sourceMappingURL=menu.js.map

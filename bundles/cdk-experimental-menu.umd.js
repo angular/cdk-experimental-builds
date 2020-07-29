@@ -1643,6 +1643,7 @@
      * Generated bundle index. Do not edit.
      */
 
+    exports.CDK_MENU = CDK_MENU;
     exports.CdkMenu = CdkMenu;
     exports.CdkMenuBar = CdkMenuBar;
     exports.CdkMenuGroup = CdkMenuGroup;
@@ -1652,9 +1653,8 @@
     exports.CdkMenuItemTrigger = CdkMenuItemTrigger;
     exports.CdkMenuModule = CdkMenuModule;
     exports.CdkMenuPanel = CdkMenuPanel;
-    exports.ɵangular_material_src_cdk_experimental_menu_menu_a = CdkMenuItemSelectable;
-    exports.ɵangular_material_src_cdk_experimental_menu_menu_b = CDK_MENU;
-    exports.ɵangular_material_src_cdk_experimental_menu_menu_d = MenuStack;
+    exports.MenuStack = MenuStack;
+    exports.ɵangular_material_src_cdk_experimental_menu_menu_b = CdkMenuItemSelectable;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
