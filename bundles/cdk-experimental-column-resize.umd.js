@@ -1024,10 +1024,13 @@
             }
         };
         Resizable.prototype._createHandlePortal = function () {
-            var injector = new portal.PortalInjector(this.injector, new WeakMap([[
-                    ResizeRef,
-                    new ResizeRef(this.elementRef, this.overlayRef, this.minWidthPx, this.maxWidthPx),
-                ]]));
+            var injector = core.Injector.create({
+                parent: this.injector,
+                providers: [{
+                        provide: ResizeRef,
+                        useValue: new ResizeRef(this.elementRef, this.overlayRef, this.minWidthPx, this.maxWidthPx)
+                    }]
+            });
             return new portal.ComponentPortal(this.getOverlayHandleComponentType(), this.viewContainerRef, injector);
         };
         Resizable.prototype._showHandleOverlay = function () {

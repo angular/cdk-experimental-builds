@@ -810,9 +810,10 @@
         Dialog.prototype._attachDialogContainer = function (overlay, config) {
             var container = config.containerComponent || this._injector.get(DIALOG_CONTAINER);
             var userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
-            var injector = new portal.PortalInjector(userInjector || this._injector, new WeakMap([
-                [DialogConfig, config]
-            ]));
+            var injector = core.Injector.create({
+                parent: userInjector || this._injector,
+                providers: [{ provide: DialogConfig, useValue: config }]
+            });
             var containerPortal = new portal.ComponentPortal(container, config.viewContainerRef, injector);
             var containerRef = overlay.attach(containerPortal);
             containerRef.instance._config = config;
@@ -862,19 +863,19 @@
          */
         Dialog.prototype._createInjector = function (config, dialogRef, dialogContainer) {
             var userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
-            var injectionTokens = new WeakMap([
-                [this._injector.get(DIALOG_REF), dialogRef],
-                [this._injector.get(DIALOG_CONTAINER), dialogContainer],
-                [DIALOG_DATA, config.data]
-            ]);
+            var providers = [
+                { provide: this._injector.get(DIALOG_REF), useValue: dialogRef },
+                { provide: this._injector.get(DIALOG_CONTAINER), useValue: dialogContainer },
+                { provide: DIALOG_DATA, useValue: config.data }
+            ];
             if (config.direction &&
                 (!userInjector || !userInjector.get(bidi.Directionality, null))) {
-                injectionTokens.set(bidi.Directionality, {
-                    value: config.direction,
-                    change: rxjs.of()
+                providers.push({
+                    provide: bidi.Directionality,
+                    useValue: { value: config.direction, change: rxjs.of() }
                 });
             }
-            return new portal.PortalInjector(userInjector || this._injector, injectionTokens);
+            return core.Injector.create({ parent: userInjector || this._injector, providers: providers });
         };
         /** Creates a new dialog ref. */
         Dialog.prototype._createDialogRef = function (overlayRef, dialogContainer, config) {

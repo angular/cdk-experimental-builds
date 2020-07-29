@@ -1,10 +1,10 @@
-import { Directive, Injectable, NgZone, Inject, ElementRef, NgModule } from '@angular/core';
+import { Directive, Injectable, NgZone, Inject, ElementRef, NgModule, Injector } from '@angular/core';
 import { Subject, fromEvent, merge, combineLatest, Observable } from 'rxjs';
 import { map, takeUntil, filter, mapTo, take, startWith, pairwise, distinctUntilChanged, share, skip } from 'rxjs/operators';
 import { _closest, _matches } from '@angular/cdk-experimental/popover-edit';
 import { DOCUMENT } from '@angular/common';
 import { coerceCssPixelValue } from '@angular/cdk/coercion';
-import { PortalInjector, ComponentPortal } from '@angular/cdk/portal';
+import { ComponentPortal } from '@angular/cdk/portal';
 import { ESCAPE } from '@angular/cdk/keycodes';
 
 /**
@@ -747,10 +747,13 @@ class Resizable {
         }
     }
     _createHandlePortal() {
-        const injector = new PortalInjector(this.injector, new WeakMap([[
-                ResizeRef,
-                new ResizeRef(this.elementRef, this.overlayRef, this.minWidthPx, this.maxWidthPx),
-            ]]));
+        const injector = Injector.create({
+            parent: this.injector,
+            providers: [{
+                    provide: ResizeRef,
+                    useValue: new ResizeRef(this.elementRef, this.overlayRef, this.minWidthPx, this.maxWidthPx)
+                }]
+        });
         return new ComponentPortal(this.getOverlayHandleComponentType(), this.viewContainerRef, injector);
     }
     _showHandleOverlay() {
