@@ -325,6 +325,23 @@
             return (_a = this.menuPanel) === null || _a === void 0 ? void 0 : _a._menu;
         };
         /**
+         * If there are existing open menus and this menu is not open, close sibling menus and open
+         * this one.
+         */
+        CdkMenuItemTrigger.prototype._toggleOnMouseEnter = function () {
+            var menuStack = this._getMenuStack();
+            if (!menuStack.isEmpty() && !this.isMenuOpen()) {
+                // If nothing was removed from the stack and the last element is not the parent item
+                // that means that the parent menu is a menu bar since we don't put the menu bar on the
+                // stack
+                var isParentMenuBar = !menuStack.closeSubMenuOf(this._parentMenu) && menuStack.peek() !== this._parentMenu;
+                if (isParentMenuBar) {
+                    menuStack.closeAll();
+                }
+                this.openMenu();
+            }
+        };
+        /**
          * Handles keyboard events for the menu item, specifically opening/closing the attached menu and
          * focusing the appropriate submenu item.
          * @param event the keyboard event to handle
@@ -447,6 +464,8 @@
                         exportAs: 'cdkMenuTriggerFor',
                         host: {
                             '(keydown)': '_toggleOnKeydown($event)',
+                            '(mouseenter)': '_toggleOnMouseEnter()',
+                            '(click)': 'toggle()',
                             'tabindex': '-1',
                             'aria-haspopup': 'menu',
                             '[attr.aria-expanded]': 'isMenuOpen()',
@@ -500,13 +519,14 @@
      * behavior when clicked.
      */
     var CdkMenuItem = /** @class */ (function () {
-        function CdkMenuItem(_elementRef, _parentMenu, _dir, 
+        function CdkMenuItem(_elementRef, _parentMenu, _ngZone, _dir, 
         /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
         // `CdkMenuItem` is commonly used in combination with a `CdkMenuItemTrigger`.
         // tslint:disable-next-line: lightweight-tokens
         _menuTrigger) {
             this._elementRef = _elementRef;
             this._parentMenu = _parentMenu;
+            this._ngZone = _ngZone;
             this._dir = _dir;
             this._menuTrigger = _menuTrigger;
             this._disabled = false;
@@ -515,6 +535,9 @@
              * event.
              */
             this.triggered = new core.EventEmitter();
+            /** Emits when the menu item is destroyed. */
+            this._destroyed = new rxjs.Subject();
+            this._setupMouseEnter();
         }
         Object.defineProperty(CdkMenuItem.prototype, "disabled", {
             /**  Whether the CdkMenuItem is disabled - defaults to false */
@@ -531,6 +554,10 @@
         CdkMenuItem.prototype.focus = function () {
             this._elementRef.nativeElement.focus();
         };
+        // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
+        // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
+        // can move this back into `host`.
+        // tslint:disable:no-host-decorator-in-concrete
         /**
          * If the menu item is not disabled and the element does not have a menu trigger attached, emit
          * on the cdkMenuItemTriggered emitter and close all open menus.
@@ -608,6 +635,20 @@
                     break;
             }
         };
+        /**
+         * Subscribe to the mouseenter events and close any sibling menu items if this element is moused
+         * into.
+         */
+        CdkMenuItem.prototype._setupMouseEnter = function () {
+            var _this = this;
+            this._ngZone.runOutsideAngular(function () {
+                return rxjs.fromEvent(_this._elementRef.nativeElement, 'mouseenter')
+                    .pipe(operators.filter(function () { return !_this._getMenuStack().isEmpty() && !_this.hasMenu(); }), operators.takeUntil(_this._destroyed))
+                    .subscribe(function () {
+                    _this._ngZone.run(function () { return _this._getMenuStack().closeSubMenuOf(_this._parentMenu); });
+                });
+            });
+        };
         /** Return true if the enclosing parent menu is configured in a horizontal orientation. */
         CdkMenuItem.prototype._isParentVertical = function () {
             return this._parentMenu.orientation === 'vertical';
@@ -618,6 +659,9 @@
             // its menu stack set. Therefore we need to reference the menu stack from the parent each time
             // we want to use it.
             return this._parentMenu._menuStack;
+        };
+        CdkMenuItem.prototype.ngOnDestroy = function () {
+            this._destroyed.next();
         };
         CdkMenuItem.decorators = [
             { type: core.Directive, args: [{
@@ -635,12 +679,14 @@
         CdkMenuItem.ctorParameters = function () { return [
             { type: core.ElementRef },
             { type: undefined, decorators: [{ type: core.Inject, args: [CDK_MENU,] }] },
+            { type: core.NgZone },
             { type: bidi.Directionality, decorators: [{ type: core.Optional }] },
             { type: CdkMenuItemTrigger, decorators: [{ type: core.Self }, { type: core.Optional }] }
         ]; };
         CdkMenuItem.propDecorators = {
             disabled: [{ type: core.Input }],
             triggered: [{ type: core.Output, args: ['cdkMenuItemTriggered',] }],
+            trigger: [{ type: core.HostListener, args: ['click',] }],
             _onKeydown: [{ type: core.HostListener, args: ['keydown', ['$event'],] }]
         };
         return CdkMenuItem;
@@ -824,6 +870,27 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
+     * Gets a stream of pointer (mouse) entries into the given items.
+     * This should typically run outside the Angular zone.
+     */
+    function getItemPointerEntries(items) {
+        return rxjs.defer(function () {
+            return items.changes.pipe(operators.startWith(items), operators.mergeMap(function (list) {
+                return list.map(function (element) {
+                    return rxjs.fromEvent(element._elementRef.nativeElement, 'mouseenter').pipe(operators.mapTo(element), operators.takeUntil(items.changes));
+                });
+            }), operators.mergeAll());
+        });
+    }
+
+    /**
+     * @license
+     * Copyright Google LLC All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
+    /**
      * Directive which configures the element as a Menu which should contain child elements marked as
      * CdkMenuItem or CdkMenuGroup. Sets the appropriate role and aria-attributes for a menu and
      * contains accessible keyboard and mouse handling logic.
@@ -832,11 +899,12 @@
      */
     var CdkMenu = /** @class */ (function (_super) {
         __extends(CdkMenu, _super);
-        function CdkMenu(_dir, 
+        function CdkMenu(_ngZone, _dir, 
         // `CdkMenuPanel` is always used in combination with a `CdkMenu`.
         // tslint:disable-next-line: lightweight-tokens
         _menuPanel) {
             var _this = _super.call(this) || this;
+            _this._ngZone = _ngZone;
             _this._dir = _dir;
             _this._menuPanel = _menuPanel;
             /**
@@ -857,6 +925,7 @@
             this._setKeyManager();
             this._subscribeToMenuOpen();
             this._subscribeToMenuStack();
+            this._subscribeToMouseManager();
         };
         /** Place focus on the first MenuItem in the menu and set the focus origin. */
         CdkMenu.prototype.focusFirstItem = function (focusOrigin) {
@@ -955,6 +1024,19 @@
                 this._keyManager.withVerticalOrientation();
             }
         };
+        /**
+         * Set the FocusMouseManager and ensure that when mouse focus changes the key manager is updated
+         * with the latest menu item under mouse focus.
+         */
+        CdkMenu.prototype._subscribeToMouseManager = function () {
+            var _this = this;
+            this._ngZone.runOutsideAngular(function () {
+                _this._mouseFocusChanged = getItemPointerEntries(_this._allItems);
+                _this._mouseFocusChanged
+                    .pipe(operators.takeUntil(_this.closed))
+                    .subscribe(function (item) { return _this._keyManager.setActiveItem(item); });
+            });
+        };
         /** Subscribe to the MenuStack close and empty observables. */
         CdkMenu.prototype._subscribeToMenuStack = function () {
             var _this = this;
@@ -1047,6 +1129,7 @@
                     },] }
         ];
         CdkMenu.ctorParameters = function () { return [
+            { type: core.NgZone },
             { type: bidi.Directionality, decorators: [{ type: core.Optional }] },
             { type: CdkMenuPanel, decorators: [{ type: core.Optional }] }
         ]; };
@@ -1082,13 +1165,13 @@
             /** Emits once the MenuStack has become empty after popping off elements. */
             this._empty = new rxjs.Subject();
             /** Observable which emits the MenuStackItem which has been requested to close. */
-            this.closed = this._close.asObservable();
+            this.closed = this._close;
             /**
              * Observable which emits when the MenuStack is empty after popping off the last element. It
              * emits a FocusNext event which specifies the action the closer has requested the listener
              * perform.
              */
-            this.emptied = this._empty.asObservable();
+            this.emptied = this._empty;
         }
         /** @param menu the MenuStackItem to put on the stack. */
         MenuStack.prototype.push = function (menu) {
@@ -1118,13 +1201,17 @@
          * Pop items off of the stack up to but excluding `lastItem` and emit each on the close
          * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
          * @param lastItem the element which should be left on the stack
+         * @return whether or not an item was removed from the stack
          */
         MenuStack.prototype.closeSubMenuOf = function (lastItem) {
+            var removed = false;
             if (this._elements.indexOf(lastItem) >= 0) {
+                removed = this.peek() !== lastItem;
                 while (this.peek() !== lastItem) {
                     this._close.next(this._elements.pop());
                 }
             }
+            return removed;
         };
         /**
          * Pop off all MenuStackItems and emit each one on the `close` observable one by one.
@@ -1180,9 +1267,10 @@
      */
     var CdkMenuBar = /** @class */ (function (_super) {
         __extends(CdkMenuBar, _super);
-        function CdkMenuBar(_menuStack, _dir) {
+        function CdkMenuBar(_menuStack, _ngZone, _dir) {
             var _this = _super.call(this) || this;
             _this._menuStack = _menuStack;
+            _this._ngZone = _ngZone;
             _this._dir = _dir;
             /**
              * Sets the aria-orientation attribute and determines where menus will be opened.
@@ -1198,6 +1286,7 @@
             this._setKeyManager();
             this._subscribeToMenuOpen();
             this._subscribeToMenuStack();
+            this._subscribeToMouseManager();
         };
         /** Place focus on the first MenuItem in the menu and set the focus origin. */
         CdkMenuBar.prototype.focusFirstItem = function (focusOrigin) {
@@ -1265,6 +1354,21 @@
                 this._keyManager.withVerticalOrientation();
             }
         };
+        /**
+         * Set the FocusMouseManager and ensure that when mouse focus changes the key manager is updated
+         * with the latest menu item under mouse focus.
+         */
+        CdkMenuBar.prototype._subscribeToMouseManager = function () {
+            var _this = this;
+            this._ngZone.runOutsideAngular(function () {
+                _this._mouseFocusChanged = getItemPointerEntries(_this._allItems);
+                _this._mouseFocusChanged.pipe(operators.takeUntil(_this._destroyed)).subscribe(function (item) {
+                    if (_this._hasOpenSubmenu()) {
+                        _this._keyManager.setActiveItem(item);
+                    }
+                });
+            });
+        };
         /** Subscribe to the MenuStack close and empty observables. */
         CdkMenuBar.prototype._subscribeToMenuStack = function () {
             var _this = this;
@@ -1323,7 +1427,6 @@
         };
         /** Close any open submenu if there was a click event which occurred outside the menu stack. */
         CdkMenuBar.prototype._closeOnBackgroundClick = function (event) {
-            var _a, _b;
             if (this._hasOpenSubmenu()) {
                 // get target from composed path to account for shadow dom
                 var target = event.composedPath ? event.composedPath()[0] : event.target;
@@ -1333,7 +1436,7 @@
                     }
                     target = target.parentElement;
                 }
-                (_b = (_a = this._openItem) === null || _a === void 0 ? void 0 : _a.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.toggle();
+                this._menuStack.closeAll();
             }
         };
         /**
@@ -1385,6 +1488,7 @@
         ];
         CdkMenuBar.ctorParameters = function () { return [
             { type: MenuStack },
+            { type: core.NgZone },
             { type: bidi.Directionality, decorators: [{ type: core.Optional }] }
         ]; };
         CdkMenuBar.propDecorators = {
@@ -1401,12 +1505,12 @@
      */
     var CdkMenuItemRadio = /** @class */ (function (_super) {
         __extends(CdkMenuItemRadio, _super);
-        function CdkMenuItemRadio(_selectionDispatcher, element, parentMenu, dir, 
+        function CdkMenuItemRadio(_selectionDispatcher, element, ngZone, parentMenu, dir, 
         /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
         // `CdkMenuItemRadio` is commonly used in combination with a `CdkMenuItemTrigger`.
         // tslint:disable-next-line: lightweight-tokens
         menuTrigger) {
-            var _this = _super.call(this, element, parentMenu, dir, menuTrigger) || this;
+            var _this = _super.call(this, element, parentMenu, ngZone, dir, menuTrigger) || this;
             _this._selectionDispatcher = _selectionDispatcher;
             _this._registerDispatcherListener();
             return _this;
@@ -1424,6 +1528,7 @@
             }
         };
         CdkMenuItemRadio.prototype.ngOnDestroy = function () {
+            _super.prototype.ngOnDestroy.call(this);
             this._removeDispatcherListener();
         };
         CdkMenuItemRadio.decorators = [
@@ -1446,6 +1551,7 @@
         CdkMenuItemRadio.ctorParameters = function () { return [
             { type: collections.UniqueSelectionDispatcher },
             { type: core.ElementRef },
+            { type: core.NgZone },
             { type: undefined, decorators: [{ type: core.Inject, args: [CDK_MENU,] }] },
             { type: bidi.Directionality, decorators: [{ type: core.Optional }] },
             { type: CdkMenuItemTrigger, decorators: [{ type: core.Self }, { type: core.Optional }] }

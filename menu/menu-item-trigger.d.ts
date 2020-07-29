@@ -55,6 +55,11 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
      */
     getMenu(): Menu | undefined;
     /**
+     * If there are existing open menus and this menu is not open, close sibling menus and open
+     * this one.
+     */
+    _toggleOnMouseEnter(): void;
+    /**
      * Handles keyboard events for the menu item, specifically opening/closing the attached menu and
      * focusing the appropriate submenu item.
      * @param event the keyboard event to handle

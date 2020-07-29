@@ -55,8 +55,9 @@ export declare class MenuStack {
      * Pop items off of the stack up to but excluding `lastItem` and emit each on the close
      * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
      * @param lastItem the element which should be left on the stack
+     * @return whether or not an item was removed from the stack
      */
-    closeSubMenuOf(lastItem: MenuStackItem): void;
+    closeSubMenuOf(lastItem: MenuStackItem): boolean;
     /**
      * Pop off all MenuStackItems and emit each one on the `close` observable one by one.
      * @param focusNext the event to emit on the `empty` observable once the stack is emptied. Does

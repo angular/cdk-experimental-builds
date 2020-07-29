@@ -5,20 +5,22 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ElementRef, EventEmitter } from '@angular/core';
+import { ElementRef, EventEmitter, NgZone, OnDestroy } from '@angular/core';
 import { BooleanInput } from '@angular/cdk/coercion';
 import { FocusableOption } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import { CdkMenuItemTrigger } from './menu-item-trigger';
 import { Menu } from './menu-interface';
+import { FocusableElement } from './item-pointer-entries';
 /**
  * Directive which provides the ability for an element to be focused and navigated to using the
  * keyboard when residing in a CdkMenu, CdkMenuBar, or CdkMenuGroup. It performs user defined
  * behavior when clicked.
  */
-export declare class CdkMenuItem implements FocusableOption {
-    private readonly _elementRef;
+export declare class CdkMenuItem implements FocusableOption, FocusableElement, OnDestroy {
+    readonly _elementRef: ElementRef<HTMLElement>;
     private readonly _parentMenu;
+    private readonly _ngZone;
     private readonly _dir?;
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     private readonly _menuTrigger?;
@@ -31,7 +33,9 @@ export declare class CdkMenuItem implements FocusableOption {
      * event.
      */
     triggered: EventEmitter<void>;
-    constructor(_elementRef: ElementRef<HTMLElement>, _parentMenu: Menu, _dir?: Directionality | undefined, 
+    /** Emits when the menu item is destroyed. */
+    private readonly _destroyed;
+    constructor(_elementRef: ElementRef<HTMLElement>, _parentMenu: Menu, _ngZone: NgZone, _dir?: Directionality | undefined, 
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     _menuTrigger?: CdkMenuItemTrigger | undefined);
     /** Place focus on the element. */
@@ -61,9 +65,15 @@ export declare class CdkMenuItem implements FocusableOption {
      * @param event the keyboard event to handle
      */
     _onKeydown(event: KeyboardEvent): void;
+    /**
+     * Subscribe to the mouseenter events and close any sibling menu items if this element is moused
+     * into.
+     */
+    private _setupMouseEnter;
     /** Return true if the enclosing parent menu is configured in a horizontal orientation. */
     private _isParentVertical;
     /** Get the MenuStack from the parent menu. */
     private _getMenuStack;
+    ngOnDestroy(): void;
     static ngAcceptInputType_disabled: BooleanInput;
 }

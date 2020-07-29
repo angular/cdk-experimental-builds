@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { EventEmitter, AfterContentInit, OnDestroy, OnInit } from '@angular/core';
+import { EventEmitter, AfterContentInit, OnDestroy, OnInit, NgZone } from '@angular/core';
 import { FocusOrigin } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import { CdkMenuGroup } from './menu-group';
@@ -20,6 +20,7 @@ import { MenuStack } from './menu-stack';
  * It also acts as a RadioGroup for elements marked with role `menuitemradio`.
  */
 export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentInit, OnInit, OnDestroy {
+    private readonly _ngZone;
     private readonly _dir?;
     private readonly _menuPanel?;
     /**
@@ -33,6 +34,8 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
     _menuStack: MenuStack;
     /** Handles keyboard events for the menu. */
     private _keyManager;
+    /** Emits when a child MenuItem is moused over. */
+    private _mouseFocusChanged;
     /** List of nested CdkMenuGroup elements */
     private readonly _nestedGroups;
     /** All child MenuItem elements nested in this Menu. */
@@ -47,7 +50,7 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
      * injected value will be used over this one.
      */
     private readonly _explicitPanel?;
-    constructor(_dir?: Directionality | undefined, _menuPanel?: CdkMenuPanel | undefined);
+    constructor(_ngZone: NgZone, _dir?: Directionality | undefined, _menuPanel?: CdkMenuPanel | undefined);
     ngOnInit(): void;
     ngAfterContentInit(): void;
     /** Place focus on the first MenuItem in the menu and set the focus origin. */
@@ -72,6 +75,11 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
     private _hasNestedGroups;
     /** Setup the FocusKeyManager with the correct orientation for the menu. */
     private _setKeyManager;
+    /**
+     * Set the FocusMouseManager and ensure that when mouse focus changes the key manager is updated
+     * with the latest menu item under mouse focus.
+     */
+    private _subscribeToMouseManager;
     /** Subscribe to the MenuStack close and empty observables. */
     private _subscribeToMenuStack;
     /**
