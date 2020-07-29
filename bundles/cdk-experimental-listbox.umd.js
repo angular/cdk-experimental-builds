@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/coercion'), require('@angular/cdk/collections'), require('rxjs'), require('rxjs/operators')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/listbox', ['exports', '@angular/core', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/coercion', '@angular/cdk/collections', 'rxjs', 'rxjs/operators'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.listbox = {}), global.ng.core, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.coercion, global.ng.cdk.collections, global.rxjs, global.rxjs.operators));
-}(this, (function (exports, core, a11y, keycodes, coercion, collections, rxjs, operators) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/coercion'), require('@angular/cdk/collections'), require('rxjs'), require('rxjs/operators'), require('@angular/forms')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/listbox', ['exports', '@angular/core', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/coercion', '@angular/cdk/collections', 'rxjs', 'rxjs/operators', '@angular/forms'], factory) :
+    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.listbox = {}), global.ng.core, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.coercion, global.ng.cdk.collections, global.rxjs, global.rxjs.operators, global.ng.forms));
+}(this, (function (exports, core, a11y, keycodes, coercion, collections, rxjs, operators, forms) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -240,6 +240,11 @@
      * found in the LICENSE file at https://angular.io/license
      */
     var nextId = 0;
+    var CDK_LISTBOX_VALUE_ACCESSOR = {
+        provide: forms.NG_VALUE_ACCESSOR,
+        useExisting: core.forwardRef(function () { return CdkListbox; }),
+        multi: true
+    };
     var CdkOption = /** @class */ (function () {
         function CdkOption(_elementRef, listbox) {
             this._elementRef = _elementRef;
@@ -269,6 +274,20 @@
             },
             set: function (value) {
                 this._disabled = coercion.coerceBooleanProperty(value);
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(CdkOption.prototype, "value", {
+            /** The form value of the option. */
+            get: function () {
+                return this._value;
+            },
+            set: function (value) {
+                if (this.selected && value !== this._value) {
+                    this.deselect();
+                }
+                this._value = value;
             },
             enumerable: false,
             configurable: true
@@ -388,6 +407,7 @@
             id: [{ type: core.Input }],
             selected: [{ type: core.Input }],
             disabled: [{ type: core.Input }],
+            value: [{ type: core.Input }],
             selectionChange: [{ type: core.Output }]
         };
         return CdkOption;
@@ -396,6 +416,10 @@
         function CdkListbox() {
             var _this = this;
             this._tabIndex = 0;
+            /** `View -> model callback called when select has been touched` */
+            this._onTouched = function () { };
+            /** `View -> model callback called when value changes` */
+            this._onChange = function () { };
             this.optionSelectionChanges = rxjs.defer(function () {
                 var options = _this._options;
                 return options.changes.pipe(operators.startWith(options), operators.switchMap(function () { return rxjs.merge.apply(void 0, __spread(options.map(function (option) { return option.selectionChange; }))); }));
@@ -405,6 +429,7 @@
             this._useActiveDescendant = true;
             this._destroyed = new rxjs.Subject();
             this.selectionChange = new core.EventEmitter();
+            this.compareWith = function (a1, a2) { return a1 === a2; };
         }
         Object.defineProperty(CdkListbox.prototype, "multiple", {
             /**
@@ -597,12 +622,7 @@
             try {
                 for (var _b = __values(this._options.toArray()), _c = _b.next(); !_c.done; _c = _b.next()) {
                     var option = _c.value;
-                    var wasSelected = option.selected;
                     isSelected ? this.select(option) : this.deselect(option);
-                    if (wasSelected !== isSelected) {
-                        this._emitChangeEvent(option);
-                        this._updateSelectionModel(option);
-                    }
                 }
             }
             catch (e_4_1) { e_4 = { error: e_4_1 }; }
@@ -617,6 +637,76 @@
         CdkListbox.prototype.setActiveOption = function (option) {
             this._listKeyManager.updateActiveItem(option);
         };
+        /**
+         * Saves a callback function to be invoked when the select's value
+         * changes from user input. Required to implement ControlValueAccessor.
+         */
+        CdkListbox.prototype.registerOnChange = function (fn) {
+            this._onChange = fn;
+        };
+        /**
+         * Saves a callback function to be invoked when the select is blurred
+         * by the user. Required to implement ControlValueAccessor.
+         */
+        CdkListbox.prototype.registerOnTouched = function (fn) {
+            this._onTouched = fn;
+        };
+        /** Sets the select's value. Required to implement ControlValueAccessor. */
+        CdkListbox.prototype.writeValue = function (values) {
+            if (this._options) {
+                this._setSelectionByValue(values);
+            }
+        };
+        /** Disables the select. Required to implement ControlValueAccessor. */
+        CdkListbox.prototype.setDisabledState = function (isDisabled) {
+            this.disabled = isDisabled;
+        };
+        /** Selects an option that has the corresponding given value. */
+        CdkListbox.prototype._setSelectionByValue = function (values) {
+            var e_5, _a, e_6, _b;
+            var _this = this;
+            try {
+                for (var _c = __values(this._options.toArray()), _d = _c.next(); !_d.done; _d = _c.next()) {
+                    var option = _d.value;
+                    this.deselect(option);
+                }
+            }
+            catch (e_5_1) { e_5 = { error: e_5_1 }; }
+            finally {
+                try {
+                    if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+                }
+                finally { if (e_5) throw e_5.error; }
+            }
+            var valuesArray = coercion.coerceArray(values);
+            var _loop_1 = function (value) {
+                var correspondingOption = this_1._options.find(function (option) {
+                    return option.value != null && _this.compareWith(option.value, value);
+                });
+                if (correspondingOption) {
+                    this_1.select(correspondingOption);
+                    if (!this_1.multiple) {
+                        return { value: void 0 };
+                    }
+                }
+            };
+            var this_1 = this;
+            try {
+                for (var valuesArray_1 = __values(valuesArray), valuesArray_1_1 = valuesArray_1.next(); !valuesArray_1_1.done; valuesArray_1_1 = valuesArray_1.next()) {
+                    var value = valuesArray_1_1.value;
+                    var state_1 = _loop_1(value);
+                    if (typeof state_1 === "object")
+                        return state_1.value;
+                }
+            }
+            catch (e_6_1) { e_6 = { error: e_6_1 }; }
+            finally {
+                try {
+                    if (valuesArray_1_1 && !valuesArray_1_1.done && (_b = valuesArray_1.return)) _b.call(valuesArray_1);
+                }
+                finally { if (e_6) throw e_6.error; }
+            }
+        };
         CdkListbox.decorators = [
             { type: core.Directive, args: [{
                         selector: '[cdkListbox]',
@@ -628,7 +718,8 @@
                             '[attr.aria-disabled]': 'disabled',
                             '[attr.aria-multiselectable]': 'multiple',
                             '[attr.aria-activedescendant]': '_getAriaActiveDescendant()'
-                        }
+                        },
+                        providers: [CDK_LISTBOX_VALUE_ACCESSOR]
                     },] }
         ];
         CdkListbox.propDecorators = {
@@ -636,7 +727,8 @@
             selectionChange: [{ type: core.Output }],
             multiple: [{ type: core.Input }],
             disabled: [{ type: core.Input }],
-            useActiveDescendant: [{ type: core.Input }]
+            useActiveDescendant: [{ type: core.Input }],
+            compareWith: [{ type: core.Input }]
         };
         return CdkListbox;
     }());
@@ -673,6 +765,7 @@
      * Generated bundle index. Do not edit.
      */
 
+    exports.CDK_LISTBOX_VALUE_ACCESSOR = CDK_LISTBOX_VALUE_ACCESSOR;
     exports.CdkListbox = CdkListbox;
     exports.CdkListboxModule = CdkListboxModule;
     exports.CdkOption = CdkOption;

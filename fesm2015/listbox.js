@@ -1,10 +1,11 @@
-import { EventEmitter, Directive, ElementRef, Inject, forwardRef, Input, Output, ContentChildren, NgModule } from '@angular/core';
+import { forwardRef, EventEmitter, Directive, ElementRef, Inject, Input, Output, ContentChildren, NgModule } from '@angular/core';
 import { ActiveDescendantKeyManager } from '@angular/cdk/a11y';
 import { HOME, END, SPACE, ENTER, UP_ARROW, DOWN_ARROW } from '@angular/cdk/keycodes';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { coerceBooleanProperty, coerceArray } from '@angular/cdk/coercion';
 import { SelectionModel } from '@angular/cdk/collections';
 import { defer, merge, Subject } from 'rxjs';
 import { startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 /**
  * @license
@@ -14,6 +15,11 @@ import { startWith, switchMap, takeUntil } from 'rxjs/operators';
  * found in the LICENSE file at https://angular.io/license
  */
 let nextId = 0;
+const CDK_LISTBOX_VALUE_ACCESSOR = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => CdkListbox),
+    multi: true
+};
 class CdkOption {
     constructor(_elementRef, listbox) {
         this._elementRef = _elementRef;
@@ -38,6 +44,16 @@ class CdkOption {
     }
     set disabled(value) {
         this._disabled = coerceBooleanProperty(value);
+    }
+    /** The form value of the option. */
+    get value() {
+        return this._value;
+    }
+    set value(value) {
+        if (this.selected && value !== this._value) {
+            this.deselect();
+        }
+        this._value = value;
     }
     /** Toggles the selected state, emits a change event through the injected listbox. */
     toggle() {
@@ -143,11 +159,16 @@ CdkOption.propDecorators = {
     id: [{ type: Input }],
     selected: [{ type: Input }],
     disabled: [{ type: Input }],
+    value: [{ type: Input }],
     selectionChange: [{ type: Output }]
 };
 class CdkListbox {
     constructor() {
         this._tabIndex = 0;
+        /** `View -> model callback called when select has been touched` */
+        this._onTouched = () => { };
+        /** `View -> model callback called when value changes` */
+        this._onChange = () => { };
         this.optionSelectionChanges = defer(() => {
             const options = this._options;
             return options.changes.pipe(startWith(options), switchMap(() => merge(...options.map(option => option.selectionChange))));
@@ -157,6 +178,7 @@ class CdkListbox {
         this._useActiveDescendant = true;
         this._destroyed = new Subject();
         this.selectionChange = new EventEmitter();
+        this.compareWith = (a1, a2) => a1 === a2;
     }
     /**
      * Whether the listbox allows multiple options to be selected.
@@ -311,17 +333,54 @@ class CdkListbox {
     /** Sets the selected state of all options to be the given value. */
     setAllSelected(isSelected) {
         for (const option of this._options.toArray()) {
-            const wasSelected = option.selected;
             isSelected ? this.select(option) : this.deselect(option);
-            if (wasSelected !== isSelected) {
-                this._emitChangeEvent(option);
-                this._updateSelectionModel(option);
-            }
         }
     }
     /** Updates the key manager's active item to the given option. */
     setActiveOption(option) {
         this._listKeyManager.updateActiveItem(option);
+    }
+    /**
+     * Saves a callback function to be invoked when the select's value
+     * changes from user input. Required to implement ControlValueAccessor.
+     */
+    registerOnChange(fn) {
+        this._onChange = fn;
+    }
+    /**
+     * Saves a callback function to be invoked when the select is blurred
+     * by the user. Required to implement ControlValueAccessor.
+     */
+    registerOnTouched(fn) {
+        this._onTouched = fn;
+    }
+    /** Sets the select's value. Required to implement ControlValueAccessor. */
+    writeValue(values) {
+        if (this._options) {
+            this._setSelectionByValue(values);
+        }
+    }
+    /** Disables the select. Required to implement ControlValueAccessor. */
+    setDisabledState(isDisabled) {
+        this.disabled = isDisabled;
+    }
+    /** Selects an option that has the corresponding given value. */
+    _setSelectionByValue(values) {
+        for (const option of this._options.toArray()) {
+            this.deselect(option);
+        }
+        const valuesArray = coerceArray(values);
+        for (const value of valuesArray) {
+            const correspondingOption = this._options.find((option) => {
+                return option.value != null && this.compareWith(option.value, value);
+            });
+            if (correspondingOption) {
+                this.select(correspondingOption);
+                if (!this.multiple) {
+                    return;
+                }
+            }
+        }
     }
 }
 CdkListbox.decorators = [
@@ -335,7 +394,8 @@ CdkListbox.decorators = [
                     '[attr.aria-disabled]': 'disabled',
                     '[attr.aria-multiselectable]': 'multiple',
                     '[attr.aria-activedescendant]': '_getAriaActiveDescendant()'
-                }
+                },
+                providers: [CDK_LISTBOX_VALUE_ACCESSOR]
             },] }
 ];
 CdkListbox.propDecorators = {
@@ -343,7 +403,8 @@ CdkListbox.propDecorators = {
     selectionChange: [{ type: Output }],
     multiple: [{ type: Input }],
     disabled: [{ type: Input }],
-    useActiveDescendant: [{ type: Input }]
+    useActiveDescendant: [{ type: Input }],
+    compareWith: [{ type: Input }]
 };
 
 /**
@@ -375,5 +436,5 @@ CdkListboxModule.decorators = [
  * Generated bundle index. Do not edit.
  */
 
-export { CdkListbox, CdkListboxModule, CdkOption };
+export { CDK_LISTBOX_VALUE_ACCESSOR, CdkListbox, CdkListboxModule, CdkOption };
 //# sourceMappingURL=listbox.js.map
