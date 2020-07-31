@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/bidi'), require('rxjs/operators'), require('rxjs'), require('@angular/cdk/collections'), require('@angular/cdk/coercion'), require('@angular/cdk/portal')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/bidi', 'rxjs/operators', 'rxjs', '@angular/cdk/collections', '@angular/cdk/coercion', '@angular/cdk/portal'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.rxjs.operators, global.rxjs, global.ng.cdk.collections, global.ng.cdk.coercion, global.ng.cdk.portal));
-}(this, (function (exports, core, overlay, a11y, keycodes, bidi, operators, rxjs, collections, coercion, portal) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/bidi'), require('rxjs/operators'), require('rxjs'), require('@angular/cdk/collections'), require('@angular/cdk/coercion'), require('@angular/cdk/portal'), require('@angular/common')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/bidi', 'rxjs/operators', 'rxjs', '@angular/cdk/collections', '@angular/cdk/coercion', '@angular/cdk/portal', '@angular/common'], factory) :
+    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.rxjs.operators, global.rxjs, global.ng.cdk.collections, global.ng.cdk.coercion, global.ng.cdk.portal, global.ng.common));
+}(this, (function (exports, i0, overlay, a11y, keycodes, bidi, operators, rxjs, collections, coercion, portal, common) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -240,7 +240,7 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /** Injection token used to return classes implementing the Menu interface */
-    var CDK_MENU = new core.InjectionToken('cdk-menu');
+    var CDK_MENU = new i0.InjectionToken('cdk-menu');
 
     /**
      * @license
@@ -266,9 +266,9 @@
             this._parentMenu = _parentMenu;
             this._directionality = _directionality;
             /** Emits when the attached menu is requested to open */
-            this.opened = new core.EventEmitter();
+            this.opened = new i0.EventEmitter();
             /** Emits when the attached menu is requested to close */
-            this.closed = new core.EventEmitter();
+            this.closed = new i0.EventEmitter();
             /** A reference to the overlay which manages the triggered menu */
             this._overlayRef = null;
         }
@@ -459,7 +459,7 @@
             }
         };
         CdkMenuItemTrigger.decorators = [
-            { type: core.Directive, args: [{
+            { type: i0.Directive, args: [{
                         selector: '[cdkMenuTriggerFor]',
                         exportAs: 'cdkMenuTriggerFor',
                         host: {
@@ -473,16 +473,16 @@
                     },] }
         ];
         CdkMenuItemTrigger.ctorParameters = function () { return [
-            { type: core.ElementRef },
-            { type: core.ViewContainerRef },
+            { type: i0.ElementRef },
+            { type: i0.ViewContainerRef },
             { type: overlay.Overlay },
-            { type: undefined, decorators: [{ type: core.Inject, args: [CDK_MENU,] }] },
-            { type: bidi.Directionality, decorators: [{ type: core.Optional }] }
+            { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_MENU,] }] },
+            { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
         ]; };
         CdkMenuItemTrigger.propDecorators = {
-            menuPanel: [{ type: core.Input, args: ['cdkMenuTriggerFor',] }],
-            opened: [{ type: core.Output, args: ['cdkMenuOpened',] }],
-            closed: [{ type: core.Output, args: ['cdkMenuClosed',] }]
+            menuPanel: [{ type: i0.Input, args: ['cdkMenuTriggerFor',] }],
+            opened: [{ type: i0.Output, args: ['cdkMenuOpened',] }],
+            closed: [{ type: i0.Output, args: ['cdkMenuClosed',] }]
         };
         return CdkMenuItemTrigger;
     }());
@@ -534,7 +534,7 @@
              * If this MenuItem is a regular MenuItem, outputs when it is triggered by a keyboard or mouse
              * event.
              */
-            this.triggered = new core.EventEmitter();
+            this.triggered = new i0.EventEmitter();
             /** Emits when the menu item is destroyed. */
             this._destroyed = new rxjs.Subject();
             this._setupMouseEnter();
@@ -664,7 +664,7 @@
             this._destroyed.next();
         };
         CdkMenuItem.decorators = [
-            { type: core.Directive, args: [{
+            { type: i0.Directive, args: [{
                         selector: '[cdkMenuItem]',
                         exportAs: 'cdkMenuItem',
                         host: {
@@ -677,17 +677,17 @@
                     },] }
         ];
         CdkMenuItem.ctorParameters = function () { return [
-            { type: core.ElementRef },
-            { type: undefined, decorators: [{ type: core.Inject, args: [CDK_MENU,] }] },
-            { type: core.NgZone },
-            { type: bidi.Directionality, decorators: [{ type: core.Optional }] },
-            { type: CdkMenuItemTrigger, decorators: [{ type: core.Self }, { type: core.Optional }] }
+            { type: i0.ElementRef },
+            { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_MENU,] }] },
+            { type: i0.NgZone },
+            { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
+            { type: CdkMenuItemTrigger, decorators: [{ type: i0.Self }, { type: i0.Optional }] }
         ]; };
         CdkMenuItem.propDecorators = {
-            disabled: [{ type: core.Input }],
-            triggered: [{ type: core.Output, args: ['cdkMenuItemTriggered',] }],
-            trigger: [{ type: core.HostListener, args: ['click',] }],
-            _onKeydown: [{ type: core.HostListener, args: ['keydown', ['$event'],] }]
+            disabled: [{ type: i0.Input }],
+            triggered: [{ type: i0.Output, args: ['cdkMenuItemTriggered',] }],
+            trigger: [{ type: i0.HostListener, args: ['click',] }],
+            _onKeydown: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }]
         };
         return CdkMenuItem;
     }());
@@ -710,7 +710,7 @@
         function CdkMenuItemSelectable() {
             var _this = _super !== null && _super.apply(this, arguments) || this;
             /** Event emitted when the selectable item is clicked */
-            _this.clicked = new core.EventEmitter();
+            _this.clicked = new i0.EventEmitter();
             _this._checked = false;
             /** The name of the selectable element with a default value */
             _this.name = "cdk-selectable-item-" + nextId++;
@@ -736,13 +736,13 @@
             }
         };
         CdkMenuItemSelectable.decorators = [
-            { type: core.Directive }
+            { type: i0.Directive }
         ];
         CdkMenuItemSelectable.propDecorators = {
-            clicked: [{ type: core.Output }],
-            checked: [{ type: core.Input }],
-            name: [{ type: core.Input }],
-            id: [{ type: core.Input }]
+            clicked: [{ type: i0.Output }],
+            checked: [{ type: i0.Input }],
+            name: [{ type: i0.Input }],
+            id: [{ type: i0.Input }]
         };
         return CdkMenuItemSelectable;
     }(CdkMenuItem));
@@ -761,9 +761,9 @@
     var CdkMenuGroup = /** @class */ (function () {
         function CdkMenuGroup() {
             /** Emits the element when checkbox or radiobutton state changed  */
-            this.change = new core.EventEmitter();
+            this.change = new i0.EventEmitter();
             /** Emits when the _selectableItems QueryList triggers a change */
-            this._selectableChanges = new core.EventEmitter();
+            this._selectableChanges = new i0.EventEmitter();
         }
         CdkMenuGroup.prototype.ngAfterContentInit = function () {
             this._registerMenuSelectionListeners();
@@ -792,7 +792,7 @@
             this._selectableChanges.complete();
         };
         CdkMenuGroup.decorators = [
-            { type: core.Directive, args: [{
+            { type: i0.Directive, args: [{
                         selector: '[cdkMenuGroup]',
                         exportAs: 'cdkMenuGroup',
                         host: {
@@ -803,8 +803,8 @@
                     },] }
         ];
         CdkMenuGroup.propDecorators = {
-            change: [{ type: core.Output }],
-            _selectableItems: [{ type: core.ContentChildren, args: [CdkMenuItemSelectable, { descendants: true },] }]
+            change: [{ type: i0.Output }],
+            _selectableItems: [{ type: i0.ContentChildren, args: [CdkMenuItemSelectable, { descendants: true },] }]
         };
         return CdkMenuGroup;
     }());
@@ -837,10 +837,10 @@
             this._menuStack.push(child);
         };
         CdkMenuPanel.decorators = [
-            { type: core.Directive, args: [{ selector: 'ng-template[cdkMenuPanel]', exportAs: 'cdkMenuPanel' },] }
+            { type: i0.Directive, args: [{ selector: 'ng-template[cdkMenuPanel]', exportAs: 'cdkMenuPanel' },] }
         ];
         CdkMenuPanel.ctorParameters = function () { return [
-            { type: core.TemplateRef }
+            { type: i0.TemplateRef }
         ]; };
         return CdkMenuPanel;
     }());
@@ -913,7 +913,7 @@
              */
             _this.orientation = 'vertical';
             /** Event emitted when the menu is closed. */
-            _this.closed = new core.EventEmitter();
+            _this.closed = new i0.EventEmitter();
             return _this;
         }
         CdkMenu.prototype.ngOnInit = function () {
@@ -1113,7 +1113,7 @@
             this.closed.complete();
         };
         CdkMenu.decorators = [
-            { type: core.Directive, args: [{
+            { type: i0.Directive, args: [{
                         selector: '[cdkMenu]',
                         exportAs: 'cdkMenu',
                         host: {
@@ -1129,16 +1129,16 @@
                     },] }
         ];
         CdkMenu.ctorParameters = function () { return [
-            { type: core.NgZone },
-            { type: bidi.Directionality, decorators: [{ type: core.Optional }] },
-            { type: CdkMenuPanel, decorators: [{ type: core.Optional }] }
+            { type: i0.NgZone },
+            { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
+            { type: CdkMenuPanel, decorators: [{ type: i0.Optional }] }
         ]; };
         CdkMenu.propDecorators = {
-            orientation: [{ type: core.Input, args: ['cdkMenuOrientation',] }],
-            closed: [{ type: core.Output }],
-            _nestedGroups: [{ type: core.ContentChildren, args: [CdkMenuGroup, { descendants: true },] }],
-            _allItems: [{ type: core.ContentChildren, args: [CdkMenuItem, { descendants: true },] }],
-            _explicitPanel: [{ type: core.Input, args: ['cdkMenuPanel',] }]
+            orientation: [{ type: i0.Input, args: ['cdkMenuOrientation',] }],
+            closed: [{ type: i0.Output }],
+            _nestedGroups: [{ type: i0.ContentChildren, args: [CdkMenuGroup, { descendants: true },] }],
+            _allItems: [{ type: i0.ContentChildren, args: [CdkMenuItem, { descendants: true },] }],
+            _explicitPanel: [{ type: i0.Input, args: ['cdkMenuPanel',] }]
         };
         return CdkMenu;
     }(CdkMenuGroup));
@@ -1467,7 +1467,7 @@
             this._destroyed.complete();
         };
         CdkMenuBar.decorators = [
-            { type: core.Directive, args: [{
+            { type: i0.Directive, args: [{
                         selector: '[cdkMenuBar]',
                         exportAs: 'cdkMenuBar',
                         host: {
@@ -1488,12 +1488,12 @@
         ];
         CdkMenuBar.ctorParameters = function () { return [
             { type: MenuStack },
-            { type: core.NgZone },
-            { type: bidi.Directionality, decorators: [{ type: core.Optional }] }
+            { type: i0.NgZone },
+            { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
         ]; };
         CdkMenuBar.propDecorators = {
-            orientation: [{ type: core.Input, args: ['cdkMenuBarOrientation',] }],
-            _allItems: [{ type: core.ContentChildren, args: [CdkMenuItem, { descendants: true },] }]
+            orientation: [{ type: i0.Input, args: ['cdkMenuBarOrientation',] }],
+            _allItems: [{ type: i0.ContentChildren, args: [CdkMenuItem, { descendants: true },] }]
         };
         return CdkMenuBar;
     }(CdkMenuGroup));
@@ -1532,7 +1532,7 @@
             this._removeDispatcherListener();
         };
         CdkMenuItemRadio.decorators = [
-            { type: core.Directive, args: [{
+            { type: i0.Directive, args: [{
                         selector: '[cdkMenuItemRadio]',
                         exportAs: 'cdkMenuItemRadio',
                         host: {
@@ -1550,11 +1550,11 @@
         ];
         CdkMenuItemRadio.ctorParameters = function () { return [
             { type: collections.UniqueSelectionDispatcher },
-            { type: core.ElementRef },
-            { type: core.NgZone },
-            { type: undefined, decorators: [{ type: core.Inject, args: [CDK_MENU,] }] },
-            { type: bidi.Directionality, decorators: [{ type: core.Optional }] },
-            { type: CdkMenuItemTrigger, decorators: [{ type: core.Self }, { type: core.Optional }] }
+            { type: i0.ElementRef },
+            { type: i0.NgZone },
+            { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_MENU,] }] },
+            { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
+            { type: CdkMenuItemTrigger, decorators: [{ type: i0.Self }, { type: i0.Optional }] }
         ]; };
         return CdkMenuItemRadio;
     }(CdkMenuItemSelectable));
@@ -1582,7 +1582,7 @@
             }
         };
         CdkMenuItemCheckbox.decorators = [
-            { type: core.Directive, args: [{
+            { type: i0.Directive, args: [{
                         selector: '[cdkMenuItemCheckbox]',
                         exportAs: 'cdkMenuItemCheckbox',
                         host: {
@@ -1608,6 +1608,287 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
+    /**
+     * Check if the given element is part of the cdk menu module or nested within a cdk menu element.
+     * @param target the element to check.
+     * @return true if the given element is part of the menu module or nested within a cdk menu element.
+     */
+    function isWithinMenuElement(target) {
+        while (target instanceof Element) {
+            if (target.className.indexOf('cdk-menu') !== -1) {
+                return true;
+            }
+            target = target.parentElement;
+        }
+        return false;
+    }
+    /** Tracks the last open context menu trigger across the entire application. */
+    var ContextMenuTracker = /** @class */ (function () {
+        function ContextMenuTracker() {
+        }
+        /**
+         * Close the previous open context menu and set the given one as being open.
+         * @param trigger the trigger for the currently open Context Menu.
+         */
+        ContextMenuTracker.prototype.update = function (trigger) {
+            var _a;
+            if (ContextMenuTracker._openContextMenuTrigger !== trigger) {
+                (_a = ContextMenuTracker._openContextMenuTrigger) === null || _a === void 0 ? void 0 : _a.close();
+                ContextMenuTracker._openContextMenuTrigger = trigger;
+            }
+        };
+        ContextMenuTracker.ɵprov = i0.ɵɵdefineInjectable({ factory: function ContextMenuTracker_Factory() { return new ContextMenuTracker(); }, token: ContextMenuTracker, providedIn: "root" });
+        ContextMenuTracker.decorators = [
+            { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        return ContextMenuTracker;
+    }());
+    /** Injection token for the ContextMenu options object. */
+    var CDK_CONTEXT_MENU_DEFAULT_OPTIONS = new i0.InjectionToken('cdk-context-menu-default-options');
+    var ɵ0 = { offsetX: 2, offsetY: 2 };
+    /**
+     * A directive which when placed on some element opens a the Menu it is bound to when a user
+     * right-clicks within that element. It is aware of nested Context Menus and the lowest level
+     * non-disabled context menu will trigger.
+     */
+    var CdkContextMenuTrigger = /** @class */ (function () {
+        function CdkContextMenuTrigger(_viewContainerRef, _overlay, _contextMenuTracker, _options, document, _directionality) {
+            this._viewContainerRef = _viewContainerRef;
+            this._overlay = _overlay;
+            this._contextMenuTracker = _contextMenuTracker;
+            this._options = _options;
+            this._directionality = _directionality;
+            /** Emits when the attached menu is requested to open. */
+            this.opened = new i0.EventEmitter();
+            /** Emits when the attached menu is requested to close. */
+            this.closed = new i0.EventEmitter();
+            this._disabled = false;
+            /** A reference to the overlay which manages the triggered menu. */
+            this._overlayRef = null;
+            /** Emits when the element is destroyed. */
+            this._destroyed = new rxjs.Subject();
+            /** Emits when the document listener should stop. */
+            this._stopDocumentListener = rxjs.merge(this.closed, this._destroyed);
+            /** The menu stack for this trigger and its associated menus. */
+            this._menuStack = new MenuStack();
+            this._document = document;
+            this._setMenuStackListener();
+        }
+        Object.defineProperty(CdkContextMenuTrigger.prototype, "menuPanel", {
+            /** Template reference variable to the menu to open on right click. */
+            get: function () {
+                return this._menuPanel;
+            },
+            set: function (panel) {
+                this._menuPanel = panel;
+                if (this._menuPanel) {
+                    this._menuPanel._menuStack = this._menuStack;
+                }
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(CdkContextMenuTrigger.prototype, "disabled", {
+            /** Whether the context menu should be disabled. */
+            get: function () {
+                return this._disabled;
+            },
+            set: function (value) {
+                this._disabled = coercion.coerceBooleanProperty(value);
+            },
+            enumerable: false,
+            configurable: true
+        });
+        /**
+         * Open the attached menu at the specified location.
+         * @param coordinates where to open the context menu
+         */
+        CdkContextMenuTrigger.prototype.open = function (coordinates) {
+            if (this.disabled) {
+                return;
+            }
+            else if (this.isOpen()) {
+                // since we're moving this menu we need to close any submenus first otherwise they end up
+                // disconnected from this one.
+                this._menuStack.closeSubMenuOf(this._menuPanel._menu);
+                this._overlayRef.getConfig()
+                    .positionStrategy.setOrigin(coordinates);
+                this._overlayRef.updatePosition();
+            }
+            else {
+                this.opened.next();
+                if (this._overlayRef) {
+                    this._overlayRef.getConfig()
+                        .positionStrategy.setOrigin(coordinates);
+                    this._overlayRef.updatePosition();
+                }
+                else {
+                    this._overlayRef = this._overlay.create(this._getOverlayConfig(coordinates));
+                }
+                this._overlayRef.attach(this._getMenuContent());
+                this._setCloseListener();
+            }
+        };
+        /** Close the opened menu. */
+        CdkContextMenuTrigger.prototype.close = function () {
+            this._menuStack.closeAll();
+        };
+        /**
+         * Open the context menu and close any previously open menus.
+         * @param event the mouse event which opens the context menu.
+         */
+        CdkContextMenuTrigger.prototype._openOnContextMenu = function (event) {
+            if (!this.disabled) {
+                // Prevent the native context menu from opening because we're opening a custom one.
+                event.preventDefault();
+                // Stop event propagation to ensure that only the closest enabled context menu opens.
+                // Otherwise, any context menus attached to containing elements would *also* open,
+                // resulting in multiple stacked context menus being displayed.
+                event.stopPropagation();
+                this._contextMenuTracker.update(this);
+                this.open({ x: event.clientX, y: event.clientY });
+            }
+        };
+        /** Whether the attached menu is open. */
+        CdkContextMenuTrigger.prototype.isOpen = function () {
+            var _a;
+            return !!((_a = this._overlayRef) === null || _a === void 0 ? void 0 : _a.hasAttached());
+        };
+        /**
+         * Get the configuration object used to create the overlay.
+         * @param coordinates the location to place the opened menu
+         */
+        CdkContextMenuTrigger.prototype._getOverlayConfig = function (coordinates) {
+            return new overlay.OverlayConfig({
+                positionStrategy: this._getOverlayPositionStrategy(coordinates),
+                scrollStrategy: this._overlay.scrollStrategies.block(),
+                direction: this._directionality,
+            });
+        };
+        /**
+         * Build the position strategy for the overlay which specifies where to place the menu.
+         * @param coordinates the location to place the opened menu
+         */
+        CdkContextMenuTrigger.prototype._getOverlayPositionStrategy = function (coordinates) {
+            return this._overlay
+                .position()
+                .flexibleConnectedTo(coordinates)
+                .withDefaultOffsetX(this._options.offsetX)
+                .withDefaultOffsetY(this._options.offsetY)
+                .withPositions(this._getOverlayPositions());
+        };
+        /**
+         * Determine and return where to position the opened menu relative to the mouse location.
+         */
+        CdkContextMenuTrigger.prototype._getOverlayPositions = function () {
+            // TODO: this should be configurable through the injected context menu options
+            return [
+                { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
+                { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
+                { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
+                { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' },
+            ];
+        };
+        /**
+         * Get the portal to be attached to the overlay which contains the menu. Allows for the menu
+         * content to change dynamically and be reflected in the application.
+         */
+        CdkContextMenuTrigger.prototype._getMenuContent = function () {
+            var _a;
+            var hasMenuContentChanged = this.menuPanel._templateRef !== ((_a = this._panelContent) === null || _a === void 0 ? void 0 : _a.templateRef);
+            if (this.menuPanel && (!this._panelContent || hasMenuContentChanged)) {
+                this._panelContent = new portal.TemplatePortal(this.menuPanel._templateRef, this._viewContainerRef);
+            }
+            return this._panelContent;
+        };
+        /**
+         * Subscribe to the document click and context menu events and close out the menu when emitted.
+         */
+        CdkContextMenuTrigger.prototype._setCloseListener = function () {
+            var _this = this;
+            rxjs.merge(rxjs.fromEvent(this._document, 'click'), rxjs.fromEvent(this._document, 'contextmenu'))
+                .pipe(operators.takeUntil(this._stopDocumentListener))
+                .subscribe(function (event) {
+                var target = event.composedPath ? event.composedPath()[0] : event.target;
+                // stop the default context menu from appearing if user right-clicked somewhere outside of
+                // any context menu directive or if a user right-clicked inside of the opened menu and just
+                // close it.
+                if (event.type === 'contextmenu') {
+                    if (target instanceof Element && isWithinMenuElement(target)) {
+                        // Prevent the native context menu from opening within any open context menu or submenu
+                        event.preventDefault();
+                    }
+                    else {
+                        _this.close();
+                    }
+                }
+                else {
+                    if (target instanceof Element && !isWithinMenuElement(target)) {
+                        _this.close();
+                    }
+                }
+            });
+        };
+        /** Subscribe to the menu stack close events and close this menu when requested. */
+        CdkContextMenuTrigger.prototype._setMenuStackListener = function () {
+            var _this = this;
+            this._menuStack.closed.pipe(operators.takeUntil(this._destroyed)).subscribe(function (item) {
+                if (item === _this._menuPanel._menu && _this.isOpen()) {
+                    _this.closed.next();
+                    _this._overlayRef.detach();
+                }
+            });
+        };
+        CdkContextMenuTrigger.prototype.ngOnDestroy = function () {
+            this._destroyOverlay();
+            this._destroyed.next();
+            this._destroyed.complete();
+        };
+        /** Destroy and unset the overlay reference it if exists. */
+        CdkContextMenuTrigger.prototype._destroyOverlay = function () {
+            if (this._overlayRef) {
+                this._overlayRef.dispose();
+                this._overlayRef = null;
+            }
+        };
+        CdkContextMenuTrigger.decorators = [
+            { type: i0.Directive, args: [{
+                        selector: '[cdkContextMenuTriggerFor]',
+                        exportAs: 'cdkContextMenuTriggerFor',
+                        host: {
+                            '(contextmenu)': '_openOnContextMenu($event)',
+                        },
+                        providers: [
+                            // In cases where the first menu item in the context menu is a trigger the submenu opens on a
+                            // hover event. Offsetting the opened context menu by 2px prevents this from occurring.
+                            { provide: CDK_CONTEXT_MENU_DEFAULT_OPTIONS, useValue: ɵ0 },
+                        ],
+                    },] }
+        ];
+        CdkContextMenuTrigger.ctorParameters = function () { return [
+            { type: i0.ViewContainerRef },
+            { type: overlay.Overlay },
+            { type: ContextMenuTracker },
+            { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_CONTEXT_MENU_DEFAULT_OPTIONS,] }] },
+            { type: undefined, decorators: [{ type: i0.Inject, args: [common.DOCUMENT,] }] },
+            { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
+        ]; };
+        CdkContextMenuTrigger.propDecorators = {
+            menuPanel: [{ type: i0.Input, args: ['cdkContextMenuTriggerFor',] }],
+            opened: [{ type: i0.Output, args: ['cdkContextMenuOpened',] }],
+            closed: [{ type: i0.Output, args: ['cdkContextMenuClosed',] }],
+            disabled: [{ type: i0.Input, args: ['cdkContextMenuDisabled',] }]
+        };
+        return CdkContextMenuTrigger;
+    }());
+
+    /**
+     * @license
+     * Copyright Google LLC All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
     var EXPORTED_DECLARATIONS = [
         CdkMenuBar,
         CdkMenu,
@@ -1617,12 +1898,13 @@
         CdkMenuItemCheckbox,
         CdkMenuItemTrigger,
         CdkMenuGroup,
+        CdkContextMenuTrigger,
     ];
     var CdkMenuModule = /** @class */ (function () {
         function CdkMenuModule() {
         }
         CdkMenuModule.decorators = [
-            { type: core.NgModule, args: [{
+            { type: i0.NgModule, args: [{
                         imports: [overlay.OverlayModule],
                         exports: EXPORTED_DECLARATIONS,
                         declarations: EXPORTED_DECLARATIONS,
@@ -1643,7 +1925,9 @@
      * Generated bundle index. Do not edit.
      */
 
+    exports.CDK_CONTEXT_MENU_DEFAULT_OPTIONS = CDK_CONTEXT_MENU_DEFAULT_OPTIONS;
     exports.CDK_MENU = CDK_MENU;
+    exports.CdkContextMenuTrigger = CdkContextMenuTrigger;
     exports.CdkMenu = CdkMenu;
     exports.CdkMenuBar = CdkMenuBar;
     exports.CdkMenuGroup = CdkMenuGroup;
@@ -1653,7 +1937,9 @@
     exports.CdkMenuItemTrigger = CdkMenuItemTrigger;
     exports.CdkMenuModule = CdkMenuModule;
     exports.CdkMenuPanel = CdkMenuPanel;
+    exports.ContextMenuTracker = ContextMenuTracker;
     exports.MenuStack = MenuStack;
+    exports.ɵ0 = ɵ0;
     exports.ɵangular_material_src_cdk_experimental_menu_menu_b = CdkMenuItemSelectable;
 
     Object.defineProperty(exports, '__esModule', { value: true });

@@ -1,4 +1,4 @@
-import { InjectionToken, EventEmitter, Directive, ElementRef, ViewContainerRef, Inject, Optional, Input, Output, NgZone, Self, HostListener, ContentChildren, TemplateRef, NgModule } from '@angular/core';
+import { InjectionToken, EventEmitter, Directive, ElementRef, ViewContainerRef, Inject, Optional, Input, Output, NgZone, Self, HostListener, ContentChildren, TemplateRef, ɵɵdefineInjectable, Injectable, NgModule } from '@angular/core';
 import { OverlayConfig, Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW, ENTER, SPACE, TAB, ESCAPE, hasModifierKey } from '@angular/cdk/keycodes';
@@ -8,6 +8,7 @@ import { Subject, fromEvent, defer, merge } from 'rxjs';
 import { UniqueSelectionDispatcher } from '@angular/cdk/collections';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { TemplatePortal } from '@angular/cdk/portal';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * @license
@@ -1320,6 +1321,273 @@ CdkMenuItemCheckbox.decorators = [
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+/**
+ * Check if the given element is part of the cdk menu module or nested within a cdk menu element.
+ * @param target the element to check.
+ * @return true if the given element is part of the menu module or nested within a cdk menu element.
+ */
+function isWithinMenuElement(target) {
+    while (target instanceof Element) {
+        if (target.className.indexOf('cdk-menu') !== -1) {
+            return true;
+        }
+        target = target.parentElement;
+    }
+    return false;
+}
+/** Tracks the last open context menu trigger across the entire application. */
+class ContextMenuTracker {
+    /**
+     * Close the previous open context menu and set the given one as being open.
+     * @param trigger the trigger for the currently open Context Menu.
+     */
+    update(trigger) {
+        var _a;
+        if (ContextMenuTracker._openContextMenuTrigger !== trigger) {
+            (_a = ContextMenuTracker._openContextMenuTrigger) === null || _a === void 0 ? void 0 : _a.close();
+            ContextMenuTracker._openContextMenuTrigger = trigger;
+        }
+    }
+}
+ContextMenuTracker.ɵprov = ɵɵdefineInjectable({ factory: function ContextMenuTracker_Factory() { return new ContextMenuTracker(); }, token: ContextMenuTracker, providedIn: "root" });
+ContextMenuTracker.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+/** Injection token for the ContextMenu options object. */
+const CDK_CONTEXT_MENU_DEFAULT_OPTIONS = new InjectionToken('cdk-context-menu-default-options');
+const ɵ0 = { offsetX: 2, offsetY: 2 };
+/**
+ * A directive which when placed on some element opens a the Menu it is bound to when a user
+ * right-clicks within that element. It is aware of nested Context Menus and the lowest level
+ * non-disabled context menu will trigger.
+ */
+class CdkContextMenuTrigger {
+    constructor(_viewContainerRef, _overlay, _contextMenuTracker, _options, document, _directionality) {
+        this._viewContainerRef = _viewContainerRef;
+        this._overlay = _overlay;
+        this._contextMenuTracker = _contextMenuTracker;
+        this._options = _options;
+        this._directionality = _directionality;
+        /** Emits when the attached menu is requested to open. */
+        this.opened = new EventEmitter();
+        /** Emits when the attached menu is requested to close. */
+        this.closed = new EventEmitter();
+        this._disabled = false;
+        /** A reference to the overlay which manages the triggered menu. */
+        this._overlayRef = null;
+        /** Emits when the element is destroyed. */
+        this._destroyed = new Subject();
+        /** Emits when the document listener should stop. */
+        this._stopDocumentListener = merge(this.closed, this._destroyed);
+        /** The menu stack for this trigger and its associated menus. */
+        this._menuStack = new MenuStack();
+        this._document = document;
+        this._setMenuStackListener();
+    }
+    /** Template reference variable to the menu to open on right click. */
+    get menuPanel() {
+        return this._menuPanel;
+    }
+    set menuPanel(panel) {
+        this._menuPanel = panel;
+        if (this._menuPanel) {
+            this._menuPanel._menuStack = this._menuStack;
+        }
+    }
+    /** Whether the context menu should be disabled. */
+    get disabled() {
+        return this._disabled;
+    }
+    set disabled(value) {
+        this._disabled = coerceBooleanProperty(value);
+    }
+    /**
+     * Open the attached menu at the specified location.
+     * @param coordinates where to open the context menu
+     */
+    open(coordinates) {
+        if (this.disabled) {
+            return;
+        }
+        else if (this.isOpen()) {
+            // since we're moving this menu we need to close any submenus first otherwise they end up
+            // disconnected from this one.
+            this._menuStack.closeSubMenuOf(this._menuPanel._menu);
+            this._overlayRef.getConfig()
+                .positionStrategy.setOrigin(coordinates);
+            this._overlayRef.updatePosition();
+        }
+        else {
+            this.opened.next();
+            if (this._overlayRef) {
+                this._overlayRef.getConfig()
+                    .positionStrategy.setOrigin(coordinates);
+                this._overlayRef.updatePosition();
+            }
+            else {
+                this._overlayRef = this._overlay.create(this._getOverlayConfig(coordinates));
+            }
+            this._overlayRef.attach(this._getMenuContent());
+            this._setCloseListener();
+        }
+    }
+    /** Close the opened menu. */
+    close() {
+        this._menuStack.closeAll();
+    }
+    /**
+     * Open the context menu and close any previously open menus.
+     * @param event the mouse event which opens the context menu.
+     */
+    _openOnContextMenu(event) {
+        if (!this.disabled) {
+            // Prevent the native context menu from opening because we're opening a custom one.
+            event.preventDefault();
+            // Stop event propagation to ensure that only the closest enabled context menu opens.
+            // Otherwise, any context menus attached to containing elements would *also* open,
+            // resulting in multiple stacked context menus being displayed.
+            event.stopPropagation();
+            this._contextMenuTracker.update(this);
+            this.open({ x: event.clientX, y: event.clientY });
+        }
+    }
+    /** Whether the attached menu is open. */
+    isOpen() {
+        var _a;
+        return !!((_a = this._overlayRef) === null || _a === void 0 ? void 0 : _a.hasAttached());
+    }
+    /**
+     * Get the configuration object used to create the overlay.
+     * @param coordinates the location to place the opened menu
+     */
+    _getOverlayConfig(coordinates) {
+        return new OverlayConfig({
+            positionStrategy: this._getOverlayPositionStrategy(coordinates),
+            scrollStrategy: this._overlay.scrollStrategies.block(),
+            direction: this._directionality,
+        });
+    }
+    /**
+     * Build the position strategy for the overlay which specifies where to place the menu.
+     * @param coordinates the location to place the opened menu
+     */
+    _getOverlayPositionStrategy(coordinates) {
+        return this._overlay
+            .position()
+            .flexibleConnectedTo(coordinates)
+            .withDefaultOffsetX(this._options.offsetX)
+            .withDefaultOffsetY(this._options.offsetY)
+            .withPositions(this._getOverlayPositions());
+    }
+    /**
+     * Determine and return where to position the opened menu relative to the mouse location.
+     */
+    _getOverlayPositions() {
+        // TODO: this should be configurable through the injected context menu options
+        return [
+            { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
+            { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
+            { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
+            { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' },
+        ];
+    }
+    /**
+     * Get the portal to be attached to the overlay which contains the menu. Allows for the menu
+     * content to change dynamically and be reflected in the application.
+     */
+    _getMenuContent() {
+        var _a;
+        const hasMenuContentChanged = this.menuPanel._templateRef !== ((_a = this._panelContent) === null || _a === void 0 ? void 0 : _a.templateRef);
+        if (this.menuPanel && (!this._panelContent || hasMenuContentChanged)) {
+            this._panelContent = new TemplatePortal(this.menuPanel._templateRef, this._viewContainerRef);
+        }
+        return this._panelContent;
+    }
+    /**
+     * Subscribe to the document click and context menu events and close out the menu when emitted.
+     */
+    _setCloseListener() {
+        merge(fromEvent(this._document, 'click'), fromEvent(this._document, 'contextmenu'))
+            .pipe(takeUntil(this._stopDocumentListener))
+            .subscribe(event => {
+            const target = event.composedPath ? event.composedPath()[0] : event.target;
+            // stop the default context menu from appearing if user right-clicked somewhere outside of
+            // any context menu directive or if a user right-clicked inside of the opened menu and just
+            // close it.
+            if (event.type === 'contextmenu') {
+                if (target instanceof Element && isWithinMenuElement(target)) {
+                    // Prevent the native context menu from opening within any open context menu or submenu
+                    event.preventDefault();
+                }
+                else {
+                    this.close();
+                }
+            }
+            else {
+                if (target instanceof Element && !isWithinMenuElement(target)) {
+                    this.close();
+                }
+            }
+        });
+    }
+    /** Subscribe to the menu stack close events and close this menu when requested. */
+    _setMenuStackListener() {
+        this._menuStack.closed.pipe(takeUntil(this._destroyed)).subscribe((item) => {
+            if (item === this._menuPanel._menu && this.isOpen()) {
+                this.closed.next();
+                this._overlayRef.detach();
+            }
+        });
+    }
+    ngOnDestroy() {
+        this._destroyOverlay();
+        this._destroyed.next();
+        this._destroyed.complete();
+    }
+    /** Destroy and unset the overlay reference it if exists. */
+    _destroyOverlay() {
+        if (this._overlayRef) {
+            this._overlayRef.dispose();
+            this._overlayRef = null;
+        }
+    }
+}
+CdkContextMenuTrigger.decorators = [
+    { type: Directive, args: [{
+                selector: '[cdkContextMenuTriggerFor]',
+                exportAs: 'cdkContextMenuTriggerFor',
+                host: {
+                    '(contextmenu)': '_openOnContextMenu($event)',
+                },
+                providers: [
+                    // In cases where the first menu item in the context menu is a trigger the submenu opens on a
+                    // hover event. Offsetting the opened context menu by 2px prevents this from occurring.
+                    { provide: CDK_CONTEXT_MENU_DEFAULT_OPTIONS, useValue: ɵ0 },
+                ],
+            },] }
+];
+CdkContextMenuTrigger.ctorParameters = () => [
+    { type: ViewContainerRef },
+    { type: Overlay },
+    { type: ContextMenuTracker },
+    { type: undefined, decorators: [{ type: Inject, args: [CDK_CONTEXT_MENU_DEFAULT_OPTIONS,] }] },
+    { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] },
+    { type: Directionality, decorators: [{ type: Optional }] }
+];
+CdkContextMenuTrigger.propDecorators = {
+    menuPanel: [{ type: Input, args: ['cdkContextMenuTriggerFor',] }],
+    opened: [{ type: Output, args: ['cdkContextMenuOpened',] }],
+    closed: [{ type: Output, args: ['cdkContextMenuClosed',] }],
+    disabled: [{ type: Input, args: ['cdkContextMenuDisabled',] }]
+};
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 const EXPORTED_DECLARATIONS = [
     CdkMenuBar,
     CdkMenu,
@@ -1329,6 +1597,7 @@ const EXPORTED_DECLARATIONS = [
     CdkMenuItemCheckbox,
     CdkMenuItemTrigger,
     CdkMenuGroup,
+    CdkContextMenuTrigger,
 ];
 class CdkMenuModule {
 }
@@ -1352,5 +1621,5 @@ CdkMenuModule.decorators = [
  * Generated bundle index. Do not edit.
  */
 
-export { CDK_MENU, CdkMenu, CdkMenuBar, CdkMenuGroup, CdkMenuItem, CdkMenuItemCheckbox, CdkMenuItemRadio, CdkMenuItemTrigger, CdkMenuModule, CdkMenuPanel, MenuStack, CdkMenuItemSelectable as ɵangular_material_src_cdk_experimental_menu_menu_b };
+export { CDK_CONTEXT_MENU_DEFAULT_OPTIONS, CDK_MENU, CdkContextMenuTrigger, CdkMenu, CdkMenuBar, CdkMenuGroup, CdkMenuItem, CdkMenuItemCheckbox, CdkMenuItemRadio, CdkMenuItemTrigger, CdkMenuModule, CdkMenuPanel, ContextMenuTracker, MenuStack, ɵ0, CdkMenuItemSelectable as ɵangular_material_src_cdk_experimental_menu_menu_b };
 //# sourceMappingURL=menu.js.map
