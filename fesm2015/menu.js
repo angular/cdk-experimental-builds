@@ -234,7 +234,7 @@ class CdkMenuItemTrigger {
 }
 CdkMenuItemTrigger.decorators = [
     { type: Directive, args: [{
-                selector: '[cdkMenuItem][cdkMenuTriggerFor]',
+                selector: '[cdkMenuTriggerFor]',
                 exportAs: 'cdkMenuTriggerFor',
                 host: {
                     '(keydown)': '_toggleOnKeydown($event)',
