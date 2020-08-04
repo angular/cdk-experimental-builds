@@ -8,7 +8,7 @@
 import { AnimationEvent } from '@angular/animations';
 import { FocusTrapFactory } from '@angular/cdk/a11y';
 import { BasePortalOutlet, ComponentPortal, CdkPortalOutlet, TemplatePortal, DomPortal } from '@angular/cdk/portal';
-import { ChangeDetectorRef, ComponentRef, ElementRef, EmbeddedViewRef, OnDestroy } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, ComponentRef, ElementRef, EmbeddedViewRef, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DialogConfig } from './dialog-config';
 export declare function throwDialogContentAlreadyAttachedError(): void;
@@ -16,7 +16,7 @@ export declare function throwDialogContentAlreadyAttachedError(): void;
  * Internal component that wraps user-provided dialog content.
  * @docs-private
  */
-export declare class CdkDialogContainer extends BasePortalOutlet implements OnDestroy {
+export declare class CdkDialogContainer extends BasePortalOutlet implements OnDestroy, AfterViewInit {
     private _elementRef;
     private _focusTrapFactory;
     private _changeDetectorRef;
@@ -49,6 +49,8 @@ export declare class CdkDialogContainer extends BasePortalOutlet implements OnDe
     constructor(_elementRef: ElementRef<HTMLElement>, _focusTrapFactory: FocusTrapFactory, _changeDetectorRef: ChangeDetectorRef, _document: any, 
     /** The dialog configuration. */
     _config: DialogConfig);
+    /** If the dialog view completes initialization, the open animation starts. */
+    ngAfterViewInit(): void;
     /** Destroy focus trap to place focus back to the element focused before the dialog opened. */
     ngOnDestroy(): void;
     /**
@@ -74,6 +76,8 @@ export declare class CdkDialogContainer extends BasePortalOutlet implements OnDe
     _startExiting(): void;
     /** Saves a reference to the element that was focused before the dialog was opened. */
     private _savePreviouslyFocusedElement;
+    /** Focuses the dialog container. */
+    private _focusDialogContainer;
     /**
      * Autofocus the first tabbable element inside of the dialog, if there is not a tabbable element,
      * focus the dialog instead.

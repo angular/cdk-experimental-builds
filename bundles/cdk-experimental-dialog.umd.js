@@ -323,7 +323,6 @@
                 if (_this._portalHost.hasAttached()) {
                     throwDialogContentAlreadyAttachedError();
                 }
-                _this._savePreviouslyFocusedElement();
                 return _this._portalHost.attachDomPortal(portal);
             };
             _this._document = _document;
@@ -371,6 +370,15 @@
             enumerable: false,
             configurable: true
         });
+        /** If the dialog view completes initialization, the open animation starts. */
+        CdkDialogContainer.prototype.ngAfterViewInit = function () {
+            // Save the previously focused element. This element will be re-focused
+            // when the dialog closes.
+            this._savePreviouslyFocusedElement();
+            // Move focus onto the dialog immediately in order to prevent the user
+            // from accidentally opening multiple dialogs at the same time.
+            this._focusDialogContainer();
+        };
         /** Destroy focus trap to place focus back to the element focused before the dialog opened. */
         CdkDialogContainer.prototype.ngOnDestroy = function () {
             this._focusTrap.destroy();
@@ -384,7 +392,6 @@
             if (this._portalHost.hasAttached()) {
                 throwDialogContentAlreadyAttachedError();
             }
-            this._savePreviouslyFocusedElement();
             return this._portalHost.attachComponentPortal(portal);
         };
         /**
@@ -395,7 +402,6 @@
             if (this._portalHost.hasAttached()) {
                 throwDialogContentAlreadyAttachedError();
             }
-            this._savePreviouslyFocusedElement();
             return this._portalHost.attachTemplatePortal(portal);
         };
         /** Emit lifecycle events based on animation `start` callback. */
@@ -418,13 +424,15 @@
         };
         /** Saves a reference to the element that was focused before the dialog was opened. */
         CdkDialogContainer.prototype._savePreviouslyFocusedElement = function () {
-            var _this = this;
             if (this._document) {
                 this._elementFocusedBeforeDialogWasOpened = this._document.activeElement;
-                // Move focus onto the dialog immediately in order to prevent the user from accidentally
-                // opening multiple dialogs at the same time. Needs to be async, because the element
-                // may not be focusable immediately.
-                Promise.resolve().then(function () { return _this._elementRef.nativeElement.focus(); });
+            }
+        };
+        /** Focuses the dialog container. */
+        CdkDialogContainer.prototype._focusDialogContainer = function () {
+            // Note that there is no focus method when rendering on the server.
+            if (this._elementRef.nativeElement.focus) {
+                this._elementRef.nativeElement.focus();
             }
         };
         /**
