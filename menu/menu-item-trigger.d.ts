@@ -65,6 +65,8 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
      * @param event the keyboard event to handle
      */
     _toggleOnKeydown(event: KeyboardEvent): void;
+    /** Close out any sibling menu trigger menus. */
+    private _closeSiblingTriggers;
     /** Get the configuration object used to create the overlay */
     private _getOverlayConfig;
     /** Build the position strategy for the overlay which specifies where to place the menu */

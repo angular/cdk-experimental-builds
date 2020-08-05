@@ -306,7 +306,7 @@
                 this.closed.next();
                 this._overlayRef.detach();
             }
-            this._getMenuStack().closeSubMenuOf(this._parentMenu);
+            this._closeSiblingTriggers();
         };
         /** Return true if the trigger has an attached menu */
         CdkMenuItemTrigger.prototype.hasMenu = function () {
@@ -331,13 +331,7 @@
         CdkMenuItemTrigger.prototype._toggleOnMouseEnter = function () {
             var menuStack = this._getMenuStack();
             if (!menuStack.isEmpty() && !this.isMenuOpen()) {
-                // If nothing was removed from the stack and the last element is not the parent item
-                // that means that the parent menu is a menu bar since we don't put the menu bar on the
-                // stack
-                var isParentMenuBar = !menuStack.closeSubMenuOf(this._parentMenu) && menuStack.peek() !== this._parentMenu;
-                if (isParentMenuBar) {
-                    menuStack.closeAll();
-                }
+                this._closeSiblingTriggers();
                 this.openMenu();
             }
         };
@@ -389,6 +383,17 @@
                             ? (_k = (_j = this.menuPanel) === null || _j === void 0 ? void 0 : _j._menu) === null || _k === void 0 ? void 0 : _k.focusFirstItem('keyboard') : (_m = (_l = this.menuPanel) === null || _l === void 0 ? void 0 : _l._menu) === null || _m === void 0 ? void 0 : _m.focusLastItem('keyboard');
                     }
                     break;
+            }
+        };
+        /** Close out any sibling menu trigger menus. */
+        CdkMenuItemTrigger.prototype._closeSiblingTriggers = function () {
+            var menuStack = this._getMenuStack();
+            // If nothing was removed from the stack and the last element is not the parent item
+            // that means that the parent menu is a menu bar since we don't put the menu bar on the
+            // stack
+            var isParentMenuBar = !menuStack.closeSubMenuOf(this._parentMenu) && menuStack.peek() !== this._parentMenu;
+            if (isParentMenuBar) {
+                menuStack.closeAll();
             }
         };
         /** Get the configuration object used to create the overlay */
