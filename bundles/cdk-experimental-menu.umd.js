@@ -944,6 +944,10 @@
             this._keyManager.setFocusOrigin(focusOrigin);
             this._keyManager.setLastItemActive();
         };
+        // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
+        // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
+        // can move this back into `host`.
+        // tslint:disable:no-host-decorator-in-concrete
         /** Handle keyboard events for the Menu. */
         CdkMenu.prototype._handleKeyEvent = function (event) {
             var keyManager = this._keyManager;
@@ -1122,7 +1126,6 @@
                         selector: '[cdkMenu]',
                         exportAs: 'cdkMenu',
                         host: {
-                            '(keydown)': '_handleKeyEvent($event)',
                             'role': 'menu',
                             'class': 'cdk-menu',
                             '[attr.aria-orientation]': 'orientation',
@@ -1143,7 +1146,8 @@
             closed: [{ type: i0.Output }],
             _nestedGroups: [{ type: i0.ContentChildren, args: [CdkMenuGroup, { descendants: true },] }],
             _allItems: [{ type: i0.ContentChildren, args: [CdkMenuItem, { descendants: true },] }],
-            _explicitPanel: [{ type: i0.Input, args: ['cdkMenuPanel',] }]
+            _explicitPanel: [{ type: i0.Input, args: ['cdkMenuPanel',] }],
+            _handleKeyEvent: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }]
         };
         return CdkMenu;
     }(CdkMenuGroup));
@@ -1293,6 +1297,10 @@
             this._subscribeToMenuStack();
             this._subscribeToMouseManager();
         };
+        // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
+        // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
+        // can move this back into `host`.
+        // tslint:disable:no-host-decorator-in-concrete
         /** Place focus on the first MenuItem in the menu and set the focus origin. */
         CdkMenuBar.prototype.focusFirstItem = function (focusOrigin) {
             if (focusOrigin === void 0) { focusOrigin = 'program'; }
@@ -1305,6 +1313,10 @@
             this._keyManager.setFocusOrigin(focusOrigin);
             this._keyManager.setLastItemActive();
         };
+        // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
+        // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
+        // can move this back into `host`.
+        // tslint:disable:no-host-decorator-in-concrete
         /**
          * Handle keyboard events, specifically changing the focused element and/or toggling the active
          * items menu.
@@ -1430,6 +1442,10 @@
         CdkMenuBar.prototype._isHorizontal = function () {
             return this.orientation === 'horizontal';
         };
+        // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
+        // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
+        // can move this back into `host`.
+        // tslint:disable:no-host-decorator-in-concrete
         /** Close any open submenu if there was a click event which occurred outside the menu stack. */
         CdkMenuBar.prototype._closeOnBackgroundClick = function (event) {
             if (this._hasOpenSubmenu()) {
@@ -1476,9 +1492,6 @@
                         selector: '[cdkMenuBar]',
                         exportAs: 'cdkMenuBar',
                         host: {
-                            '(keydown)': '_handleKeyEvent($event)',
-                            '(document:click)': '_closeOnBackgroundClick($event)',
-                            '(focus)': 'focusFirstItem()',
                             'role': 'menubar',
                             'class': 'cdk-menu-bar',
                             'tabindex': '0',
@@ -1498,7 +1511,10 @@
         ]; };
         CdkMenuBar.propDecorators = {
             orientation: [{ type: i0.Input, args: ['cdkMenuBarOrientation',] }],
-            _allItems: [{ type: i0.ContentChildren, args: [CdkMenuItem, { descendants: true },] }]
+            _allItems: [{ type: i0.ContentChildren, args: [CdkMenuItem, { descendants: true },] }],
+            focusFirstItem: [{ type: i0.HostListener, args: ['focus',] }],
+            _handleKeyEvent: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }],
+            _closeOnBackgroundClick: [{ type: i0.HostListener, args: ['document:click', ['$event'],] }]
         };
         return CdkMenuBar;
     }(CdkMenuGroup));
@@ -1525,6 +1541,10 @@
             var _this = this;
             this._removeDispatcherListener = this._selectionDispatcher.listen(function (id, name) { return (_this.checked = _this.id === id && _this.name === name); });
         };
+        // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
+        // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
+        // can move this back into `host`.
+        // tslint:disable:no-host-decorator-in-concrete
         /** Toggles the checked state of the radio-button. */
         CdkMenuItemRadio.prototype.trigger = function () {
             _super.prototype.trigger.call(this);
@@ -1541,7 +1561,6 @@
                         selector: '[cdkMenuItemRadio]',
                         exportAs: 'cdkMenuItemRadio',
                         host: {
-                            '(click)': 'trigger()',
                             'type': 'button',
                             'role': 'menuitemradio',
                             '[attr.aria-checked]': 'checked || null',
@@ -1561,6 +1580,9 @@
             { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
             { type: CdkMenuItemTrigger, decorators: [{ type: i0.Self }, { type: i0.Optional }] }
         ]; };
+        CdkMenuItemRadio.propDecorators = {
+            trigger: [{ type: i0.HostListener, args: ['click',] }]
+        };
         return CdkMenuItemRadio;
     }(CdkMenuItemSelectable));
 
@@ -1580,6 +1602,10 @@
         function CdkMenuItemCheckbox() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
+        // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
+        // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
+        // can move this back into `host`.
+        // tslint:disable:no-host-decorator-in-concrete
         CdkMenuItemCheckbox.prototype.trigger = function () {
             _super.prototype.trigger.call(this);
             if (!this.disabled) {
@@ -1591,7 +1617,6 @@
                         selector: '[cdkMenuItemCheckbox]',
                         exportAs: 'cdkMenuItemCheckbox',
                         host: {
-                            '(click)': 'trigger()',
                             'type': 'button',
                             'role': 'menuitemcheckbox',
                             '[attr.aria-checked]': 'checked || null',
@@ -1603,6 +1628,9 @@
                         ],
                     },] }
         ];
+        CdkMenuItemCheckbox.propDecorators = {
+            trigger: [{ type: i0.HostListener, args: ['click',] }]
+        };
         return CdkMenuItemCheckbox;
     }(CdkMenuItemSelectable));
 
