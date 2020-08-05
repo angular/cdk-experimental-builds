@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { ElementRef, NgZone } from '@angular/core';
+import { CdkTable } from '@angular/cdk/table';
 import { ColumnResize } from '../column-resize';
 import { ColumnResizeNotifier, ColumnResizeNotifierSource } from '../column-resize-notifier';
 import { HeaderRowEventDispatcher } from '../event-dispatcher';
@@ -19,5 +20,6 @@ export declare class CdkColumnResizeFlex extends ColumnResize {
     protected readonly eventDispatcher: HeaderRowEventDispatcher;
     protected readonly ngZone: NgZone;
     protected readonly notifier: ColumnResizeNotifierSource;
-    constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource);
+    protected readonly table: CdkTable<unknown>;
+    constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
 }
