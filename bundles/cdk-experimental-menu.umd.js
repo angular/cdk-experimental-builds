@@ -1743,6 +1743,7 @@
          * @param event the mouse event which opens the context menu.
          */
         CdkContextMenuTrigger.prototype._openOnContextMenu = function (event) {
+            var _a, _b, _c;
             if (!this.disabled) {
                 // Prevent the native context menu from opening because we're opening a custom one.
                 event.preventDefault();
@@ -1752,6 +1753,16 @@
                 event.stopPropagation();
                 this._contextMenuTracker.update(this);
                 this.open({ x: event.clientX, y: event.clientY });
+                // A context menu can be triggered via a mouse right click or a keyboard shortcut.
+                if (event.button === 2) {
+                    (_a = this._menuPanel._menu) === null || _a === void 0 ? void 0 : _a.focusFirstItem('mouse');
+                }
+                else if (event.button === 0) {
+                    (_b = this._menuPanel._menu) === null || _b === void 0 ? void 0 : _b.focusFirstItem('keyboard');
+                }
+                else {
+                    (_c = this._menuPanel._menu) === null || _c === void 0 ? void 0 : _c.focusFirstItem('program');
+                }
             }
         };
         /** Whether the attached menu is open. */
