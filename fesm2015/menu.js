@@ -601,13 +601,101 @@ CdkMenuPanel.ctorParameters = () => [
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- * Throws an exception when the CdkMenuPanel cannot be injected and the developer did not
- * explicitly provide a reference to the enclosing CdkMenuPanel.
- * @docs-private
+ * MenuStack allows subscribers to listen for close events (when a MenuStackItem is popped off
+ * of the stack) in order to perform closing actions. Upon the MenuStack being empty it emits
+ * from the `empty` observable specifying the next focus action which the listener should perform
+ * as requested by the closer.
  */
-function throwMissingMenuPanelError() {
-    throw Error('CdkMenu must be placed inside a CdkMenuPanel or a reference to CdkMenuPanel' +
-        ' must be explicitly provided if using ViewEngine');
+class MenuStack {
+    constructor() {
+        /** All MenuStackItems tracked by this MenuStack. */
+        this._elements = [];
+        /** Emits the element which was popped off of the stack when requested by a closer. */
+        this._close = new Subject();
+        /** Emits once the MenuStack has become empty after popping off elements. */
+        this._empty = new Subject();
+        /** Observable which emits the MenuStackItem which has been requested to close. */
+        this.closed = this._close;
+        /**
+         * Observable which emits when the MenuStack is empty after popping off the last element. It
+         * emits a FocusNext event which specifies the action the closer has requested the listener
+         * perform.
+         */
+        this.emptied = this._empty;
+    }
+    /** @param menu the MenuStackItem to put on the stack. */
+    push(menu) {
+        this._elements.push(menu);
+    }
+    /**
+     * Pop items off of the stack up to and including `lastItem` and emit each on the close
+     * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
+     * @param lastItem the last item to pop off the stack.
+     * @param focusNext the event to emit on the `empty` observable if the method call resulted in an
+     * empty stack. Does not emit if the stack was initially empty or if `lastItem` was not on the
+     * stack.
+     */
+    close(lastItem, focusNext) {
+        if (this._elements.indexOf(lastItem) >= 0) {
+            let poppedElement;
+            do {
+                poppedElement = this._elements.pop();
+                this._close.next(poppedElement);
+            } while (poppedElement !== lastItem);
+            if (this.isEmpty()) {
+                this._empty.next(focusNext);
+            }
+        }
+    }
+    /**
+     * Pop items off of the stack up to but excluding `lastItem` and emit each on the close
+     * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
+     * @param lastItem the element which should be left on the stack
+     * @return whether or not an item was removed from the stack
+     */
+    closeSubMenuOf(lastItem) {
+        let removed = false;
+        if (this._elements.indexOf(lastItem) >= 0) {
+            removed = this.peek() !== lastItem;
+            while (this.peek() !== lastItem) {
+                this._close.next(this._elements.pop());
+            }
+        }
+        return removed;
+    }
+    /**
+     * Pop off all MenuStackItems and emit each one on the `close` observable one by one.
+     * @param focusNext the event to emit on the `empty` observable once the stack is emptied. Does
+     * not emit if the stack was initially empty.
+     */
+    closeAll(focusNext) {
+        if (!this.isEmpty()) {
+            while (!this.isEmpty()) {
+                const menuStackItem = this._elements.pop();
+                if (menuStackItem) {
+                    this._close.next(menuStackItem);
+                }
+            }
+            this._empty.next(focusNext);
+        }
+    }
+    /** Return true if this stack is empty. */
+    isEmpty() {
+        return !this._elements.length;
+    }
+    /** Return the length of the stack. */
+    length() {
+        return this._elements.length;
+    }
+    /** Get the top most element on the stack. */
+    peek() {
+        return this._elements[this._elements.length - 1];
+    }
+}
+/** NoopMenuStack is a placeholder MenuStack used for inline menus. */
+class NoopMenuStack extends MenuStack {
+    /** Noop push - does not add elements to the MenuStack. */
+    push(_) { }
 }
 
 /**
@@ -655,6 +743,11 @@ class CdkMenu extends CdkMenuGroup {
         this.orientation = 'vertical';
         /** Event emitted when the menu is closed. */
         this.closed = new EventEmitter();
+        // We provide a default MenuStack implementation in case the menu is an inline menu.
+        // For Menus part of a MenuBar nested within a MenuPanel this will be overwritten
+        // to the correct parent MenuStack.
+        /** Track the Menus making up the open menu stack. */
+        this._menuStack = new NoopMenuStack();
     }
     ngOnInit() {
         this._registerWithParentPanel();
@@ -667,6 +760,10 @@ class CdkMenu extends CdkMenuGroup {
         this._subscribeToMenuStack();
         this._subscribeToMouseManager();
     }
+    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
+    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
+    // can move this back into `host`.
+    // tslint:disable:no-host-decorator-in-concrete
     /** Place focus on the first MenuItem in the menu and set the focus origin. */
     focusFirstItem(focusOrigin = 'program') {
         this._keyManager.setFocusOrigin(focusOrigin);
@@ -716,13 +813,8 @@ class CdkMenu extends CdkMenuGroup {
     }
     /** Register this menu with its enclosing parent menu panel */
     _registerWithParentPanel() {
-        const parent = this._getMenuPanel();
-        if (parent) {
-            parent._registerMenu(this);
-        }
-        else {
-            throwMissingMenuPanelError();
-        }
+        var _a;
+        (_a = this._getMenuPanel()) === null || _a === void 0 ? void 0 : _a._registerMenu(this);
     }
     /**
      * Get the enclosing CdkMenuPanel defaulting to the injected reference over the developer
@@ -840,6 +932,15 @@ class CdkMenu extends CdkMenuGroup {
     _isHorizontal() {
         return this.orientation === 'horizontal';
     }
+    /**
+     * Return true if this menu is an inline menu. That is, it does not exist in a pop-up and is
+     * always visible in the dom.
+     */
+    _isInline() {
+        // NoopMenuStack is the default. If this menu is not inline than the NoopMenuStack is replaced
+        // automatically.
+        return this._menuStack instanceof NoopMenuStack;
+    }
     ngOnDestroy() {
         this._emitClosedEvent();
     }
@@ -854,6 +955,7 @@ CdkMenu.decorators = [
                 selector: '[cdkMenu]',
                 exportAs: 'cdkMenu',
                 host: {
+                    '[tabindex]': '_isInline() ? 0 : null',
                     'role': 'menu',
                     'class': 'cdk-menu',
                     '[attr.aria-orientation]': 'orientation',
@@ -875,108 +977,9 @@ CdkMenu.propDecorators = {
     _nestedGroups: [{ type: ContentChildren, args: [CdkMenuGroup, { descendants: true },] }],
     _allItems: [{ type: ContentChildren, args: [CdkMenuItem, { descendants: true },] }],
     _explicitPanel: [{ type: Input, args: ['cdkMenuPanel',] }],
+    focusFirstItem: [{ type: HostListener, args: ['focus',] }],
     _handleKeyEvent: [{ type: HostListener, args: ['keydown', ['$event'],] }]
 };
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-/**
- * MenuStack allows subscribers to listen for close events (when a MenuStackItem is popped off
- * of the stack) in order to perform closing actions. Upon the MenuStack being empty it emits
- * from the `empty` observable specifying the next focus action which the listener should perform
- * as requested by the closer.
- */
-class MenuStack {
-    constructor() {
-        /** All MenuStackItems tracked by this MenuStack. */
-        this._elements = [];
-        /** Emits the element which was popped off of the stack when requested by a closer. */
-        this._close = new Subject();
-        /** Emits once the MenuStack has become empty after popping off elements. */
-        this._empty = new Subject();
-        /** Observable which emits the MenuStackItem which has been requested to close. */
-        this.closed = this._close;
-        /**
-         * Observable which emits when the MenuStack is empty after popping off the last element. It
-         * emits a FocusNext event which specifies the action the closer has requested the listener
-         * perform.
-         */
-        this.emptied = this._empty;
-    }
-    /** @param menu the MenuStackItem to put on the stack. */
-    push(menu) {
-        this._elements.push(menu);
-    }
-    /**
-     * Pop items off of the stack up to and including `lastItem` and emit each on the close
-     * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
-     * @param lastItem the last item to pop off the stack.
-     * @param focusNext the event to emit on the `empty` observable if the method call resulted in an
-     * empty stack. Does not emit if the stack was initially empty or if `lastItem` was not on the
-     * stack.
-     */
-    close(lastItem, focusNext) {
-        if (this._elements.indexOf(lastItem) >= 0) {
-            let poppedElement;
-            do {
-                poppedElement = this._elements.pop();
-                this._close.next(poppedElement);
-            } while (poppedElement !== lastItem);
-            if (this.isEmpty()) {
-                this._empty.next(focusNext);
-            }
-        }
-    }
-    /**
-     * Pop items off of the stack up to but excluding `lastItem` and emit each on the close
-     * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
-     * @param lastItem the element which should be left on the stack
-     * @return whether or not an item was removed from the stack
-     */
-    closeSubMenuOf(lastItem) {
-        let removed = false;
-        if (this._elements.indexOf(lastItem) >= 0) {
-            removed = this.peek() !== lastItem;
-            while (this.peek() !== lastItem) {
-                this._close.next(this._elements.pop());
-            }
-        }
-        return removed;
-    }
-    /**
-     * Pop off all MenuStackItems and emit each one on the `close` observable one by one.
-     * @param focusNext the event to emit on the `empty` observable once the stack is emptied. Does
-     * not emit if the stack was initially empty.
-     */
-    closeAll(focusNext) {
-        if (!this.isEmpty()) {
-            while (!this.isEmpty()) {
-                const menuStackItem = this._elements.pop();
-                if (menuStackItem) {
-                    this._close.next(menuStackItem);
-                }
-            }
-            this._empty.next(focusNext);
-        }
-    }
-    /** Return true if this stack is empty. */
-    isEmpty() {
-        return !this._elements.length;
-    }
-    /** Return the length of the stack. */
-    length() {
-        return this._elements.length;
-    }
-    /** Get the top most element on the stack. */
-    peek() {
-        return this._elements[this._elements.length - 1];
-    }
-}
 
 /**
  * @license

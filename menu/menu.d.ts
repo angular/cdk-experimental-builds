@@ -96,6 +96,11 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
     private _subscribeToMenuOpen;
     /** Return true if this menu has been configured in a horizontal orientation. */
     private _isHorizontal;
+    /**
+     * Return true if this menu is an inline menu. That is, it does not exist in a pop-up and is
+     * always visible in the dom.
+     */
+    _isInline(): boolean;
     ngOnDestroy(): void;
     /** Emit and complete the closed event emitter */
     private _emitClosedEvent;
