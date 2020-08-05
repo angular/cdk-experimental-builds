@@ -7,8 +7,8 @@
  */
 import { AnimationEvent } from '@angular/animations';
 import { FocusTrapFactory } from '@angular/cdk/a11y';
-import { BasePortalOutlet, ComponentPortal, CdkPortalOutlet, TemplatePortal, DomPortal } from '@angular/cdk/portal';
-import { AfterViewInit, ChangeDetectorRef, ComponentRef, ElementRef, EmbeddedViewRef, OnDestroy } from '@angular/core';
+import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, DomPortal, TemplatePortal } from '@angular/cdk/portal';
+import { ChangeDetectorRef, ComponentRef, ElementRef, EmbeddedViewRef, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DialogConfig } from './dialog-config';
 export declare function throwDialogContentAlreadyAttachedError(): void;
@@ -16,7 +16,7 @@ export declare function throwDialogContentAlreadyAttachedError(): void;
  * Internal component that wraps user-provided dialog content.
  * @docs-private
  */
-export declare class CdkDialogContainer extends BasePortalOutlet implements OnDestroy, AfterViewInit {
+export declare class CdkDialogContainer extends BasePortalOutlet implements OnDestroy {
     private _elementRef;
     private _focusTrapFactory;
     private _changeDetectorRef;
@@ -49,8 +49,8 @@ export declare class CdkDialogContainer extends BasePortalOutlet implements OnDe
     constructor(_elementRef: ElementRef<HTMLElement>, _focusTrapFactory: FocusTrapFactory, _changeDetectorRef: ChangeDetectorRef, _document: any, 
     /** The dialog configuration. */
     _config: DialogConfig);
-    /** If the dialog view completes initialization, the open animation starts. */
-    ngAfterViewInit(): void;
+    /** Initializes the dialog container with the attached content. */
+    _initializeWithAttachedContent(): void;
     /** Destroy focus trap to place focus back to the element focused before the dialog opened. */
     ngOnDestroy(): void;
     /**

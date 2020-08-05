@@ -128,8 +128,8 @@ class CdkDialogContainer extends BasePortalOutlet {
     get _ariaDescribedBy() { return this._config.ariaDescribedBy; }
     get _role() { return this._config.role; }
     get _tabindex() { return -1; }
-    /** If the dialog view completes initialization, the open animation starts. */
-    ngAfterViewInit() {
+    /** Initializes the dialog container with the attached content. */
+    _initializeWithAttachedContent() {
         // Save the previously focused element. This element will be re-focused
         // when the dialog closes.
         this._savePreviouslyFocusedElement();
@@ -497,6 +497,7 @@ class Dialog {
         const dialogContainer = this._attachDialogContainer(overlayRef, config);
         const dialogRef = this._attachDialogContentForComponent(component, dialogContainer, overlayRef, config);
         this._registerDialogRef(dialogRef);
+        dialogContainer._initializeWithAttachedContent();
         return dialogRef;
     }
     /** Opens a dialog from a template. */
@@ -509,6 +510,7 @@ class Dialog {
         const dialogContainer = this._attachDialogContainer(overlayRef, config);
         const dialogRef = this._attachDialogContentForTemplate(template, dialogContainer, overlayRef, config);
         this._registerDialogRef(dialogRef);
+        dialogContainer._initializeWithAttachedContent();
         return dialogRef;
     }
     ngOnDestroy() {

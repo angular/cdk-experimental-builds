@@ -370,8 +370,8 @@
             enumerable: false,
             configurable: true
         });
-        /** If the dialog view completes initialization, the open animation starts. */
-        CdkDialogContainer.prototype.ngAfterViewInit = function () {
+        /** Initializes the dialog container with the attached content. */
+        CdkDialogContainer.prototype._initializeWithAttachedContent = function () {
             // Save the previously focused element. This element will be re-focused
             // when the dialog closes.
             this._savePreviouslyFocusedElement();
@@ -748,6 +748,7 @@
             var dialogContainer = this._attachDialogContainer(overlayRef, config);
             var dialogRef = this._attachDialogContentForComponent(component, dialogContainer, overlayRef, config);
             this._registerDialogRef(dialogRef);
+            dialogContainer._initializeWithAttachedContent();
             return dialogRef;
         };
         /** Opens a dialog from a template. */
@@ -760,6 +761,7 @@
             var dialogContainer = this._attachDialogContainer(overlayRef, config);
             var dialogRef = this._attachDialogContentForTemplate(template, dialogContainer, overlayRef, config);
             this._registerDialogRef(dialogRef);
+            dialogContainer._initializeWithAttachedContent();
             return dialogRef;
         };
         Dialog.prototype.ngOnDestroy = function () {
