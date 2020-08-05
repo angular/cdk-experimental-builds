@@ -14,17 +14,17 @@
     var CdkCombobox = /** @class */ (function () {
         function CdkCombobox() {
         }
-        CdkCombobox.decorators = [
-            { type: core.Directive, args: [{
-                        selector: '[cdkCombobox]',
-                        exportAs: 'cdkCombobox',
-                        host: {
-                            'role': 'combobox'
-                        }
-                    },] }
-        ];
         return CdkCombobox;
     }());
+    CdkCombobox.decorators = [
+        { type: core.Directive, args: [{
+                    selector: '[cdkCombobox]',
+                    exportAs: 'cdkCombobox',
+                    host: {
+                        'role': 'combobox'
+                    }
+                },] }
+    ];
 
     /**
      * @license
@@ -36,14 +36,14 @@
     var CdkComboboxPanel = /** @class */ (function () {
         function CdkComboboxPanel() {
         }
-        CdkComboboxPanel.decorators = [
-            { type: core.Directive, args: [{
-                        selector: 'ng-template[cdkComboboxPanel]',
-                        exportAs: 'cdkComboboxPanel',
-                    },] }
-        ];
         return CdkComboboxPanel;
     }());
+    CdkComboboxPanel.decorators = [
+        { type: core.Directive, args: [{
+                    selector: 'ng-template[cdkComboboxPanel]',
+                    exportAs: 'cdkComboboxPanel',
+                },] }
+    ];
 
     /**
      * @license
@@ -56,14 +56,14 @@
     var CdkComboboxModule = /** @class */ (function () {
         function CdkComboboxModule() {
         }
-        CdkComboboxModule.decorators = [
-            { type: core.NgModule, args: [{
-                        exports: EXPORTED_DECLARATIONS,
-                        declarations: EXPORTED_DECLARATIONS,
-                    },] }
-        ];
         return CdkComboboxModule;
     }());
+    CdkComboboxModule.decorators = [
+        { type: core.NgModule, args: [{
+                    exports: EXPORTED_DECLARATIONS,
+                    declarations: EXPORTED_DECLARATIONS,
+                },] }
+    ];
 
     /**
      * @license

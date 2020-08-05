@@ -395,22 +395,22 @@
         CdkAutoSizeVirtualScroll.prototype.ngOnChanges = function () {
             this._scrollStrategy.updateBufferSize(this.minBufferPx, this.maxBufferPx);
         };
-        CdkAutoSizeVirtualScroll.decorators = [
-            { type: core.Directive, args: [{
-                        selector: 'cdk-virtual-scroll-viewport[autosize]',
-                        providers: [{
-                                provide: scrolling.VIRTUAL_SCROLL_STRATEGY,
-                                useFactory: _autoSizeVirtualScrollStrategyFactory,
-                                deps: [core.forwardRef(function () { return CdkAutoSizeVirtualScroll; })],
-                            }],
-                    },] }
-        ];
-        CdkAutoSizeVirtualScroll.propDecorators = {
-            minBufferPx: [{ type: core.Input }],
-            maxBufferPx: [{ type: core.Input }]
-        };
         return CdkAutoSizeVirtualScroll;
     }());
+    CdkAutoSizeVirtualScroll.decorators = [
+        { type: core.Directive, args: [{
+                    selector: 'cdk-virtual-scroll-viewport[autosize]',
+                    providers: [{
+                            provide: scrolling.VIRTUAL_SCROLL_STRATEGY,
+                            useFactory: _autoSizeVirtualScrollStrategyFactory,
+                            deps: [core.forwardRef(function () { return CdkAutoSizeVirtualScroll; })],
+                        }],
+                },] }
+    ];
+    CdkAutoSizeVirtualScroll.propDecorators = {
+        minBufferPx: [{ type: core.Input }],
+        maxBufferPx: [{ type: core.Input }]
+    };
 
     /**
      * @license
@@ -422,14 +422,14 @@
     var ScrollingModule = /** @class */ (function () {
         function ScrollingModule() {
         }
-        ScrollingModule.decorators = [
-            { type: core.NgModule, args: [{
-                        exports: [CdkAutoSizeVirtualScroll],
-                        declarations: [CdkAutoSizeVirtualScroll],
-                    },] }
-        ];
         return ScrollingModule;
     }());
+    ScrollingModule.decorators = [
+        { type: core.NgModule, args: [{
+                    exports: [CdkAutoSizeVirtualScroll],
+                    declarations: [CdkAutoSizeVirtualScroll],
+                },] }
+    ];
 
     /**
      * @license

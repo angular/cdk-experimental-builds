@@ -19,35 +19,36 @@
     PERFORMANCE OF THIS SOFTWARE.
     ***************************************************************************** */
     /* global Reflect, Promise */
-
-    var extendStatics = function(d, b) {
+    var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b)
+                if (b.hasOwnProperty(p))
+                    d[p] = b[p]; };
         return extendStatics(d, b);
     };
-
     function __extends(d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     }
-
-    var __assign = function() {
+    var __assign = function () {
         __assign = Object.assign || function __assign(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
-                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+                for (var p in s)
+                    if (Object.prototype.hasOwnProperty.call(s, p))
+                        t[p] = s[p];
             }
             return t;
         };
         return __assign.apply(this, arguments);
     };
-
     function __rest(s, e) {
         var t = {};
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-            t[p] = s[p];
+        for (var p in s)
+            if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+                t[p] = s[p];
         if (s != null && typeof Object.getOwnPropertySymbols === "function")
             for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
                 if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
@@ -55,175 +56,247 @@
             }
         return t;
     }
-
     function __decorate(decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+            r = Reflect.decorate(decorators, target, key, desc);
+        else
+            for (var i = decorators.length - 1; i >= 0; i--)
+                if (d = decorators[i])
+                    r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     }
-
     function __param(paramIndex, decorator) {
-        return function (target, key) { decorator(target, key, paramIndex); }
+        return function (target, key) { decorator(target, key, paramIndex); };
     }
-
     function __metadata(metadataKey, metadataValue) {
-        if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
+        if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+            return Reflect.metadata(metadataKey, metadataValue);
     }
-
     function __awaiter(thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function fulfilled(value) { try {
+                step(generator.next(value));
+            }
+            catch (e) {
+                reject(e);
+            } }
+            function rejected(value) { try {
+                step(generator["throw"](value));
+            }
+            catch (e) {
+                reject(e);
+            } }
             function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
             step((generator = generator.apply(thisArg, _arguments || [])).next());
         });
     }
-
     function __generator(thisArg, body) {
-        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        var _ = { label: 0, sent: function () { if (t[0] & 1)
+                throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () { return this; }), g;
         function verb(n) { return function (v) { return step([n, v]); }; }
         function step(op) {
-            if (f) throw new TypeError("Generator is already executing.");
-            while (_) try {
-                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-                if (y = 0, t) op = [op[0] & 2, t.value];
-                switch (op[0]) {
-                    case 0: case 1: t = op; break;
-                    case 4: _.label++; return { value: op[1], done: false };
-                    case 5: _.label++; y = op[1]; op = [0]; continue;
-                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                    default:
-                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                        if (t[2]) _.ops.pop();
-                        _.trys.pop(); continue;
+            if (f)
+                throw new TypeError("Generator is already executing.");
+            while (_)
+                try {
+                    if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done)
+                        return t;
+                    if (y = 0, t)
+                        op = [op[0] & 2, t.value];
+                    switch (op[0]) {
+                        case 0:
+                        case 1:
+                            t = op;
+                            break;
+                        case 4:
+                            _.label++;
+                            return { value: op[1], done: false };
+                        case 5:
+                            _.label++;
+                            y = op[1];
+                            op = [0];
+                            continue;
+                        case 7:
+                            op = _.ops.pop();
+                            _.trys.pop();
+                            continue;
+                        default:
+                            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                                _ = 0;
+                                continue;
+                            }
+                            if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) {
+                                _.label = op[1];
+                                break;
+                            }
+                            if (op[0] === 6 && _.label < t[1]) {
+                                _.label = t[1];
+                                t = op;
+                                break;
+                            }
+                            if (t && _.label < t[2]) {
+                                _.label = t[2];
+                                _.ops.push(op);
+                                break;
+                            }
+                            if (t[2])
+                                _.ops.pop();
+                            _.trys.pop();
+                            continue;
+                    }
+                    op = body.call(thisArg, _);
                 }
-                op = body.call(thisArg, _);
-            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+                catch (e) {
+                    op = [6, e];
+                    y = 0;
+                }
+                finally {
+                    f = t = 0;
+                }
+            if (op[0] & 5)
+                throw op[1];
+            return { value: op[0] ? op[1] : void 0, done: true };
         }
     }
-
-    var __createBinding = Object.create ? (function(o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-    }) : (function(o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
+    var __createBinding = Object.create ? (function (o, m, k, k2) {
+        if (k2 === undefined)
+            k2 = k;
+        Object.defineProperty(o, k2, { enumerable: true, get: function () { return m[k]; } });
+    }) : (function (o, m, k, k2) {
+        if (k2 === undefined)
+            k2 = k;
         o[k2] = m[k];
     });
-
     function __exportStar(m, exports) {
-        for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
+        for (var p in m)
+            if (p !== "default" && !exports.hasOwnProperty(p))
+                __createBinding(exports, m, p);
     }
-
     function __values(o) {
         var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-        if (m) return m.call(o);
-        if (o && typeof o.length === "number") return {
-            next: function () {
-                if (o && i >= o.length) o = void 0;
-                return { value: o && o[i++], done: !o };
-            }
-        };
+        if (m)
+            return m.call(o);
+        if (o && typeof o.length === "number")
+            return {
+                next: function () {
+                    if (o && i >= o.length)
+                        o = void 0;
+                    return { value: o && o[i++], done: !o };
+                }
+            };
         throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
     }
-
     function __read(o, n) {
         var m = typeof Symbol === "function" && o[Symbol.iterator];
-        if (!m) return o;
+        if (!m)
+            return o;
         var i = m.call(o), r, ar = [], e;
         try {
-            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+            while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
+                ar.push(r.value);
         }
-        catch (error) { e = { error: error }; }
+        catch (error) {
+            e = { error: error };
+        }
         finally {
             try {
-                if (r && !r.done && (m = i["return"])) m.call(i);
+                if (r && !r.done && (m = i["return"]))
+                    m.call(i);
             }
-            finally { if (e) throw e.error; }
+            finally {
+                if (e)
+                    throw e.error;
+            }
         }
         return ar;
     }
-
     function __spread() {
         for (var ar = [], i = 0; i < arguments.length; i++)
             ar = ar.concat(__read(arguments[i]));
         return ar;
     }
-
     function __spreadArrays() {
-        for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+        for (var s = 0, i = 0, il = arguments.length; i < il; i++)
+            s += arguments[i].length;
         for (var r = Array(s), k = 0, i = 0; i < il; i++)
             for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
                 r[k] = a[j];
         return r;
-    };
-
+    }
+    ;
     function __await(v) {
         return this instanceof __await ? (this.v = v, this) : new __await(v);
     }
-
     function __asyncGenerator(thisArg, _arguments, generator) {
-        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+        if (!Symbol.asyncIterator)
+            throw new TypeError("Symbol.asyncIterator is not defined.");
         var g = generator.apply(thisArg, _arguments || []), i, q = [];
         return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-        function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
-        function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+        function verb(n) { if (g[n])
+            i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+        function resume(n, v) { try {
+            step(g[n](v));
+        }
+        catch (e) {
+            settle(q[0][3], e);
+        } }
         function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
         function fulfill(value) { resume("next", value); }
         function reject(value) { resume("throw", value); }
-        function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+        function settle(f, v) { if (f(v), q.shift(), q.length)
+            resume(q[0][0], q[0][1]); }
     }
-
     function __asyncDelegator(o) {
         var i, p;
         return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
         function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
     }
-
     function __asyncValues(o) {
-        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+        if (!Symbol.asyncIterator)
+            throw new TypeError("Symbol.asyncIterator is not defined.");
         var m = o[Symbol.asyncIterator], i;
         return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
         function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-        function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+        function settle(resolve, reject, d, v) { Promise.resolve(v).then(function (v) { resolve({ value: v, done: d }); }, reject); }
     }
-
     function __makeTemplateObject(cooked, raw) {
-        if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+        if (Object.defineProperty) {
+            Object.defineProperty(cooked, "raw", { value: raw });
+        }
+        else {
+            cooked.raw = raw;
+        }
         return cooked;
-    };
-
-    var __setModuleDefault = Object.create ? (function(o, v) {
+    }
+    ;
+    var __setModuleDefault = Object.create ? (function (o, v) {
         Object.defineProperty(o, "default", { enumerable: true, value: v });
-    }) : function(o, v) {
+    }) : function (o, v) {
         o["default"] = v;
     };
-
     function __importStar(mod) {
-        if (mod && mod.__esModule) return mod;
+        if (mod && mod.__esModule)
+            return mod;
         var result = {};
-        if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+        if (mod != null)
+            for (var k in mod)
+                if (Object.hasOwnProperty.call(mod, k))
+                    __createBinding(result, mod, k);
         __setModuleDefault(result, mod);
         return result;
     }
-
     function __importDefault(mod) {
         return (mod && mod.__esModule) ? mod : { default: mod };
     }
-
     function __classPrivateFieldGet(receiver, privateMap) {
         if (!privateMap.has(receiver)) {
             throw new TypeError("attempted to get private field on non-instance");
         }
         return privateMap.get(receiver);
     }
-
     function __classPrivateFieldSet(receiver, privateMap, value) {
         if (!privateMap.has(receiver)) {
             throw new TypeError("attempted to set private field on non-instance");
@@ -463,57 +536,50 @@
                 this._overlayRef = null;
             }
         };
-        CdkMenuItemTrigger.decorators = [
-            { type: i0.Directive, args: [{
-                        selector: '[cdkMenuTriggerFor]',
-                        exportAs: 'cdkMenuTriggerFor',
-                        host: {
-                            '(keydown)': '_toggleOnKeydown($event)',
-                            '(mouseenter)': '_toggleOnMouseEnter()',
-                            '(click)': 'toggle()',
-                            'tabindex': '-1',
-                            'aria-haspopup': 'menu',
-                            '[attr.aria-expanded]': 'isMenuOpen()',
-                        },
-                    },] }
-        ];
-        CdkMenuItemTrigger.ctorParameters = function () { return [
-            { type: i0.ElementRef },
-            { type: i0.ViewContainerRef },
-            { type: overlay.Overlay },
-            { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_MENU,] }] },
-            { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
-        ]; };
-        CdkMenuItemTrigger.propDecorators = {
-            menuPanel: [{ type: i0.Input, args: ['cdkMenuTriggerFor',] }],
-            opened: [{ type: i0.Output, args: ['cdkMenuOpened',] }],
-            closed: [{ type: i0.Output, args: ['cdkMenuClosed',] }]
-        };
         return CdkMenuItemTrigger;
     }());
+    CdkMenuItemTrigger.decorators = [
+        { type: i0.Directive, args: [{
+                    selector: '[cdkMenuTriggerFor]',
+                    exportAs: 'cdkMenuTriggerFor',
+                    host: {
+                        '(keydown)': '_toggleOnKeydown($event)',
+                        '(mouseenter)': '_toggleOnMouseEnter()',
+                        '(click)': 'toggle()',
+                        'tabindex': '-1',
+                        'aria-haspopup': 'menu',
+                        '[attr.aria-expanded]': 'isMenuOpen()',
+                    },
+                },] }
+    ];
+    CdkMenuItemTrigger.ctorParameters = function () { return [
+        { type: i0.ElementRef },
+        { type: i0.ViewContainerRef },
+        { type: overlay.Overlay },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_MENU,] }] },
+        { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
+    ]; };
+    CdkMenuItemTrigger.propDecorators = {
+        menuPanel: [{ type: i0.Input, args: ['cdkMenuTriggerFor',] }],
+        opened: [{ type: i0.Output, args: ['cdkMenuOpened',] }],
+        closed: [{ type: i0.Output, args: ['cdkMenuClosed',] }]
+    };
 
-    /**
-     * @license
-     * Copyright Google LLC All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
     // TODO refactor this to be configurable allowing for custom elements to be removed
     /** Removes all icons from within the given element. */
     function removeIcons(element) {
-        var e_1, _a;
-        var _b;
+        var e_1, _c;
+        var _a;
         try {
-            for (var _c = __values(Array.from(element.querySelectorAll('mat-icon, .material-icons'))), _d = _c.next(); !_d.done; _d = _c.next()) {
-                var icon = _d.value;
-                (_b = icon.parentNode) === null || _b === void 0 ? void 0 : _b.removeChild(icon);
+            for (var _d = __values(Array.from(element.querySelectorAll('mat-icon, .material-icons'))), _e = _d.next(); !_e.done; _e = _d.next()) {
+                var icon = _e.value;
+                (_a = icon.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(icon);
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+                if (_e && !_e.done && (_c = _d.return)) _c.call(_d);
             }
             finally { if (e_1) throw e_1.error; }
         }
@@ -646,13 +712,11 @@
          */
         CdkMenuItem.prototype._setupMouseEnter = function () {
             var _this = this;
-            this._ngZone.runOutsideAngular(function () {
-                return rxjs.fromEvent(_this._elementRef.nativeElement, 'mouseenter')
-                    .pipe(operators.filter(function () { return !_this._getMenuStack().isEmpty() && !_this.hasMenu(); }), operators.takeUntil(_this._destroyed))
-                    .subscribe(function () {
-                    _this._ngZone.run(function () { return _this._getMenuStack().closeSubMenuOf(_this._parentMenu); });
-                });
-            });
+            this._ngZone.runOutsideAngular(function () { return rxjs.fromEvent(_this._elementRef.nativeElement, 'mouseenter')
+                .pipe(operators.filter(function () { return !_this._getMenuStack().isEmpty() && !_this.hasMenu(); }), operators.takeUntil(_this._destroyed))
+                .subscribe(function () {
+                _this._ngZone.run(function () { return _this._getMenuStack().closeSubMenuOf(_this._parentMenu); });
+            }); });
         };
         /** Return true if the enclosing parent menu is configured in a horizontal orientation. */
         CdkMenuItem.prototype._isParentVertical = function () {
@@ -668,42 +732,35 @@
         CdkMenuItem.prototype.ngOnDestroy = function () {
             this._destroyed.next();
         };
-        CdkMenuItem.decorators = [
-            { type: i0.Directive, args: [{
-                        selector: '[cdkMenuItem]',
-                        exportAs: 'cdkMenuItem',
-                        host: {
-                            'tabindex': '-1',
-                            'type': 'button',
-                            'role': 'menuitem',
-                            'class': 'cdk-menu-item',
-                            '[attr.aria-disabled]': 'disabled || null',
-                        },
-                    },] }
-        ];
-        CdkMenuItem.ctorParameters = function () { return [
-            { type: i0.ElementRef },
-            { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_MENU,] }] },
-            { type: i0.NgZone },
-            { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
-            { type: CdkMenuItemTrigger, decorators: [{ type: i0.Self }, { type: i0.Optional }] }
-        ]; };
-        CdkMenuItem.propDecorators = {
-            disabled: [{ type: i0.Input }],
-            triggered: [{ type: i0.Output, args: ['cdkMenuItemTriggered',] }],
-            trigger: [{ type: i0.HostListener, args: ['click',] }],
-            _onKeydown: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }]
-        };
         return CdkMenuItem;
     }());
+    CdkMenuItem.decorators = [
+        { type: i0.Directive, args: [{
+                    selector: '[cdkMenuItem]',
+                    exportAs: 'cdkMenuItem',
+                    host: {
+                        'tabindex': '-1',
+                        'type': 'button',
+                        'role': 'menuitem',
+                        'class': 'cdk-menu-item',
+                        '[attr.aria-disabled]': 'disabled || null',
+                    },
+                },] }
+    ];
+    CdkMenuItem.ctorParameters = function () { return [
+        { type: i0.ElementRef },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_MENU,] }] },
+        { type: i0.NgZone },
+        { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
+        { type: CdkMenuItemTrigger, decorators: [{ type: i0.Self }, { type: i0.Optional }] }
+    ]; };
+    CdkMenuItem.propDecorators = {
+        disabled: [{ type: i0.Input }],
+        triggered: [{ type: i0.Output, args: ['cdkMenuItemTriggered',] }],
+        trigger: [{ type: i0.HostListener, args: ['click',] }],
+        _onKeydown: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }]
+    };
 
-    /**
-     * @license
-     * Copyright Google LLC All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
     /** Counter used to set a unique id and name for a selectable item */
     var nextId = 0;
     /**
@@ -713,7 +770,7 @@
     var CdkMenuItemSelectable = /** @class */ (function (_super) {
         __extends(CdkMenuItemSelectable, _super);
         function CdkMenuItemSelectable() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super.apply(this, __spread(arguments)) || this;
             /** Event emitted when the selectable item is clicked */
             _this.clicked = new i0.EventEmitter();
             _this._checked = false;
@@ -740,17 +797,17 @@
                 this.clicked.next(this);
             }
         };
-        CdkMenuItemSelectable.decorators = [
-            { type: i0.Directive }
-        ];
-        CdkMenuItemSelectable.propDecorators = {
-            clicked: [{ type: i0.Output }],
-            checked: [{ type: i0.Input }],
-            name: [{ type: i0.Input }],
-            id: [{ type: i0.Input }]
-        };
         return CdkMenuItemSelectable;
     }(CdkMenuItem));
+    CdkMenuItemSelectable.decorators = [
+        { type: i0.Directive }
+    ];
+    CdkMenuItemSelectable.propDecorators = {
+        clicked: [{ type: i0.Output }],
+        checked: [{ type: i0.Input }],
+        name: [{ type: i0.Input }],
+        id: [{ type: i0.Input }]
+    };
 
     /**
      * @license
@@ -796,23 +853,23 @@
             this._selectableChanges.next();
             this._selectableChanges.complete();
         };
-        CdkMenuGroup.decorators = [
-            { type: i0.Directive, args: [{
-                        selector: '[cdkMenuGroup]',
-                        exportAs: 'cdkMenuGroup',
-                        host: {
-                            'role': 'group',
-                            'class': 'cdk-menu-group',
-                        },
-                        providers: [{ provide: collections.UniqueSelectionDispatcher, useClass: collections.UniqueSelectionDispatcher }],
-                    },] }
-        ];
-        CdkMenuGroup.propDecorators = {
-            change: [{ type: i0.Output }],
-            _selectableItems: [{ type: i0.ContentChildren, args: [CdkMenuItemSelectable, { descendants: true },] }]
-        };
         return CdkMenuGroup;
     }());
+    CdkMenuGroup.decorators = [
+        { type: i0.Directive, args: [{
+                    selector: '[cdkMenuGroup]',
+                    exportAs: 'cdkMenuGroup',
+                    host: {
+                        'role': 'group',
+                        'class': 'cdk-menu-group',
+                    },
+                    providers: [{ provide: collections.UniqueSelectionDispatcher, useClass: collections.UniqueSelectionDispatcher }],
+                },] }
+    ];
+    CdkMenuGroup.propDecorators = {
+        change: [{ type: i0.Output }],
+        _selectableItems: [{ type: i0.ContentChildren, args: [CdkMenuItemSelectable, { descendants: true },] }]
+    };
 
     /**
      * @license
@@ -841,14 +898,14 @@
             this._menu._menuStack = this._menuStack;
             this._menuStack.push(child);
         };
-        CdkMenuPanel.decorators = [
-            { type: i0.Directive, args: [{ selector: 'ng-template[cdkMenuPanel]', exportAs: 'cdkMenuPanel' },] }
-        ];
-        CdkMenuPanel.ctorParameters = function () { return [
-            { type: i0.TemplateRef }
-        ]; };
         return CdkMenuPanel;
     }());
+    CdkMenuPanel.decorators = [
+        { type: i0.Directive, args: [{ selector: 'ng-template[cdkMenuPanel]', exportAs: 'cdkMenuPanel' },] }
+    ];
+    CdkMenuPanel.ctorParameters = function () { return [
+        { type: i0.TemplateRef }
+    ]; };
 
     /**
      * @license
@@ -879,22 +936,9 @@
      * This should typically run outside the Angular zone.
      */
     function getItemPointerEntries(items) {
-        return rxjs.defer(function () {
-            return items.changes.pipe(operators.startWith(items), operators.mergeMap(function (list) {
-                return list.map(function (element) {
-                    return rxjs.fromEvent(element._elementRef.nativeElement, 'mouseenter').pipe(operators.mapTo(element), operators.takeUntil(items.changes));
-                });
-            }), operators.mergeAll());
-        });
+        return rxjs.defer(function () { return items.changes.pipe(operators.startWith(items), operators.mergeMap(function (list) { return list.map(function (element) { return rxjs.fromEvent(element._elementRef.nativeElement, 'mouseenter').pipe(operators.mapTo(element), operators.takeUntil(items.changes)); }); }), operators.mergeAll()); });
     }
 
-    /**
-     * @license
-     * Copyright Google LLC All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
     /**
      * Directive which configures the element as a Menu which should contain child elements marked as
      * CdkMenuItem or CdkMenuGroup. Sets the appropriate role and aria-attributes for a menu and
@@ -1099,11 +1143,9 @@
             var _this = this;
             var exitCondition = rxjs.merge(this._allItems.changes, this.closed);
             this._allItems.changes
-                .pipe(operators.startWith(this._allItems), operators.mergeMap(function (list) {
-                return list
-                    .filter(function (item) { return item.hasMenu(); })
-                    .map(function (item) { return item.getMenuTrigger().opened.pipe(operators.mapTo(item), operators.takeUntil(exitCondition)); });
-            }), operators.mergeAll(), operators.switchMap(function (item) {
+                .pipe(operators.startWith(this._allItems), operators.mergeMap(function (list) { return list
+                .filter(function (item) { return item.hasMenu(); })
+                .map(function (item) { return item.getMenuTrigger().opened.pipe(operators.mapTo(item), operators.takeUntil(exitCondition)); }); }), operators.mergeAll(), operators.switchMap(function (item) {
                 _this._openItem = item;
                 return item.getMenuTrigger().closed;
             }), operators.takeUntil(this.closed))
@@ -1121,36 +1163,36 @@
             this.closed.next();
             this.closed.complete();
         };
-        CdkMenu.decorators = [
-            { type: i0.Directive, args: [{
-                        selector: '[cdkMenu]',
-                        exportAs: 'cdkMenu',
-                        host: {
-                            'role': 'menu',
-                            'class': 'cdk-menu',
-                            '[attr.aria-orientation]': 'orientation',
-                        },
-                        providers: [
-                            { provide: CdkMenuGroup, useExisting: CdkMenu },
-                            { provide: CDK_MENU, useExisting: CdkMenu },
-                        ],
-                    },] }
-        ];
-        CdkMenu.ctorParameters = function () { return [
-            { type: i0.NgZone },
-            { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
-            { type: CdkMenuPanel, decorators: [{ type: i0.Optional }] }
-        ]; };
-        CdkMenu.propDecorators = {
-            orientation: [{ type: i0.Input, args: ['cdkMenuOrientation',] }],
-            closed: [{ type: i0.Output }],
-            _nestedGroups: [{ type: i0.ContentChildren, args: [CdkMenuGroup, { descendants: true },] }],
-            _allItems: [{ type: i0.ContentChildren, args: [CdkMenuItem, { descendants: true },] }],
-            _explicitPanel: [{ type: i0.Input, args: ['cdkMenuPanel',] }],
-            _handleKeyEvent: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }]
-        };
         return CdkMenu;
     }(CdkMenuGroup));
+    CdkMenu.decorators = [
+        { type: i0.Directive, args: [{
+                    selector: '[cdkMenu]',
+                    exportAs: 'cdkMenu',
+                    host: {
+                        'role': 'menu',
+                        'class': 'cdk-menu',
+                        '[attr.aria-orientation]': 'orientation',
+                    },
+                    providers: [
+                        { provide: CdkMenuGroup, useExisting: CdkMenu },
+                        { provide: CDK_MENU, useExisting: CdkMenu },
+                    ],
+                },] }
+    ];
+    CdkMenu.ctorParameters = function () { return [
+        { type: i0.NgZone },
+        { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
+        { type: CdkMenuPanel, decorators: [{ type: i0.Optional }] }
+    ]; };
+    CdkMenu.propDecorators = {
+        orientation: [{ type: i0.Input, args: ['cdkMenuOrientation',] }],
+        closed: [{ type: i0.Output }],
+        _nestedGroups: [{ type: i0.ContentChildren, args: [CdkMenuGroup, { descendants: true },] }],
+        _allItems: [{ type: i0.ContentChildren, args: [CdkMenuItem, { descendants: true },] }],
+        _explicitPanel: [{ type: i0.Input, args: ['cdkMenuPanel',] }],
+        _handleKeyEvent: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }]
+    };
 
     /**
      * @license
@@ -1253,13 +1295,6 @@
         return MenuStack;
     }());
 
-    /**
-     * @license
-     * Copyright Google LLC All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
     /**
      * Check if the given element is part of the cdk menu module.
      * @param target the element to check.
@@ -1468,11 +1503,9 @@
             var _this = this;
             var exitCondition = rxjs.merge(this._allItems.changes, this._destroyed);
             this._allItems.changes
-                .pipe(operators.startWith(this._allItems), operators.mergeMap(function (list) {
-                return list
-                    .filter(function (item) { return item.hasMenu(); })
-                    .map(function (item) { return item.getMenuTrigger().opened.pipe(operators.mapTo(item), operators.takeUntil(exitCondition)); });
-            }), operators.mergeAll(), operators.switchMap(function (item) {
+                .pipe(operators.startWith(this._allItems), operators.mergeMap(function (list) { return list
+                .filter(function (item) { return item.hasMenu(); })
+                .map(function (item) { return item.getMenuTrigger().opened.pipe(operators.mapTo(item), operators.takeUntil(exitCondition)); }); }), operators.mergeAll(), operators.switchMap(function (item) {
                 _this._openItem = item;
                 return item.getMenuTrigger().closed;
             }), operators.takeUntil(this._destroyed))
@@ -1487,37 +1520,37 @@
             this._destroyed.next();
             this._destroyed.complete();
         };
-        CdkMenuBar.decorators = [
-            { type: i0.Directive, args: [{
-                        selector: '[cdkMenuBar]',
-                        exportAs: 'cdkMenuBar',
-                        host: {
-                            'role': 'menubar',
-                            'class': 'cdk-menu-bar',
-                            'tabindex': '0',
-                            '[attr.aria-orientation]': 'orientation',
-                        },
-                        providers: [
-                            { provide: CdkMenuGroup, useExisting: CdkMenuBar },
-                            { provide: CDK_MENU, useExisting: CdkMenuBar },
-                            { provide: MenuStack, useClass: MenuStack },
-                        ],
-                    },] }
-        ];
-        CdkMenuBar.ctorParameters = function () { return [
-            { type: MenuStack },
-            { type: i0.NgZone },
-            { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
-        ]; };
-        CdkMenuBar.propDecorators = {
-            orientation: [{ type: i0.Input, args: ['cdkMenuBarOrientation',] }],
-            _allItems: [{ type: i0.ContentChildren, args: [CdkMenuItem, { descendants: true },] }],
-            focusFirstItem: [{ type: i0.HostListener, args: ['focus',] }],
-            _handleKeyEvent: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }],
-            _closeOnBackgroundClick: [{ type: i0.HostListener, args: ['document:click', ['$event'],] }]
-        };
         return CdkMenuBar;
     }(CdkMenuGroup));
+    CdkMenuBar.decorators = [
+        { type: i0.Directive, args: [{
+                    selector: '[cdkMenuBar]',
+                    exportAs: 'cdkMenuBar',
+                    host: {
+                        'role': 'menubar',
+                        'class': 'cdk-menu-bar',
+                        'tabindex': '0',
+                        '[attr.aria-orientation]': 'orientation',
+                    },
+                    providers: [
+                        { provide: CdkMenuGroup, useExisting: CdkMenuBar },
+                        { provide: CDK_MENU, useExisting: CdkMenuBar },
+                        { provide: MenuStack, useClass: MenuStack },
+                    ],
+                },] }
+    ];
+    CdkMenuBar.ctorParameters = function () { return [
+        { type: MenuStack },
+        { type: i0.NgZone },
+        { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
+    ]; };
+    CdkMenuBar.propDecorators = {
+        orientation: [{ type: i0.Input, args: ['cdkMenuBarOrientation',] }],
+        _allItems: [{ type: i0.ContentChildren, args: [CdkMenuItem, { descendants: true },] }],
+        focusFirstItem: [{ type: i0.HostListener, args: ['focus',] }],
+        _handleKeyEvent: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }],
+        _closeOnBackgroundClick: [{ type: i0.HostListener, args: ['document:click', ['$event'],] }]
+    };
 
     /**
      * A directive providing behavior for the the "menuitemradio" ARIA role, which behaves similarly to
@@ -1556,43 +1589,36 @@
             _super.prototype.ngOnDestroy.call(this);
             this._removeDispatcherListener();
         };
-        CdkMenuItemRadio.decorators = [
-            { type: i0.Directive, args: [{
-                        selector: '[cdkMenuItemRadio]',
-                        exportAs: 'cdkMenuItemRadio',
-                        host: {
-                            'type': 'button',
-                            'role': 'menuitemradio',
-                            '[attr.aria-checked]': 'checked || null',
-                            '[attr.aria-disabled]': 'disabled || null',
-                        },
-                        providers: [
-                            { provide: CdkMenuItemSelectable, useExisting: CdkMenuItemRadio },
-                            { provide: CdkMenuItem, useExisting: CdkMenuItemSelectable },
-                        ],
-                    },] }
-        ];
-        CdkMenuItemRadio.ctorParameters = function () { return [
-            { type: collections.UniqueSelectionDispatcher },
-            { type: i0.ElementRef },
-            { type: i0.NgZone },
-            { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_MENU,] }] },
-            { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
-            { type: CdkMenuItemTrigger, decorators: [{ type: i0.Self }, { type: i0.Optional }] }
-        ]; };
-        CdkMenuItemRadio.propDecorators = {
-            trigger: [{ type: i0.HostListener, args: ['click',] }]
-        };
         return CdkMenuItemRadio;
     }(CdkMenuItemSelectable));
+    CdkMenuItemRadio.decorators = [
+        { type: i0.Directive, args: [{
+                    selector: '[cdkMenuItemRadio]',
+                    exportAs: 'cdkMenuItemRadio',
+                    host: {
+                        'type': 'button',
+                        'role': 'menuitemradio',
+                        '[attr.aria-checked]': 'checked || null',
+                        '[attr.aria-disabled]': 'disabled || null',
+                    },
+                    providers: [
+                        { provide: CdkMenuItemSelectable, useExisting: CdkMenuItemRadio },
+                        { provide: CdkMenuItem, useExisting: CdkMenuItemSelectable },
+                    ],
+                },] }
+    ];
+    CdkMenuItemRadio.ctorParameters = function () { return [
+        { type: collections.UniqueSelectionDispatcher },
+        { type: i0.ElementRef },
+        { type: i0.NgZone },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_MENU,] }] },
+        { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
+        { type: CdkMenuItemTrigger, decorators: [{ type: i0.Self }, { type: i0.Optional }] }
+    ]; };
+    CdkMenuItemRadio.propDecorators = {
+        trigger: [{ type: i0.HostListener, args: ['click',] }]
+    };
 
-    /**
-     * @license
-     * Copyright Google LLC All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
     /**
      * A directive providing behavior for the "menuitemcheckbox" ARIA role, which behaves similarly to a
      * conventional checkbox.
@@ -1612,27 +1638,27 @@
                 this.checked = !this.checked;
             }
         };
-        CdkMenuItemCheckbox.decorators = [
-            { type: i0.Directive, args: [{
-                        selector: '[cdkMenuItemCheckbox]',
-                        exportAs: 'cdkMenuItemCheckbox',
-                        host: {
-                            'type': 'button',
-                            'role': 'menuitemcheckbox',
-                            '[attr.aria-checked]': 'checked || null',
-                            '[attr.aria-disabled]': 'disabled || null',
-                        },
-                        providers: [
-                            { provide: CdkMenuItemSelectable, useExisting: CdkMenuItemCheckbox },
-                            { provide: CdkMenuItem, useExisting: CdkMenuItemSelectable },
-                        ],
-                    },] }
-        ];
-        CdkMenuItemCheckbox.propDecorators = {
-            trigger: [{ type: i0.HostListener, args: ['click',] }]
-        };
         return CdkMenuItemCheckbox;
     }(CdkMenuItemSelectable));
+    CdkMenuItemCheckbox.decorators = [
+        { type: i0.Directive, args: [{
+                    selector: '[cdkMenuItemCheckbox]',
+                    exportAs: 'cdkMenuItemCheckbox',
+                    host: {
+                        'type': 'button',
+                        'role': 'menuitemcheckbox',
+                        '[attr.aria-checked]': 'checked || null',
+                        '[attr.aria-disabled]': 'disabled || null',
+                    },
+                    providers: [
+                        { provide: CdkMenuItemSelectable, useExisting: CdkMenuItemCheckbox },
+                        { provide: CdkMenuItem, useExisting: CdkMenuItemSelectable },
+                    ],
+                },] }
+    ];
+    CdkMenuItemCheckbox.propDecorators = {
+        trigger: [{ type: i0.HostListener, args: ['click',] }]
+    };
 
     /**
      * @license
@@ -1670,12 +1696,12 @@
                 ContextMenuTracker._openContextMenuTrigger = trigger;
             }
         };
-        ContextMenuTracker.ɵprov = i0.ɵɵdefineInjectable({ factory: function ContextMenuTracker_Factory() { return new ContextMenuTracker(); }, token: ContextMenuTracker, providedIn: "root" });
-        ContextMenuTracker.decorators = [
-            { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-        ];
         return ContextMenuTracker;
     }());
+    ContextMenuTracker.ɵprov = i0.ɵɵdefineInjectable({ factory: function ContextMenuTracker_Factory() { return new ContextMenuTracker(); }, token: ContextMenuTracker, providedIn: "root" });
+    ContextMenuTracker.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
     /** Injection token for the ContextMenu options object. */
     var CDK_CONTEXT_MENU_DEFAULT_OPTIONS = new i0.InjectionToken('cdk-context-menu-default-options');
     var ɵ0 = { offsetX: 2, offsetY: 2 };
@@ -1895,36 +1921,36 @@
                 this._overlayRef = null;
             }
         };
-        CdkContextMenuTrigger.decorators = [
-            { type: i0.Directive, args: [{
-                        selector: '[cdkContextMenuTriggerFor]',
-                        exportAs: 'cdkContextMenuTriggerFor',
-                        host: {
-                            '(contextmenu)': '_openOnContextMenu($event)',
-                        },
-                        providers: [
-                            // In cases where the first menu item in the context menu is a trigger the submenu opens on a
-                            // hover event. Offsetting the opened context menu by 2px prevents this from occurring.
-                            { provide: CDK_CONTEXT_MENU_DEFAULT_OPTIONS, useValue: ɵ0 },
-                        ],
-                    },] }
-        ];
-        CdkContextMenuTrigger.ctorParameters = function () { return [
-            { type: i0.ViewContainerRef },
-            { type: overlay.Overlay },
-            { type: ContextMenuTracker },
-            { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_CONTEXT_MENU_DEFAULT_OPTIONS,] }] },
-            { type: undefined, decorators: [{ type: i0.Inject, args: [common.DOCUMENT,] }] },
-            { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
-        ]; };
-        CdkContextMenuTrigger.propDecorators = {
-            menuPanel: [{ type: i0.Input, args: ['cdkContextMenuTriggerFor',] }],
-            opened: [{ type: i0.Output, args: ['cdkContextMenuOpened',] }],
-            closed: [{ type: i0.Output, args: ['cdkContextMenuClosed',] }],
-            disabled: [{ type: i0.Input, args: ['cdkContextMenuDisabled',] }]
-        };
         return CdkContextMenuTrigger;
     }());
+    CdkContextMenuTrigger.decorators = [
+        { type: i0.Directive, args: [{
+                    selector: '[cdkContextMenuTriggerFor]',
+                    exportAs: 'cdkContextMenuTriggerFor',
+                    host: {
+                        '(contextmenu)': '_openOnContextMenu($event)',
+                    },
+                    providers: [
+                        // In cases where the first menu item in the context menu is a trigger the submenu opens on a
+                        // hover event. Offsetting the opened context menu by 2px prevents this from occurring.
+                        { provide: CDK_CONTEXT_MENU_DEFAULT_OPTIONS, useValue: ɵ0 },
+                    ],
+                },] }
+    ];
+    CdkContextMenuTrigger.ctorParameters = function () { return [
+        { type: i0.ViewContainerRef },
+        { type: overlay.Overlay },
+        { type: ContextMenuTracker },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_CONTEXT_MENU_DEFAULT_OPTIONS,] }] },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [common.DOCUMENT,] }] },
+        { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
+    ]; };
+    CdkContextMenuTrigger.propDecorators = {
+        menuPanel: [{ type: i0.Input, args: ['cdkContextMenuTriggerFor',] }],
+        opened: [{ type: i0.Output, args: ['cdkContextMenuOpened',] }],
+        closed: [{ type: i0.Output, args: ['cdkContextMenuClosed',] }],
+        disabled: [{ type: i0.Input, args: ['cdkContextMenuDisabled',] }]
+    };
 
     /**
      * @license
@@ -1947,15 +1973,15 @@
     var CdkMenuModule = /** @class */ (function () {
         function CdkMenuModule() {
         }
-        CdkMenuModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [overlay.OverlayModule],
-                        exports: EXPORTED_DECLARATIONS,
-                        declarations: EXPORTED_DECLARATIONS,
-                    },] }
-        ];
         return CdkMenuModule;
     }());
+    CdkMenuModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [overlay.OverlayModule],
+                    exports: EXPORTED_DECLARATIONS,
+                    declarations: EXPORTED_DECLARATIONS,
+                },] }
+    ];
 
     /**
      * @license
