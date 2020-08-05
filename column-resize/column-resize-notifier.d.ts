@@ -23,6 +23,10 @@ export interface ColumnSizeAction extends ColumnSize {
      * for all programatically triggered resizes.
      */
     readonly completeImmediately?: boolean;
+    /**
+     * Whether the resize action is being applied to a sticky/stickyEnd column.
+     */
+    readonly isStickyColumn?: boolean;
 }
 /**
  * Originating source of column resize events within a table.

@@ -7,7 +7,7 @@
  */
 import { AfterViewInit, ElementRef, OnDestroy, NgZone } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
-import { CdkColumnDef } from '@angular/cdk/table';
+import { CdkColumnDef, _CoalescedStyleScheduler } from '@angular/cdk/table';
 import { Subject } from 'rxjs';
 import { ColumnResizeNotifierSource } from './column-resize-notifier';
 import { HeaderRowEventDispatcher } from './event-dispatcher';
@@ -26,6 +26,7 @@ export declare abstract class ResizeOverlayHandle implements AfterViewInit, OnDe
     protected abstract readonly ngZone: NgZone;
     protected abstract readonly resizeNotifier: ColumnResizeNotifierSource;
     protected abstract readonly resizeRef: ResizeRef;
+    protected abstract readonly styleScheduler: _CoalescedStyleScheduler;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     private _listenForMouseEvents;
@@ -33,7 +34,6 @@ export declare abstract class ResizeOverlayHandle implements AfterViewInit, OnDe
     protected updateResizeActive(active: boolean): void;
     private _getOriginWidth;
     private _getOriginOffset;
-    private _getOverlayOffset;
     private _updateOverlayOffset;
     private _isLtr;
     private _notifyResizeEnded;

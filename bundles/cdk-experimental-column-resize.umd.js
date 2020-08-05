@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@angular/cdk-experimental/popover-edit'), require('@angular/common'), require('@angular/cdk/coercion'), require('@angular/cdk/portal'), require('@angular/cdk/keycodes')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/column-resize', ['exports', '@angular/core', 'rxjs', 'rxjs/operators', '@angular/cdk-experimental/popover-edit', '@angular/common', '@angular/cdk/coercion', '@angular/cdk/portal', '@angular/cdk/keycodes'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.columnResize = {}), global.ng.core, global.rxjs, global.rxjs.operators, global.ng.cdkExperimental.popoverEdit, global.ng.common, global.ng.cdk.coercion, global.ng.cdk.portal, global.ng.cdk.keycodes));
-}(this, (function (exports, core, rxjs, operators, popoverEdit, common, coercion, portal, keycodes) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@angular/cdk-experimental/popover-edit'), require('@angular/cdk/table'), require('@angular/common'), require('@angular/cdk/coercion'), require('@angular/cdk/portal'), require('@angular/cdk/keycodes')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/column-resize', ['exports', '@angular/core', 'rxjs', 'rxjs/operators', '@angular/cdk-experimental/popover-edit', '@angular/cdk/table', '@angular/common', '@angular/cdk/coercion', '@angular/cdk/portal', '@angular/cdk/keycodes'], factory) :
+    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.columnResize = {}), global.ng.core, global.rxjs, global.rxjs.operators, global.ng.cdkExperimental.popoverEdit, global.ng.cdk.table, global.ng.common, global.ng.cdk.coercion, global.ng.cdk.portal, global.ng.cdk.keycodes));
+}(this, (function (exports, core, rxjs, operators, popoverEdit, table, common, coercion, portal, keycodes) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -349,7 +349,7 @@
         }
         /** Instantly resizes the specified column. */
         ColumnResizeNotifier.prototype.resize = function (columnId, size) {
-            this._source.triggerResize.next({ columnId: columnId, size: size, completeImmediately: true });
+            this._source.triggerResize.next({ columnId: columnId, size: size, completeImmediately: true, isStickyColumn: true });
         };
         ColumnResizeNotifier.decorators = [
             { type: core.Injectable }
@@ -442,12 +442,24 @@
      */
     var ResizeStrategy = /** @class */ (function () {
         function ResizeStrategy() {
+            this._pendingResizeDelta = null;
         }
         /** Adjusts the width of the table element by the specified delta. */
-        ResizeStrategy.prototype.updateTableWidth = function (delta) {
-            var table = this.columnResize.elementRef.nativeElement;
-            var tableWidth = getElementWidth(table);
-            table.style.width = coercion.coerceCssPixelValue(tableWidth + delta);
+        ResizeStrategy.prototype.updateTableWidthAndStickyColumns = function (delta) {
+            var _this = this;
+            var _a;
+            if (this._pendingResizeDelta === null) {
+                var tableElement_1 = this.columnResize.elementRef.nativeElement;
+                var tableWidth_1 = getElementWidth(tableElement_1);
+                this.styleScheduler.schedule(function () {
+                    tableElement_1.style.width = coercion.coerceCssPixelValue(tableWidth_1 + _this._pendingResizeDelta);
+                    _this._pendingResizeDelta = null;
+                });
+                this.styleScheduler.scheduleEnd(function () {
+                    _this.table.updateStickyColumnStyles();
+                });
+            }
+            this._pendingResizeDelta = ((_a = this._pendingResizeDelta) !== null && _a !== void 0 ? _a : 0) + delta;
         };
         ResizeStrategy.decorators = [
             { type: core.Injectable }
@@ -463,15 +475,22 @@
      */
     var TableLayoutFixedResizeStrategy = /** @class */ (function (_super) {
         __extends(TableLayoutFixedResizeStrategy, _super);
-        function TableLayoutFixedResizeStrategy(columnResize) {
+        function TableLayoutFixedResizeStrategy(columnResize, styleScheduler, table) {
             var _this = _super.call(this) || this;
             _this.columnResize = columnResize;
+            _this.styleScheduler = styleScheduler;
+            _this.table = table;
             return _this;
         }
         TableLayoutFixedResizeStrategy.prototype.applyColumnSize = function (_, columnHeader, sizeInPx, previousSizeInPx) {
             var delta = sizeInPx - (previousSizeInPx !== null && previousSizeInPx !== void 0 ? previousSizeInPx : getElementWidth(columnHeader));
-            columnHeader.style.width = coercion.coerceCssPixelValue(sizeInPx);
-            this.updateTableWidth(delta);
+            if (delta === 0) {
+                return;
+            }
+            this.styleScheduler.schedule(function () {
+                columnHeader.style.width = coercion.coerceCssPixelValue(sizeInPx);
+            });
+            this.updateTableWidthAndStickyColumns(delta);
         };
         TableLayoutFixedResizeStrategy.prototype.applyMinColumnSize = function (_, columnHeader, sizeInPx) {
             var currentWidth = getElementWidth(columnHeader);
@@ -487,7 +506,9 @@
             { type: core.Injectable }
         ];
         TableLayoutFixedResizeStrategy.ctorParameters = function () { return [
-            { type: ColumnResize }
+            { type: ColumnResize },
+            { type: table._CoalescedStyleScheduler },
+            { type: table.CdkTable }
         ]; };
         return TableLayoutFixedResizeStrategy;
     }(ResizeStrategy));
@@ -499,9 +520,11 @@
      */
     var CdkFlexTableResizeStrategy = /** @class */ (function (_super) {
         __extends(CdkFlexTableResizeStrategy, _super);
-        function CdkFlexTableResizeStrategy(columnResize, document) {
+        function CdkFlexTableResizeStrategy(columnResize, styleScheduler, table, document) {
             var _this = _super.call(this) || this;
             _this.columnResize = columnResize;
+            _this.styleScheduler = styleScheduler;
+            _this.table = table;
             _this._columnIndexes = new Map();
             _this._columnProperties = new Map();
             _this._indexSequence = 0;
@@ -514,17 +537,22 @@
             // Optimization: Check applied width first as we probably set it already before reading
             // offsetWidth which triggers layout.
             var delta = sizeInPx - (previousSizeInPx !== null && previousSizeInPx !== void 0 ? previousSizeInPx : (this._getAppliedWidth(cssFriendlyColumnName) || columnHeader.offsetWidth));
+            if (delta === 0) {
+                return;
+            }
             var cssSize = coercion.coerceCssPixelValue(sizeInPx);
             this._applyProperty(cssFriendlyColumnName, 'flex', "0 0.01 " + cssSize);
-            this.updateTableWidth(delta);
+            this.updateTableWidthAndStickyColumns(delta);
         };
         CdkFlexTableResizeStrategy.prototype.applyMinColumnSize = function (cssFriendlyColumnName, _, sizeInPx) {
             var cssSize = coercion.coerceCssPixelValue(sizeInPx);
             this._applyProperty(cssFriendlyColumnName, 'min-width', cssSize, sizeInPx !== this.defaultMinSize);
+            this.updateTableWidthAndStickyColumns(0);
         };
         CdkFlexTableResizeStrategy.prototype.applyMaxColumnSize = function (cssFriendlyColumnName, _, sizeInPx) {
             var cssSize = coercion.coerceCssPixelValue(sizeInPx);
             this._applyProperty(cssFriendlyColumnName, 'max-width', cssSize, sizeInPx !== this.defaultMaxSize);
+            this.updateTableWidthAndStickyColumns(0);
         };
         CdkFlexTableResizeStrategy.prototype.getColumnCssClass = function (cssFriendlyColumnName) {
             return "cdk-column-" + cssFriendlyColumnName;
@@ -544,15 +572,18 @@
             return coercePixelsFromFlexValue(this._getPropertyValue(cssFriendslyColumnName, 'flex'));
         };
         CdkFlexTableResizeStrategy.prototype._applyProperty = function (cssFriendlyColumnName, key, value, enable) {
+            var _this = this;
             if (enable === void 0) { enable = true; }
             var properties = this._getColumnPropertiesMap(cssFriendlyColumnName);
-            if (enable) {
-                properties.set(key, value);
-            }
-            else {
-                properties.delete(key);
-            }
-            this._applySizeCss(cssFriendlyColumnName);
+            this.styleScheduler.schedule(function () {
+                if (enable) {
+                    properties.set(key, value);
+                }
+                else {
+                    properties.delete(key);
+                }
+                _this._applySizeCss(cssFriendlyColumnName);
+            });
         };
         CdkFlexTableResizeStrategy.prototype._getStyleSheet = function () {
             if (!this._styleElement) {
@@ -596,6 +627,8 @@
         ];
         CdkFlexTableResizeStrategy.ctorParameters = function () { return [
             { type: ColumnResize },
+            { type: table._CoalescedStyleScheduler },
+            { type: table.CdkTable },
             { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
         ]; };
         return CdkFlexTableResizeStrategy;
@@ -658,13 +691,14 @@
      */
     var CdkColumnResize = /** @class */ (function (_super) {
         __extends(CdkColumnResize, _super);
-        function CdkColumnResize(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
+        function CdkColumnResize(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier, table) {
             var _this = _super.call(this) || this;
             _this.columnResizeNotifier = columnResizeNotifier;
             _this.elementRef = elementRef;
             _this.eventDispatcher = eventDispatcher;
             _this.ngZone = ngZone;
             _this.notifier = notifier;
+            _this.table = table;
             return _this;
         }
         CdkColumnResize.decorators = [
@@ -680,7 +714,8 @@
             { type: core.ElementRef },
             { type: HeaderRowEventDispatcher },
             { type: core.NgZone },
-            { type: ColumnResizeNotifierSource }
+            { type: ColumnResizeNotifierSource },
+            { type: table.CdkTable }
         ]; };
         return CdkColumnResize;
     }(ColumnResize));
@@ -698,13 +733,14 @@
      */
     var CdkColumnResizeFlex = /** @class */ (function (_super) {
         __extends(CdkColumnResizeFlex, _super);
-        function CdkColumnResizeFlex(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
+        function CdkColumnResizeFlex(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier, table) {
             var _this = _super.call(this) || this;
             _this.columnResizeNotifier = columnResizeNotifier;
             _this.elementRef = elementRef;
             _this.eventDispatcher = eventDispatcher;
             _this.ngZone = ngZone;
             _this.notifier = notifier;
+            _this.table = table;
             return _this;
         }
         CdkColumnResizeFlex.decorators = [
@@ -720,7 +756,8 @@
             { type: core.ElementRef },
             { type: HeaderRowEventDispatcher },
             { type: core.NgZone },
-            { type: ColumnResizeNotifierSource }
+            { type: ColumnResizeNotifierSource },
+            { type: table.CdkTable }
         ]; };
         return CdkColumnResizeFlex;
     }(ColumnResize));
@@ -738,13 +775,14 @@
      */
     var CdkDefaultEnabledColumnResize = /** @class */ (function (_super) {
         __extends(CdkDefaultEnabledColumnResize, _super);
-        function CdkDefaultEnabledColumnResize(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
+        function CdkDefaultEnabledColumnResize(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier, table) {
             var _this = _super.call(this) || this;
             _this.columnResizeNotifier = columnResizeNotifier;
             _this.elementRef = elementRef;
             _this.eventDispatcher = eventDispatcher;
             _this.ngZone = ngZone;
             _this.notifier = notifier;
+            _this.table = table;
             return _this;
         }
         CdkDefaultEnabledColumnResize.decorators = [
@@ -760,7 +798,8 @@
             { type: core.ElementRef },
             { type: HeaderRowEventDispatcher },
             { type: core.NgZone },
-            { type: ColumnResizeNotifierSource }
+            { type: ColumnResizeNotifierSource },
+            { type: table.CdkTable }
         ]; };
         return CdkDefaultEnabledColumnResize;
     }(ColumnResize));
@@ -778,13 +817,14 @@
      */
     var CdkDefaultEnabledColumnResizeFlex = /** @class */ (function (_super) {
         __extends(CdkDefaultEnabledColumnResizeFlex, _super);
-        function CdkDefaultEnabledColumnResizeFlex(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier) {
+        function CdkDefaultEnabledColumnResizeFlex(columnResizeNotifier, elementRef, eventDispatcher, ngZone, notifier, table) {
             var _this = _super.call(this) || this;
             _this.columnResizeNotifier = columnResizeNotifier;
             _this.elementRef = elementRef;
             _this.eventDispatcher = eventDispatcher;
             _this.ngZone = ngZone;
             _this.notifier = notifier;
+            _this.table = table;
             return _this;
         }
         CdkDefaultEnabledColumnResizeFlex.decorators = [
@@ -800,7 +840,8 @@
             { type: core.ElementRef },
             { type: HeaderRowEventDispatcher },
             { type: core.NgZone },
-            { type: ColumnResizeNotifierSource }
+            { type: ColumnResizeNotifierSource },
+            { type: table.CdkTable }
         ]; };
         return CdkDefaultEnabledColumnResizeFlex;
     }(ColumnResize));
@@ -897,6 +938,7 @@
             this.minWidthPxInternal = 0;
             this.maxWidthPxInternal = Number.MAX_SAFE_INTEGER;
             this.destroyed = new rxjs.Subject();
+            this._viewInitialized = false;
         }
         Object.defineProperty(Resizable.prototype, "minWidthPx", {
             /** The minimum width to allow the column to be sized to. */
@@ -905,8 +947,8 @@
             },
             set: function (value) {
                 this.minWidthPxInternal = value;
-                if (this.elementRef.nativeElement) {
-                    this.columnResize.setResized();
+                this.columnResize.setResized();
+                if (this.elementRef.nativeElement && this._viewInitialized) {
                     this._applyMinWidthPx();
                 }
             },
@@ -920,8 +962,8 @@
             },
             set: function (value) {
                 this.maxWidthPxInternal = value;
-                if (this.elementRef.nativeElement) {
-                    this.columnResize.setResized();
+                this.columnResize.setResized();
+                if (this.elementRef.nativeElement && this._viewInitialized) {
                     this._applyMaxWidthPx();
                 }
             },
@@ -929,6 +971,7 @@
             configurable: true
         });
         Resizable.prototype.ngAfterViewInit = function () {
+            this._viewInitialized = true;
             this._listenForRowHoverEvents();
             this._listenForResizeEvents();
             this._appendInlineHandle();
@@ -1050,11 +1093,14 @@
             this.resizeStrategy.applyMaxColumnSize(this.columnDef.cssClassFriendlyName, this.elementRef.nativeElement, this.maxWidthPx);
         };
         Resizable.prototype._appendInlineHandle = function () {
-            this.inlineHandle = this.document.createElement('div');
-            this.inlineHandle.tabIndex = 0;
-            this.inlineHandle.className = this.getInlineHandleCssClassName();
-            // TODO: Apply correct aria role (probably slider) after a11y spec questions resolved.
-            this.elementRef.nativeElement.appendChild(this.inlineHandle);
+            var _this = this;
+            this.styleScheduler.schedule(function () {
+                _this.inlineHandle = _this.document.createElement('div');
+                _this.inlineHandle.tabIndex = 0;
+                _this.inlineHandle.className = _this.getInlineHandleCssClassName();
+                // TODO: Apply correct aria role (probably slider) after a11y spec questions resolved.
+                _this.elementRef.nativeElement.appendChild(_this.inlineHandle);
+            });
         };
         Resizable.decorators = [
             { type: core.Directive }
@@ -1110,14 +1156,16 @@
                 .pipe(operators.filter(function (event) { return event.keyCode === keycodes.ESCAPE; }));
             var startX = mousedownEvent.screenX;
             var initialSize = this._getOriginWidth();
-            var overlayOffset = this._getOverlayOffset();
+            var overlayOffset = 0;
             var originOffset = this._getOriginOffset();
             var size = initialSize;
             var overshot = 0;
             this.updateResizeActive(true);
             mouseup.pipe(operators.takeUntil(rxjs.merge(escape, this.destroyed))).subscribe(function (_a) {
                 var screenX = _a.screenX;
-                _this._notifyResizeEnded(size, screenX !== startX);
+                _this.styleScheduler.scheduleEnd(function () {
+                    _this._notifyResizeEnded(size, screenX !== startX);
+                });
             });
             escape.pipe(operators.takeUntil(rxjs.merge(mouseup, this.destroyed))).subscribe(function () {
                 _this._notifyResizeEnded(initialSize);
@@ -1147,16 +1195,23 @@
                 }
                 var computedNewSize = size + (_this._isLtr() ? deltaX : -deltaX);
                 computedNewSize = Math.min(Math.max(computedNewSize, _this.resizeRef.minWidthPx, 0), _this.resizeRef.maxWidthPx);
-                _this.resizeNotifier.triggerResize.next({ columnId: _this.columnDef.name, size: computedNewSize, previousSize: size });
-                var originNewSize = _this._getOriginWidth();
-                var originNewOffset = _this._getOriginOffset();
-                var originOffsetDeltaX = originNewOffset - originOffset;
-                var originSizeDeltaX = originNewSize - size;
-                size = originNewSize;
-                originOffset = originNewOffset;
-                overshot += deltaX + (_this._isLtr() ? -originSizeDeltaX : originSizeDeltaX);
-                overlayOffset += originOffsetDeltaX + (_this._isLtr() ? originSizeDeltaX : 0);
-                _this._updateOverlayOffset(overlayOffset);
+                _this.resizeNotifier.triggerResize.next({
+                    columnId: _this.columnDef.name,
+                    size: computedNewSize,
+                    previousSize: size,
+                    isStickyColumn: _this.columnDef.sticky || _this.columnDef.stickyEnd,
+                });
+                _this.styleScheduler.scheduleEnd(function () {
+                    var originNewSize = _this._getOriginWidth();
+                    var originNewOffset = _this._getOriginOffset();
+                    var originOffsetDeltaX = originNewOffset - originOffset;
+                    var originSizeDeltaX = originNewSize - size;
+                    size = originNewSize;
+                    originOffset = originNewOffset;
+                    overshot += deltaX + (_this._isLtr() ? -originSizeDeltaX : originSizeDeltaX);
+                    overlayOffset += originOffsetDeltaX + (_this._isLtr() ? originSizeDeltaX : 0);
+                    _this._updateOverlayOffset(overlayOffset);
+                });
             });
         };
         ResizeOverlayHandle.prototype.updateResizeActive = function (active) {
@@ -1168,11 +1223,9 @@
         ResizeOverlayHandle.prototype._getOriginOffset = function () {
             return this.resizeRef.origin.nativeElement.offsetLeft;
         };
-        ResizeOverlayHandle.prototype._getOverlayOffset = function () {
-            return parseInt(this.resizeRef.overlayRef.overlayElement.style.left, 10);
-        };
         ResizeOverlayHandle.prototype._updateOverlayOffset = function (offset) {
-            this.resizeRef.overlayRef.overlayElement.style.left = coercion.coerceCssPixelValue(offset);
+            this.resizeRef.overlayRef.overlayElement.style.transform =
+                "translateX(" + coercion.coerceCssPixelValue(offset) + ")";
         };
         ResizeOverlayHandle.prototype._isLtr = function () {
             return this.directionality.value === 'ltr';

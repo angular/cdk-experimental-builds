@@ -8,7 +8,7 @@
 import { AfterViewInit, ElementRef, Injector, NgZone, OnDestroy, Type, ViewContainerRef, ChangeDetectorRef } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
-import { CdkColumnDef } from '@angular/cdk/table';
+import { CdkColumnDef, _CoalescedStyleScheduler } from '@angular/cdk/table';
 import { Subject } from 'rxjs';
 import { ResizeOverlayHandle } from './overlay-handle';
 import { ColumnResize } from './column-resize';
@@ -36,8 +36,10 @@ export declare abstract class Resizable<HandleComponent extends ResizeOverlayHan
     protected abstract readonly overlay: Overlay;
     protected abstract readonly resizeNotifier: ColumnResizeNotifierSource;
     protected abstract readonly resizeStrategy: ResizeStrategy;
+    protected abstract readonly styleScheduler: _CoalescedStyleScheduler;
     protected abstract readonly viewContainerRef: ViewContainerRef;
     protected abstract readonly changeDetectorRef: ChangeDetectorRef;
+    private _viewInitialized;
     /** The minimum width to allow the column to be sized to. */
     get minWidthPx(): number;
     set minWidthPx(value: number);
