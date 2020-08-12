@@ -1273,6 +1273,7 @@
                         '[tabindex]': '_isInline() ? 0 : null',
                         'role': 'menu',
                         'class': 'cdk-menu',
+                        '[class.cdk-menu-inline]': '_isInline()',
                         '[attr.aria-orientation]': 'orientation',
                     },
                     providers: [
@@ -1297,12 +1298,13 @@
     };
 
     /**
-     * Check if the given element is part of the cdk menu module.
+     * Whether the element is a menu bar or a popup menu.
      * @param target the element to check.
      * @return true if the given element is part of the menu module.
      */
     function isMenuElement(target) {
-        return target.className.indexOf('cdk-menu') !== -1;
+        return (target.classList.contains('cdk-menu-bar') ||
+            (target.classList.contains('cdk-menu') && !target.classList.contains('cdk-menu-inline')));
     }
     /**
      * Directive applied to an element which configures it as a MenuBar by setting the appropriate
