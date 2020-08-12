@@ -33,6 +33,11 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, O
      * event.
      */
     triggered: EventEmitter<void>;
+    /**
+     * The tabindex for this menu item managed internally and used for implementing roving a
+     * tab index.
+     */
+    _tabindex: 0 | -1;
     /** Emits when the menu item is destroyed. */
     private readonly _destroyed;
     constructor(_elementRef: ElementRef<HTMLElement>, _parentMenu: Menu, _ngZone: NgZone, _dir?: Directionality | undefined, 
@@ -40,6 +45,13 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, O
     _menuTrigger?: CdkMenuItemTrigger | undefined);
     /** Place focus on the element. */
     focus(): void;
+    /** Reset the _tabindex to -1. */
+    _resetTabIndex(): void;
+    /**
+     * Set the tab index to 0 if not disabled and it's a focus event, or a mouse enter if this element
+     * is not in a menu bar.
+     */
+    _setTabIndex(event?: MouseEvent): void;
     /**
      * If the menu item is not disabled and the element does not have a menu trigger attached, emit
      * on the cdkMenuItemTriggered emitter and close all open menus.

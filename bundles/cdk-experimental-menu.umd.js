@@ -606,6 +606,11 @@
              * event.
              */
             this.triggered = new i0.EventEmitter();
+            /**
+             * The tabindex for this menu item managed internally and used for implementing roving a
+             * tab index.
+             */
+            this._tabindex = -1;
             /** Emits when the menu item is destroyed. */
             this._destroyed = new rxjs.Subject();
             this._setupMouseEnter();
@@ -624,6 +629,31 @@
         /** Place focus on the element. */
         CdkMenuItem.prototype.focus = function () {
             this._elementRef.nativeElement.focus();
+        };
+        // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
+        // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
+        // can move this back into `host`.
+        // tslint:disable:no-host-decorator-in-concrete
+        /** Reset the _tabindex to -1. */
+        CdkMenuItem.prototype._resetTabIndex = function () {
+            this._tabindex = -1;
+        };
+        // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
+        // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
+        // can move this back into `host`.
+        // tslint:disable:no-host-decorator-in-concrete
+        /**
+         * Set the tab index to 0 if not disabled and it's a focus event, or a mouse enter if this element
+         * is not in a menu bar.
+         */
+        CdkMenuItem.prototype._setTabIndex = function (event) {
+            if (this.disabled) {
+                return;
+            }
+            // don't set the tabindex if there are no open sibling or parent menus
+            if (!event || (event && !this._getMenuStack().isEmpty())) {
+                this._tabindex = 0;
+            }
         };
         // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
         // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
@@ -739,7 +769,7 @@
                     selector: '[cdkMenuItem]',
                     exportAs: 'cdkMenuItem',
                     host: {
-                        'tabindex': '-1',
+                        '[tabindex]': '_tabindex',
                         'type': 'button',
                         'role': 'menuitem',
                         'class': 'cdk-menu-item',
@@ -757,6 +787,8 @@
     CdkMenuItem.propDecorators = {
         disabled: [{ type: i0.Input }],
         triggered: [{ type: i0.Output, args: ['cdkMenuItemTriggered',] }],
+        _resetTabIndex: [{ type: i0.HostListener, args: ['blur',] }, { type: i0.HostListener, args: ['mouseout',] }],
+        _setTabIndex: [{ type: i0.HostListener, args: ['focus',] }, { type: i0.HostListener, args: ['mouseenter', ['$event'],] }],
         trigger: [{ type: i0.HostListener, args: ['click',] }],
         _onKeydown: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }]
     };
@@ -1595,6 +1627,7 @@
                     selector: '[cdkMenuItemRadio]',
                     exportAs: 'cdkMenuItemRadio',
                     host: {
+                        '[tabindex]': '_tabindex',
                         'type': 'button',
                         'role': 'menuitemradio',
                         '[attr.aria-checked]': 'checked || null',
@@ -1638,6 +1671,7 @@
                     selector: '[cdkMenuItemCheckbox]',
                     exportAs: 'cdkMenuItemCheckbox',
                     host: {
+                        '[tabindex]': '_tabindex',
                         'type': 'button',
                         'role': 'menuitemcheckbox',
                         '[attr.aria-checked]': 'checked || null',
