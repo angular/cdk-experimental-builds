@@ -14,7 +14,7 @@ import { CdkMenuItem } from './menu-item';
  */
 export declare abstract class CdkMenuItemSelectable extends CdkMenuItem {
     /** Event emitted when the selectable item is clicked */
-    clicked: EventEmitter<CdkMenuItemSelectable>;
+    toggled: EventEmitter<CdkMenuItemSelectable>;
     /** Whether the element is checked */
     get checked(): boolean;
     set checked(value: boolean);

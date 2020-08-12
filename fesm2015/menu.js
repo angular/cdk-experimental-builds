@@ -468,7 +468,7 @@ class CdkMenuItemSelectable extends CdkMenuItem {
     constructor() {
         super(...arguments);
         /** Event emitted when the selectable item is clicked */
-        this.clicked = new EventEmitter();
+        this.toggled = new EventEmitter();
         this._checked = false;
         /** The name of the selectable element with a default value */
         this.name = `cdk-selectable-item-${nextId++}`;
@@ -485,7 +485,7 @@ class CdkMenuItemSelectable extends CdkMenuItem {
     /** If the element is not disabled emit the click event */
     trigger() {
         if (!this.disabled) {
-            this.clicked.next(this);
+            this.toggled.next(this);
         }
     }
 }
@@ -493,7 +493,7 @@ CdkMenuItemSelectable.decorators = [
     { type: Directive }
 ];
 CdkMenuItemSelectable.propDecorators = {
-    clicked: [{ type: Output }],
+    toggled: [{ type: Output, args: ['cdkMenuItemToggled',] }],
     checked: [{ type: Input }],
     name: [{ type: Input }],
     id: [{ type: Input }]
@@ -533,7 +533,7 @@ class CdkMenuGroup {
     }
     /** Register each selectable to emit on the change Emitter when clicked */
     _registerClickListener(selectable) {
-        selectable.clicked
+        selectable.toggled
             .pipe(takeUntil(this._selectableChanges))
             .subscribe(() => this.change.next(selectable));
     }

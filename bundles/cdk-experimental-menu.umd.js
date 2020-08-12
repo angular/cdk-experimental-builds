@@ -772,7 +772,7 @@
         function CdkMenuItemSelectable() {
             var _this = _super.apply(this, __spread(arguments)) || this;
             /** Event emitted when the selectable item is clicked */
-            _this.clicked = new i0.EventEmitter();
+            _this.toggled = new i0.EventEmitter();
             _this._checked = false;
             /** The name of the selectable element with a default value */
             _this.name = "cdk-selectable-item-" + nextId++;
@@ -794,7 +794,7 @@
         /** If the element is not disabled emit the click event */
         CdkMenuItemSelectable.prototype.trigger = function () {
             if (!this.disabled) {
-                this.clicked.next(this);
+                this.toggled.next(this);
             }
         };
         return CdkMenuItemSelectable;
@@ -803,7 +803,7 @@
         { type: i0.Directive }
     ];
     CdkMenuItemSelectable.propDecorators = {
-        clicked: [{ type: i0.Output }],
+        toggled: [{ type: i0.Output, args: ['cdkMenuItemToggled',] }],
         checked: [{ type: i0.Input }],
         name: [{ type: i0.Input }],
         id: [{ type: i0.Input }]
@@ -845,7 +845,7 @@
         /** Register each selectable to emit on the change Emitter when clicked */
         CdkMenuGroup.prototype._registerClickListener = function (selectable) {
             var _this = this;
-            selectable.clicked
+            selectable.toggled
                 .pipe(operators.takeUntil(this._selectableChanges))
                 .subscribe(function () { return _this.change.next(selectable); });
         };
