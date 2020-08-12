@@ -699,12 +699,14 @@ class Resizable {
         }
     }
     ngAfterViewInit() {
-        this._viewInitialized = true;
         this._listenForRowHoverEvents();
         this._listenForResizeEvents();
         this._appendInlineHandle();
-        this._applyMinWidthPx();
-        this._applyMaxWidthPx();
+        this.styleScheduler.scheduleEnd(() => {
+            this._viewInitialized = true;
+            this._applyMinWidthPx();
+            this._applyMaxWidthPx();
+        });
     }
     ngOnDestroy() {
         this.destroyed.next();

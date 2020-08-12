@@ -986,12 +986,15 @@
             configurable: true
         });
         Resizable.prototype.ngAfterViewInit = function () {
-            this._viewInitialized = true;
+            var _this = this;
             this._listenForRowHoverEvents();
             this._listenForResizeEvents();
             this._appendInlineHandle();
-            this._applyMinWidthPx();
-            this._applyMaxWidthPx();
+            this.styleScheduler.scheduleEnd(function () {
+                _this._viewInitialized = true;
+                _this._applyMinWidthPx();
+                _this._applyMaxWidthPx();
+            });
         };
         Resizable.prototype.ngOnDestroy = function () {
             this.destroyed.next();
