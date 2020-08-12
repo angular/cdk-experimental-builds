@@ -1268,7 +1268,7 @@ CdkMenuBar.propDecorators = {
     _allItems: [{ type: ContentChildren, args: [CdkMenuItem, { descendants: true },] }],
     focusFirstItem: [{ type: HostListener, args: ['focus',] }],
     _handleKeyEvent: [{ type: HostListener, args: ['keydown', ['$event'],] }],
-    _closeOnBackgroundClick: [{ type: HostListener, args: ['document:click', ['$event'],] }]
+    _closeOnBackgroundClick: [{ type: HostListener, args: ['document:mousedown', ['$event'],] }]
 };
 
 /**
@@ -1387,7 +1387,7 @@ CdkMenuItemCheckbox.decorators = [
  */
 function isWithinMenuElement(target) {
     while (target instanceof Element) {
-        if (target.className.indexOf('cdk-menu') !== -1) {
+        if (target.classList.contains('cdk-menu') && !target.classList.contains('cdk-menu-inline')) {
             return true;
         }
         target = target.parentElement;

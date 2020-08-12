@@ -1584,7 +1584,7 @@
         _allItems: [{ type: i0.ContentChildren, args: [CdkMenuItem, { descendants: true },] }],
         focusFirstItem: [{ type: i0.HostListener, args: ['focus',] }],
         _handleKeyEvent: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }],
-        _closeOnBackgroundClick: [{ type: i0.HostListener, args: ['document:click', ['$event'],] }]
+        _closeOnBackgroundClick: [{ type: i0.HostListener, args: ['document:mousedown', ['$event'],] }]
     };
 
     /**
@@ -1698,7 +1698,7 @@
      */
     function isWithinMenuElement(target) {
         while (target instanceof Element) {
-            if (target.className.indexOf('cdk-menu') !== -1) {
+            if (target.classList.contains('cdk-menu') && !target.classList.contains('cdk-menu-inline')) {
                 return true;
             }
             target = target.parentElement;
