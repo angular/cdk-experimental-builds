@@ -1263,10 +1263,6 @@ class CdkMenuItemRadio extends CdkMenuItemSelectable {
     _registerDispatcherListener() {
         this._removeDispatcherListener = this._selectionDispatcher.listen((id, name) => (this.checked = this.id === id && this.name === name));
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
     /** Toggles the checked state of the radio-button. */
     trigger() {
         super.trigger();
@@ -1303,9 +1299,6 @@ CdkMenuItemRadio.ctorParameters = () => [
     { type: Directionality, decorators: [{ type: Optional }] },
     { type: CdkMenuItemTrigger, decorators: [{ type: Self }, { type: Optional }] }
 ];
-CdkMenuItemRadio.propDecorators = {
-    trigger: [{ type: HostListener, args: ['click',] }]
-};
 
 /**
  * @license
@@ -1319,10 +1312,7 @@ CdkMenuItemRadio.propDecorators = {
  * conventional checkbox.
  */
 class CdkMenuItemCheckbox extends CdkMenuItemSelectable {
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
+    /** Toggle the checked state of the checkbox. */
     trigger() {
         super.trigger();
         if (!this.disabled) {
@@ -1346,9 +1336,6 @@ CdkMenuItemCheckbox.decorators = [
                 ],
             },] }
 ];
-CdkMenuItemCheckbox.propDecorators = {
-    trigger: [{ type: HostListener, args: ['click',] }]
-};
 
 /**
  * @license

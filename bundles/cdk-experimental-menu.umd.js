@@ -1575,10 +1575,6 @@
             var _this = this;
             this._removeDispatcherListener = this._selectionDispatcher.listen(function (id, name) { return (_this.checked = _this.id === id && _this.name === name); });
         };
-        // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-        // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-        // can move this back into `host`.
-        // tslint:disable:no-host-decorator-in-concrete
         /** Toggles the checked state of the radio-button. */
         CdkMenuItemRadio.prototype.trigger = function () {
             _super.prototype.trigger.call(this);
@@ -1616,9 +1612,6 @@
         { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
         { type: CdkMenuItemTrigger, decorators: [{ type: i0.Self }, { type: i0.Optional }] }
     ]; };
-    CdkMenuItemRadio.propDecorators = {
-        trigger: [{ type: i0.HostListener, args: ['click',] }]
-    };
 
     /**
      * A directive providing behavior for the "menuitemcheckbox" ARIA role, which behaves similarly to a
@@ -1629,10 +1622,7 @@
         function CdkMenuItemCheckbox() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-        // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-        // can move this back into `host`.
-        // tslint:disable:no-host-decorator-in-concrete
+        /** Toggle the checked state of the checkbox. */
         CdkMenuItemCheckbox.prototype.trigger = function () {
             _super.prototype.trigger.call(this);
             if (!this.disabled) {
@@ -1657,9 +1647,6 @@
                     ],
                 },] }
     ];
-    CdkMenuItemCheckbox.propDecorators = {
-        trigger: [{ type: i0.HostListener, args: ['click',] }]
-    };
 
     /**
      * @license

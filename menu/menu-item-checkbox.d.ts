@@ -11,5 +11,6 @@ import { CdkMenuItemSelectable } from './menu-item-selectable';
  * conventional checkbox.
  */
 export declare class CdkMenuItemCheckbox extends CdkMenuItemSelectable {
+    /** Toggle the checked state of the checkbox. */
     trigger(): void;
 }
