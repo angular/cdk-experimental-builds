@@ -24,8 +24,8 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContent
     get disabled(): boolean;
     set disabled(value: boolean);
     private _disabled;
-    get openAction(): OpenAction[];
-    set openAction(action: OpenAction[]);
+    get openActions(): OpenAction[];
+    set openActions(action: OpenAction[]);
     private _openActions;
     readonly opened: EventEmitter<void>;
     readonly closed: EventEmitter<void>;
@@ -48,11 +48,12 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContent
     /** Returns true if combobox has a child panel. */
     hasPanel(): boolean;
     private _setComboboxValue;
+    private _setTextContent;
     private _getOverlayConfig;
     private _getOverlayPositionStrategy;
     private _getOverlayPositions;
     private _getPanelContent;
     private _coerceOpenActionProperty;
-    static ngAcceptInputType_disabled: BooleanInput;
     static ngAcceptInputType_openActions: OpenActionInput;
+    static ngAcceptInputType_disabled: BooleanInput;
 }

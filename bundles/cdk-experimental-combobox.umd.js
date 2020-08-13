@@ -36,7 +36,7 @@
             enumerable: false,
             configurable: true
         });
-        Object.defineProperty(CdkCombobox.prototype, "openAction", {
+        Object.defineProperty(CdkCombobox.prototype, "openActions", {
             get: function () {
                 return this._openActions;
             },
@@ -99,6 +99,12 @@
             this.value = value;
             if (valueChanged) {
                 this.panelValueChanged.emit(value);
+                this._setTextContent(value);
+            }
+        };
+        CdkCombobox.prototype._setTextContent = function (content) {
+            if (typeof content === 'string') {
+                this._elementRef.nativeElement.textContent = "" + content;
             }
         };
         CdkCombobox.prototype._getOverlayConfig = function () {
@@ -165,7 +171,7 @@
         panel: [{ type: core.Input, args: ['cdkComboboxTriggerFor',] }],
         value: [{ type: core.Input }],
         disabled: [{ type: core.Input }],
-        openAction: [{ type: core.Input }],
+        openActions: [{ type: core.Input }],
         opened: [{ type: core.Output, args: ['comboboxPanelOpened',] }],
         closed: [{ type: core.Output, args: ['comboboxPanelClosed',] }],
         panelValueChanged: [{ type: core.Output, args: ['panelValueChanged',] }]

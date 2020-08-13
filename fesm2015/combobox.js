@@ -29,10 +29,10 @@ class CdkCombobox {
     set panel(panel) { this._panel = panel; }
     get disabled() { return this._disabled; }
     set disabled(value) { this._disabled = coerceBooleanProperty(value); }
-    get openAction() {
+    get openActions() {
         return this._openActions;
     }
-    set openAction(action) {
+    set openActions(action) {
         this._openActions = this._coerceOpenActionProperty(action);
     }
     ngAfterContentInit() {
@@ -87,6 +87,12 @@ class CdkCombobox {
         this.value = value;
         if (valueChanged) {
             this.panelValueChanged.emit(value);
+            this._setTextContent(value);
+        }
+    }
+    _setTextContent(content) {
+        if (typeof content === 'string') {
+            this._elementRef.nativeElement.textContent = `${content}`;
         }
     }
     _getOverlayConfig() {
@@ -152,7 +158,7 @@ CdkCombobox.propDecorators = {
     panel: [{ type: Input, args: ['cdkComboboxTriggerFor',] }],
     value: [{ type: Input }],
     disabled: [{ type: Input }],
-    openAction: [{ type: Input }],
+    openActions: [{ type: Input }],
     opened: [{ type: Output, args: ['comboboxPanelOpened',] }],
     closed: [{ type: Output, args: ['comboboxPanelClosed',] }],
     panelValueChanged: [{ type: Output, args: ['panelValueChanged',] }]
