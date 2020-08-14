@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/coercion'), require('@angular/cdk/collections'), require('rxjs'), require('rxjs/operators'), require('@angular/forms')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/listbox', ['exports', '@angular/core', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/coercion', '@angular/cdk/collections', 'rxjs', 'rxjs/operators', '@angular/forms'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.listbox = {}), global.ng.core, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.coercion, global.ng.cdk.collections, global.rxjs, global.rxjs.operators, global.ng.forms));
-}(this, (function (exports, core, a11y, keycodes, coercion, collections, rxjs, operators, forms) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/coercion'), require('@angular/cdk/collections'), require('rxjs'), require('rxjs/operators'), require('@angular/forms'), require('@angular/cdk-experimental/combobox')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/listbox', ['exports', '@angular/core', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/coercion', '@angular/cdk/collections', 'rxjs', 'rxjs/operators', '@angular/forms', '@angular/cdk-experimental/combobox'], factory) :
+    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.listbox = {}), global.ng.core, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.coercion, global.ng.cdk.collections, global.rxjs, global.rxjs.operators, global.ng.forms, global.ng.cdkExperimental.combobox));
+}(this, (function (exports, core, a11y, keycodes, coercion, collections, rxjs, operators, forms, combobox) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -306,11 +306,13 @@
     }
 
     var nextId = 0;
+    var listboxId = 0;
     var CDK_LISTBOX_VALUE_ACCESSOR = {
         provide: forms.NG_VALUE_ACCESSOR,
         useExisting: core.forwardRef(function () { return CdkListbox; }),
         multi: true
     };
+    var PANEL = new core.InjectionToken('CdkComboboxPanel');
     var CdkOption = /** @class */ (function () {
         function CdkOption(_elementRef, listbox) {
             this._elementRef = _elementRef;
@@ -438,6 +440,9 @@
                 finally { if (e_1) throw e_1.error; }
             }
         };
+        CdkOption.prototype.getElementRef = function () {
+            return this._elementRef;
+        };
         /** Sets the active property to true to enable the active css class. */
         CdkOption.prototype.setActiveStyles = function () {
             this._active = true;
@@ -479,8 +484,9 @@
         selectionChange: [{ type: core.Output }]
     };
     var CdkListbox = /** @class */ (function () {
-        function CdkListbox() {
+        function CdkListbox(_parentPanel) {
             var _this = this;
+            this._parentPanel = _parentPanel;
             this._tabIndex = 0;
             /** `View -> model callback called when select has been touched` */
             this._onTouched = function () { };
@@ -495,6 +501,7 @@
             this._useActiveDescendant = true;
             this._destroyed = new rxjs.Subject();
             this.selectionChange = new core.EventEmitter();
+            this.id = "cdk-option-" + listboxId++;
             this.compareWith = function (a1, a2) { return a1 === a2; };
         }
         Object.defineProperty(CdkListbox.prototype, "multiple", {
@@ -540,16 +547,22 @@
             var _this = this;
             this._initKeyManager();
             this._initSelectionModel();
+            this._registerWithPanel();
             this.optionSelectionChanges.subscribe(function (event) {
                 _this._emitChangeEvent(event.source);
                 _this._updateSelectionModel(event.source);
                 _this.setActiveOption(event.source);
+                _this._updatePanelForSelection(event.source);
             });
         };
         CdkListbox.prototype.ngOnDestroy = function () {
             this._listKeyManager.change.complete();
             this._destroyed.next();
             this._destroyed.complete();
+        };
+        CdkListbox.prototype._registerWithPanel = function () {
+            var panel = this._parentPanel || this._explicitPanel;
+            panel === null || panel === void 0 ? void 0 : panel._registerContent(this.id, 'listbox');
         };
         CdkListbox.prototype._initKeyManager = function () {
             var _this = this;
@@ -635,6 +648,12 @@
             option.selected ? this._selectionModel.select(option) :
                 this._selectionModel.deselect(option);
         };
+        CdkListbox.prototype._updatePanelForSelection = function (option) {
+            if (!this.multiple) {
+                var panel = this._parentPanel || this._explicitPanel;
+                option.selected ? panel === null || panel === void 0 ? void 0 : panel.closePanel(option.value) : panel === null || panel === void 0 ? void 0 : panel.closePanel();
+            }
+        };
         /** Toggles the selected state of the active option if not disabled. */
         CdkListbox.prototype._toggleActiveOption = function () {
             var activeOption = this._listKeyManager.activeItem;
@@ -702,6 +721,7 @@
         /** Updates the key manager's active item to the given option. */
         CdkListbox.prototype.setActiveOption = function (option) {
             this._listKeyManager.updateActiveItem(option);
+            this._updateActiveOption();
         };
         /**
          * Saves a callback function to be invoked when the select's value
@@ -726,6 +746,10 @@
         /** Disables the select. Required to implement ControlValueAccessor. */
         CdkListbox.prototype.setDisabledState = function (isDisabled) {
             this.disabled = isDisabled;
+        };
+        /** Returns the values of the currently selected options. */
+        CdkListbox.prototype.getSelectedValues = function () {
+            return this._options.filter(function (option) { return option.selected; }).map(function (option) { return option.value; });
         };
         /** Selects an option that has the corresponding given value. */
         CdkListbox.prototype._setSelectionByValue = function (values) {
@@ -781,6 +805,7 @@
                     exportAs: 'cdkListbox',
                     host: {
                         'role': 'listbox',
+                        '[id]': 'id',
                         '(keydown)': '_keydown($event)',
                         '[attr.tabindex]': '_tabIndex',
                         '[attr.aria-disabled]': 'disabled',
@@ -790,13 +815,18 @@
                     providers: [CDK_LISTBOX_VALUE_ACCESSOR]
                 },] }
     ];
+    CdkListbox.ctorParameters = function () { return [
+        { type: combobox.CdkComboboxPanel, decorators: [{ type: core.Optional }, { type: core.Inject, args: [PANEL,] }] }
+    ]; };
     CdkListbox.propDecorators = {
         _options: [{ type: core.ContentChildren, args: [CdkOption, { descendants: true },] }],
         selectionChange: [{ type: core.Output }],
+        id: [{ type: core.Input }],
         multiple: [{ type: core.Input }],
         disabled: [{ type: core.Input }],
         useActiveDescendant: [{ type: core.Input }],
-        compareWith: [{ type: core.Input }]
+        compareWith: [{ type: core.Input }],
+        _explicitPanel: [{ type: core.Input, args: ['parentPanel',] }]
     };
 
     /**
@@ -835,6 +865,7 @@
     exports.CdkListbox = CdkListbox;
     exports.CdkListboxModule = CdkListboxModule;
     exports.CdkOption = CdkOption;
+    exports.PANEL = PANEL;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

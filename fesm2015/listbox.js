@@ -1,4 +1,4 @@
-import { forwardRef, EventEmitter, Directive, ElementRef, Inject, Input, Output, ContentChildren, NgModule } from '@angular/core';
+import { forwardRef, InjectionToken, EventEmitter, Directive, ElementRef, Inject, Input, Output, Optional, ContentChildren, NgModule } from '@angular/core';
 import { ActiveDescendantKeyManager } from '@angular/cdk/a11y';
 import { HOME, END, SPACE, ENTER, UP_ARROW, DOWN_ARROW } from '@angular/cdk/keycodes';
 import { coerceBooleanProperty, coerceArray } from '@angular/cdk/coercion';
@@ -6,6 +6,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { defer, merge, Subject } from 'rxjs';
 import { startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { CdkComboboxPanel } from '@angular/cdk-experimental/combobox';
 
 /**
  * @license
@@ -15,11 +16,13 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
  * found in the LICENSE file at https://angular.io/license
  */
 let nextId = 0;
+let listboxId = 0;
 const CDK_LISTBOX_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => CdkListbox),
     multi: true
 };
+const PANEL = new InjectionToken('CdkComboboxPanel');
 class CdkOption {
     constructor(_elementRef, listbox) {
         this._elementRef = _elementRef;
@@ -123,6 +126,9 @@ class CdkOption {
             (_a = icon.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(icon);
         }
     }
+    getElementRef() {
+        return this._elementRef;
+    }
     /** Sets the active property to true to enable the active css class. */
     setActiveStyles() {
         this._active = true;
@@ -163,7 +169,8 @@ CdkOption.propDecorators = {
     selectionChange: [{ type: Output }]
 };
 class CdkListbox {
-    constructor() {
+    constructor(_parentPanel) {
+        this._parentPanel = _parentPanel;
         this._tabIndex = 0;
         /** `View -> model callback called when select has been touched` */
         this._onTouched = () => { };
@@ -178,6 +185,7 @@ class CdkListbox {
         this._useActiveDescendant = true;
         this._destroyed = new Subject();
         this.selectionChange = new EventEmitter();
+        this.id = `cdk-option-${listboxId++}`;
         this.compareWith = (a1, a2) => a1 === a2;
     }
     /**
@@ -210,16 +218,22 @@ class CdkListbox {
     ngAfterContentInit() {
         this._initKeyManager();
         this._initSelectionModel();
+        this._registerWithPanel();
         this.optionSelectionChanges.subscribe(event => {
             this._emitChangeEvent(event.source);
             this._updateSelectionModel(event.source);
             this.setActiveOption(event.source);
+            this._updatePanelForSelection(event.source);
         });
     }
     ngOnDestroy() {
         this._listKeyManager.change.complete();
         this._destroyed.next();
         this._destroyed.complete();
+    }
+    _registerWithPanel() {
+        const panel = this._parentPanel || this._explicitPanel;
+        panel === null || panel === void 0 ? void 0 : panel._registerContent(this.id, 'listbox');
     }
     _initKeyManager() {
         this._listKeyManager = new ActiveDescendantKeyManager(this._options)
@@ -283,6 +297,12 @@ class CdkListbox {
         option.selected ? this._selectionModel.select(option) :
             this._selectionModel.deselect(option);
     }
+    _updatePanelForSelection(option) {
+        if (!this.multiple) {
+            const panel = this._parentPanel || this._explicitPanel;
+            option.selected ? panel === null || panel === void 0 ? void 0 : panel.closePanel(option.value) : panel === null || panel === void 0 ? void 0 : panel.closePanel();
+        }
+    }
     /** Toggles the selected state of the active option if not disabled. */
     _toggleActiveOption() {
         const activeOption = this._listKeyManager.activeItem;
@@ -339,6 +359,7 @@ class CdkListbox {
     /** Updates the key manager's active item to the given option. */
     setActiveOption(option) {
         this._listKeyManager.updateActiveItem(option);
+        this._updateActiveOption();
     }
     /**
      * Saves a callback function to be invoked when the select's value
@@ -363,6 +384,10 @@ class CdkListbox {
     /** Disables the select. Required to implement ControlValueAccessor. */
     setDisabledState(isDisabled) {
         this.disabled = isDisabled;
+    }
+    /** Returns the values of the currently selected options. */
+    getSelectedValues() {
+        return this._options.filter(option => option.selected).map(option => option.value);
     }
     /** Selects an option that has the corresponding given value. */
     _setSelectionByValue(values) {
@@ -389,6 +414,7 @@ CdkListbox.decorators = [
                 exportAs: 'cdkListbox',
                 host: {
                     'role': 'listbox',
+                    '[id]': 'id',
                     '(keydown)': '_keydown($event)',
                     '[attr.tabindex]': '_tabIndex',
                     '[attr.aria-disabled]': 'disabled',
@@ -398,13 +424,18 @@ CdkListbox.decorators = [
                 providers: [CDK_LISTBOX_VALUE_ACCESSOR]
             },] }
 ];
+CdkListbox.ctorParameters = () => [
+    { type: CdkComboboxPanel, decorators: [{ type: Optional }, { type: Inject, args: [PANEL,] }] }
+];
 CdkListbox.propDecorators = {
     _options: [{ type: ContentChildren, args: [CdkOption, { descendants: true },] }],
     selectionChange: [{ type: Output }],
+    id: [{ type: Input }],
     multiple: [{ type: Input }],
     disabled: [{ type: Input }],
     useActiveDescendant: [{ type: Input }],
-    compareWith: [{ type: Input }]
+    compareWith: [{ type: Input }],
+    _explicitPanel: [{ type: Input, args: ['parentPanel',] }]
 };
 
 /**
@@ -436,5 +467,5 @@ CdkListboxModule.decorators = [
  * Generated bundle index. Do not edit.
  */
 
-export { CDK_LISTBOX_VALUE_ACCESSOR, CdkListbox, CdkListboxModule, CdkOption };
+export { CDK_LISTBOX_VALUE_ACCESSOR, CdkListbox, CdkListboxModule, CdkOption, PANEL };
 //# sourceMappingURL=listbox.js.map
