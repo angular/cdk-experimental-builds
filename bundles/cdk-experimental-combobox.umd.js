@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/portal'), require('@angular/cdk/bidi'), require('@angular/cdk/coercion'), require('rxjs')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/combobox', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/portal', '@angular/cdk/bidi', '@angular/cdk/coercion', 'rxjs'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.combobox = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.portal, global.ng.cdk.bidi, global.ng.cdk.coercion, global.rxjs));
-}(this, (function (exports, core, overlay, portal, bidi, coercion, rxjs) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/portal'), require('@angular/cdk/bidi'), require('@angular/cdk/coercion'), require('@angular/cdk/keycodes'), require('rxjs')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/combobox', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/portal', '@angular/cdk/bidi', '@angular/cdk/coercion', '@angular/cdk/keycodes', 'rxjs'], factory) :
+    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.combobox = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.portal, global.ng.cdk.bidi, global.ng.cdk.coercion, global.ng.cdk.keycodes, global.rxjs));
+}(this, (function (exports, core, overlay, portal, bidi, coercion, keycodes, rxjs) { 'use strict';
 
     /**
      * @license
@@ -11,6 +11,7 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
+    var allowedOpenActions = ['focus', 'click', 'downKey', 'toggle'];
     var CdkCombobox = /** @class */ (function () {
         function CdkCombobox(_elementRef, _overlay, _viewContainerRef, _directionality) {
             this._elementRef = _elementRef;
@@ -65,6 +66,43 @@
             this.closed.complete();
             this.panelValueChanged.complete();
         };
+        CdkCombobox.prototype._keydown = function (event) {
+            var keyCode = event.keyCode;
+            if (keyCode === keycodes.DOWN_ARROW && this._openActions.indexOf('downKey') !== -1) {
+                this.open();
+            }
+            else if (keyCode === keycodes.ESCAPE) {
+                event.preventDefault();
+                this.close();
+            }
+        };
+        CdkCombobox.prototype._handleInteractions = function (interaction) {
+            if (interaction === 'click') {
+                if (this._openActions.indexOf('toggle') !== -1) {
+                    this.toggle();
+                }
+                else if (this._openActions.indexOf('click') !== -1) {
+                    this.open();
+                }
+            }
+            else if (interaction === 'focus') {
+                if (this._openActions.indexOf('focus') !== -1) {
+                    this.open();
+                }
+            }
+        };
+        CdkCombobox.prototype._attemptClose = function (event) {
+            if (this.isOpen()) {
+                var target = event.composedPath ? event.composedPath()[0] : event.target;
+                while (target instanceof Element) {
+                    if (target.className.indexOf('cdk-combobox') !== -1) {
+                        return;
+                    }
+                    target = target.parentElement;
+                }
+            }
+            this.close();
+        };
         /** Toggles the open state of the panel. */
         CdkCombobox.prototype.toggle = function () {
             if (this.hasPanel()) {
@@ -73,10 +111,12 @@
         };
         /** If the combobox is closed and not disabled, opens the panel. */
         CdkCombobox.prototype.open = function () {
+            var _a;
             if (!this.isOpen() && !this.disabled) {
                 this.opened.next();
                 this._overlayRef = this._overlayRef || this._overlay.create(this._getOverlayConfig());
                 this._overlayRef.attach(this._getPanelContent());
+                (_a = this._panel) === null || _a === void 0 ? void 0 : _a.focusContent();
             }
         };
         /** If the combobox is open and not disabled, closes the panel. */
@@ -94,6 +134,9 @@
         CdkCombobox.prototype.hasPanel = function () {
             return !!this.panel;
         };
+        CdkCombobox.prototype._getTabIndex = function () {
+            return this.disabled ? null : '0';
+        };
         CdkCombobox.prototype._setComboboxValue = function (value) {
             var valueChanged = (this.value !== value);
             this.value = value;
@@ -103,9 +146,8 @@
             }
         };
         CdkCombobox.prototype._setTextContent = function (content) {
-            if (typeof content === 'string') {
-                this._elementRef.nativeElement.textContent = "" + content;
-            }
+            var contentArray = coercion.coerceArray(content);
+            this._elementRef.nativeElement.textContent = contentArray.join(' ');
         };
         CdkCombobox.prototype._getOverlayConfig = function () {
             return new overlay.OverlayConfig({
@@ -137,12 +179,9 @@
             return this._panelContent;
         };
         CdkCombobox.prototype._coerceOpenActionProperty = function (input) {
-            var actions = [];
-            if (typeof input === 'string') {
-                actions.push(input);
-            }
-            else {
-                actions = input;
+            var actions = typeof input === 'string' ? input.trim().split(/[ ,]+/) : input;
+            if (core.isDevMode() && actions.some(function (a) { return allowedOpenActions.indexOf(a) === -1; })) {
+                throw Error(input + " is not a support open action for CdkCombobox");
             }
             return actions;
         };
@@ -154,10 +193,16 @@
                     exportAs: 'cdkCombobox',
                     host: {
                         'role': 'combobox',
-                        '(click)': 'toggle()',
+                        'class': 'cdk-combobox',
+                        '(click)': '_handleInteractions("click")',
+                        '(focus)': '_handleInteractions("focus")',
+                        '(keydown)': '_keydown($event)',
+                        '(document:click)': '_attemptClose($event)',
                         '[attr.aria-disabled]': 'disabled',
-                        '[attr.aria-controls]': 'contentId',
-                        '[attr.aria-haspopup]': 'contentType'
+                        '[attr.aria-owns]': 'contentId',
+                        '[attr.aria-haspopup]': 'contentType',
+                        '[attr.aria-expanded]': 'isOpen()',
+                        '[attr.tabindex]': '_getTabIndex()'
                     }
                 },] }
     ];
@@ -192,9 +237,15 @@
             this.contentTypeUpdated = new rxjs.Subject();
             this.contentId = '';
         }
-        /** Tells the parent combobox to closet he panel and sends back the content value. */
+        /** Tells the parent combobox to close the panel and sends back the content value. */
         CdkComboboxPanel.prototype.closePanel = function (data) {
             this.valueUpdated.next(data);
+        };
+        // TODO: instead of using a focus function, potentially use cdk/a11y focus trapping
+        CdkComboboxPanel.prototype.focusContent = function () {
+            var _a;
+            // TODO: Use an injected document here
+            (_a = document.getElementById(this.contentId)) === null || _a === void 0 ? void 0 : _a.focus();
         };
         /** Registers the content's id and the content type with the panel. */
         CdkComboboxPanel.prototype._registerContent = function (contentId, contentType) {
@@ -210,6 +261,9 @@
     }());
     CdkComboboxPanel.decorators = [
         { type: core.Directive, args: [{
+                    host: {
+                        'class': 'cdk-combobox-panel'
+                    },
                     selector: 'ng-template[cdkComboboxPanel]',
                     exportAs: 'cdkComboboxPanel',
                 },] }
@@ -225,7 +279,66 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    var EXPORTED_DECLARATIONS = [CdkCombobox, CdkComboboxPanel];
+    var PANEL = new core.InjectionToken('CdkComboboxPanel');
+    var nextId = 0;
+    var CdkComboboxPopup = /** @class */ (function () {
+        function CdkComboboxPopup(_parentPanel) {
+            this._parentPanel = _parentPanel;
+            this._role = 'dialog';
+            this.id = "cdk-combobox-popup-" + nextId++;
+        }
+        Object.defineProperty(CdkComboboxPopup.prototype, "role", {
+            get: function () {
+                return this._role;
+            },
+            set: function (value) {
+                this._role = value;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        CdkComboboxPopup.prototype.ngOnInit = function () {
+            this.registerWithPanel();
+        };
+        CdkComboboxPopup.prototype.registerWithPanel = function () {
+            if (this._parentPanel === null || this._parentPanel === undefined) {
+                this._explicitPanel._registerContent(this.id, this._role);
+            }
+            else {
+                this._parentPanel._registerContent(this.id, this._role);
+            }
+        };
+        return CdkComboboxPopup;
+    }());
+    CdkComboboxPopup.decorators = [
+        { type: core.Directive, args: [{
+                    selector: '[cdkComboboxPopup]',
+                    exportAs: 'cdkComboboxPopup',
+                    host: {
+                        'class': 'cdk-combobox-popup',
+                        '[attr.role]': 'role',
+                        '[id]': 'id',
+                        'tabindex': '-1'
+                    }
+                },] }
+    ];
+    CdkComboboxPopup.ctorParameters = function () { return [
+        { type: CdkComboboxPanel, decorators: [{ type: core.Optional }, { type: core.Inject, args: [PANEL,] }] }
+    ]; };
+    CdkComboboxPopup.propDecorators = {
+        role: [{ type: core.Input }],
+        id: [{ type: core.Input }],
+        _explicitPanel: [{ type: core.Input, args: ['parentPanel',] }]
+    };
+
+    /**
+     * @license
+     * Copyright Google LLC All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
+    var EXPORTED_DECLARATIONS = [CdkCombobox, CdkComboboxPanel, CdkComboboxPopup];
     var CdkComboboxModule = /** @class */ (function () {
         function CdkComboboxModule() {
         }
@@ -254,6 +367,8 @@
     exports.CdkCombobox = CdkCombobox;
     exports.CdkComboboxModule = CdkComboboxModule;
     exports.CdkComboboxPanel = CdkComboboxPanel;
+    exports.CdkComboboxPopup = CdkComboboxPopup;
+    exports.PANEL = PANEL;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

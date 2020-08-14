@@ -37,6 +37,9 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContent
     constructor(_elementRef: ElementRef<HTMLElement>, _overlay: Overlay, _viewContainerRef: ViewContainerRef, _directionality?: Directionality | undefined);
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
+    _keydown(event: KeyboardEvent): void;
+    _handleInteractions(interaction: OpenAction): void;
+    _attemptClose(event: MouseEvent): void;
     /** Toggles the open state of the panel. */
     toggle(): void;
     /** If the combobox is closed and not disabled, opens the panel. */
@@ -47,6 +50,7 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContent
     isOpen(): boolean;
     /** Returns true if combobox has a child panel. */
     hasPanel(): boolean;
+    _getTabIndex(): string | null;
     private _setComboboxValue;
     private _setTextContent;
     private _getOverlayConfig;

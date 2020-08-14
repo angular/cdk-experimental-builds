@@ -16,8 +16,9 @@ export declare class CdkComboboxPanel<T = unknown> {
     contentId: string;
     contentType: AriaHasPopupValue;
     constructor(_templateRef: TemplateRef<unknown>);
-    /** Tells the parent combobox to closet he panel and sends back the content value. */
+    /** Tells the parent combobox to close the panel and sends back the content value. */
     closePanel(data?: T): void;
+    focusContent(): void;
     /** Registers the content's id and the content type with the panel. */
     _registerContent(contentId: string, contentType: AriaHasPopupValue): void;
 }
