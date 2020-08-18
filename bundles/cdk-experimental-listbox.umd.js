@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/coercion'), require('@angular/cdk/collections'), require('rxjs'), require('rxjs/operators'), require('@angular/forms'), require('@angular/cdk-experimental/combobox')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/listbox', ['exports', '@angular/core', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/coercion', '@angular/cdk/collections', 'rxjs', 'rxjs/operators', '@angular/forms', '@angular/cdk-experimental/combobox'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.listbox = {}), global.ng.core, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.coercion, global.ng.cdk.collections, global.rxjs, global.rxjs.operators, global.ng.forms, global.ng.cdkExperimental.combobox));
-}(this, (function (exports, core, a11y, keycodes, coercion, collections, rxjs, operators, forms, combobox) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/coercion'), require('@angular/cdk/collections'), require('rxjs'), require('rxjs/operators'), require('@angular/forms'), require('@angular/cdk-experimental/combobox'), require('@angular/cdk/bidi')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/listbox', ['exports', '@angular/core', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/coercion', '@angular/cdk/collections', 'rxjs', 'rxjs/operators', '@angular/forms', '@angular/cdk-experimental/combobox', '@angular/cdk/bidi'], factory) :
+    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.listbox = {}), global.ng.core, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.coercion, global.ng.cdk.collections, global.rxjs, global.rxjs.operators, global.ng.forms, global.ng.cdkExperimental.combobox, global.ng.cdk.bidi));
+}(this, (function (exports, core, a11y, keycodes, coercion, collections, rxjs, operators, forms, combobox, bidi) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -459,6 +459,7 @@
                     exportAs: 'cdkOption',
                     host: {
                         'role': 'option',
+                        'class': 'cdk-option',
                         '(click)': 'toggle()',
                         '(focus)': 'activate()',
                         '(blur)': 'deactivate()',
@@ -484,9 +485,10 @@
         selectionChange: [{ type: core.Output }]
     };
     var CdkListbox = /** @class */ (function () {
-        function CdkListbox(_parentPanel) {
+        function CdkListbox(_parentPanel, _dir) {
             var _this = this;
             this._parentPanel = _parentPanel;
+            this._dir = _dir;
             this._tabIndex = 0;
             /** `View -> model callback called when select has been touched` */
             this._onTouched = function () { };
@@ -498,10 +500,13 @@
             });
             this._disabled = false;
             this._multiple = false;
-            this._useActiveDescendant = true;
+            this._useActiveDescendant = false;
+            this._autoFocus = true;
             this._destroyed = new rxjs.Subject();
             this.selectionChange = new core.EventEmitter();
-            this.id = "cdk-option-" + listboxId++;
+            this.id = "cdk-listbox-" + listboxId++;
+            /** Determines the orientation for the list key manager. Affects keyboard interaction. */
+            this.orientation = 'vertical';
             this.compareWith = function (a1, a2) { return a1 === a2; };
         }
         Object.defineProperty(CdkListbox.prototype, "multiple", {
@@ -540,6 +545,17 @@
             enumerable: false,
             configurable: true
         });
+        Object.defineProperty(CdkListbox.prototype, "autoFocus", {
+            /** Whether on focus the listbox will focus its active option, default to true. */
+            get: function () {
+                return this._autoFocus;
+            },
+            set: function (shouldAutoFocus) {
+                this._autoFocus = coercion.coerceBooleanProperty(shouldAutoFocus);
+            },
+            enumerable: false,
+            configurable: true
+        });
         CdkListbox.prototype.ngOnInit = function () {
             this._selectionModel = new collections.SelectionModel(this.multiple);
         };
@@ -566,11 +582,17 @@
         };
         CdkListbox.prototype._initKeyManager = function () {
             var _this = this;
+            var _a;
             this._listKeyManager = new a11y.ActiveDescendantKeyManager(this._options)
                 .withWrap()
-                .withVerticalOrientation()
                 .withTypeAhead()
                 .withAllowedModifierKeys(['shiftKey']);
+            if (this.orientation === 'vertical') {
+                this._listKeyManager.withVerticalOrientation();
+            }
+            else {
+                this._listKeyManager.withHorizontalOrientation(((_a = this._dir) === null || _a === void 0 ? void 0 : _a.value) || 'ltr');
+            }
             this._listKeyManager.change.pipe(operators.takeUntil(this._destroyed)).subscribe(function () {
                 _this._updateActiveOption();
             });
@@ -622,12 +644,16 @@
                 if (manager.activeItem && !manager.isTyping()) {
                     this._toggleActiveOption();
                 }
+                event.preventDefault();
             }
             else {
                 manager.onKeydown(event);
             }
             /** Will select an option if shift was pressed while navigating to the option */
-            var isArrow = (keyCode === keycodes.UP_ARROW || keyCode === keycodes.DOWN_ARROW);
+            var isArrow = (keyCode === keycodes.UP_ARROW
+                || keyCode === keycodes.DOWN_ARROW
+                || keyCode === keycodes.LEFT_ARROW
+                || keyCode === keycodes.RIGHT_ARROW);
             if (isArrow && event.shiftKey && previousActiveIndex !== this._listKeyManager.activeItemIndex) {
                 this._toggleActiveOption();
             }
@@ -649,9 +675,12 @@
                 this._selectionModel.deselect(option);
         };
         CdkListbox.prototype._updatePanelForSelection = function (option) {
+            var panel = this._parentPanel || this._explicitPanel;
             if (!this.multiple) {
-                var panel = this._parentPanel || this._explicitPanel;
                 option.selected ? panel === null || panel === void 0 ? void 0 : panel.closePanel(option.value) : panel === null || panel === void 0 ? void 0 : panel.closePanel();
+            }
+            else {
+                panel === null || panel === void 0 ? void 0 : panel.closePanel(this.getSelectedValues());
             }
         };
         /** Toggles the selected state of the active option if not disabled. */
@@ -681,12 +710,25 @@
         };
         /** Updates selection states of options when the 'multiple' property changes. */
         CdkListbox.prototype._updateSelectionOnMultiSelectionChange = function (value) {
+            var _a;
             if (this.multiple && !value) {
                 // Deselect all options instead of arbitrarily keeping one of the selected options.
                 this.setAllSelected(false);
             }
             else if (!this.multiple && value) {
-                this._selectionModel = new collections.SelectionModel(value, this._selectionModel.selected);
+                this._selectionModel =
+                    new collections.SelectionModel(value, (_a = this._selectionModel) === null || _a === void 0 ? void 0 : _a.selected);
+            }
+        };
+        CdkListbox.prototype._focusActiveOption = function () {
+            if (!this.autoFocus) {
+                return;
+            }
+            if (this._listKeyManager.activeItem) {
+                this.setActiveOption(this._listKeyManager.activeItem);
+            }
+            else if (this._options.first) {
+                this.setActiveOption(this._options.first);
             }
         };
         /** Selects the given option if the option and listbox aren't disabled. */
@@ -805,18 +847,22 @@
                     exportAs: 'cdkListbox',
                     host: {
                         'role': 'listbox',
+                        'class': 'cdk-listbox',
                         '[id]': 'id',
+                        '(focus)': '_focusActiveOption()',
                         '(keydown)': '_keydown($event)',
                         '[attr.tabindex]': '_tabIndex',
                         '[attr.aria-disabled]': 'disabled',
                         '[attr.aria-multiselectable]': 'multiple',
-                        '[attr.aria-activedescendant]': '_getAriaActiveDescendant()'
+                        '[attr.aria-activedescendant]': '_getAriaActiveDescendant()',
+                        '[attr.aria-orientation]': 'orientation'
                     },
                     providers: [CDK_LISTBOX_VALUE_ACCESSOR]
                 },] }
     ];
     CdkListbox.ctorParameters = function () { return [
-        { type: combobox.CdkComboboxPanel, decorators: [{ type: core.Optional }, { type: core.Inject, args: [PANEL,] }] }
+        { type: combobox.CdkComboboxPanel, decorators: [{ type: core.Optional }, { type: core.Inject, args: [PANEL,] }] },
+        { type: bidi.Directionality, decorators: [{ type: core.Optional }] }
     ]; };
     CdkListbox.propDecorators = {
         _options: [{ type: core.ContentChildren, args: [CdkOption, { descendants: true },] }],
@@ -825,6 +871,8 @@
         multiple: [{ type: core.Input }],
         disabled: [{ type: core.Input }],
         useActiveDescendant: [{ type: core.Input }],
+        autoFocus: [{ type: core.Input }],
+        orientation: [{ type: core.Input, args: ['listboxOrientation',] }],
         compareWith: [{ type: core.Input }],
         _explicitPanel: [{ type: core.Input, args: ['parentPanel',] }]
     };

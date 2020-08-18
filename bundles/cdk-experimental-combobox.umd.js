@@ -20,6 +20,7 @@
             this._directionality = _directionality;
             this._disabled = false;
             this._openActions = ['click'];
+            this._autoSetText = true;
             this.opened = new core.EventEmitter();
             this.closed = new core.EventEmitter();
             this.panelValueChanged = new core.EventEmitter();
@@ -47,6 +48,13 @@
             enumerable: false,
             configurable: true
         });
+        Object.defineProperty(CdkCombobox.prototype, "autoSetText", {
+            /** Whether the textContent is automatically updated upon change of the combobox value. */
+            get: function () { return this._autoSetText; },
+            set: function (value) { this._autoSetText = coercion.coerceBooleanProperty(value); },
+            enumerable: false,
+            configurable: true
+        });
         CdkCombobox.prototype.ngAfterContentInit = function () {
             var _this = this;
             var _a, _b, _c;
@@ -67,15 +75,33 @@
             this.panelValueChanged.complete();
         };
         CdkCombobox.prototype._keydown = function (event) {
+            var _a;
             var keyCode = event.keyCode;
-            if (keyCode === keycodes.DOWN_ARROW && this._openActions.indexOf('downKey') !== -1) {
-                this.open();
+            if (keyCode === keycodes.DOWN_ARROW) {
+                if (this.isOpen()) {
+                    (_a = this._panel) === null || _a === void 0 ? void 0 : _a.focusContent();
+                }
+                else if (this._openActions.indexOf('downKey') !== -1) {
+                    this.open();
+                }
+            }
+            else if (keyCode === keycodes.ENTER) {
+                if (this._openActions.indexOf('toggle') !== -1) {
+                    this.toggle();
+                }
+                else if (this._openActions.indexOf('click') !== -1) {
+                    this.open();
+                }
             }
             else if (keyCode === keycodes.ESCAPE) {
                 event.preventDefault();
                 this.close();
             }
+            else if (keyCode === keycodes.TAB) {
+                this.close();
+            }
         };
+        /** Handles click or focus interactions. */
         CdkCombobox.prototype._handleInteractions = function (interaction) {
             if (interaction === 'click') {
                 if (this._openActions.indexOf('toggle') !== -1) {
@@ -91,6 +117,7 @@
                 }
             }
         };
+        /** Given a click in the document, determines if the click was inside a combobox. */
         CdkCombobox.prototype._attemptClose = function (event) {
             if (this.isOpen()) {
                 var target = event.composedPath ? event.composedPath()[0] : event.target;
@@ -116,7 +143,9 @@
                 this.opened.next();
                 this._overlayRef = this._overlayRef || this._overlay.create(this._getOverlayConfig());
                 this._overlayRef.attach(this._getPanelContent());
-                (_a = this._panel) === null || _a === void 0 ? void 0 : _a.focusContent();
+                if (!this._isTextTrigger()) {
+                    (_a = this._panel) === null || _a === void 0 ? void 0 : _a.focusContent();
+                }
             }
         };
         /** If the combobox is open and not disabled, closes the panel. */
@@ -141,13 +170,20 @@
             var valueChanged = (this.value !== value);
             this.value = value;
             if (valueChanged) {
-                this.panelValueChanged.emit(value);
-                this._setTextContent(value);
+                this.panelValueChanged.emit(coercion.coerceArray(value));
+                if (this._autoSetText) {
+                    this._setTextContent(value);
+                }
             }
         };
         CdkCombobox.prototype._setTextContent = function (content) {
             var contentArray = coercion.coerceArray(content);
             this._elementRef.nativeElement.textContent = contentArray.join(' ');
+        };
+        CdkCombobox.prototype._isTextTrigger = function () {
+            // TODO: Should check if the trigger is contenteditable.
+            var tagName = this._elementRef.nativeElement.tagName.toLowerCase();
+            return tagName === 'input' || tagName === 'textarea' ? true : false;
         };
         CdkCombobox.prototype._getOverlayConfig = function () {
             return new overlay.OverlayConfig({
@@ -217,6 +253,7 @@
         value: [{ type: core.Input }],
         disabled: [{ type: core.Input }],
         openActions: [{ type: core.Input }],
+        autoSetText: [{ type: core.Input }],
         opened: [{ type: core.Output, args: ['comboboxPanelOpened',] }],
         closed: [{ type: core.Output, args: ['comboboxPanelClosed',] }],
         panelValueChanged: [{ type: core.Output, args: ['panelValueChanged',] }]
@@ -249,6 +286,10 @@
         };
         /** Registers the content's id and the content type with the panel. */
         CdkComboboxPanel.prototype._registerContent = function (contentId, contentType) {
+            // If content has already been registered, no further contentIds are registered.
+            if (this.contentType && this.contentType !== contentType) {
+                return;
+            }
             this.contentId = contentId;
             if (contentType !== 'listbox' && contentType !== 'dialog') {
                 throw Error('CdkComboboxPanel currently only supports listbox or dialog content.');
@@ -282,7 +323,8 @@
     var PANEL = new core.InjectionToken('CdkComboboxPanel');
     var nextId = 0;
     var CdkComboboxPopup = /** @class */ (function () {
-        function CdkComboboxPopup(_parentPanel) {
+        function CdkComboboxPopup(_elementRef, _parentPanel) {
+            this._elementRef = _elementRef;
             this._parentPanel = _parentPanel;
             this._role = 'dialog';
             this.id = "cdk-combobox-popup-" + nextId++;
@@ -293,6 +335,16 @@
             },
             set: function (value) {
                 this._role = value;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(CdkComboboxPopup.prototype, "firstFocus", {
+            get: function () {
+                return this._firstFocusElement;
+            },
+            set: function (id) {
+                this._firstFocusElement = id;
             },
             enumerable: false,
             configurable: true
@@ -308,6 +360,14 @@
                 this._parentPanel._registerContent(this.id, this._role);
             }
         };
+        CdkComboboxPopup.prototype.focusFirstElement = function () {
+            if (this._firstFocusElement) {
+                this._firstFocusElement.focus();
+            }
+            else {
+                this._elementRef.nativeElement.focus();
+            }
+        };
         return CdkComboboxPopup;
     }());
     CdkComboboxPopup.decorators = [
@@ -318,15 +378,18 @@
                         'class': 'cdk-combobox-popup',
                         '[attr.role]': 'role',
                         '[id]': 'id',
-                        'tabindex': '-1'
+                        'tabindex': '-1',
+                        '(focus)': 'focusFirstElement()'
                     }
                 },] }
     ];
     CdkComboboxPopup.ctorParameters = function () { return [
+        { type: core.ElementRef },
         { type: CdkComboboxPanel, decorators: [{ type: core.Optional }, { type: core.Inject, args: [PANEL,] }] }
     ]; };
     CdkComboboxPopup.propDecorators = {
         role: [{ type: core.Input }],
+        firstFocus: [{ type: core.Input }],
         id: [{ type: core.Input }],
         _explicitPanel: [{ type: core.Input, args: ['parentPanel',] }]
     };

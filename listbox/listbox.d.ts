@@ -12,6 +12,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Observable } from 'rxjs';
 import { ControlValueAccessor } from '@angular/forms';
 import { CdkComboboxPanel } from '@angular/cdk-experimental/combobox';
+import { Directionality } from '@angular/cdk/bidi';
 export declare const CDK_LISTBOX_VALUE_ACCESSOR: any;
 export declare const PANEL: InjectionToken<CdkComboboxPanel<unknown>>;
 export declare class CdkOption<T = unknown> implements ListKeyManagerOption, Highlightable {
@@ -64,6 +65,7 @@ export declare class CdkOption<T = unknown> implements ListKeyManagerOption, Hig
 }
 export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnInit, ControlValueAccessor {
     readonly _parentPanel?: CdkComboboxPanel<T> | undefined;
+    private readonly _dir?;
     _listKeyManager: ActiveDescendantKeyManager<CdkOption<T>>;
     _selectionModel: SelectionModel<CdkOption<T>>;
     _tabIndex: number;
@@ -75,6 +77,7 @@ export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnIni
     private _disabled;
     private _multiple;
     private _useActiveDescendant;
+    private _autoFocus;
     private _activeOption;
     private readonly _destroyed;
     _options: QueryList<CdkOption<T>>;
@@ -91,9 +94,14 @@ export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnIni
     /** Whether the listbox will use active descendant or will move focus onto the options. */
     get useActiveDescendant(): boolean;
     set useActiveDescendant(shouldUseActiveDescendant: boolean);
+    /** Whether on focus the listbox will focus its active option, default to true. */
+    get autoFocus(): boolean;
+    set autoFocus(shouldAutoFocus: boolean);
+    /** Determines the orientation for the list key manager. Affects keyboard interaction. */
+    orientation: 'horizontal' | 'vertical';
     compareWith: (o1: T, o2: T) => boolean;
     private readonly _explicitPanel;
-    constructor(_parentPanel?: CdkComboboxPanel<T> | undefined);
+    constructor(_parentPanel?: CdkComboboxPanel<T> | undefined, _dir?: Directionality | undefined);
     ngOnInit(): void;
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
@@ -114,6 +122,7 @@ export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnIni
     private _updateActiveOption;
     /** Updates selection states of options when the 'multiple' property changes. */
     private _updateSelectionOnMultiSelectionChange;
+    _focusActiveOption(): void;
     /** Selects the given option if the option and listbox aren't disabled. */
     select(option: CdkOption<T>): void;
     /** Deselects the given option if the option and listbox aren't disabled. */
@@ -143,6 +152,7 @@ export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnIni
     static ngAcceptInputType_disabled: BooleanInput;
     static ngAcceptInputType_multiple: BooleanInput;
     static ngAcceptInputType_useActiveDescendant: BooleanInput;
+    static ngAcceptInputType_autoFocus: BooleanInput;
 }
 /** Change event that is being fired whenever the selected state of an option changes. */
 export interface ListboxSelectionChangeEvent<T> {

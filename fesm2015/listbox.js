@@ -1,12 +1,13 @@
 import { forwardRef, InjectionToken, EventEmitter, Directive, ElementRef, Inject, Input, Output, Optional, ContentChildren, NgModule } from '@angular/core';
 import { ActiveDescendantKeyManager } from '@angular/cdk/a11y';
-import { HOME, END, SPACE, ENTER, UP_ARROW, DOWN_ARROW } from '@angular/cdk/keycodes';
+import { HOME, END, SPACE, ENTER, UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW } from '@angular/cdk/keycodes';
 import { coerceBooleanProperty, coerceArray } from '@angular/cdk/coercion';
 import { SelectionModel } from '@angular/cdk/collections';
 import { defer, merge, Subject } from 'rxjs';
 import { startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CdkComboboxPanel } from '@angular/cdk-experimental/combobox';
+import { Directionality } from '@angular/cdk/bidi';
 
 /**
  * @license
@@ -144,6 +145,7 @@ CdkOption.decorators = [
                 exportAs: 'cdkOption',
                 host: {
                     'role': 'option',
+                    'class': 'cdk-option',
                     '(click)': 'toggle()',
                     '(focus)': 'activate()',
                     '(blur)': 'deactivate()',
@@ -169,8 +171,9 @@ CdkOption.propDecorators = {
     selectionChange: [{ type: Output }]
 };
 class CdkListbox {
-    constructor(_parentPanel) {
+    constructor(_parentPanel, _dir) {
         this._parentPanel = _parentPanel;
+        this._dir = _dir;
         this._tabIndex = 0;
         /** `View -> model callback called when select has been touched` */
         this._onTouched = () => { };
@@ -182,10 +185,13 @@ class CdkListbox {
         });
         this._disabled = false;
         this._multiple = false;
-        this._useActiveDescendant = true;
+        this._useActiveDescendant = false;
+        this._autoFocus = true;
         this._destroyed = new Subject();
         this.selectionChange = new EventEmitter();
-        this.id = `cdk-option-${listboxId++}`;
+        this.id = `cdk-listbox-${listboxId++}`;
+        /** Determines the orientation for the list key manager. Affects keyboard interaction. */
+        this.orientation = 'vertical';
         this.compareWith = (a1, a2) => a1 === a2;
     }
     /**
@@ -212,6 +218,13 @@ class CdkListbox {
     set useActiveDescendant(shouldUseActiveDescendant) {
         this._useActiveDescendant = coerceBooleanProperty(shouldUseActiveDescendant);
     }
+    /** Whether on focus the listbox will focus its active option, default to true. */
+    get autoFocus() {
+        return this._autoFocus;
+    }
+    set autoFocus(shouldAutoFocus) {
+        this._autoFocus = coerceBooleanProperty(shouldAutoFocus);
+    }
     ngOnInit() {
         this._selectionModel = new SelectionModel(this.multiple);
     }
@@ -236,11 +249,17 @@ class CdkListbox {
         panel === null || panel === void 0 ? void 0 : panel._registerContent(this.id, 'listbox');
     }
     _initKeyManager() {
+        var _a;
         this._listKeyManager = new ActiveDescendantKeyManager(this._options)
             .withWrap()
-            .withVerticalOrientation()
             .withTypeAhead()
             .withAllowedModifierKeys(['shiftKey']);
+        if (this.orientation === 'vertical') {
+            this._listKeyManager.withVerticalOrientation();
+        }
+        else {
+            this._listKeyManager.withHorizontalOrientation(((_a = this._dir) === null || _a === void 0 ? void 0 : _a.value) || 'ltr');
+        }
         this._listKeyManager.change.pipe(takeUntil(this._destroyed)).subscribe(() => {
             this._updateActiveOption();
         });
@@ -271,12 +290,16 @@ class CdkListbox {
             if (manager.activeItem && !manager.isTyping()) {
                 this._toggleActiveOption();
             }
+            event.preventDefault();
         }
         else {
             manager.onKeydown(event);
         }
         /** Will select an option if shift was pressed while navigating to the option */
-        const isArrow = (keyCode === UP_ARROW || keyCode === DOWN_ARROW);
+        const isArrow = (keyCode === UP_ARROW
+            || keyCode === DOWN_ARROW
+            || keyCode === LEFT_ARROW
+            || keyCode === RIGHT_ARROW);
         if (isArrow && event.shiftKey && previousActiveIndex !== this._listKeyManager.activeItemIndex) {
             this._toggleActiveOption();
         }
@@ -298,9 +321,12 @@ class CdkListbox {
             this._selectionModel.deselect(option);
     }
     _updatePanelForSelection(option) {
+        const panel = this._parentPanel || this._explicitPanel;
         if (!this.multiple) {
-            const panel = this._parentPanel || this._explicitPanel;
             option.selected ? panel === null || panel === void 0 ? void 0 : panel.closePanel(option.value) : panel === null || panel === void 0 ? void 0 : panel.closePanel();
+        }
+        else {
+            panel === null || panel === void 0 ? void 0 : panel.closePanel(this.getSelectedValues());
         }
     }
     /** Toggles the selected state of the active option if not disabled. */
@@ -330,12 +356,25 @@ class CdkListbox {
     }
     /** Updates selection states of options when the 'multiple' property changes. */
     _updateSelectionOnMultiSelectionChange(value) {
+        var _a;
         if (this.multiple && !value) {
             // Deselect all options instead of arbitrarily keeping one of the selected options.
             this.setAllSelected(false);
         }
         else if (!this.multiple && value) {
-            this._selectionModel = new SelectionModel(value, this._selectionModel.selected);
+            this._selectionModel =
+                new SelectionModel(value, (_a = this._selectionModel) === null || _a === void 0 ? void 0 : _a.selected);
+        }
+    }
+    _focusActiveOption() {
+        if (!this.autoFocus) {
+            return;
+        }
+        if (this._listKeyManager.activeItem) {
+            this.setActiveOption(this._listKeyManager.activeItem);
+        }
+        else if (this._options.first) {
+            this.setActiveOption(this._options.first);
         }
     }
     /** Selects the given option if the option and listbox aren't disabled. */
@@ -414,18 +453,22 @@ CdkListbox.decorators = [
                 exportAs: 'cdkListbox',
                 host: {
                     'role': 'listbox',
+                    'class': 'cdk-listbox',
                     '[id]': 'id',
+                    '(focus)': '_focusActiveOption()',
                     '(keydown)': '_keydown($event)',
                     '[attr.tabindex]': '_tabIndex',
                     '[attr.aria-disabled]': 'disabled',
                     '[attr.aria-multiselectable]': 'multiple',
-                    '[attr.aria-activedescendant]': '_getAriaActiveDescendant()'
+                    '[attr.aria-activedescendant]': '_getAriaActiveDescendant()',
+                    '[attr.aria-orientation]': 'orientation'
                 },
                 providers: [CDK_LISTBOX_VALUE_ACCESSOR]
             },] }
 ];
 CdkListbox.ctorParameters = () => [
-    { type: CdkComboboxPanel, decorators: [{ type: Optional }, { type: Inject, args: [PANEL,] }] }
+    { type: CdkComboboxPanel, decorators: [{ type: Optional }, { type: Inject, args: [PANEL,] }] },
+    { type: Directionality, decorators: [{ type: Optional }] }
 ];
 CdkListbox.propDecorators = {
     _options: [{ type: ContentChildren, args: [CdkOption, { descendants: true },] }],
@@ -434,6 +477,8 @@ CdkListbox.propDecorators = {
     multiple: [{ type: Input }],
     disabled: [{ type: Input }],
     useActiveDescendant: [{ type: Input }],
+    autoFocus: [{ type: Input }],
+    orientation: [{ type: Input, args: ['listboxOrientation',] }],
     compareWith: [{ type: Input }],
     _explicitPanel: [{ type: Input, args: ['parentPanel',] }]
 };

@@ -20,16 +20,20 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContent
     get panel(): CdkComboboxPanel<T> | undefined;
     set panel(panel: CdkComboboxPanel<T> | undefined);
     private _panel;
-    value: T;
+    value: T | T[];
     get disabled(): boolean;
     set disabled(value: boolean);
     private _disabled;
     get openActions(): OpenAction[];
     set openActions(action: OpenAction[]);
     private _openActions;
+    /** Whether the textContent is automatically updated upon change of the combobox value. */
+    get autoSetText(): boolean;
+    set autoSetText(value: boolean);
+    private _autoSetText;
     readonly opened: EventEmitter<void>;
     readonly closed: EventEmitter<void>;
-    readonly panelValueChanged: EventEmitter<T>;
+    readonly panelValueChanged: EventEmitter<T[]>;
     private _overlayRef;
     private _panelContent;
     contentId: string;
@@ -38,7 +42,9 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContent
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
     _keydown(event: KeyboardEvent): void;
+    /** Handles click or focus interactions. */
     _handleInteractions(interaction: OpenAction): void;
+    /** Given a click in the document, determines if the click was inside a combobox. */
     _attemptClose(event: MouseEvent): void;
     /** Toggles the open state of the panel. */
     toggle(): void;
@@ -53,11 +59,13 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContent
     _getTabIndex(): string | null;
     private _setComboboxValue;
     private _setTextContent;
+    private _isTextTrigger;
     private _getOverlayConfig;
     private _getOverlayPositionStrategy;
     private _getOverlayPositions;
     private _getPanelContent;
     private _coerceOpenActionProperty;
     static ngAcceptInputType_openActions: OpenActionInput;
+    static ngAcceptInputType_autoSetText: OpenActionInput;
     static ngAcceptInputType_disabled: BooleanInput;
 }
