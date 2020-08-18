@@ -113,5 +113,7 @@ export declare class CdkContextMenuTrigger implements OnDestroy {
     ngOnDestroy(): void;
     /** Destroy and unset the overlay reference it if exists. */
     private _destroyOverlay;
+    /** Set the menu panels menu stack back to null. */
+    private _resetPanelMenuStack;
     static ngAcceptInputType_disabled: BooleanInput;
 }

@@ -17,7 +17,7 @@ export declare const enum FocusNext {
  */
 export interface MenuStackItem {
     /** A reference to the previous Menus MenuStack instance. */
-    _menuStack: MenuStack;
+    _menuStack: MenuStack | null;
 }
 /**
  * MenuStack allows subscribers to listen for close events (when a MenuStackItem is popped off

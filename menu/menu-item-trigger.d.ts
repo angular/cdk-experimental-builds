@@ -85,6 +85,8 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
     /** Get the menu stack from the parent. */
     private _getMenuStack;
     ngOnDestroy(): void;
+    /** Set the menu panels menu stack back to null. */
+    private _resetPanelMenuStack;
     /** Destroy and unset the overlay reference it if exists */
     private _destroyOverlay;
 }

@@ -1,4 +1,4 @@
-import { InjectionToken, EventEmitter, Directive, ElementRef, ViewContainerRef, Inject, Optional, Input, Output, NgZone, Self, HostListener, ContentChildren, TemplateRef, ɵɵdefineInjectable, Injectable, NgModule } from '@angular/core';
+import { InjectionToken, EventEmitter, isDevMode, Directive, ElementRef, ViewContainerRef, Inject, Optional, Input, Output, NgZone, Self, HostListener, ContentChildren, TemplateRef, ɵɵdefineInjectable, Injectable, NgModule } from '@angular/core';
 import { OverlayConfig, Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW, ENTER, SPACE, TAB, ESCAPE, hasModifierKey } from '@angular/cdk/keycodes';
@@ -19,6 +19,22 @@ import { DOCUMENT } from '@angular/common';
  */
 /** Injection token used to return classes implementing the Menu interface */
 const CDK_MENU = new InjectionToken('cdk-menu');
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * Throws an exception when a menu panel already has a menu stack.
+ * @docs-private
+ */
+function throwExistingMenuStackError() {
+    throw Error('CdkMenuPanel is already referenced by different CdkMenuTrigger. Ensure that a menu is' +
+        ' opened by a single trigger only.');
+}
 
 /**
  * @license
@@ -55,6 +71,13 @@ class CdkMenuItemTrigger {
         return this._menuPanel;
     }
     set menuPanel(panel) {
+        // If the provided panel already has a stack, that means it already has a trigger configured.
+        // Note however that there are some edge cases where two triggers **may** share the same menu,
+        // e.g. two triggers in two separate menus.
+        // TODO refactor once https://github.com/angular/components/pull/20146 lands
+        if (isDevMode() && (panel === null || panel === void 0 ? void 0 : panel._menuStack)) {
+            throwExistingMenuStackError();
+        }
         this._menuPanel = panel;
         if (this._menuPanel) {
             this._menuPanel._menuStack = this._getMenuStack();
@@ -104,7 +127,8 @@ class CdkMenuItemTrigger {
      */
     _toggleOnMouseEnter() {
         const menuStack = this._getMenuStack();
-        if (!menuStack.isEmpty() && !this.isMenuOpen()) {
+        const isSiblingMenuOpen = !(menuStack === null || menuStack === void 0 ? void 0 : menuStack.isEmpty()) && !this.isMenuOpen();
+        if (isSiblingMenuOpen) {
             this._closeSiblingTriggers();
             this.openMenu();
         }
@@ -115,7 +139,7 @@ class CdkMenuItemTrigger {
      * @param event the keyboard event to handle
      */
     _toggleOnKeydown(event) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
         const keyCode = event.keyCode;
         switch (keyCode) {
             case SPACE:
@@ -128,23 +152,23 @@ class CdkMenuItemTrigger {
                 if (this._isParentVertical()) {
                     event.preventDefault();
                     if (((_c = this._directionality) === null || _c === void 0 ? void 0 : _c.value) === 'rtl') {
-                        this._getMenuStack().close(this._parentMenu, 2 /* currentItem */);
+                        (_d = this._getMenuStack()) === null || _d === void 0 ? void 0 : _d.close(this._parentMenu, 2 /* currentItem */);
                     }
                     else {
                         this.openMenu();
-                        (_e = (_d = this.menuPanel) === null || _d === void 0 ? void 0 : _d._menu) === null || _e === void 0 ? void 0 : _e.focusFirstItem('keyboard');
+                        (_f = (_e = this.menuPanel) === null || _e === void 0 ? void 0 : _e._menu) === null || _f === void 0 ? void 0 : _f.focusFirstItem('keyboard');
                     }
                 }
                 break;
             case LEFT_ARROW:
                 if (this._isParentVertical()) {
                     event.preventDefault();
-                    if (((_f = this._directionality) === null || _f === void 0 ? void 0 : _f.value) === 'rtl') {
+                    if (((_g = this._directionality) === null || _g === void 0 ? void 0 : _g.value) === 'rtl') {
                         this.openMenu();
-                        (_h = (_g = this.menuPanel) === null || _g === void 0 ? void 0 : _g._menu) === null || _h === void 0 ? void 0 : _h.focusFirstItem('keyboard');
+                        (_j = (_h = this.menuPanel) === null || _h === void 0 ? void 0 : _h._menu) === null || _j === void 0 ? void 0 : _j.focusFirstItem('keyboard');
                     }
                     else {
-                        this._getMenuStack().close(this._parentMenu, 2 /* currentItem */);
+                        (_k = this._getMenuStack()) === null || _k === void 0 ? void 0 : _k.close(this._parentMenu, 2 /* currentItem */);
                     }
                 }
                 break;
@@ -154,7 +178,7 @@ class CdkMenuItemTrigger {
                     event.preventDefault();
                     this.openMenu();
                     keyCode === DOWN_ARROW
-                        ? (_k = (_j = this.menuPanel) === null || _j === void 0 ? void 0 : _j._menu) === null || _k === void 0 ? void 0 : _k.focusFirstItem('keyboard') : (_m = (_l = this.menuPanel) === null || _l === void 0 ? void 0 : _l._menu) === null || _m === void 0 ? void 0 : _m.focusLastItem('keyboard');
+                        ? (_m = (_l = this.menuPanel) === null || _l === void 0 ? void 0 : _l._menu) === null || _m === void 0 ? void 0 : _m.focusFirstItem('keyboard') : (_p = (_o = this.menuPanel) === null || _o === void 0 ? void 0 : _o._menu) === null || _p === void 0 ? void 0 : _p.focusLastItem('keyboard');
                 }
                 break;
         }
@@ -165,9 +189,9 @@ class CdkMenuItemTrigger {
         // If nothing was removed from the stack and the last element is not the parent item
         // that means that the parent menu is a menu bar since we don't put the menu bar on the
         // stack
-        const isParentMenuBar = !menuStack.closeSubMenuOf(this._parentMenu) && menuStack.peek() !== this._parentMenu;
+        const isParentMenuBar = !(menuStack === null || menuStack === void 0 ? void 0 : menuStack.closeSubMenuOf(this._parentMenu)) && (menuStack === null || menuStack === void 0 ? void 0 : menuStack.peek()) !== this._parentMenu;
         if (isParentMenuBar) {
-            menuStack.closeAll();
+            menuStack === null || menuStack === void 0 ? void 0 : menuStack.closeAll();
         }
     }
     /** Get the configuration object used to create the overlay */
@@ -229,6 +253,19 @@ class CdkMenuItemTrigger {
     }
     ngOnDestroy() {
         this._destroyOverlay();
+        this._resetPanelMenuStack();
+    }
+    /** Set the menu panels menu stack back to null. */
+    _resetPanelMenuStack() {
+        // If a CdkMenuTrigger is placed in a submenu, each time the trigger is rendered (its parent
+        // menu is opened) the panel setter for CdkMenuPanel is called. From the first render onward,
+        // the attached CdkMenuPanel has the MenuStack set. Since we throw an error if a panel already
+        // has a stack set, we want to reset the attached stack here to prevent the error from being
+        // thrown if the trigger re-configures its attached panel (in the case where there is a 1:1
+        // relationship between the panel and trigger).
+        if (this._menuPanel) {
+            this._menuPanel._menuStack = null;
+        }
     }
     /** Destroy and unset the overlay reference it if exists */
     _destroyOverlay() {
@@ -339,11 +376,12 @@ class CdkMenuItem {
      * is not in a menu bar.
      */
     _setTabIndex(event) {
+        var _a;
         if (this.disabled) {
             return;
         }
         // don't set the tabindex if there are no open sibling or parent menus
-        if (!event || (event && !this._getMenuStack().isEmpty())) {
+        if (!event || !((_a = this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.isEmpty())) {
             this._tabindex = 0;
         }
     }
@@ -356,9 +394,10 @@ class CdkMenuItem {
      * on the cdkMenuItemTriggered emitter and close all open menus.
      */
     trigger() {
+        var _a;
         if (!this.disabled && !this.hasMenu()) {
             this.triggered.next();
-            this._getMenuStack().closeAll();
+            (_a = this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.closeAll();
         }
     }
     /** Whether the menu item opens a menu. */
@@ -403,7 +442,7 @@ class CdkMenuItem {
      * @param event the keyboard event to handle
      */
     _onKeydown(event) {
-        var _a, _b;
+        var _a, _b, _c, _d, _e, _f;
         switch (event.keyCode) {
             case SPACE:
             case ENTER:
@@ -414,16 +453,14 @@ class CdkMenuItem {
                 if (this._isParentVertical() && !this.hasMenu()) {
                     event.preventDefault();
                     ((_a = this._dir) === null || _a === void 0 ? void 0 : _a.value) === 'rtl'
-                        ? this._getMenuStack().close(this._parentMenu, 1 /* previousItem */)
-                        : this._getMenuStack().closeAll(0 /* nextItem */);
+                        ? (_b = this._getMenuStack()) === null || _b === void 0 ? void 0 : _b.close(this._parentMenu, 1 /* previousItem */) : (_c = this._getMenuStack()) === null || _c === void 0 ? void 0 : _c.closeAll(0 /* nextItem */);
                 }
                 break;
             case LEFT_ARROW:
                 if (this._isParentVertical() && !this.hasMenu()) {
                     event.preventDefault();
-                    ((_b = this._dir) === null || _b === void 0 ? void 0 : _b.value) === 'rtl'
-                        ? this._getMenuStack().closeAll(0 /* nextItem */)
-                        : this._getMenuStack().close(this._parentMenu, 1 /* previousItem */);
+                    ((_d = this._dir) === null || _d === void 0 ? void 0 : _d.value) === 'rtl'
+                        ? (_e = this._getMenuStack()) === null || _e === void 0 ? void 0 : _e.closeAll(0 /* nextItem */) : (_f = this._getMenuStack()) === null || _f === void 0 ? void 0 : _f.close(this._parentMenu, 1 /* previousItem */);
                 }
                 break;
         }
@@ -434,9 +471,9 @@ class CdkMenuItem {
      */
     _setupMouseEnter() {
         this._ngZone.runOutsideAngular(() => fromEvent(this._elementRef.nativeElement, 'mouseenter')
-            .pipe(filter(() => !this._getMenuStack().isEmpty() && !this.hasMenu()), takeUntil(this._destroyed))
+            .pipe(filter(() => { var _a; return !((_a = this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.isEmpty()) && !this.hasMenu(); }), takeUntil(this._destroyed))
             .subscribe(() => {
-            this._ngZone.run(() => this._getMenuStack().closeSubMenuOf(this._parentMenu));
+            this._ngZone.run(() => { var _a; return (_a = this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.closeSubMenuOf(this._parentMenu); });
         }));
     }
     /** Return true if the enclosing parent menu is configured in a horizontal orientation. */
@@ -610,12 +647,13 @@ class CdkMenuPanel {
      * child Menu component, the child Menu must register its self with the parent MenuPanel.
      */
     _registerMenu(child) {
+        var _a;
         this._menu = child;
         // The ideal solution would be to affect the CdkMenuPanel injector from the CdkMenuTrigger and
         // inject the menu stack reference into the child menu and menu items, however this isn't
         // possible at this time.
         this._menu._menuStack = this._menuStack;
-        this._menuStack.push(child);
+        (_a = this._menuStack) === null || _a === void 0 ? void 0 : _a.push(child);
     }
 }
 CdkMenuPanel.decorators = [
@@ -1448,6 +1486,11 @@ class CdkContextMenuTrigger {
         return this._menuPanel;
     }
     set menuPanel(panel) {
+        // If the provided panel already has a stack, that means it already has a trigger configured
+        // TODO refactor once https://github.com/angular/components/pull/20146 lands
+        if (isDevMode() && panel._menuStack) {
+            throwExistingMenuStackError();
+        }
         this._menuPanel = panel;
         if (this._menuPanel) {
             this._menuPanel._menuStack = this._menuStack;
@@ -1611,6 +1654,7 @@ class CdkContextMenuTrigger {
     }
     ngOnDestroy() {
         this._destroyOverlay();
+        this._resetPanelMenuStack();
         this._destroyed.next();
         this._destroyed.complete();
     }
@@ -1619,6 +1663,18 @@ class CdkContextMenuTrigger {
         if (this._overlayRef) {
             this._overlayRef.dispose();
             this._overlayRef = null;
+        }
+    }
+    /** Set the menu panels menu stack back to null. */
+    _resetPanelMenuStack() {
+        // If a ContextMenuTrigger is placed in a conditionally rendered view, each time the trigger is
+        // rendered the panel setter for ContextMenuTrigger is called. From the first render onward,
+        // the attached CdkMenuPanel has the MenuStack set. Since we throw an error if a panel already
+        // has a stack set, we want to reset the attached stack here to prevent the error from being
+        // thrown if the trigger re-configures its attached panel (in the case where there is a 1:1
+        // relationship between the panel and trigger).
+        if (this._menuPanel) {
+            this._menuPanel._menuStack = null;
         }
     }
 }
