@@ -116,7 +116,7 @@ class ColumnResizeNotifier {
     constructor(_source) {
         this._source = _source;
         /** Emits whenever a column is resized. */
-        this.resizeCompleted = this._source.resizeCompleted.asObservable();
+        this.resizeCompleted = this._source.resizeCompleted;
     }
     /** Instantly resizes the specified column. */
     resize(columnId, size) {

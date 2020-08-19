@@ -695,11 +695,11 @@
         };
         /** Gets an observable that emits when dialog begins opening. */
         DialogRef.prototype.beforeOpened = function () {
-            return this._containerInstance._beforeEnter.asObservable();
+            return this._containerInstance._beforeEnter;
         };
         /** Gets an observable that emits when dialog is finished opening. */
         DialogRef.prototype.afterOpened = function () {
-            return this._containerInstance._afterEnter.asObservable();
+            return this._containerInstance._afterEnter;
         };
         /** Gets an observable that emits when dialog begins closing. */
         DialogRef.prototype.beforeClosed = function () {
