@@ -626,10 +626,10 @@
             this._ngZone = _ngZone;
             /** Emits the final value of this edit instance before closing. */
             this._finalValueSubject = new rxjs.Subject();
-            this.finalValue = this._finalValueSubject.asObservable();
+            this.finalValue = this._finalValueSubject;
             /** Emits when the user tabs out of this edit lens before closing. */
             this._blurredSubject = new rxjs.Subject();
-            this.blurred = this._blurredSubject.asObservable();
+            this.blurred = this._blurredSubject;
             this._editEventDispatcher.setActiveEditRef(this);
         }
         /**
@@ -1127,7 +1127,7 @@
             return _this;
         }
         FocusEscapeNotifier.prototype.escapes = function () {
-            return this._escapeSubject.asObservable();
+            return this._escapeSubject;
         };
         return FocusEscapeNotifier;
     }(i1$1.FocusTrap));

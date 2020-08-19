@@ -293,10 +293,10 @@ class EditRef {
         this._ngZone = _ngZone;
         /** Emits the final value of this edit instance before closing. */
         this._finalValueSubject = new Subject();
-        this.finalValue = this._finalValueSubject.asObservable();
+        this.finalValue = this._finalValueSubject;
         /** Emits when the user tabs out of this edit lens before closing. */
         this._blurredSubject = new Subject();
-        this.blurred = this._blurredSubject.asObservable();
+        this.blurred = this._blurredSubject;
         this._editEventDispatcher.setActiveEditRef(this);
     }
     /**
@@ -790,7 +790,7 @@ class FocusEscapeNotifier extends FocusTrap {
         this.attachAnchors();
     }
     escapes() {
-        return this._escapeSubject.asObservable();
+        return this._escapeSubject;
     }
 }
 /** Factory that allows easy instantiation of focus escape notifiers. */
