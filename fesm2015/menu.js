@@ -1,4 +1,4 @@
-import { InjectionToken, EventEmitter, isDevMode, Directive, ElementRef, ViewContainerRef, Inject, Optional, Input, Output, NgZone, Self, HostListener, ContentChildren, TemplateRef, ɵɵdefineInjectable, Injectable, NgModule } from '@angular/core';
+import { InjectionToken, EventEmitter, Directive, ElementRef, ViewContainerRef, Inject, Optional, Input, Output, NgZone, Self, HostListener, ContentChildren, TemplateRef, ɵɵdefineInjectable, Injectable, NgModule } from '@angular/core';
 import { OverlayConfig, Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW, ENTER, SPACE, TAB, ESCAPE, hasModifierKey } from '@angular/cdk/keycodes';
@@ -74,8 +74,7 @@ class CdkMenuItemTrigger {
         // If the provided panel already has a stack, that means it already has a trigger configured.
         // Note however that there are some edge cases where two triggers **may** share the same menu,
         // e.g. two triggers in two separate menus.
-        // TODO refactor once https://github.com/angular/components/pull/20146 lands
-        if (isDevMode() && (panel === null || panel === void 0 ? void 0 : panel._menuStack)) {
+        if ((typeof ngDevMode === 'undefined' || ngDevMode) && (panel === null || panel === void 0 ? void 0 : panel._menuStack)) {
             throwExistingMenuStackError();
         }
         this._menuPanel = panel;
@@ -1486,9 +1485,7 @@ class CdkContextMenuTrigger {
         return this._menuPanel;
     }
     set menuPanel(panel) {
-        // If the provided panel already has a stack, that means it already has a trigger configured
-        // TODO refactor once https://github.com/angular/components/pull/20146 lands
-        if (isDevMode() && panel._menuStack) {
+        if ((typeof ngDevMode === 'undefined' || ngDevMode) && panel._menuStack) {
             throwExistingMenuStackError();
         }
         this._menuPanel = panel;

@@ -65,8 +65,10 @@
             /** @docs-private Implemented as part of VirtualScrollStrategy. */
             this.scrolledIndexChange = new rxjs.Observable(function () {
                 // TODO(mmalerba): Implement.
-                throw Error('cdk-virtual-scroll: scrolledIndexChange is currently not supported for the' +
-                    ' autosize scroll strategy');
+                if (typeof ngDevMode === 'undefined' || ngDevMode) {
+                    throw Error('cdk-virtual-scroll: scrolledIndexChange is currently not supported for the' +
+                        ' autosize scroll strategy');
+                }
             });
             /** The attached viewport. */
             this._viewport = null;
@@ -120,9 +122,11 @@
         };
         /** Scroll to the offset for the given index. */
         AutoSizeVirtualScrollStrategy.prototype.scrollToIndex = function () {
-            // TODO(mmalerba): Implement.
-            throw Error('cdk-virtual-scroll: scrollToIndex is currently not supported for the autosize'
-                + ' scroll strategy');
+            if (typeof ngDevMode === 'undefined' || ngDevMode) {
+                // TODO(mmalerba): Implement.
+                throw Error('cdk-virtual-scroll: scrollToIndex is currently not supported for the autosize'
+                    + ' scroll strategy');
+            }
         };
         /**
          * Update the buffer parameters.

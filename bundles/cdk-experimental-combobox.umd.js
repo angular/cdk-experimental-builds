@@ -216,7 +216,8 @@
         };
         CdkCombobox.prototype._coerceOpenActionProperty = function (input) {
             var actions = typeof input === 'string' ? input.trim().split(/[ ,]+/) : input;
-            if (core.isDevMode() && actions.some(function (a) { return allowedOpenActions.indexOf(a) === -1; })) {
+            if ((typeof ngDevMode === 'undefined' || ngDevMode) &&
+                actions.some(function (a) { return allowedOpenActions.indexOf(a) === -1; })) {
                 throw Error(input + " is not a support open action for CdkCombobox");
             }
             return actions;

@@ -1,6 +1,6 @@
 import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion';
 import { isDataSource } from '@angular/cdk/collections';
-import { isDevMode, EventEmitter, Directive, Input, Output, Optional, Inject, Self, Component, ChangeDetectionStrategy, ViewEncapsulation, ViewChild, NgModule } from '@angular/core';
+import { EventEmitter, Directive, Input, Output, Optional, Inject, Self, Component, ChangeDetectionStrategy, ViewEncapsulation, ViewChild, NgModule } from '@angular/core';
 import { Subject, Observable, of } from 'rxjs';
 import { takeUntil, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -32,7 +32,7 @@ class SelectionSet {
         return this._selectionMap.has(this._getTrackedByValue(value));
     }
     select(...selects) {
-        if (!this._multiple && selects.length > 1 && isDevMode()) {
+        if (!this._multiple && selects.length > 1 && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('SelectionSet: not multiple selection');
         }
         const before = this._getCurrentSelection();
@@ -51,7 +51,7 @@ class SelectionSet {
         this.changed.next({ before, after });
     }
     deselect(...selects) {
-        if (!this._multiple && selects.length > 1 && isDevMode()) {
+        if (!this._multiple && selects.length > 1 && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('SelectionSet: not multiple selection');
         }
         const before = this._getCurrentSelection();
@@ -76,7 +76,7 @@ class SelectionSet {
         if (!this._trackByFn) {
             return select.value;
         }
-        if (select.index == null && isDevMode()) {
+        if (select.index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('SelectionSet: index required when trackByFn is used.');
         }
         return this._trackByFn(select.index, select.value);
@@ -147,7 +147,7 @@ class CdkSelection {
         else if (Array.isArray(this._dataSource)) {
             dataStream = of(this._dataSource);
         }
-        if (dataStream == null && isDevMode()) {
+        if (dataStream == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('Unknown data source');
         }
         this._renderChangeSubscription =
@@ -176,7 +176,7 @@ class CdkSelection {
     }
     /** Toggles selection for a given value. `index` is required if `trackBy` is used. */
     toggleSelection(value, index) {
-        if (this.trackByFn && index == null && isDevMode()) {
+        if (this.trackByFn && index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('CdkSelection: index required when trackBy is used');
         }
         if (this.isSelected(value, index)) {
@@ -191,7 +191,7 @@ class CdkSelection {
      * values are selected, de-select all values.
      */
     toggleSelectAll() {
-        if (!this._multiple && isDevMode()) {
+        if (!this._multiple && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('CdkSelection: multiple selection not enabled');
         }
         if (this.selectAllState === 'none') {
@@ -203,7 +203,7 @@ class CdkSelection {
     }
     /** Checks whether a value is selected. `index` is required if `trackBy` is used. */
     isSelected(value, index) {
-        if (this.trackByFn && index == null && isDevMode()) {
+        if (this.trackByFn && index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('CdkSelection: index required when trackBy is used');
         }
         return this._selection.isSelected({ value, index });
@@ -324,10 +324,10 @@ class CdkSelectAll {
         }
     }
     _assertValidParentSelection() {
-        if (!this._selection && isDevMode()) {
+        if (!this._selection && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('CdkSelectAll: missing CdkSelection in the parent');
         }
-        if (!this._selection.multiple && isDevMode()) {
+        if (!this._selection.multiple && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('CdkSelectAll: CdkSelection must have cdkSelectionMultiple set to true');
         }
     }
@@ -388,7 +388,7 @@ class CdkSelectionToggle {
         this._destroyed.complete();
     }
     _assertValidParentSelection() {
-        if (!this._selection && isDevMode()) {
+        if (!this._selection && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('CdkSelectAll: missing CdkSelection in the parent');
         }
     }
@@ -450,7 +450,7 @@ class CdkSelectionColumn {
         this._syncColumnDefName();
     }
     ngOnInit() {
-        if (!this.selection && isDevMode()) {
+        if (!this.selection && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('CdkSelectionColumn: missing CdkSelection in the parent');
         }
         this._syncColumnDefName();
@@ -459,10 +459,8 @@ class CdkSelectionColumn {
             this._columnDef.headerCell = this._headerCell;
             this._table.addColumnDef(this._columnDef);
         }
-        else {
-            if (isDevMode()) {
-                throw Error('CdkSelectionColumn: missing parent table');
-            }
+        else if ((typeof ngDevMode === 'undefined' || ngDevMode)) {
+            throw Error('CdkSelectionColumn: missing parent table');
         }
     }
     ngOnDestroy() {

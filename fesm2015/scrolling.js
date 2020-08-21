@@ -61,8 +61,10 @@ class AutoSizeVirtualScrollStrategy {
         /** @docs-private Implemented as part of VirtualScrollStrategy. */
         this.scrolledIndexChange = new Observable(() => {
             // TODO(mmalerba): Implement.
-            throw Error('cdk-virtual-scroll: scrolledIndexChange is currently not supported for the' +
-                ' autosize scroll strategy');
+            if (typeof ngDevMode === 'undefined' || ngDevMode) {
+                throw Error('cdk-virtual-scroll: scrolledIndexChange is currently not supported for the' +
+                    ' autosize scroll strategy');
+            }
         });
         /** The attached viewport. */
         this._viewport = null;
@@ -116,9 +118,11 @@ class AutoSizeVirtualScrollStrategy {
     }
     /** Scroll to the offset for the given index. */
     scrollToIndex() {
-        // TODO(mmalerba): Implement.
-        throw Error('cdk-virtual-scroll: scrollToIndex is currently not supported for the autosize'
-            + ' scroll strategy');
+        if (typeof ngDevMode === 'undefined' || ngDevMode) {
+            // TODO(mmalerba): Implement.
+            throw Error('cdk-virtual-scroll: scrollToIndex is currently not supported for the autosize'
+                + ' scroll strategy');
+        }
     }
     /**
      * Update the buffer parameters.

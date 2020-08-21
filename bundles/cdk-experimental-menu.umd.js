@@ -370,8 +370,7 @@
                 // If the provided panel already has a stack, that means it already has a trigger configured.
                 // Note however that there are some edge cases where two triggers **may** share the same menu,
                 // e.g. two triggers in two separate menus.
-                // TODO refactor once https://github.com/angular/components/pull/20146 lands
-                if (i0.isDevMode() && (panel === null || panel === void 0 ? void 0 : panel._menuStack)) {
+                if ((typeof ngDevMode === 'undefined' || ngDevMode) && (panel === null || panel === void 0 ? void 0 : panel._menuStack)) {
                     throwExistingMenuStackError();
                 }
                 this._menuPanel = panel;
@@ -1801,9 +1800,7 @@
                 return this._menuPanel;
             },
             set: function (panel) {
-                // If the provided panel already has a stack, that means it already has a trigger configured
-                // TODO refactor once https://github.com/angular/components/pull/20146 lands
-                if (i0.isDevMode() && panel._menuStack) {
+                if ((typeof ngDevMode === 'undefined' || ngDevMode) && panel._menuStack) {
                     throwExistingMenuStackError();
                 }
                 this._menuPanel = panel;

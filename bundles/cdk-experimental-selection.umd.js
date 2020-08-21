@@ -329,7 +329,7 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 selects[_i] = arguments[_i];
             }
-            if (!this._multiple && selects.length > 1 && core.isDevMode()) {
+            if (!this._multiple && selects.length > 1 && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('SelectionSet: not multiple selection');
             }
             var before = this._getCurrentSelection();
@@ -363,7 +363,7 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 selects[_i] = arguments[_i];
             }
-            if (!this._multiple && selects.length > 1 && core.isDevMode()) {
+            if (!this._multiple && selects.length > 1 && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('SelectionSet: not multiple selection');
             }
             var before = this._getCurrentSelection();
@@ -398,7 +398,7 @@
             if (!this._trackByFn) {
                 return select.value;
             }
-            if (select.index == null && core.isDevMode()) {
+            if (select.index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('SelectionSet: index required when trackByFn is used.');
             }
             return this._trackByFn(select.index, select.value);
@@ -472,7 +472,7 @@
             else if (Array.isArray(this._dataSource)) {
                 dataStream = rxjs.of(this._dataSource);
             }
-            if (dataStream == null && core.isDevMode()) {
+            if (dataStream == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('Unknown data source');
             }
             this._renderChangeSubscription =
@@ -502,7 +502,7 @@
         };
         /** Toggles selection for a given value. `index` is required if `trackBy` is used. */
         CdkSelection.prototype.toggleSelection = function (value, index) {
-            if (this.trackByFn && index == null && core.isDevMode()) {
+            if (this.trackByFn && index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('CdkSelection: index required when trackBy is used');
             }
             if (this.isSelected(value, index)) {
@@ -517,7 +517,7 @@
          * values are selected, de-select all values.
          */
         CdkSelection.prototype.toggleSelectAll = function () {
-            if (!this._multiple && core.isDevMode()) {
+            if (!this._multiple && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('CdkSelection: multiple selection not enabled');
             }
             if (this.selectAllState === 'none') {
@@ -529,7 +529,7 @@
         };
         /** Checks whether a value is selected. `index` is required if `trackBy` is used. */
         CdkSelection.prototype.isSelected = function (value, index) {
-            if (this.trackByFn && index == null && core.isDevMode()) {
+            if (this.trackByFn && index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('CdkSelection: index required when trackBy is used');
             }
             return this._selection.isSelected({ value: value, index: index });
@@ -658,10 +658,10 @@
             }
         };
         CdkSelectAll.prototype._assertValidParentSelection = function () {
-            if (!this._selection && core.isDevMode()) {
+            if (!this._selection && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('CdkSelectAll: missing CdkSelection in the parent');
             }
-            if (!this._selection.multiple && core.isDevMode()) {
+            if (!this._selection.multiple && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('CdkSelectAll: CdkSelection must have cdkSelectionMultiple set to true');
             }
         };
@@ -728,7 +728,7 @@
             this._destroyed.complete();
         };
         CdkSelectionToggle.prototype._assertValidParentSelection = function () {
-            if (!this._selection && core.isDevMode()) {
+            if (!this._selection && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('CdkSelectAll: missing CdkSelection in the parent');
             }
         };
@@ -796,7 +796,7 @@
             configurable: true
         });
         CdkSelectionColumn.prototype.ngOnInit = function () {
-            if (!this.selection && core.isDevMode()) {
+            if (!this.selection && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('CdkSelectionColumn: missing CdkSelection in the parent');
             }
             this._syncColumnDefName();
@@ -805,10 +805,8 @@
                 this._columnDef.headerCell = this._headerCell;
                 this._table.addColumnDef(this._columnDef);
             }
-            else {
-                if (core.isDevMode()) {
-                    throw Error('CdkSelectionColumn: missing parent table');
-                }
+            else if ((typeof ngDevMode === 'undefined' || ngDevMode)) {
+                throw Error('CdkSelectionColumn: missing parent table');
             }
         };
         CdkSelectionColumn.prototype.ngOnDestroy = function () {

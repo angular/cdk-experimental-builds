@@ -1,4 +1,4 @@
-import { EventEmitter, isDevMode, Directive, ElementRef, ViewContainerRef, Optional, Input, Output, TemplateRef, InjectionToken, Inject, NgModule } from '@angular/core';
+import { EventEmitter, Directive, ElementRef, ViewContainerRef, Optional, Input, Output, TemplateRef, InjectionToken, Inject, NgModule } from '@angular/core';
 import { OverlayConfig, Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Directionality } from '@angular/cdk/bidi';
@@ -201,7 +201,8 @@ class CdkCombobox {
     }
     _coerceOpenActionProperty(input) {
         let actions = typeof input === 'string' ? input.trim().split(/[ ,]+/) : input;
-        if (isDevMode() && actions.some(a => allowedOpenActions.indexOf(a) === -1)) {
+        if ((typeof ngDevMode === 'undefined' || ngDevMode) &&
+            actions.some(a => allowedOpenActions.indexOf(a) === -1)) {
             throw Error(`${input} is not a support open action for CdkCombobox`);
         }
         return actions;

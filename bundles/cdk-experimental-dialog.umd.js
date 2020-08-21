@@ -386,7 +386,7 @@
              * @breaking-change 10.0.0
              */
             _this.attachDomPortal = function (portal) {
-                if (_this._portalHost.hasAttached()) {
+                if (_this._portalHost.hasAttached() && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                     throwDialogContentAlreadyAttachedError();
                 }
                 return _this._portalHost.attachDomPortal(portal);
@@ -455,7 +455,7 @@
          * @param portal Portal to be attached as the dialog content.
          */
         CdkDialogContainer.prototype.attachComponentPortal = function (portal) {
-            if (this._portalHost.hasAttached()) {
+            if (this._portalHost.hasAttached() && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throwDialogContentAlreadyAttachedError();
             }
             return this._portalHost.attachComponentPortal(portal);
@@ -465,7 +465,7 @@
          * @param portal Portal to be attached as the dialog content.
          */
         CdkDialogContainer.prototype.attachTemplatePortal = function (portal) {
-            if (this._portalHost.hasAttached()) {
+            if (this._portalHost.hasAttached() && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throwDialogContentAlreadyAttachedError();
             }
             return this._portalHost.attachTemplatePortal(portal);
@@ -807,7 +807,7 @@
         /** Opens a dialog from a component. */
         Dialog.prototype.openFromComponent = function (component, config) {
             config = this._applyConfigDefaults(config);
-            if (config.id && this.getById(config.id)) {
+            if (config.id && this.getById(config.id) && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error("Dialog with id \"" + config.id + "\" exists already. The dialog id must be unique.");
             }
             var overlayRef = this._createOverlay(config);
@@ -820,7 +820,7 @@
         /** Opens a dialog from a template. */
         Dialog.prototype.openFromTemplate = function (template, config) {
             config = this._applyConfigDefaults(config);
-            if (config.id && this.getById(config.id)) {
+            if (config.id && this.getById(config.id) && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error("Dialog with id \"" + config.id + "\" exists already. The dialog id must be unique.");
             }
             var overlayRef = this._createOverlay(config);
