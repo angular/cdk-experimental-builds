@@ -1,6 +1,6 @@
 import { forwardRef, InjectionToken, EventEmitter, Directive, ElementRef, Inject, Input, Output, Optional, ContentChildren, NgModule } from '@angular/core';
 import { ActiveDescendantKeyManager } from '@angular/cdk/a11y';
-import { HOME, END, SPACE, ENTER, UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW } from '@angular/cdk/keycodes';
+import { SPACE, ENTER, UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW } from '@angular/cdk/keycodes';
 import { coerceBooleanProperty, coerceArray } from '@angular/cdk/coercion';
 import { SelectionModel } from '@angular/cdk/collections';
 import { defer, merge, Subject } from 'rxjs';
@@ -253,6 +253,7 @@ class CdkListbox {
         this._listKeyManager = new ActiveDescendantKeyManager(this._options)
             .withWrap()
             .withTypeAhead()
+            .withHomeAndEnd()
             .withAllowedModifierKeys(['shiftKey']);
         if (this.orientation === 'vertical') {
             this._listKeyManager.withVerticalOrientation();
@@ -282,11 +283,7 @@ class CdkListbox {
         const manager = this._listKeyManager;
         const { keyCode } = event;
         const previousActiveIndex = manager.activeItemIndex;
-        if (keyCode === HOME || keyCode === END) {
-            event.preventDefault();
-            keyCode === HOME ? manager.setFirstItemActive() : manager.setLastItemActive();
-        }
-        else if (keyCode === SPACE || keyCode === ENTER) {
+        if (keyCode === SPACE || keyCode === ENTER) {
             if (manager.activeItem && !manager.isTyping()) {
                 this._toggleActiveOption();
             }

@@ -586,6 +586,7 @@
             this._listKeyManager = new a11y.ActiveDescendantKeyManager(this._options)
                 .withWrap()
                 .withTypeAhead()
+                .withHomeAndEnd()
                 .withAllowedModifierKeys(['shiftKey']);
             if (this.orientation === 'vertical') {
                 this._listKeyManager.withVerticalOrientation();
@@ -636,11 +637,7 @@
             var manager = this._listKeyManager;
             var keyCode = event.keyCode;
             var previousActiveIndex = manager.activeItemIndex;
-            if (keyCode === keycodes.HOME || keyCode === keycodes.END) {
-                event.preventDefault();
-                keyCode === keycodes.HOME ? manager.setFirstItemActive() : manager.setLastItemActive();
-            }
-            else if (keyCode === keycodes.SPACE || keyCode === keycodes.ENTER) {
+            if (keyCode === keycodes.SPACE || keyCode === keycodes.ENTER) {
                 if (manager.activeItem && !manager.isTyping()) {
                     this._toggleActiveOption();
                 }
