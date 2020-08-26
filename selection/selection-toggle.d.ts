@@ -28,7 +28,7 @@ export declare class CdkSelectionToggle<T> implements OnDestroy, OnInit {
     /** The index of the value in the list. Required when used with `trackBy` */
     get index(): number | undefined;
     set index(index: number | undefined);
-    private _index?;
+    protected _index?: number;
     /** The checked state of the selection toggle */
     readonly checked: Observable<boolean>;
     /** Toggles the selection */

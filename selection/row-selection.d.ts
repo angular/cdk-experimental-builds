@@ -19,7 +19,7 @@ export declare class CdkRowSelection<T> {
     value: T;
     get index(): number | undefined;
     set index(index: number | undefined);
-    private _index?;
+    protected _index?: number;
     constructor(_selection: CdkSelection<T>);
     static ngAcceptInputType_index: NumberInput;
 }
