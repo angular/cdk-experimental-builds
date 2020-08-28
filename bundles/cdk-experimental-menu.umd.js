@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/bidi'), require('rxjs/operators'), require('rxjs'), require('@angular/cdk/collections'), require('@angular/cdk/coercion'), require('@angular/cdk/portal'), require('@angular/common')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/bidi', 'rxjs/operators', 'rxjs', '@angular/cdk/collections', '@angular/cdk/coercion', '@angular/cdk/portal', '@angular/common'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.rxjs.operators, global.rxjs, global.ng.cdk.collections, global.ng.cdk.coercion, global.ng.cdk.portal, global.ng.common));
-}(this, (function (exports, i0, overlay, a11y, keycodes, bidi, operators, rxjs, collections, coercion, portal, common) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/bidi'), require('rxjs/operators'), require('rxjs'), require('@angular/cdk/collections'), require('@angular/cdk/coercion'), require('@angular/cdk/portal')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/bidi', 'rxjs/operators', 'rxjs', '@angular/cdk/collections', '@angular/cdk/coercion', '@angular/cdk/portal'], factory) :
+    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.rxjs.operators, global.rxjs, global.ng.cdk.collections, global.ng.cdk.coercion, global.ng.cdk.portal));
+}(this, (function (exports, i0, overlay, a11y, keycodes, bidi, operators, rxjs, collections, coercion, portal) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -316,6 +316,110 @@
     var CDK_MENU = new i0.InjectionToken('cdk-menu');
 
     /**
+     * MenuStack allows subscribers to listen for close events (when a MenuStackItem is popped off
+     * of the stack) in order to perform closing actions. Upon the MenuStack being empty it emits
+     * from the `empty` observable specifying the next focus action which the listener should perform
+     * as requested by the closer.
+     */
+    var MenuStack = /** @class */ (function () {
+        function MenuStack() {
+            /** All MenuStackItems tracked by this MenuStack. */
+            this._elements = [];
+            /** Emits the element which was popped off of the stack when requested by a closer. */
+            this._close = new rxjs.Subject();
+            /** Emits once the MenuStack has become empty after popping off elements. */
+            this._empty = new rxjs.Subject();
+            /** Observable which emits the MenuStackItem which has been requested to close. */
+            this.closed = this._close;
+            /**
+             * Observable which emits when the MenuStack is empty after popping off the last element. It
+             * emits a FocusNext event which specifies the action the closer has requested the listener
+             * perform.
+             */
+            this.emptied = this._empty;
+        }
+        /** @param menu the MenuStackItem to put on the stack. */
+        MenuStack.prototype.push = function (menu) {
+            this._elements.push(menu);
+        };
+        /**
+         * Pop items off of the stack up to and including `lastItem` and emit each on the close
+         * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
+         * @param lastItem the last item to pop off the stack.
+         * @param focusNext the event to emit on the `empty` observable if the method call resulted in an
+         * empty stack. Does not emit if the stack was initially empty or if `lastItem` was not on the
+         * stack.
+         */
+        MenuStack.prototype.close = function (lastItem, focusNext) {
+            if (this._elements.indexOf(lastItem) >= 0) {
+                var poppedElement = void 0;
+                do {
+                    poppedElement = this._elements.pop();
+                    this._close.next(poppedElement);
+                } while (poppedElement !== lastItem);
+                if (this.isEmpty()) {
+                    this._empty.next(focusNext);
+                }
+            }
+        };
+        /**
+         * Pop items off of the stack up to but excluding `lastItem` and emit each on the close
+         * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
+         * @param lastItem the element which should be left on the stack
+         * @return whether or not an item was removed from the stack
+         */
+        MenuStack.prototype.closeSubMenuOf = function (lastItem) {
+            var removed = false;
+            if (this._elements.indexOf(lastItem) >= 0) {
+                removed = this.peek() !== lastItem;
+                while (this.peek() !== lastItem) {
+                    this._close.next(this._elements.pop());
+                }
+            }
+            return removed;
+        };
+        /**
+         * Pop off all MenuStackItems and emit each one on the `close` observable one by one.
+         * @param focusNext the event to emit on the `empty` observable once the stack is emptied. Does
+         * not emit if the stack was initially empty.
+         */
+        MenuStack.prototype.closeAll = function (focusNext) {
+            if (!this.isEmpty()) {
+                while (!this.isEmpty()) {
+                    var menuStackItem = this._elements.pop();
+                    if (menuStackItem) {
+                        this._close.next(menuStackItem);
+                    }
+                }
+                this._empty.next(focusNext);
+            }
+        };
+        /** Return true if this stack is empty. */
+        MenuStack.prototype.isEmpty = function () {
+            return !this._elements.length;
+        };
+        /** Return the length of the stack. */
+        MenuStack.prototype.length = function () {
+            return this._elements.length;
+        };
+        /** Get the top most element on the stack. */
+        MenuStack.prototype.peek = function () {
+            return this._elements[this._elements.length - 1];
+        };
+        return MenuStack;
+    }());
+    /** NoopMenuStack is a placeholder MenuStack used for inline menus. */
+    var NoopMenuStack = /** @class */ (function (_super) {
+        __extends(NoopMenuStack, _super);
+        function NoopMenuStack() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        /** Noop push - does not add elements to the MenuStack. */
+        NoopMenuStack.prototype.push = function (_) { };
+        return NoopMenuStack;
+    }(MenuStack));
+
+    /**
      * @license
      * Copyright Google LLC All Rights Reserved.
      *
@@ -339,6 +443,21 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
+     * Whether the target element is a menu item to be ignored by the overlay background click handler.
+     */
+    function isClickInsideMenuOverlay(target) {
+        while (target === null || target === void 0 ? void 0 : target.parentElement) {
+            var isOpenTrigger = target.getAttribute('aria-expanded') === 'true' &&
+                target.classList.contains('cdk-menu-trigger');
+            var isOverlayMenu = target.classList.contains('cdk-menu') && !target.classList.contains('cdk-menu-inline');
+            if (isOpenTrigger || isOverlayMenu) {
+                return true;
+            }
+            target = target.parentElement;
+        }
+        return false;
+    }
+    /**
      * A directive to be combined with CdkMenuItem which opens the Menu it is bound to. If the
      * element is in a top level MenuBar it will open the menu on click, or if a sibling is already
      * opened it will open on hover. If it is inside of a Menu it will open the attached Submenu on
@@ -358,8 +477,15 @@
             this.opened = new i0.EventEmitter();
             /** Emits when the attached menu is requested to close */
             this.closed = new i0.EventEmitter();
+            /** The menu stack for this trigger and its sub-menus. */
+            this._menuStack = new MenuStack();
             /** A reference to the overlay which manages the triggered menu */
             this._overlayRef = null;
+            /** Emits when this trigger is destroyed. */
+            this._destroyed = new rxjs.Subject();
+            /** Emits when the outside pointer events listener on the overlay should be stopped. */
+            this._stopOutsideClicksListener = rxjs.merge(this.closed, this._destroyed);
+            this._registerCloseHandler();
         }
         Object.defineProperty(CdkMenuItemTrigger.prototype, "menuPanel", {
             /** Template reference variable to the menu this trigger opens */
@@ -393,6 +519,7 @@
                 this.opened.next();
                 this._overlayRef = this._overlayRef || this._overlay.create(this._getOverlayConfig());
                 this._overlayRef.attach(this._getPortal());
+                this._subscribeToOutsideClicks();
             }
         };
         /** Close the opened menu. */
@@ -425,7 +552,7 @@
          */
         CdkMenuItemTrigger.prototype._toggleOnMouseEnter = function () {
             var menuStack = this._getMenuStack();
-            var isSiblingMenuOpen = !(menuStack === null || menuStack === void 0 ? void 0 : menuStack.isEmpty()) && !this.isMenuOpen();
+            var isSiblingMenuOpen = !menuStack.isEmpty() && !this.isMenuOpen();
             if (isSiblingMenuOpen) {
                 this._closeSiblingTriggers();
                 this.openMenu();
@@ -437,7 +564,7 @@
          * @param event the keyboard event to handle
          */
         CdkMenuItemTrigger.prototype._toggleOnKeydown = function (event) {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
             var keyCode = event.keyCode;
             switch (keyCode) {
                 case keycodes.SPACE:
@@ -447,26 +574,26 @@
                     (_b = (_a = this.menuPanel) === null || _a === void 0 ? void 0 : _a._menu) === null || _b === void 0 ? void 0 : _b.focusFirstItem('keyboard');
                     break;
                 case keycodes.RIGHT_ARROW:
-                    if (this._isParentVertical()) {
+                    if (this._parentMenu && this._isParentVertical()) {
                         event.preventDefault();
                         if (((_c = this._directionality) === null || _c === void 0 ? void 0 : _c.value) === 'rtl') {
-                            (_d = this._getMenuStack()) === null || _d === void 0 ? void 0 : _d.close(this._parentMenu, 2 /* currentItem */);
+                            this._getMenuStack().close(this._parentMenu, 2 /* currentItem */);
                         }
                         else {
                             this.openMenu();
-                            (_f = (_e = this.menuPanel) === null || _e === void 0 ? void 0 : _e._menu) === null || _f === void 0 ? void 0 : _f.focusFirstItem('keyboard');
+                            (_e = (_d = this.menuPanel) === null || _d === void 0 ? void 0 : _d._menu) === null || _e === void 0 ? void 0 : _e.focusFirstItem('keyboard');
                         }
                     }
                     break;
                 case keycodes.LEFT_ARROW:
-                    if (this._isParentVertical()) {
+                    if (this._parentMenu && this._isParentVertical()) {
                         event.preventDefault();
-                        if (((_g = this._directionality) === null || _g === void 0 ? void 0 : _g.value) === 'rtl') {
+                        if (((_f = this._directionality) === null || _f === void 0 ? void 0 : _f.value) === 'rtl') {
                             this.openMenu();
-                            (_j = (_h = this.menuPanel) === null || _h === void 0 ? void 0 : _h._menu) === null || _j === void 0 ? void 0 : _j.focusFirstItem('keyboard');
+                            (_h = (_g = this.menuPanel) === null || _g === void 0 ? void 0 : _g._menu) === null || _h === void 0 ? void 0 : _h.focusFirstItem('keyboard');
                         }
                         else {
-                            (_k = this._getMenuStack()) === null || _k === void 0 ? void 0 : _k.close(this._parentMenu, 2 /* currentItem */);
+                            this._getMenuStack().close(this._parentMenu, 2 /* currentItem */);
                         }
                     }
                     break;
@@ -476,20 +603,25 @@
                         event.preventDefault();
                         this.openMenu();
                         keyCode === keycodes.DOWN_ARROW
-                            ? (_m = (_l = this.menuPanel) === null || _l === void 0 ? void 0 : _l._menu) === null || _m === void 0 ? void 0 : _m.focusFirstItem('keyboard') : (_p = (_o = this.menuPanel) === null || _o === void 0 ? void 0 : _o._menu) === null || _p === void 0 ? void 0 : _p.focusLastItem('keyboard');
+                            ? (_k = (_j = this.menuPanel) === null || _j === void 0 ? void 0 : _j._menu) === null || _k === void 0 ? void 0 : _k.focusFirstItem('keyboard') : (_m = (_l = this.menuPanel) === null || _l === void 0 ? void 0 : _l._menu) === null || _m === void 0 ? void 0 : _m.focusLastItem('keyboard');
                     }
                     break;
             }
         };
         /** Close out any sibling menu trigger menus. */
         CdkMenuItemTrigger.prototype._closeSiblingTriggers = function () {
-            var menuStack = this._getMenuStack();
-            // If nothing was removed from the stack and the last element is not the parent item
-            // that means that the parent menu is a menu bar since we don't put the menu bar on the
-            // stack
-            var isParentMenuBar = !(menuStack === null || menuStack === void 0 ? void 0 : menuStack.closeSubMenuOf(this._parentMenu)) && (menuStack === null || menuStack === void 0 ? void 0 : menuStack.peek()) !== this._parentMenu;
-            if (isParentMenuBar) {
-                menuStack === null || menuStack === void 0 ? void 0 : menuStack.closeAll();
+            if (this._parentMenu) {
+                var menuStack = this._getMenuStack();
+                // If nothing was removed from the stack and the last element is not the parent item
+                // that means that the parent menu is a menu bar since we don't put the menu bar on the
+                // stack
+                var isParentMenuBar = !menuStack.closeSubMenuOf(this._parentMenu) && menuStack.peek() !== this._parentMenu;
+                if (isParentMenuBar) {
+                    menuStack.closeAll();
+                }
+            }
+            else {
+                this._getMenuStack().closeAll();
             }
         };
         /** Get the configuration object used to create the overlay */
@@ -510,7 +642,7 @@
         /** Determine and return where to position the opened menu relative to the menu item */
         CdkMenuItemTrigger.prototype._getOverlayPositions = function () {
             // TODO: use a common positioning config from (possibly) cdk/overlay
-            return this._parentMenu.orientation === 'horizontal'
+            return !this._parentMenu || this._parentMenu.orientation === 'horizontal'
                 ? [
                     { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top' },
                     { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom' },
@@ -540,18 +672,37 @@
          * @return true if if the enclosing parent menu is configured in a vertical orientation.
          */
         CdkMenuItemTrigger.prototype._isParentVertical = function () {
-            return this._parentMenu.orientation === 'vertical';
+            var _a;
+            return ((_a = this._parentMenu) === null || _a === void 0 ? void 0 : _a.orientation) === 'vertical';
         };
-        /** Get the menu stack from the parent. */
+        /**
+         * Subscribe to the MenuStack close events if this is a standalone trigger and close out the menu
+         * this triggers when requested.
+         */
+        CdkMenuItemTrigger.prototype._registerCloseHandler = function () {
+            var _this = this;
+            if (!this._parentMenu) {
+                this._menuStack.closed.pipe(operators.takeUntil(this._destroyed)).subscribe(function (item) {
+                    var _a;
+                    if (item === ((_a = _this._menuPanel) === null || _a === void 0 ? void 0 : _a._menu)) {
+                        _this.closeMenu();
+                    }
+                });
+            }
+        };
+        /** Get the menu stack for this trigger - either from the parent or this trigger. */
         CdkMenuItemTrigger.prototype._getMenuStack = function () {
+            var _a;
             // We use a function since at the construction of the MenuItemTrigger the parent Menu won't have
             // its menu stack set. Therefore we need to reference the menu stack from the parent each time
             // we want to use it.
-            return this._parentMenu._menuStack;
+            return ((_a = this._parentMenu) === null || _a === void 0 ? void 0 : _a._menuStack) || this._menuStack;
         };
         CdkMenuItemTrigger.prototype.ngOnDestroy = function () {
             this._destroyOverlay();
             this._resetPanelMenuStack();
+            this._destroyed.next();
+            this._destroyed.complete();
         };
         /** Set the menu panels menu stack back to null. */
         CdkMenuItemTrigger.prototype._resetPanelMenuStack = function () {
@@ -563,6 +714,23 @@
             // relationship between the panel and trigger).
             if (this._menuPanel) {
                 this._menuPanel._menuStack = null;
+            }
+        };
+        /**
+         * Subscribe to the overlays outside pointer events stream and handle closing out the stack if a
+         * click occurs outside the menus.
+         */
+        CdkMenuItemTrigger.prototype._subscribeToOutsideClicks = function () {
+            var _this = this;
+            if (this._overlayRef) {
+                this._overlayRef
+                    .outsidePointerEvents()
+                    .pipe(operators.takeUntil(this._stopOutsideClicksListener))
+                    .subscribe(function (event) {
+                    if (!isClickInsideMenuOverlay(event.target)) {
+                        _this._getMenuStack().closeAll();
+                    }
+                });
             }
         };
         /** Destroy and unset the overlay reference it if exists */
@@ -582,7 +750,7 @@
                         '(keydown)': '_toggleOnKeydown($event)',
                         '(mouseenter)': '_toggleOnMouseEnter()',
                         '(click)': 'toggle()',
-                        'tabindex': '-1',
+                        'class': 'cdk-menu-trigger',
                         'aria-haspopup': 'menu',
                         '[attr.aria-expanded]': 'isMenuOpen()',
                     },
@@ -592,7 +760,7 @@
         { type: i0.ElementRef },
         { type: i0.ViewContainerRef },
         { type: overlay.Overlay },
-        { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_MENU,] }] },
+        { type: undefined, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [CDK_MENU,] }] },
         { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
     ]; };
     CdkMenuItemTrigger.propDecorators = {
@@ -626,14 +794,14 @@
      * behavior when clicked.
      */
     var CdkMenuItem = /** @class */ (function () {
-        function CdkMenuItem(_elementRef, _parentMenu, _ngZone, _dir, 
+        function CdkMenuItem(_elementRef, _ngZone, _parentMenu, _dir, 
         /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
         // `CdkMenuItem` is commonly used in combination with a `CdkMenuItemTrigger`.
         // tslint:disable-next-line: lightweight-tokens
         _menuTrigger) {
             this._elementRef = _elementRef;
-            this._parentMenu = _parentMenu;
             this._ngZone = _ngZone;
+            this._parentMenu = _parentMenu;
             this._dir = _dir;
             this._menuTrigger = _menuTrigger;
             this._disabled = false;
@@ -650,6 +818,9 @@
             /** Emits when the menu item is destroyed. */
             this._destroyed = new rxjs.Subject();
             this._setupMouseEnter();
+            if (this._isStandaloneItem()) {
+                this._tabindex = 0;
+            }
         }
         Object.defineProperty(CdkMenuItem.prototype, "disabled", {
             /**  Whether the CdkMenuItem is disabled - defaults to false */
@@ -672,7 +843,9 @@
         // tslint:disable:no-host-decorator-in-concrete
         /** Reset the _tabindex to -1. */
         CdkMenuItem.prototype._resetTabIndex = function () {
-            this._tabindex = -1;
+            if (!this._isStandaloneItem()) {
+                this._tabindex = -1;
+            }
         };
         // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
         // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
@@ -691,6 +864,10 @@
             if (!event || !((_a = this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.isEmpty())) {
                 this._tabindex = 0;
             }
+        };
+        /** Whether this menu item is standalone or within a menu or menu bar. */
+        CdkMenuItem.prototype._isStandaloneItem = function () {
+            return !this._parentMenu;
         };
         // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
         // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
@@ -757,14 +934,14 @@
                     this.trigger();
                     break;
                 case keycodes.RIGHT_ARROW:
-                    if (this._isParentVertical() && !this.hasMenu()) {
+                    if (this._parentMenu && this._isParentVertical() && !this.hasMenu()) {
                         event.preventDefault();
                         ((_a = this._dir) === null || _a === void 0 ? void 0 : _a.value) === 'rtl'
                             ? (_b = this._getMenuStack()) === null || _b === void 0 ? void 0 : _b.close(this._parentMenu, 1 /* previousItem */) : (_c = this._getMenuStack()) === null || _c === void 0 ? void 0 : _c.closeAll(0 /* nextItem */);
                     }
                     break;
                 case keycodes.LEFT_ARROW:
-                    if (this._isParentVertical() && !this.hasMenu()) {
+                    if (this._parentMenu && this._isParentVertical() && !this.hasMenu()) {
                         event.preventDefault();
                         ((_d = this._dir) === null || _d === void 0 ? void 0 : _d.value) === 'rtl'
                             ? (_e = this._getMenuStack()) === null || _e === void 0 ? void 0 : _e.closeAll(0 /* nextItem */) : (_f = this._getMenuStack()) === null || _f === void 0 ? void 0 : _f.close(this._parentMenu, 1 /* previousItem */);
@@ -778,22 +955,29 @@
          */
         CdkMenuItem.prototype._setupMouseEnter = function () {
             var _this = this;
-            this._ngZone.runOutsideAngular(function () { return rxjs.fromEvent(_this._elementRef.nativeElement, 'mouseenter')
-                .pipe(operators.filter(function () { var _a; return !((_a = _this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.isEmpty()) && !_this.hasMenu(); }), operators.takeUntil(_this._destroyed))
-                .subscribe(function () {
-                _this._ngZone.run(function () { var _a; return (_a = _this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.closeSubMenuOf(_this._parentMenu); });
-            }); });
+            if (!this._isStandaloneItem()) {
+                this._ngZone.runOutsideAngular(function () { return rxjs.fromEvent(_this._elementRef.nativeElement, 'mouseenter')
+                    .pipe(operators.filter(function () { var _a; return !((_a = _this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.isEmpty()) && !_this.hasMenu(); }), operators.takeUntil(_this._destroyed))
+                    .subscribe(function () {
+                    _this._ngZone.run(function () { var _a; return (_a = _this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.closeSubMenuOf(_this._parentMenu); });
+                }); });
+            }
         };
-        /** Return true if the enclosing parent menu is configured in a horizontal orientation. */
+        /**
+         * Return true if the enclosing parent menu is configured in a horizontal orientation, false
+         * otherwise or if no parent.
+         */
         CdkMenuItem.prototype._isParentVertical = function () {
-            return this._parentMenu.orientation === 'vertical';
+            var _a;
+            return ((_a = this._parentMenu) === null || _a === void 0 ? void 0 : _a.orientation) === 'vertical';
         };
         /** Get the MenuStack from the parent menu. */
         CdkMenuItem.prototype._getMenuStack = function () {
+            var _a;
             // We use a function since at the construction of the MenuItemTrigger the parent Menu won't have
             // its menu stack set. Therefore we need to reference the menu stack from the parent each time
             // we want to use it.
-            return this._parentMenu._menuStack;
+            return (_a = this._parentMenu) === null || _a === void 0 ? void 0 : _a._menuStack;
         };
         CdkMenuItem.prototype.ngOnDestroy = function () {
             this._destroyed.next();
@@ -815,8 +999,8 @@
     ];
     CdkMenuItem.ctorParameters = function () { return [
         { type: i0.ElementRef },
-        { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_MENU,] }] },
         { type: i0.NgZone },
+        { type: undefined, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [CDK_MENU,] }] },
         { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
         { type: CdkMenuItemTrigger, decorators: [{ type: i0.Self }, { type: i0.Optional }] }
     ]; };
@@ -975,110 +1159,6 @@
     CdkMenuPanel.ctorParameters = function () { return [
         { type: i0.TemplateRef }
     ]; };
-
-    /**
-     * MenuStack allows subscribers to listen for close events (when a MenuStackItem is popped off
-     * of the stack) in order to perform closing actions. Upon the MenuStack being empty it emits
-     * from the `empty` observable specifying the next focus action which the listener should perform
-     * as requested by the closer.
-     */
-    var MenuStack = /** @class */ (function () {
-        function MenuStack() {
-            /** All MenuStackItems tracked by this MenuStack. */
-            this._elements = [];
-            /** Emits the element which was popped off of the stack when requested by a closer. */
-            this._close = new rxjs.Subject();
-            /** Emits once the MenuStack has become empty after popping off elements. */
-            this._empty = new rxjs.Subject();
-            /** Observable which emits the MenuStackItem which has been requested to close. */
-            this.closed = this._close;
-            /**
-             * Observable which emits when the MenuStack is empty after popping off the last element. It
-             * emits a FocusNext event which specifies the action the closer has requested the listener
-             * perform.
-             */
-            this.emptied = this._empty;
-        }
-        /** @param menu the MenuStackItem to put on the stack. */
-        MenuStack.prototype.push = function (menu) {
-            this._elements.push(menu);
-        };
-        /**
-         * Pop items off of the stack up to and including `lastItem` and emit each on the close
-         * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
-         * @param lastItem the last item to pop off the stack.
-         * @param focusNext the event to emit on the `empty` observable if the method call resulted in an
-         * empty stack. Does not emit if the stack was initially empty or if `lastItem` was not on the
-         * stack.
-         */
-        MenuStack.prototype.close = function (lastItem, focusNext) {
-            if (this._elements.indexOf(lastItem) >= 0) {
-                var poppedElement = void 0;
-                do {
-                    poppedElement = this._elements.pop();
-                    this._close.next(poppedElement);
-                } while (poppedElement !== lastItem);
-                if (this.isEmpty()) {
-                    this._empty.next(focusNext);
-                }
-            }
-        };
-        /**
-         * Pop items off of the stack up to but excluding `lastItem` and emit each on the close
-         * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
-         * @param lastItem the element which should be left on the stack
-         * @return whether or not an item was removed from the stack
-         */
-        MenuStack.prototype.closeSubMenuOf = function (lastItem) {
-            var removed = false;
-            if (this._elements.indexOf(lastItem) >= 0) {
-                removed = this.peek() !== lastItem;
-                while (this.peek() !== lastItem) {
-                    this._close.next(this._elements.pop());
-                }
-            }
-            return removed;
-        };
-        /**
-         * Pop off all MenuStackItems and emit each one on the `close` observable one by one.
-         * @param focusNext the event to emit on the `empty` observable once the stack is emptied. Does
-         * not emit if the stack was initially empty.
-         */
-        MenuStack.prototype.closeAll = function (focusNext) {
-            if (!this.isEmpty()) {
-                while (!this.isEmpty()) {
-                    var menuStackItem = this._elements.pop();
-                    if (menuStackItem) {
-                        this._close.next(menuStackItem);
-                    }
-                }
-                this._empty.next(focusNext);
-            }
-        };
-        /** Return true if this stack is empty. */
-        MenuStack.prototype.isEmpty = function () {
-            return !this._elements.length;
-        };
-        /** Return the length of the stack. */
-        MenuStack.prototype.length = function () {
-            return this._elements.length;
-        };
-        /** Get the top most element on the stack. */
-        MenuStack.prototype.peek = function () {
-            return this._elements[this._elements.length - 1];
-        };
-        return MenuStack;
-    }());
-    /** NoopMenuStack is a placeholder MenuStack used for inline menus. */
-    var NoopMenuStack = /** @class */ (function (_super) {
-        __extends(NoopMenuStack, _super);
-        function NoopMenuStack() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        /** Noop push - does not add elements to the MenuStack. */
-        NoopMenuStack.prototype.push = function (_) { };
-        return NoopMenuStack;
-    }(MenuStack));
 
     /**
      * @license
@@ -1367,15 +1447,6 @@
     };
 
     /**
-     * Whether the element is a menu bar or a popup menu.
-     * @param target the element to check.
-     * @return true if the given element is part of the menu module.
-     */
-    function isMenuElement(target) {
-        return (target.classList.contains('cdk-menu-bar') ||
-            (target.classList.contains('cdk-menu') && !target.classList.contains('cdk-menu-inline')));
-    }
-    /**
      * Directive applied to an element which configures it as a MenuBar by setting the appropriate
      * role, aria attributes, and accessible keyboard and mouse handling logic. The component that
      * this directive is applied to should contain components marked with CdkMenuItem.
@@ -1549,24 +1620,6 @@
         CdkMenuBar.prototype._isHorizontal = function () {
             return this.orientation === 'horizontal';
         };
-        // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-        // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-        // can move this back into `host`.
-        // tslint:disable:no-host-decorator-in-concrete
-        /** Close any open submenu if there was a click event which occurred outside the menu stack. */
-        CdkMenuBar.prototype._closeOnBackgroundClick = function (event) {
-            if (this._hasOpenSubmenu()) {
-                // get target from composed path to account for shadow dom
-                var target = event.composedPath ? event.composedPath()[0] : event.target;
-                while (target instanceof Element) {
-                    if (isMenuElement(target)) {
-                        return;
-                    }
-                    target = target.parentElement;
-                }
-                this._menuStack.closeAll();
-            }
-        };
         /**
          * Subscribe to the menu trigger's open events in order to track the trigger which opened the menu
          * and stop tracking it when the menu is closed.
@@ -1620,8 +1673,7 @@
         orientation: [{ type: i0.Input, args: ['cdkMenuBarOrientation',] }],
         _allItems: [{ type: i0.ContentChildren, args: [CdkMenuItem, { descendants: true },] }],
         focusFirstItem: [{ type: i0.HostListener, args: ['focus',] }],
-        _handleKeyEvent: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }],
-        _closeOnBackgroundClick: [{ type: i0.HostListener, args: ['document:mousedown', ['$event'],] }]
+        _handleKeyEvent: [{ type: i0.HostListener, args: ['keydown', ['$event'],] }]
     };
 
     /**
@@ -1636,7 +1688,7 @@
         // `CdkMenuItemRadio` is commonly used in combination with a `CdkMenuItemTrigger`.
         // tslint:disable-next-line: lightweight-tokens
         menuTrigger) {
-            var _this = _super.call(this, element, parentMenu, ngZone, dir, menuTrigger) || this;
+            var _this = _super.call(this, element, ngZone, parentMenu, dir, menuTrigger) || this;
             _this._selectionDispatcher = _selectionDispatcher;
             _this._registerDispatcherListener();
             return _this;
@@ -1680,7 +1732,7 @@
         { type: collections.UniqueSelectionDispatcher },
         { type: i0.ElementRef },
         { type: i0.NgZone },
-        { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_MENU,] }] },
+        { type: undefined, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [CDK_MENU,] }] },
         { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
         { type: CdkMenuItemTrigger, decorators: [{ type: i0.Self }, { type: i0.Optional }] }
     ]; };
@@ -1728,20 +1780,6 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    /**
-     * Check if the given element is part of the cdk menu module or nested within a cdk menu element.
-     * @param target the element to check.
-     * @return true if the given element is part of the menu module or nested within a cdk menu element.
-     */
-    function isWithinMenuElement(target) {
-        while (target instanceof Element) {
-            if (target.classList.contains('cdk-menu') && !target.classList.contains('cdk-menu-inline')) {
-                return true;
-            }
-            target = target.parentElement;
-        }
-        return false;
-    }
     /** Tracks the last open context menu trigger across the entire application. */
     var ContextMenuTracker = /** @class */ (function () {
         function ContextMenuTracker() {
@@ -1772,7 +1810,7 @@
      * non-disabled context menu will trigger.
      */
     var CdkContextMenuTrigger = /** @class */ (function () {
-        function CdkContextMenuTrigger(_viewContainerRef, _overlay, _contextMenuTracker, _options, document, _directionality) {
+        function CdkContextMenuTrigger(_viewContainerRef, _overlay, _contextMenuTracker, _options, _directionality) {
             this._viewContainerRef = _viewContainerRef;
             this._overlay = _overlay;
             this._contextMenuTracker = _contextMenuTracker;
@@ -1787,11 +1825,10 @@
             this._overlayRef = null;
             /** Emits when the element is destroyed. */
             this._destroyed = new rxjs.Subject();
-            /** Emits when the document listener should stop. */
-            this._stopDocumentListener = rxjs.merge(this.closed, this._destroyed);
             /** The menu stack for this trigger and its associated menus. */
             this._menuStack = new MenuStack();
-            this._document = document;
+            /** Emits when the outside pointer events listener on the overlay should be stopped. */
+            this._stopOutsideClicksListener = rxjs.merge(this.closed, this._destroyed);
             this._setMenuStackListener();
         }
         Object.defineProperty(CdkContextMenuTrigger.prototype, "menuPanel", {
@@ -1849,7 +1886,7 @@
                     this._overlayRef = this._overlay.create(this._getOverlayConfig(coordinates));
                 }
                 this._overlayRef.attach(this._getMenuContent());
-                this._setCloseListener();
+                this._subscribeToOutsideClicks();
             }
         };
         /** Close the opened menu. */
@@ -1935,34 +1972,6 @@
             }
             return this._panelContent;
         };
-        /**
-         * Subscribe to the document click and context menu events and close out the menu when emitted.
-         */
-        CdkContextMenuTrigger.prototype._setCloseListener = function () {
-            var _this = this;
-            rxjs.merge(rxjs.fromEvent(this._document, 'click'), rxjs.fromEvent(this._document, 'contextmenu'))
-                .pipe(operators.takeUntil(this._stopDocumentListener))
-                .subscribe(function (event) {
-                var target = event.composedPath ? event.composedPath()[0] : event.target;
-                // stop the default context menu from appearing if user right-clicked somewhere outside of
-                // any context menu directive or if a user right-clicked inside of the opened menu and just
-                // close it.
-                if (event.type === 'contextmenu') {
-                    if (target instanceof Element && isWithinMenuElement(target)) {
-                        // Prevent the native context menu from opening within any open context menu or submenu
-                        event.preventDefault();
-                    }
-                    else {
-                        _this.close();
-                    }
-                }
-                else {
-                    if (target instanceof Element && !isWithinMenuElement(target)) {
-                        _this.close();
-                    }
-                }
-            });
-        };
         /** Subscribe to the menu stack close events and close this menu when requested. */
         CdkContextMenuTrigger.prototype._setMenuStackListener = function () {
             var _this = this;
@@ -1972,6 +1981,23 @@
                     _this._overlayRef.detach();
                 }
             });
+        };
+        /**
+         * Subscribe to the overlays outside pointer events stream and handle closing out the stack if a
+         * click occurs outside the menus.
+         */
+        CdkContextMenuTrigger.prototype._subscribeToOutsideClicks = function () {
+            var _this = this;
+            if (this._overlayRef) {
+                this._overlayRef
+                    .outsidePointerEvents()
+                    .pipe(operators.takeUntil(this._stopOutsideClicksListener))
+                    .subscribe(function (event) {
+                    if (!isClickInsideMenuOverlay(event.target)) {
+                        _this._menuStack.closeAll();
+                    }
+                });
+            }
         };
         CdkContextMenuTrigger.prototype.ngOnDestroy = function () {
             this._destroyOverlay();
@@ -2019,7 +2045,6 @@
         { type: overlay.Overlay },
         { type: ContextMenuTracker },
         { type: undefined, decorators: [{ type: i0.Inject, args: [CDK_CONTEXT_MENU_DEFAULT_OPTIONS,] }] },
-        { type: undefined, decorators: [{ type: i0.Inject, args: [common.DOCUMENT,] }] },
         { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
     ]; };
     CdkContextMenuTrigger.propDecorators = {
@@ -2086,6 +2111,7 @@
     exports.CdkMenuPanel = CdkMenuPanel;
     exports.ContextMenuTracker = ContextMenuTracker;
     exports.MenuStack = MenuStack;
+    exports.isClickInsideMenuOverlay = isClickInsideMenuOverlay;
     exports.ɵ0 = ɵ0;
     exports.ɵangular_material_src_cdk_experimental_menu_menu_b = CdkMenuItemSelectable;
 

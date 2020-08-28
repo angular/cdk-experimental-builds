@@ -10,6 +10,11 @@ import { Directionality } from '@angular/cdk/bidi';
 import { Overlay } from '@angular/cdk/overlay';
 import { CdkMenuPanel } from './menu-panel';
 import { Menu } from './menu-interface';
+import { MenuStack } from './menu-stack';
+/**
+ * Whether the target element is a menu item to be ignored by the overlay background click handler.
+ */
+export declare function isClickInsideMenuOverlay(target: Element): boolean;
 /**
  * A directive to be combined with CdkMenuItem which opens the Menu it is bound to. If the
  * element is in a top level MenuBar it will open the menu on click, or if a sibling is already
@@ -23,7 +28,7 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
     private readonly _elementRef;
     protected readonly _viewContainerRef: ViewContainerRef;
     private readonly _overlay;
-    private readonly _parentMenu;
+    private readonly _parentMenu?;
     private readonly _directionality?;
     /** Template reference variable to the menu this trigger opens */
     get menuPanel(): CdkMenuPanel | undefined;
@@ -34,11 +39,17 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
     readonly opened: EventEmitter<void>;
     /** Emits when the attached menu is requested to close */
     readonly closed: EventEmitter<void>;
+    /** The menu stack for this trigger and its sub-menus. */
+    _menuStack: MenuStack;
     /** A reference to the overlay which manages the triggered menu */
     private _overlayRef;
     /** The content of the menu panel opened by this trigger. */
     private _panelContent;
-    constructor(_elementRef: ElementRef<HTMLElement>, _viewContainerRef: ViewContainerRef, _overlay: Overlay, _parentMenu: Menu, _directionality?: Directionality | undefined);
+    /** Emits when this trigger is destroyed. */
+    private readonly _destroyed;
+    /** Emits when the outside pointer events listener on the overlay should be stopped. */
+    private readonly _stopOutsideClicksListener;
+    constructor(_elementRef: ElementRef<HTMLElement>, _viewContainerRef: ViewContainerRef, _overlay: Overlay, _parentMenu?: Menu | undefined, _directionality?: Directionality | undefined);
     /** Open/close the attached menu if the trigger has been configured with one */
     toggle(): void;
     /** Open the attached menu. */
@@ -82,11 +93,21 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
      * @return true if if the enclosing parent menu is configured in a vertical orientation.
      */
     private _isParentVertical;
-    /** Get the menu stack from the parent. */
+    /**
+     * Subscribe to the MenuStack close events if this is a standalone trigger and close out the menu
+     * this triggers when requested.
+     */
+    private _registerCloseHandler;
+    /** Get the menu stack for this trigger - either from the parent or this trigger. */
     private _getMenuStack;
     ngOnDestroy(): void;
     /** Set the menu panels menu stack back to null. */
     private _resetPanelMenuStack;
+    /**
+     * Subscribe to the overlays outside pointer events stream and handle closing out the stack if a
+     * click occurs outside the menus.
+     */
+    private _subscribeToOutsideClicks;
     /** Destroy and unset the overlay reference it if exists */
     private _destroyOverlay;
 }

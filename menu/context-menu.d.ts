@@ -64,13 +64,11 @@ export declare class CdkContextMenuTrigger implements OnDestroy {
     private _panelContent;
     /** Emits when the element is destroyed. */
     private readonly _destroyed;
-    /** Reference to the document. */
-    private readonly _document;
-    /** Emits when the document listener should stop. */
-    private readonly _stopDocumentListener;
     /** The menu stack for this trigger and its associated menus. */
     private readonly _menuStack;
-    constructor(_viewContainerRef: ViewContainerRef, _overlay: Overlay, _contextMenuTracker: ContextMenuTracker, _options: ContextMenuOptions, document: any, _directionality?: Directionality | undefined);
+    /** Emits when the outside pointer events listener on the overlay should be stopped. */
+    private readonly _stopOutsideClicksListener;
+    constructor(_viewContainerRef: ViewContainerRef, _overlay: Overlay, _contextMenuTracker: ContextMenuTracker, _options: ContextMenuOptions, _directionality?: Directionality | undefined);
     /**
      * Open the attached menu at the specified location.
      * @param coordinates where to open the context menu
@@ -104,12 +102,13 @@ export declare class CdkContextMenuTrigger implements OnDestroy {
      * content to change dynamically and be reflected in the application.
      */
     private _getMenuContent;
-    /**
-     * Subscribe to the document click and context menu events and close out the menu when emitted.
-     */
-    private _setCloseListener;
     /** Subscribe to the menu stack close events and close this menu when requested. */
     private _setMenuStackListener;
+    /**
+     * Subscribe to the overlays outside pointer events stream and handle closing out the stack if a
+     * click occurs outside the menus.
+     */
+    private _subscribeToOutsideClicks;
     ngOnDestroy(): void;
     /** Destroy and unset the overlay reference it if exists. */
     private _destroyOverlay;
