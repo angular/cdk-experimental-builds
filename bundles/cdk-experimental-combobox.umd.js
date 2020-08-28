@@ -70,6 +70,9 @@
             });
         };
         CdkCombobox.prototype.ngOnDestroy = function () {
+            if (this._overlayRef) {
+                this._overlayRef.dispose();
+            }
             this.opened.complete();
             this.closed.complete();
             this.panelValueChanged.complete();
