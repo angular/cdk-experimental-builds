@@ -20,7 +20,7 @@ export declare class CdkMenuItemRadio extends CdkMenuItemSelectable implements O
     private readonly _selectionDispatcher;
     /** Function to unregister the selection dispatcher */
     private _removeDispatcherListener;
-    constructor(_selectionDispatcher: UniqueSelectionDispatcher, element: ElementRef<HTMLElement>, ngZone: NgZone, parentMenu?: Menu, dir?: Directionality, 
+    constructor(_selectionDispatcher: UniqueSelectionDispatcher, element: ElementRef<HTMLElement>, ngZone: NgZone, parentMenu: Menu, dir?: Directionality, 
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     menuTrigger?: CdkMenuItemTrigger);
     /** Configure the unique selection dispatcher listener in order to toggle the checked state  */

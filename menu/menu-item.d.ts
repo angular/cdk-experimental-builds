@@ -19,8 +19,8 @@ import { FocusableElement } from './item-pointer-entries';
  */
 export declare class CdkMenuItem implements FocusableOption, FocusableElement, OnDestroy {
     readonly _elementRef: ElementRef<HTMLElement>;
+    private readonly _parentMenu;
     private readonly _ngZone;
-    private readonly _parentMenu?;
     private readonly _dir?;
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     private readonly _menuTrigger?;
@@ -40,7 +40,7 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, O
     _tabindex: 0 | -1;
     /** Emits when the menu item is destroyed. */
     private readonly _destroyed;
-    constructor(_elementRef: ElementRef<HTMLElement>, _ngZone: NgZone, _parentMenu?: Menu | undefined, _dir?: Directionality | undefined, 
+    constructor(_elementRef: ElementRef<HTMLElement>, _parentMenu: Menu, _ngZone: NgZone, _dir?: Directionality | undefined, 
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     _menuTrigger?: CdkMenuItemTrigger | undefined);
     /** Place focus on the element. */
@@ -52,8 +52,6 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, O
      * is not in a menu bar.
      */
     _setTabIndex(event?: MouseEvent): void;
-    /** Whether this menu item is standalone or within a menu or menu bar. */
-    _isStandaloneItem(): boolean;
     /**
      * If the menu item is not disabled and the element does not have a menu trigger attached, emit
      * on the cdkMenuItemTriggered emitter and close all open menus.
@@ -84,10 +82,7 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, O
      * into.
      */
     private _setupMouseEnter;
-    /**
-     * Return true if the enclosing parent menu is configured in a horizontal orientation, false
-     * otherwise or if no parent.
-     */
+    /** Return true if the enclosing parent menu is configured in a horizontal orientation. */
     private _isParentVertical;
     /** Get the MenuStack from the parent menu. */
     private _getMenuStack;
