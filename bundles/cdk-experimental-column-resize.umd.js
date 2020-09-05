@@ -559,7 +559,7 @@
     ];
     TableLayoutFixedResizeStrategy.ctorParameters = function () { return [
         { type: ColumnResize },
-        { type: table._CoalescedStyleScheduler },
+        { type: table._CoalescedStyleScheduler, decorators: [{ type: core.Inject, args: [table._COALESCED_STYLE_SCHEDULER,] }] },
         { type: table.CdkTable }
     ]; };
     /**
@@ -679,7 +679,7 @@
     ];
     CdkFlexTableResizeStrategy.ctorParameters = function () { return [
         { type: ColumnResize },
-        { type: table._CoalescedStyleScheduler },
+        { type: table._CoalescedStyleScheduler, decorators: [{ type: core.Inject, args: [table._COALESCED_STYLE_SCHEDULER,] }] },
         { type: table.CdkTable },
         { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
     ]; };
