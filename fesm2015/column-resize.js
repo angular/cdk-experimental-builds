@@ -2,7 +2,7 @@ import { Directive, Injectable, NgZone, Inject, ElementRef, NgModule, Injector }
 import { Subject, fromEvent, merge, combineLatest, Observable } from 'rxjs';
 import { map, takeUntil, filter, mapTo, take, startWith, pairwise, distinctUntilChanged, share, skip } from 'rxjs/operators';
 import { _closest, _matches } from '@angular/cdk-experimental/popover-edit';
-import { _CoalescedStyleScheduler, CdkTable } from '@angular/cdk/table';
+import { _CoalescedStyleScheduler, _COALESCED_STYLE_SCHEDULER, CdkTable } from '@angular/cdk/table';
 import { DOCUMENT } from '@angular/common';
 import { coerceCssPixelValue } from '@angular/cdk/coercion';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -267,7 +267,7 @@ TableLayoutFixedResizeStrategy.decorators = [
 ];
 TableLayoutFixedResizeStrategy.ctorParameters = () => [
     { type: ColumnResize },
-    { type: _CoalescedStyleScheduler },
+    { type: _CoalescedStyleScheduler, decorators: [{ type: Inject, args: [_COALESCED_STYLE_SCHEDULER,] }] },
     { type: CdkTable }
 ];
 /**
@@ -382,7 +382,7 @@ CdkFlexTableResizeStrategy.decorators = [
 ];
 CdkFlexTableResizeStrategy.ctorParameters = () => [
     { type: ColumnResize },
-    { type: _CoalescedStyleScheduler },
+    { type: _CoalescedStyleScheduler, decorators: [{ type: Inject, args: [_COALESCED_STYLE_SCHEDULER,] }] },
     { type: CdkTable },
     { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
 ];
