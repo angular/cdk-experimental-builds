@@ -11,16 +11,18 @@ import { FocusableOption } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import { CdkMenuItemTrigger } from './menu-item-trigger';
 import { Menu } from './menu-interface';
-import { FocusableElement } from './item-pointer-entries';
+import { FocusableElement } from './pointer-focus-tracker';
+import { Toggler, MenuAim } from './menu-aim';
 /**
  * Directive which provides the ability for an element to be focused and navigated to using the
  * keyboard when residing in a CdkMenu, CdkMenuBar, or CdkMenuGroup. It performs user defined
  * behavior when clicked.
  */
-export declare class CdkMenuItem implements FocusableOption, FocusableElement, OnDestroy {
+export declare class CdkMenuItem implements FocusableOption, FocusableElement, Toggler, OnDestroy {
     readonly _elementRef: ElementRef<HTMLElement>;
     private readonly _ngZone;
     private readonly _parentMenu?;
+    private readonly _menuAim?;
     private readonly _dir?;
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     private readonly _menuTrigger?;
@@ -40,7 +42,7 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, O
     _tabindex: 0 | -1;
     /** Emits when the menu item is destroyed. */
     private readonly _destroyed;
-    constructor(_elementRef: ElementRef<HTMLElement>, _ngZone: NgZone, _parentMenu?: Menu | undefined, _dir?: Directionality | undefined, 
+    constructor(_elementRef: ElementRef<HTMLElement>, _ngZone: NgZone, _parentMenu?: Menu | undefined, _menuAim?: MenuAim | undefined, _dir?: Directionality | undefined, 
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     _menuTrigger?: CdkMenuItemTrigger | undefined);
     /** Place focus on the element. */

@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/bidi'), require('rxjs/operators'), require('rxjs'), require('@angular/cdk/collections'), require('@angular/cdk/coercion'), require('@angular/cdk/portal')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/bidi', 'rxjs/operators', 'rxjs', '@angular/cdk/collections', '@angular/cdk/coercion', '@angular/cdk/portal'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.rxjs.operators, global.rxjs, global.ng.cdk.collections, global.ng.cdk.coercion, global.ng.cdk.portal));
-}(this, (function (exports, i0, overlay, a11y, keycodes, bidi, operators, rxjs, collections, coercion, portal) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/bidi'), require('rxjs'), require('rxjs/operators'), require('@angular/cdk/collections'), require('@angular/cdk/coercion'), require('@angular/cdk/portal')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/bidi', 'rxjs', 'rxjs/operators', '@angular/cdk/collections', '@angular/cdk/coercion', '@angular/cdk/portal'], factory) :
+    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.rxjs, global.rxjs.operators, global.ng.cdk.collections, global.ng.cdk.coercion, global.ng.cdk.portal));
+}(this, (function (exports, i0, overlay, a11y, keycodes, bidi, rxjs, operators, collections, coercion, portal) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -434,6 +434,217 @@
         throw Error('CdkMenuPanel is already referenced by different CdkMenuTrigger. Ensure that a menu is' +
             ' opened by a single trigger only.');
     }
+    /**
+     * Throws an exception when an instance of the PointerFocusTracker is not provided.
+     * @docs-private
+     */
+    function throwMissingPointerFocusTracker() {
+        throw Error('expected an instance of PointerFocusTracker to be provided');
+    }
+    /**
+     * Throws an exception when a reference to the parent menu is not provided.
+     * @docs-private
+     */
+    function throwMissingMenuReference() {
+        throw Error('expected a reference to the parent menu');
+    }
+
+    /**
+     * @license
+     * Copyright Google LLC All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
+    /** Injection token used for an implementation of MenuAim. */
+    var MENU_AIM = new i0.InjectionToken('cdk-menu-aim');
+    /** Capture every nth mouse move event. */
+    var MOUSE_MOVE_SAMPLE_FREQUENCY = 3;
+    /** The number of mouse move events to track. */
+    var NUM_POINTS = 5;
+    /**
+     * How long to wait before closing a sibling menu if a user stops short of the submenu they were
+     * predicted to go into.
+     */
+    var CLOSE_DELAY = 300;
+    /** Calculate the slope between point a and b. */
+    function getSlope(a, b) {
+        return (b.y - a.y) / (b.x - a.x);
+    }
+    /** Calculate the y intercept for the given point and slope. */
+    function getYIntercept(point, slope) {
+        return point.y - slope * point.x;
+    }
+    /**
+     * Whether the given mouse trajectory line defined by the slope and y intercept falls within the
+     * submenu as defined by `submenuPoints`
+     * @param submenuPoints the submenu DOMRect points.
+     * @param m the slope of the trajectory line.
+     * @param b the y intercept of the trajectory line.
+     *
+     * @return true if any point on the line falls within the submenu.
+     */
+    function isWithinSubmenu(submenuPoints, m, b) {
+        var left = submenuPoints.left, right = submenuPoints.right, top = submenuPoints.top, bottom = submenuPoints.bottom;
+        // Check for intersection with each edge of the submenu (left, right, top, bottom)
+        // by fixing one coordinate to that edge's coordinate (either x or y) and checking if the
+        // other coordinate is within bounds.
+        return ((m * left + b >= top && m * left + b <= bottom) ||
+            (m * right + b >= top && m * right + b <= bottom) ||
+            ((top - b) / m >= left && (top - b) / m <= right) ||
+            ((bottom - b) / m >= left && (bottom - b) / m <= right));
+    }
+    /**
+     * TargetMenuAim predicts if a user is moving into a submenu. It calculates the
+     * trajectory of the user's mouse movement in the current menu to determine if the
+     * mouse is moving towards an open submenu.
+     *
+     * The determination is made by calculating the slope of the users last NUM_POINTS moves where each
+     * pair of points determines if the trajectory line points into the submenu. It uses consensus
+     * approach by checking if at least NUM_POINTS / 2 pairs determine that the user is moving towards
+     * to submenu.
+     */
+    var TargetMenuAim = /** @class */ (function () {
+        function TargetMenuAim(_ngZone) {
+            this._ngZone = _ngZone;
+            /** The last NUM_POINTS mouse move events. */
+            this._points = [];
+            /** Emits when this service is destroyed. */
+            this._destroyed = new rxjs.Subject();
+        }
+        /** Set the Menu and its PointerFocusTracker. */
+        TargetMenuAim.prototype.initialize = function (menu, pointerTracker) {
+            this._menu = menu;
+            this._pointerTracker = pointerTracker;
+            this._subscribeToMouseMoves();
+        };
+        /**
+         * Calls the `doToggle` callback when it is deemed that the user is not moving towards
+         * the submenu.
+         * @param doToggle the function called when the user is not moving towards the submenu.
+         */
+        TargetMenuAim.prototype.toggle = function (doToggle) {
+            // If the menu is horizontal the sub-menus open below and there is no risk of premature
+            // closing of any sub-menus therefore we automatically resolve the callback.
+            if (this._menu.orientation === 'horizontal') {
+                doToggle();
+            }
+            this._checkConfigured();
+            var siblingItemIsWaiting = !!this._timeoutId;
+            var hasPoints = this._points.length > 1;
+            if (hasPoints && !siblingItemIsWaiting) {
+                if (this._isMovingToSubmenu()) {
+                    this._startTimeout(doToggle);
+                }
+                else {
+                    doToggle();
+                }
+            }
+            else if (!siblingItemIsWaiting) {
+                doToggle();
+            }
+        };
+        /**
+         * Start the delayed toggle handler if one isn't running already.
+         *
+         * The delayed toggle handler executes the `doToggle` callback after some period of time iff the
+         * users mouse is on an item in the current menu.
+         */
+        TargetMenuAim.prototype._startTimeout = function (doToggle) {
+            var _this = this;
+            // If the users mouse is moving towards a submenu we don't want to immediately resolve.
+            // Wait for some period of time before determining if the previous menu should close in
+            // cases where the user may have moved towards the submenu but stopped on a sibling menu
+            // item intentionally.
+            var timeoutId = setTimeout(function () {
+                // Resolve if the user is currently moused over some element in the root menu
+                if (_this._pointerTracker.activeElement && timeoutId === _this._timeoutId) {
+                    doToggle();
+                }
+                _this._timeoutId = null;
+            }, CLOSE_DELAY);
+            this._timeoutId = timeoutId;
+        };
+        /** Whether the user is heading towards the open submenu. */
+        TargetMenuAim.prototype._isMovingToSubmenu = function () {
+            var submenuPoints = this._getSubmenuBounds();
+            if (!submenuPoints) {
+                return false;
+            }
+            var numMoving = 0;
+            var currPoint = this._points[this._points.length - 1];
+            // start from the second last point and calculate the slope between each point and the last
+            // point.
+            for (var i = this._points.length - 2; i >= 0; i--) {
+                var previous = this._points[i];
+                var slope = getSlope(currPoint, previous);
+                if (isWithinSubmenu(submenuPoints, slope, getYIntercept(currPoint, slope))) {
+                    numMoving++;
+                }
+            }
+            return numMoving >= Math.floor(NUM_POINTS / 2);
+        };
+        /** Get the bounding DOMRect for the open submenu. */
+        TargetMenuAim.prototype._getSubmenuBounds = function () {
+            var _a, _b, _c;
+            return (_c = (_b = (_a = this._pointerTracker) === null || _a === void 0 ? void 0 : _a.previousElement) === null || _b === void 0 ? void 0 : _b.getMenu()) === null || _c === void 0 ? void 0 : _c._elementRef.nativeElement.getBoundingClientRect();
+        };
+        /**
+         * Check if a reference to the PointerFocusTracker and menu element is provided.
+         * @throws an error if neither reference is provided.
+         */
+        TargetMenuAim.prototype._checkConfigured = function () {
+            if (typeof ngDevMode === 'undefined' || ngDevMode) {
+                if (!this._pointerTracker) {
+                    throwMissingPointerFocusTracker();
+                }
+                if (!this._menu) {
+                    throwMissingMenuReference();
+                }
+            }
+        };
+        /** Subscribe to the root menus mouse move events and update the tracked mouse points. */
+        TargetMenuAim.prototype._subscribeToMouseMoves = function () {
+            var _this = this;
+            this._ngZone.runOutsideAngular(function () {
+                rxjs.fromEvent(_this._menu._elementRef.nativeElement, 'mousemove')
+                    .pipe(operators.filter(function (_, index) { return index % MOUSE_MOVE_SAMPLE_FREQUENCY === 0; }), operators.takeUntil(_this._destroyed))
+                    .subscribe(function (event) {
+                    _this._points.push({ x: event.clientX, y: event.clientY });
+                    if (_this._points.length > NUM_POINTS) {
+                        _this._points.shift();
+                    }
+                });
+            });
+        };
+        TargetMenuAim.prototype.ngOnDestroy = function () {
+            this._destroyed.next();
+            this._destroyed.complete();
+        };
+        return TargetMenuAim;
+    }());
+    TargetMenuAim.decorators = [
+        { type: i0.Injectable }
+    ];
+    TargetMenuAim.ctorParameters = function () { return [
+        { type: i0.NgZone }
+    ]; };
+    /**
+     * CdkTargetMenuAim is a provider for the TargetMenuAim service. It should be added to an
+     * element with either the `cdkMenu` or `cdkMenuBar` directive and child menu items.
+     */
+    var CdkTargetMenuAim = /** @class */ (function () {
+        function CdkTargetMenuAim() {
+        }
+        return CdkTargetMenuAim;
+    }());
+    CdkTargetMenuAim.decorators = [
+        { type: i0.Directive, args: [{
+                    selector: '[cdkTargetMenuAim]',
+                    exportAs: 'cdkTargetMenuAim',
+                    providers: [{ provide: MENU_AIM, useClass: TargetMenuAim }],
+                },] }
+    ];
 
     /**
      * @license
@@ -467,11 +678,13 @@
      * functionality.
      */
     var CdkMenuItemTrigger = /** @class */ (function () {
-        function CdkMenuItemTrigger(_elementRef, _viewContainerRef, _overlay, _parentMenu, _directionality) {
+        function CdkMenuItemTrigger(_elementRef, _viewContainerRef, _overlay, _ngZone, _parentMenu, _menuAim, _directionality) {
             this._elementRef = _elementRef;
             this._viewContainerRef = _viewContainerRef;
             this._overlay = _overlay;
+            this._ngZone = _ngZone;
             this._parentMenu = _parentMenu;
+            this._menuAim = _menuAim;
             this._directionality = _directionality;
             /** Emits when the attached menu is requested to open */
             this.opened = new i0.EventEmitter();
@@ -486,6 +699,7 @@
             /** Emits when the outside pointer events listener on the overlay should be stopped. */
             this._stopOutsideClicksListener = rxjs.merge(this.closed, this._destroyed);
             this._registerCloseHandler();
+            this._subscribeToMouseEnter();
         }
         Object.defineProperty(CdkMenuItemTrigger.prototype, "menuPanel", {
             /** Template reference variable to the menu this trigger opens */
@@ -547,16 +761,28 @@
             return (_a = this.menuPanel) === null || _a === void 0 ? void 0 : _a._menu;
         };
         /**
-         * If there are existing open menus and this menu is not open, close sibling menus and open
-         * this one.
+         * Subscribe to the mouseenter events and close any sibling menu items if this element is moused
+         * into.
          */
-        CdkMenuItemTrigger.prototype._toggleOnMouseEnter = function () {
-            var menuStack = this._getMenuStack();
-            var isSiblingMenuOpen = !menuStack.isEmpty() && !this.isMenuOpen();
-            if (isSiblingMenuOpen) {
-                this._closeSiblingTriggers();
-                this.openMenu();
-            }
+        CdkMenuItemTrigger.prototype._subscribeToMouseEnter = function () {
+            var _this = this;
+            // Closes any sibling menu items and opens the menu associated with this trigger.
+            var toggleMenus = function () { return _this._ngZone.run(function () {
+                _this._closeSiblingTriggers();
+                _this.openMenu();
+            }); };
+            this._ngZone.runOutsideAngular(function () {
+                rxjs.fromEvent(_this._elementRef.nativeElement, 'mouseenter')
+                    .pipe(operators.filter(function () { var _a; return !((_a = _this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.isEmpty()) && !_this.isMenuOpen(); }), operators.takeUntil(_this._destroyed))
+                    .subscribe(function () {
+                    if (_this._menuAim) {
+                        _this._menuAim.toggle(toggleMenus);
+                    }
+                    else {
+                        toggleMenus();
+                    }
+                });
+            });
         };
         /**
          * Handles keyboard events for the menu item, specifically opening/closing the attached menu and
@@ -748,7 +974,6 @@
                     exportAs: 'cdkMenuTriggerFor',
                     host: {
                         '(keydown)': '_toggleOnKeydown($event)',
-                        '(mouseenter)': '_toggleOnMouseEnter()',
                         '(click)': 'toggle()',
                         'class': 'cdk-menu-trigger',
                         'aria-haspopup': 'menu',
@@ -760,7 +985,9 @@
         { type: i0.ElementRef },
         { type: i0.ViewContainerRef },
         { type: overlay.Overlay },
+        { type: i0.NgZone },
         { type: undefined, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [CDK_MENU,] }] },
+        { type: undefined, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [MENU_AIM,] }] },
         { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
     ]; };
     CdkMenuItemTrigger.propDecorators = {
@@ -794,7 +1021,7 @@
      * behavior when clicked.
      */
     var CdkMenuItem = /** @class */ (function () {
-        function CdkMenuItem(_elementRef, _ngZone, _parentMenu, _dir, 
+        function CdkMenuItem(_elementRef, _ngZone, _parentMenu, _menuAim, _dir, 
         /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
         // `CdkMenuItem` is commonly used in combination with a `CdkMenuItemTrigger`.
         // tslint:disable-next-line: lightweight-tokens
@@ -802,6 +1029,7 @@
             this._elementRef = _elementRef;
             this._ngZone = _ngZone;
             this._parentMenu = _parentMenu;
+            this._menuAim = _menuAim;
             this._dir = _dir;
             this._menuTrigger = _menuTrigger;
             this._disabled = false;
@@ -956,10 +1184,16 @@
         CdkMenuItem.prototype._setupMouseEnter = function () {
             var _this = this;
             if (!this._isStandaloneItem()) {
+                var closeOpenSiblings_1 = function () { return _this._ngZone.run(function () { var _a; return (_a = _this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.closeSubMenuOf(_this._parentMenu); }); };
                 this._ngZone.runOutsideAngular(function () { return rxjs.fromEvent(_this._elementRef.nativeElement, 'mouseenter')
                     .pipe(operators.filter(function () { var _a; return !((_a = _this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.isEmpty()) && !_this.hasMenu(); }), operators.takeUntil(_this._destroyed))
                     .subscribe(function () {
-                    _this._ngZone.run(function () { var _a; return (_a = _this._getMenuStack()) === null || _a === void 0 ? void 0 : _a.closeSubMenuOf(_this._parentMenu); });
+                    if (_this._menuAim) {
+                        _this._menuAim.toggle(closeOpenSiblings_1);
+                    }
+                    else {
+                        closeOpenSiblings_1();
+                    }
                 }); });
             }
         };
@@ -1001,6 +1235,7 @@
         { type: i0.ElementRef },
         { type: i0.NgZone },
         { type: undefined, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [CDK_MENU,] }] },
+        { type: undefined, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [MENU_AIM,] }] },
         { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
         { type: CdkMenuItemTrigger, decorators: [{ type: i0.Self }, { type: i0.Optional }] }
     ]; };
@@ -1168,12 +1403,48 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
-     * Gets a stream of pointer (mouse) entries into the given items.
-     * This should typically run outside the Angular zone.
+     * PointerFocusTracker keeps track of the currently active item under mouse focus. It also has
+     * observables which emit when the users mouse enters and leaves a tracked element.
      */
-    function getItemPointerEntries(items) {
-        return rxjs.defer(function () { return items.changes.pipe(operators.startWith(items), operators.mergeMap(function (list) { return list.map(function (element) { return rxjs.fromEvent(element._elementRef.nativeElement, 'mouseenter').pipe(operators.mapTo(element), operators.takeUntil(items.changes)); }); }), operators.mergeAll()); });
-    }
+    var PointerFocusTracker = /** @class */ (function () {
+        function PointerFocusTracker(_items) {
+            var _this = this;
+            this._items = _items;
+            /** Emits when an element is moused into. */
+            this.entered = this._getItemPointerEntries();
+            /** Emits when an element is moused out. */
+            this.exited = this._getItemPointerExits();
+            /** Emits when this is destroyed. */
+            this._destroyed = new rxjs.Subject();
+            this.entered.subscribe(function (element) { return (_this.activeElement = element); });
+            this.exited.subscribe(function () {
+                _this.previousElement = _this.activeElement;
+                _this.activeElement = undefined;
+            });
+        }
+        /**
+         * Gets a stream of pointer (mouse) entries into the given items.
+         * This should typically run outside the Angular zone.
+         */
+        PointerFocusTracker.prototype._getItemPointerEntries = function () {
+            var _this = this;
+            return rxjs.defer(function () { return _this._items.changes.pipe(operators.startWith(_this._items), operators.mergeMap(function (list) { return list.map(function (element) { return rxjs.fromEvent(element._elementRef.nativeElement, 'mouseenter').pipe(operators.mapTo(element), operators.takeUntil(_this._items.changes)); }); }), operators.mergeAll()); });
+        };
+        /**
+         * Gets a stream of pointer (mouse) exits out of the given items.
+         * This should typically run outside the Angular zone.
+         */
+        PointerFocusTracker.prototype._getItemPointerExits = function () {
+            var _this = this;
+            return rxjs.defer(function () { return _this._items.changes.pipe(operators.startWith(_this._items), operators.mergeMap(function (list) { return list.map(function (element) { return rxjs.fromEvent(element._elementRef.nativeElement, 'mouseout').pipe(operators.mapTo(element), operators.takeUntil(_this._items.changes)); }); }), operators.mergeAll()); });
+        };
+        /** Stop the managers listeners. */
+        PointerFocusTracker.prototype.destroy = function () {
+            this._destroyed.next();
+            this._destroyed.complete();
+        };
+        return PointerFocusTracker;
+    }());
 
     /**
      * Directive which configures the element as a Menu which should contain child elements marked as
@@ -1184,12 +1455,14 @@
      */
     var CdkMenu = /** @class */ (function (_super) {
         __extends(CdkMenu, _super);
-        function CdkMenu(_ngZone, _dir, 
+        function CdkMenu(_ngZone, _elementRef, _menuAim, _dir, 
         // `CdkMenuPanel` is always used in combination with a `CdkMenu`.
         // tslint:disable-next-line: lightweight-tokens
         _menuPanel) {
             var _this = _super.call(this) || this;
             _this._ngZone = _ngZone;
+            _this._elementRef = _elementRef;
+            _this._menuAim = _menuAim;
             _this._dir = _dir;
             _this._menuPanel = _menuPanel;
             /**
@@ -1210,12 +1483,14 @@
             this._registerWithParentPanel();
         };
         CdkMenu.prototype.ngAfterContentInit = function () {
+            var _a;
             _super.prototype.ngAfterContentInit.call(this);
             this._completeChangeEmitter();
             this._setKeyManager();
             this._subscribeToMenuOpen();
             this._subscribeToMenuStack();
             this._subscribeToMouseManager();
+            (_a = this._menuAim) === null || _a === void 0 ? void 0 : _a.initialize(this, this._pointerTracker);
         };
         // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
         // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
@@ -1318,14 +1593,14 @@
             }
         };
         /**
-         * Set the FocusMouseManager and ensure that when mouse focus changes the key manager is updated
+         * Set the PointerFocusTracker and ensure that when mouse focus changes the key manager is updated
          * with the latest menu item under mouse focus.
          */
         CdkMenu.prototype._subscribeToMouseManager = function () {
             var _this = this;
             this._ngZone.runOutsideAngular(function () {
-                _this._mouseFocusChanged = getItemPointerEntries(_this._allItems);
-                _this._mouseFocusChanged
+                _this._pointerTracker = new PointerFocusTracker(_this._allItems);
+                _this._pointerTracker.entered
                     .pipe(operators.takeUntil(_this.closed))
                     .subscribe(function (item) { return _this._keyManager.setActiveItem(item); });
             });
@@ -1345,13 +1620,14 @@
          * @param item the MenuStackItem requested to be closed.
          */
         CdkMenu.prototype._closeOpenMenu = function (menu) {
-            var _a, _b;
+            var _a, _b, _c;
             var keyManager = this._keyManager;
             var trigger = this._openItem;
             if (menu === ((_a = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _a === void 0 ? void 0 : _a.getMenu())) {
                 (_b = trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
-                keyManager.setFocusOrigin('keyboard');
-                keyManager.setActiveItem(trigger);
+                // If the user has moused over a sibling item we want to focus the element under mouse focus
+                // not the trigger which previously opened the now closed menu.
+                keyManager.setActiveItem(((_c = this._pointerTracker) === null || _c === void 0 ? void 0 : _c.activeElement) || trigger);
             }
         };
         /** Set focus the either the current, previous or next item based on the FocusNext event. */
@@ -1405,7 +1681,9 @@
             return this._menuStack instanceof NoopMenuStack;
         };
         CdkMenu.prototype.ngOnDestroy = function () {
+            var _a;
             this._emitClosedEvent();
+            (_a = this._pointerTracker) === null || _a === void 0 ? void 0 : _a.destroy();
         };
         /** Emit and complete the closed event emitter */
         CdkMenu.prototype._emitClosedEvent = function () {
@@ -1433,6 +1711,8 @@
     ];
     CdkMenu.ctorParameters = function () { return [
         { type: i0.NgZone },
+        { type: i0.ElementRef },
+        { type: undefined, decorators: [{ type: i0.Self }, { type: i0.Optional }, { type: i0.Inject, args: [MENU_AIM,] }] },
         { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
         { type: CdkMenuPanel, decorators: [{ type: i0.Optional }] }
     ]; };
@@ -1454,10 +1734,12 @@
      */
     var CdkMenuBar = /** @class */ (function (_super) {
         __extends(CdkMenuBar, _super);
-        function CdkMenuBar(_menuStack, _ngZone, _dir) {
+        function CdkMenuBar(_menuStack, _ngZone, _elementRef, _menuAim, _dir) {
             var _this = _super.call(this) || this;
             _this._menuStack = _menuStack;
             _this._ngZone = _ngZone;
+            _this._elementRef = _elementRef;
+            _this._menuAim = _menuAim;
             _this._dir = _dir;
             /**
              * Sets the aria-orientation attribute and determines where menus will be opened.
@@ -1469,11 +1751,13 @@
             return _this;
         }
         CdkMenuBar.prototype.ngAfterContentInit = function () {
+            var _a;
             _super.prototype.ngAfterContentInit.call(this);
             this._setKeyManager();
             this._subscribeToMenuOpen();
             this._subscribeToMenuStack();
             this._subscribeToMouseManager();
+            (_a = this._menuAim) === null || _a === void 0 ? void 0 : _a.initialize(this, this._pointerTracker);
         };
         // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
         // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
@@ -1550,14 +1834,14 @@
             }
         };
         /**
-         * Set the FocusMouseManager and ensure that when mouse focus changes the key manager is updated
+         * Set the PointerFocusTracker and ensure that when mouse focus changes the key manager is updated
          * with the latest menu item under mouse focus.
          */
         CdkMenuBar.prototype._subscribeToMouseManager = function () {
             var _this = this;
             this._ngZone.runOutsideAngular(function () {
-                _this._mouseFocusChanged = getItemPointerEntries(_this._allItems);
-                _this._mouseFocusChanged.pipe(operators.takeUntil(_this._destroyed)).subscribe(function (item) {
+                _this._pointerTracker = new PointerFocusTracker(_this._allItems);
+                _this._pointerTracker.entered.pipe(operators.takeUntil(_this._destroyed)).subscribe(function (item) {
                     if (_this._hasOpenSubmenu()) {
                         _this._keyManager.setActiveItem(item);
                     }
@@ -1579,13 +1863,14 @@
          * @param item the MenuStackItem requested to be closed.
          */
         CdkMenuBar.prototype._closeOpenMenu = function (menu) {
-            var _a, _b;
+            var _a, _b, _c;
             var trigger = this._openItem;
             var keyManager = this._keyManager;
             if (menu === ((_a = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _a === void 0 ? void 0 : _a.getMenu())) {
                 (_b = trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
-                keyManager.setFocusOrigin('keyboard');
-                keyManager.setActiveItem(trigger);
+                // If the user has moused over a sibling item we want to focus the element under mouse focus
+                // not the trigger which previously opened the now closed menu.
+                keyManager.setActiveItem(((_c = this._pointerTracker) === null || _c === void 0 ? void 0 : _c.activeElement) || trigger);
             }
         };
         /**
@@ -1641,9 +1926,11 @@
             return !!this._openItem;
         };
         CdkMenuBar.prototype.ngOnDestroy = function () {
+            var _a;
             _super.prototype.ngOnDestroy.call(this);
             this._destroyed.next();
             this._destroyed.complete();
+            (_a = this._pointerTracker) === null || _a === void 0 ? void 0 : _a.destroy();
         };
         return CdkMenuBar;
     }(CdkMenuGroup));
@@ -1667,6 +1954,8 @@
     CdkMenuBar.ctorParameters = function () { return [
         { type: MenuStack },
         { type: i0.NgZone },
+        { type: i0.ElementRef },
+        { type: undefined, decorators: [{ type: i0.Self }, { type: i0.Optional }, { type: i0.Inject, args: [MENU_AIM,] }] },
         { type: bidi.Directionality, decorators: [{ type: i0.Optional }] }
     ]; };
     CdkMenuBar.propDecorators = {
@@ -1683,12 +1972,12 @@
      */
     var CdkMenuItemRadio = /** @class */ (function (_super) {
         __extends(CdkMenuItemRadio, _super);
-        function CdkMenuItemRadio(_selectionDispatcher, element, ngZone, parentMenu, dir, 
+        function CdkMenuItemRadio(_selectionDispatcher, element, ngZone, parentMenu, menuAim, dir, 
         /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
         // `CdkMenuItemRadio` is commonly used in combination with a `CdkMenuItemTrigger`.
         // tslint:disable-next-line: lightweight-tokens
         menuTrigger) {
-            var _this = _super.call(this, element, ngZone, parentMenu, dir, menuTrigger) || this;
+            var _this = _super.call(this, element, ngZone, parentMenu, menuAim, dir, menuTrigger) || this;
             _this._selectionDispatcher = _selectionDispatcher;
             _this._registerDispatcherListener();
             return _this;
@@ -1733,6 +2022,7 @@
         { type: i0.ElementRef },
         { type: i0.NgZone },
         { type: undefined, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [CDK_MENU,] }] },
+        { type: undefined, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [MENU_AIM,] }] },
         { type: bidi.Directionality, decorators: [{ type: i0.Optional }] },
         { type: CdkMenuItemTrigger, decorators: [{ type: i0.Self }, { type: i0.Optional }] }
     ]; };
@@ -2071,6 +2361,7 @@
         CdkMenuItemTrigger,
         CdkMenuGroup,
         CdkContextMenuTrigger,
+        CdkTargetMenuAim,
     ];
     var CdkMenuModule = /** @class */ (function () {
         function CdkMenuModule() {
@@ -2109,8 +2400,11 @@
     exports.CdkMenuItemTrigger = CdkMenuItemTrigger;
     exports.CdkMenuModule = CdkMenuModule;
     exports.CdkMenuPanel = CdkMenuPanel;
+    exports.CdkTargetMenuAim = CdkTargetMenuAim;
     exports.ContextMenuTracker = ContextMenuTracker;
+    exports.MENU_AIM = MENU_AIM;
     exports.MenuStack = MenuStack;
+    exports.TargetMenuAim = TargetMenuAim;
     exports.isClickInsideMenuOverlay = isClickInsideMenuOverlay;
     exports.ɵ0 = ɵ0;
     exports.ɵangular_material_src_cdk_experimental_menu_menu_b = CdkMenuItemSelectable;

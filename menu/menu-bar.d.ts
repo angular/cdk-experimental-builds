@@ -5,12 +5,13 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AfterContentInit, OnDestroy, NgZone } from '@angular/core';
+import { AfterContentInit, OnDestroy, NgZone, ElementRef } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { FocusOrigin } from '@angular/cdk/a11y';
 import { CdkMenuGroup } from './menu-group';
 import { Menu } from './menu-interface';
 import { MenuStack } from './menu-stack';
+import { MenuAim } from './menu-aim';
 /**
  * Directive applied to an element which configures it as a MenuBar by setting the appropriate
  * role, aria attributes, and accessible keyboard and mouse handling logic. The component that
@@ -20,6 +21,8 @@ import { MenuStack } from './menu-stack';
 export declare class CdkMenuBar extends CdkMenuGroup implements Menu, AfterContentInit, OnDestroy {
     readonly _menuStack: MenuStack;
     private readonly _ngZone;
+    readonly _elementRef: ElementRef<HTMLElement>;
+    private readonly _menuAim?;
     private readonly _dir?;
     /**
      * Sets the aria-orientation attribute and determines where menus will be opened.
@@ -28,15 +31,15 @@ export declare class CdkMenuBar extends CdkMenuGroup implements Menu, AfterConte
     orientation: 'horizontal' | 'vertical';
     /** Handles keyboard events for the MenuBar. */
     private _keyManager;
-    /** Emits when a child MenuItem is moused over. */
-    private _mouseFocusChanged;
+    /** Manages items under mouse focus */
+    private _pointerTracker?;
     /** Emits when the MenuBar is destroyed. */
     private readonly _destroyed;
     /** All child MenuItem elements nested in this MenuBar. */
     private readonly _allItems;
     /** The Menu Item which triggered the open submenu. */
     private _openItem?;
-    constructor(_menuStack: MenuStack, _ngZone: NgZone, _dir?: Directionality | undefined);
+    constructor(_menuStack: MenuStack, _ngZone: NgZone, _elementRef: ElementRef<HTMLElement>, _menuAim?: MenuAim | undefined, _dir?: Directionality | undefined);
     ngAfterContentInit(): void;
     /** Place focus on the first MenuItem in the menu and set the focus origin. */
     focusFirstItem(focusOrigin?: FocusOrigin): void;
@@ -51,7 +54,7 @@ export declare class CdkMenuBar extends CdkMenuGroup implements Menu, AfterConte
     /** Setup the FocusKeyManager with the correct orientation for the menu bar. */
     private _setKeyManager;
     /**
-     * Set the FocusMouseManager and ensure that when mouse focus changes the key manager is updated
+     * Set the PointerFocusTracker and ensure that when mouse focus changes the key manager is updated
      * with the latest menu item under mouse focus.
      */
     private _subscribeToMouseManager;

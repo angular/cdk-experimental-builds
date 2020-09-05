@@ -5,12 +5,13 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { EventEmitter, ElementRef, ViewContainerRef, OnDestroy } from '@angular/core';
+import { EventEmitter, ElementRef, ViewContainerRef, OnDestroy, NgZone } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { Overlay } from '@angular/cdk/overlay';
 import { CdkMenuPanel } from './menu-panel';
 import { Menu } from './menu-interface';
 import { MenuStack } from './menu-stack';
+import { MenuAim } from './menu-aim';
 /**
  * Whether the target element is a menu item to be ignored by the overlay background click handler.
  */
@@ -28,7 +29,9 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
     private readonly _elementRef;
     protected readonly _viewContainerRef: ViewContainerRef;
     private readonly _overlay;
+    private readonly _ngZone;
     private readonly _parentMenu?;
+    private readonly _menuAim?;
     private readonly _directionality?;
     /** Template reference variable to the menu this trigger opens */
     get menuPanel(): CdkMenuPanel | undefined;
@@ -49,7 +52,7 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
     private readonly _destroyed;
     /** Emits when the outside pointer events listener on the overlay should be stopped. */
     private readonly _stopOutsideClicksListener;
-    constructor(_elementRef: ElementRef<HTMLElement>, _viewContainerRef: ViewContainerRef, _overlay: Overlay, _parentMenu?: Menu | undefined, _directionality?: Directionality | undefined);
+    constructor(_elementRef: ElementRef<HTMLElement>, _viewContainerRef: ViewContainerRef, _overlay: Overlay, _ngZone: NgZone, _parentMenu?: Menu | undefined, _menuAim?: MenuAim | undefined, _directionality?: Directionality | undefined);
     /** Open/close the attached menu if the trigger has been configured with one */
     toggle(): void;
     /** Open the attached menu. */
@@ -66,10 +69,10 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
      */
     getMenu(): Menu | undefined;
     /**
-     * If there are existing open menus and this menu is not open, close sibling menus and open
-     * this one.
+     * Subscribe to the mouseenter events and close any sibling menu items if this element is moused
+     * into.
      */
-    _toggleOnMouseEnter(): void;
+    private _subscribeToMouseEnter;
     /**
      * Handles keyboard events for the menu item, specifically opening/closing the attached menu and
      * focusing the appropriate submenu item.
