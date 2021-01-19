@@ -158,7 +158,10 @@ class HeaderRowEventDispatcher {
          * Emits the header that is currently hovered or hosting an active resize event (with active
          * taking precedence).
          */
-        this.headerRowHoveredOrActiveDistinct = combineLatest(this.headerCellHoveredDistinct.pipe(map(cell => _closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged()), this.overlayHandleActiveForCell.pipe(map(cell => _closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged())).pipe(skip(1), // Ignore initial [null, null] emission.
+        this.headerRowHoveredOrActiveDistinct = combineLatest([
+            this.headerCellHoveredDistinct.pipe(map(cell => _closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged()),
+            this.overlayHandleActiveForCell.pipe(map(cell => _closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged()),
+        ]).pipe(skip(1), // Ignore initial [null, null] emission.
         map(([hovered, active]) => active || hovered), distinctUntilChanged(), share());
         this._headerRowHoveredOrActiveDistinctReenterZone = this.headerRowHoveredOrActiveDistinct.pipe(this._enterZone(), share());
         // Optimization: Share row events observable with subsequent callers.

@@ -679,12 +679,6 @@
          * @param size New size for the overlay.
          */
         DialogRef.prototype.updateSize = function (size) {
-            if (size.width) {
-                this._getPositionStrategy().width(size.width.toString());
-            }
-            if (size.height) {
-                this._getPositionStrategy().height(size.height.toString());
-            }
             this._overlayRef.updateSize(size);
             this._overlayRef.updatePosition();
             return this;
