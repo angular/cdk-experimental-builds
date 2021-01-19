@@ -455,7 +455,10 @@
              * Emits the header that is currently hovered or hosting an active resize event (with active
              * taking precedence).
              */
-            this.headerRowHoveredOrActiveDistinct = rxjs.combineLatest(this.headerCellHoveredDistinct.pipe(operators.map(function (cell) { return popoverEdit._closest(cell, HEADER_ROW_SELECTOR); }), operators.startWith(null), operators.distinctUntilChanged()), this.overlayHandleActiveForCell.pipe(operators.map(function (cell) { return popoverEdit._closest(cell, HEADER_ROW_SELECTOR); }), operators.startWith(null), operators.distinctUntilChanged())).pipe(operators.skip(1), // Ignore initial [null, null] emission.
+            this.headerRowHoveredOrActiveDistinct = rxjs.combineLatest([
+                this.headerCellHoveredDistinct.pipe(operators.map(function (cell) { return popoverEdit._closest(cell, HEADER_ROW_SELECTOR); }), operators.startWith(null), operators.distinctUntilChanged()),
+                this.overlayHandleActiveForCell.pipe(operators.map(function (cell) { return popoverEdit._closest(cell, HEADER_ROW_SELECTOR); }), operators.startWith(null), operators.distinctUntilChanged()),
+            ]).pipe(operators.skip(1), // Ignore initial [null, null] emission.
             operators.map(function (_a) {
                 var _b = __read(_a, 2), hovered = _b[0], active = _b[1];
                 return active || hovered;
