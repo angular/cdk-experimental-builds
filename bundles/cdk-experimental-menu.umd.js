@@ -837,7 +837,8 @@
                         event.preventDefault();
                         this.openMenu();
                         keyCode === keycodes.DOWN_ARROW
-                            ? (_k = (_j = this.menuPanel) === null || _j === void 0 ? void 0 : _j._menu) === null || _k === void 0 ? void 0 : _k.focusFirstItem('keyboard') : (_m = (_l = this.menuPanel) === null || _l === void 0 ? void 0 : _l._menu) === null || _m === void 0 ? void 0 : _m.focusLastItem('keyboard');
+                            ? (_k = (_j = this.menuPanel) === null || _j === void 0 ? void 0 : _j._menu) === null || _k === void 0 ? void 0 : _k.focusFirstItem('keyboard')
+                            : (_m = (_l = this.menuPanel) === null || _l === void 0 ? void 0 : _l._menu) === null || _m === void 0 ? void 0 : _m.focusLastItem('keyboard');
                     }
                     break;
             }
@@ -1173,14 +1174,16 @@
                     if (this._parentMenu && this._isParentVertical() && !this.hasMenu()) {
                         event.preventDefault();
                         ((_a = this._dir) === null || _a === void 0 ? void 0 : _a.value) === 'rtl'
-                            ? (_b = this._getMenuStack()) === null || _b === void 0 ? void 0 : _b.close(this._parentMenu, 1 /* previousItem */) : (_c = this._getMenuStack()) === null || _c === void 0 ? void 0 : _c.closeAll(0 /* nextItem */);
+                            ? (_b = this._getMenuStack()) === null || _b === void 0 ? void 0 : _b.close(this._parentMenu, 1 /* previousItem */)
+                            : (_c = this._getMenuStack()) === null || _c === void 0 ? void 0 : _c.closeAll(0 /* nextItem */);
                     }
                     break;
                 case keycodes.LEFT_ARROW:
                     if (this._parentMenu && this._isParentVertical() && !this.hasMenu()) {
                         event.preventDefault();
                         ((_d = this._dir) === null || _d === void 0 ? void 0 : _d.value) === 'rtl'
-                            ? (_e = this._getMenuStack()) === null || _e === void 0 ? void 0 : _e.closeAll(0 /* nextItem */) : (_f = this._getMenuStack()) === null || _f === void 0 ? void 0 : _f.close(this._parentMenu, 1 /* previousItem */);
+                            ? (_e = this._getMenuStack()) === null || _e === void 0 ? void 0 : _e.closeAll(0 /* nextItem */)
+                            : (_f = this._getMenuStack()) === null || _f === void 0 ? void 0 : _f.close(this._parentMenu, 1 /* previousItem */);
                     }
                     break;
             }
@@ -1265,7 +1268,7 @@
     var CdkMenuItemSelectable = /** @class */ (function (_super) {
         __extends(CdkMenuItemSelectable, _super);
         function CdkMenuItemSelectable() {
-            var _this = _super.apply(this, __spread(arguments)) || this;
+            var _this = _super.apply(this, __spreadArray([], __read(arguments))) || this;
             /** Event emitted when the selectable item is clicked */
             _this.toggled = new i0.EventEmitter();
             _this._checked = false;

@@ -176,7 +176,7 @@ class CdkSelection {
     }
     /** Toggles selection for a given value. `index` is required if `trackBy` is used. */
     toggleSelection(value, index) {
-        if (this.trackByFn && index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
+        if (!!this.trackByFn && index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('CdkSelection: index required when trackBy is used');
         }
         if (this.isSelected(value, index)) {
@@ -203,7 +203,7 @@ class CdkSelection {
     }
     /** Checks whether a value is selected. `index` is required if `trackBy` is used. */
     isSelected(value, index) {
-        if (this.trackByFn && index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
+        if (!!this.trackByFn && index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('CdkSelection: index required when trackBy is used');
         }
         return this._selection.isSelected({ value, index });

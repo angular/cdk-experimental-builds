@@ -510,7 +510,7 @@
         };
         /** Toggles selection for a given value. `index` is required if `trackBy` is used. */
         CdkSelection.prototype.toggleSelection = function (value, index) {
-            if (this.trackByFn && index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
+            if (!!this.trackByFn && index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('CdkSelection: index required when trackBy is used');
             }
             if (this.isSelected(value, index)) {
@@ -537,7 +537,7 @@
         };
         /** Checks whether a value is selected. `index` is required if `trackBy` is used. */
         CdkSelection.prototype.isSelected = function (value, index) {
-            if (this.trackByFn && index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
+            if (!!this.trackByFn && index == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
                 throw Error('CdkSelection: index required when trackBy is used');
             }
             return this._selection.isSelected({ value: value, index: index });
@@ -559,7 +559,7 @@
             this._data.forEach(function (value, index) {
                 toSelect.push({ value: value, index: index });
             });
-            (_a = this._selection).select.apply(_a, __spread(toSelect));
+            (_a = this._selection).select.apply(_a, __spreadArray([], __read(toSelect)));
         };
         CdkSelection.prototype._clearAll = function () {
             var _a;
@@ -567,7 +567,7 @@
             this._data.forEach(function (value, index) {
                 toDeselect.push({ value: value, index: index });
             });
-            (_a = this._selection).deselect.apply(_a, __spread(toDeselect));
+            (_a = this._selection).deselect.apply(_a, __spreadArray([], __read(toDeselect)));
         };
         CdkSelection.prototype._updateSelectAllState = function () {
             if (this.isAllSelected()) {

@@ -608,7 +608,7 @@ CdkEditRevert.decorators = [
     { type: Directive, args: [{
                 selector: 'button[cdkEditRevert]',
                 host: {
-                    'type': 'button',
+                    'type': 'button', // Prevents accidental form submits.
                 }
             },] }
 ];

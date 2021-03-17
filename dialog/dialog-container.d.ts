@@ -31,7 +31,7 @@ export declare class CdkDialogContainer extends BasePortalOutlet implements OnDe
     private _focusTrap;
     get _ariaLabel(): string | null;
     get _ariaDescribedBy(): string | null | undefined;
-    get _role(): "dialog" | "alertdialog" | undefined;
+    get _role(): import("@angular/cdk-experimental/dialog/dialog-config").DialogRole | undefined;
     _ariaModal: boolean;
     get _tabindex(): number;
     /** The portal host inside of this container into which the dialog content will be loaded. */

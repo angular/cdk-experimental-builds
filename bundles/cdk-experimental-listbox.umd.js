@@ -504,7 +504,7 @@
             this._onChange = function () { };
             this.optionSelectionChanges = rxjs.defer(function () {
                 var options = _this._options;
-                return options.changes.pipe(operators.startWith(options), operators.switchMap(function () { return rxjs.merge.apply(void 0, __spread(options.map(function (option) { return option.selectionChange; }))); }));
+                return options.changes.pipe(operators.startWith(options), operators.switchMap(function () { return rxjs.merge.apply(void 0, __spreadArray([], __read(options.map(function (option) { return option.selectionChange; })))); }));
             });
             this._disabled = false;
             this._multiple = false;
