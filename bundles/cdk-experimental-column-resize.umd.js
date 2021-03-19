@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@angular/cdk-experimental/popover-edit'), require('@angular/cdk/table'), require('@angular/common'), require('@angular/cdk/coercion'), require('@angular/cdk/portal'), require('@angular/cdk/keycodes')) :
     typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/column-resize', ['exports', '@angular/core', 'rxjs', 'rxjs/operators', '@angular/cdk-experimental/popover-edit', '@angular/cdk/table', '@angular/common', '@angular/cdk/coercion', '@angular/cdk/portal', '@angular/cdk/keycodes'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.columnResize = {}), global.ng.core, global.rxjs, global.rxjs.operators, global.ng.cdkExperimental.popoverEdit, global.ng.cdk.table, global.ng.common, global.ng.cdk.coercion, global.ng.cdk.portal, global.ng.cdk.keycodes));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.columnResize = {}), global.ng.core, global.rxjs, global.rxjs.operators, global.ng.cdkExperimental.popoverEdit, global.ng.cdk.table, global.ng.common, global.ng.cdk.coercion, global.ng.cdk.portal, global.ng.cdk.keycodes));
 }(this, (function (exports, core, rxjs, operators, popoverEdit, table, common, coercion, portal, keycodes) { 'use strict';
 
     /*! *****************************************************************************

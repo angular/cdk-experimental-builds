@@ -1,8 +1,33 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@angular/forms'), require('@angular/cdk/bidi'), require('@angular/cdk/keycodes'), require('@angular/cdk/overlay'), require('@angular/cdk/portal'), require('@angular/cdk/a11y'), require('@angular/cdk/scrolling'), require('@angular/common')) :
     typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/popover-edit', ['exports', '@angular/core', 'rxjs', 'rxjs/operators', '@angular/forms', '@angular/cdk/bidi', '@angular/cdk/keycodes', '@angular/cdk/overlay', '@angular/cdk/portal', '@angular/cdk/a11y', '@angular/cdk/scrolling', '@angular/common'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.popoverEdit = {}), global.ng.core, global.rxjs, global.rxjs.operators, global.ng.forms, global.ng.cdk.bidi, global.ng.cdk.keycodes, global.ng.cdk.overlay, global.ng.cdk.portal, global.ng.cdk.a11y, global.ng.cdk.scrolling, global.ng.common));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.popoverEdit = {}), global.ng.core, global.rxjs, global.rxjs.operators, global.ng.forms, global.ng.cdk.bidi, global.ng.cdk.keycodes, global.ng.cdk.overlay, global.ng.cdk.portal, global.ng.cdk.a11y, global.ng.cdk.scrolling, global.ng.common));
 }(this, (function (exports, i0, rxjs, operators, forms, i1, keycodes, overlay, portal, i1$1, scrolling, i2) { 'use strict';
+
+    function _interopNamespace(e) {
+        if (e && e.__esModule) return e;
+        var n = Object.create(null);
+        if (e) {
+            Object.keys(e).forEach(function (k) {
+                if (k !== 'default') {
+                    var d = Object.getOwnPropertyDescriptor(e, k);
+                    Object.defineProperty(n, k, d.get ? d : {
+                        enumerable: true,
+                        get: function () {
+                            return e[k];
+                        }
+                    });
+                }
+            });
+        }
+        n['default'] = e;
+        return Object.freeze(n);
+    }
+
+    var i0__namespace = /*#__PURE__*/_interopNamespace(i0);
+    var i1__namespace = /*#__PURE__*/_interopNamespace(i1);
+    var i1__namespace$1 = /*#__PURE__*/_interopNamespace(i1$1);
+    var i2__namespace = /*#__PURE__*/_interopNamespace(i2);
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -765,7 +790,7 @@
         };
         return FocusDispatcher;
     }());
-    FocusDispatcher.ɵprov = i0.ɵɵdefineInjectable({ factory: function FocusDispatcher_Factory() { return new FocusDispatcher(i0.ɵɵinject(i1.Directionality)); }, token: FocusDispatcher, providedIn: "root" });
+    FocusDispatcher.ɵprov = i0__namespace.ɵɵdefineInjectable({ factory: function FocusDispatcher_Factory() { return new FocusDispatcher(i0__namespace.ɵɵinject(i1__namespace.Directionality)); }, token: FocusDispatcher, providedIn: "root" });
     FocusDispatcher.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
@@ -1156,7 +1181,7 @@
         };
         return FocusEscapeNotifierFactory;
     }());
-    FocusEscapeNotifierFactory.ɵprov = i0.ɵɵdefineInjectable({ factory: function FocusEscapeNotifierFactory_Factory() { return new FocusEscapeNotifierFactory(i0.ɵɵinject(i1$1.InteractivityChecker), i0.ɵɵinject(i0.NgZone), i0.ɵɵinject(i2.DOCUMENT)); }, token: FocusEscapeNotifierFactory, providedIn: "root" });
+    FocusEscapeNotifierFactory.ɵprov = i0__namespace.ɵɵdefineInjectable({ factory: function FocusEscapeNotifierFactory_Factory() { return new FocusEscapeNotifierFactory(i0__namespace.ɵɵinject(i1__namespace$1.InteractivityChecker), i0__namespace.ɵɵinject(i0__namespace.NgZone), i0__namespace.ɵɵinject(i2__namespace.DOCUMENT)); }, token: FocusEscapeNotifierFactory, providedIn: "root" });
     FocusEscapeNotifierFactory.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];

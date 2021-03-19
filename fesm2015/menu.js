@@ -1,4 +1,5 @@
-import { InjectionToken, Injectable, NgZone, Directive, EventEmitter, ElementRef, ViewContainerRef, Optional, Inject, Input, Output, Self, HostListener, ContentChildren, TemplateRef, ɵɵdefineInjectable, NgModule } from '@angular/core';
+import * as i0 from '@angular/core';
+import { InjectionToken, Injectable, NgZone, Directive, EventEmitter, ElementRef, ViewContainerRef, Optional, Inject, Input, Output, Self, HostListener, ContentChildren, TemplateRef, NgModule } from '@angular/core';
 import { OverlayConfig, Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW, ENTER, SPACE, TAB, ESCAPE, hasModifierKey } from '@angular/cdk/keycodes';
@@ -1762,7 +1763,7 @@ class ContextMenuTracker {
         }
     }
 }
-ContextMenuTracker.ɵprov = ɵɵdefineInjectable({ factory: function ContextMenuTracker_Factory() { return new ContextMenuTracker(); }, token: ContextMenuTracker, providedIn: "root" });
+ContextMenuTracker.ɵprov = i0.ɵɵdefineInjectable({ factory: function ContextMenuTracker_Factory() { return new ContextMenuTracker(); }, token: ContextMenuTracker, providedIn: "root" });
 ContextMenuTracker.decorators = [
     { type: Injectable, args: [{ providedIn: 'root' },] }
 ];

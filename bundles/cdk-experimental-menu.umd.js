@@ -1,8 +1,30 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/a11y'), require('@angular/cdk/keycodes'), require('@angular/cdk/bidi'), require('rxjs'), require('rxjs/operators'), require('@angular/cdk/collections'), require('@angular/cdk/coercion'), require('@angular/cdk/portal')) :
     typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/menu', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/a11y', '@angular/cdk/keycodes', '@angular/cdk/bidi', 'rxjs', 'rxjs/operators', '@angular/cdk/collections', '@angular/cdk/coercion', '@angular/cdk/portal'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.rxjs, global.rxjs.operators, global.ng.cdk.collections, global.ng.cdk.coercion, global.ng.cdk.portal));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.menu = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.a11y, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.rxjs, global.rxjs.operators, global.ng.cdk.collections, global.ng.cdk.coercion, global.ng.cdk.portal));
 }(this, (function (exports, i0, overlay, a11y, keycodes, bidi, rxjs, operators, collections, coercion, portal) { 'use strict';
+
+    function _interopNamespace(e) {
+        if (e && e.__esModule) return e;
+        var n = Object.create(null);
+        if (e) {
+            Object.keys(e).forEach(function (k) {
+                if (k !== 'default') {
+                    var d = Object.getOwnPropertyDescriptor(e, k);
+                    Object.defineProperty(n, k, d.get ? d : {
+                        enumerable: true,
+                        get: function () {
+                            return e[k];
+                        }
+                    });
+                }
+            });
+        }
+        n['default'] = e;
+        return Object.freeze(n);
+    }
+
+    var i0__namespace = /*#__PURE__*/_interopNamespace(i0);
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -2098,7 +2120,7 @@
         };
         return ContextMenuTracker;
     }());
-    ContextMenuTracker.ɵprov = i0.ɵɵdefineInjectable({ factory: function ContextMenuTracker_Factory() { return new ContextMenuTracker(); }, token: ContextMenuTracker, providedIn: "root" });
+    ContextMenuTracker.ɵprov = i0__namespace.ɵɵdefineInjectable({ factory: function ContextMenuTracker_Factory() { return new ContextMenuTracker(); }, token: ContextMenuTracker, providedIn: "root" });
     ContextMenuTracker.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];

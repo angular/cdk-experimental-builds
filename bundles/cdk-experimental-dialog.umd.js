@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/animations'), require('@angular/cdk/a11y'), require('@angular/cdk/portal'), require('@angular/common'), require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@angular/cdk/keycodes'), require('@angular/cdk/bidi'), require('@angular/cdk/overlay')) :
     typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/dialog', ['exports', '@angular/animations', '@angular/cdk/a11y', '@angular/cdk/portal', '@angular/common', '@angular/core', 'rxjs', 'rxjs/operators', '@angular/cdk/keycodes', '@angular/cdk/bidi', '@angular/cdk/overlay'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.dialog = {}), global.ng.animations, global.ng.cdk.a11y, global.ng.cdk.portal, global.ng.common, global.ng.core, global.rxjs, global.rxjs.operators, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.ng.cdk.overlay));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.dialog = {}), global.ng.animations, global.ng.cdk.a11y, global.ng.cdk.portal, global.ng.common, global.ng.core, global.rxjs, global.rxjs.operators, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.ng.cdk.overlay));
 }(this, (function (exports, animations, a11y, portal, common, core, rxjs, operators, keycodes, bidi, overlay) { 'use strict';
 
     /*! *****************************************************************************

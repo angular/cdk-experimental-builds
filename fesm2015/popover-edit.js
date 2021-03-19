@@ -1,13 +1,17 @@
-import { Injectable, NgZone, Self, ɵɵdefineInjectable, ɵɵinject, EventEmitter, Directive, ElementRef, HostListener, Input, Inject, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
+import * as i0 from '@angular/core';
+import { Injectable, NgZone, Self, EventEmitter, Directive, ElementRef, HostListener, Input, Inject, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
 import { Subject, pipe, combineLatest, Observable, fromEvent, fromEventPattern, merge } from 'rxjs';
 import { distinctUntilChanged, startWith, shareReplay, filter, map, auditTime, audit, debounceTime, skip, take, takeUntil, mapTo, throttleTime, share, withLatestFrom } from 'rxjs/operators';
 import { ControlContainer } from '@angular/forms';
+import * as i1 from '@angular/cdk/bidi';
 import { Directionality } from '@angular/cdk/bidi';
 import { RIGHT_ARROW, LEFT_ARROW, DOWN_ARROW, UP_ARROW, hasModifierKey } from '@angular/cdk/keycodes';
 import { Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
+import * as i1$1 from '@angular/cdk/a11y';
 import { FocusTrapFactory, FocusTrap, InteractivityChecker } from '@angular/cdk/a11y';
 import { ScrollDispatcher, ViewportRuler } from '@angular/cdk/scrolling';
+import * as i2 from '@angular/common';
 import { DOCUMENT } from '@angular/common';
 
 /**
@@ -420,7 +424,7 @@ class FocusDispatcher {
         event.preventDefault();
     }
 }
-FocusDispatcher.ɵprov = ɵɵdefineInjectable({ factory: function FocusDispatcher_Factory() { return new FocusDispatcher(ɵɵinject(Directionality)); }, token: FocusDispatcher, providedIn: "root" });
+FocusDispatcher.ɵprov = i0.ɵɵdefineInjectable({ factory: function FocusDispatcher_Factory() { return new FocusDispatcher(i0.ɵɵinject(i1.Directionality)); }, token: FocusDispatcher, providedIn: "root" });
 FocusDispatcher.decorators = [
     { type: Injectable, args: [{ providedIn: 'root' },] }
 ];
@@ -809,7 +813,7 @@ class FocusEscapeNotifierFactory {
         return new FocusEscapeNotifier(element, this._checker, this._ngZone, this._document);
     }
 }
-FocusEscapeNotifierFactory.ɵprov = ɵɵdefineInjectable({ factory: function FocusEscapeNotifierFactory_Factory() { return new FocusEscapeNotifierFactory(ɵɵinject(InteractivityChecker), ɵɵinject(NgZone), ɵɵinject(DOCUMENT)); }, token: FocusEscapeNotifierFactory, providedIn: "root" });
+FocusEscapeNotifierFactory.ɵprov = i0.ɵɵdefineInjectable({ factory: function FocusEscapeNotifierFactory_Factory() { return new FocusEscapeNotifierFactory(i0.ɵɵinject(i1$1.InteractivityChecker), i0.ɵɵinject(i0.NgZone), i0.ɵɵinject(i2.DOCUMENT)); }, token: FocusEscapeNotifierFactory, providedIn: "root" });
 FocusEscapeNotifierFactory.decorators = [
     { type: Injectable, args: [{ providedIn: 'root' },] }
 ];

@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('@angular/cdk/bidi'), require('@angular/cdk/platform'), require('@angular/cdk/table')) :
     typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/table-scroll-container', ['exports', '@angular/core', '@angular/common', '@angular/cdk/bidi', '@angular/cdk/platform', '@angular/cdk/table'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.tableScrollContainer = {}), global.ng.core, global.ng.common, global.ng.cdk.bidi, global.ng.cdk.platform, global.ng.cdk.table));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.tableScrollContainer = {}), global.ng.core, global.ng.common, global.ng.cdk.bidi, global.ng.cdk.platform, global.ng.cdk.table));
 }(this, (function (exports, core, common, bidi, platform, table) { 'use strict';
 
     /*! *****************************************************************************

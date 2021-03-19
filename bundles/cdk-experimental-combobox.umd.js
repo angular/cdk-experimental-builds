@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/portal'), require('@angular/cdk/bidi'), require('@angular/cdk/coercion'), require('@angular/cdk/keycodes'), require('rxjs')) :
     typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/combobox', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/portal', '@angular/cdk/bidi', '@angular/cdk/coercion', '@angular/cdk/keycodes', 'rxjs'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.combobox = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.portal, global.ng.cdk.bidi, global.ng.cdk.coercion, global.ng.cdk.keycodes, global.rxjs));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.combobox = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.portal, global.ng.cdk.bidi, global.ng.cdk.coercion, global.ng.cdk.keycodes, global.rxjs));
 }(this, (function (exports, core, overlay, portal, bidi, coercion, keycodes, rxjs) { 'use strict';
 
     /**

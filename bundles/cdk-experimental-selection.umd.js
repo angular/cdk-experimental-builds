@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/cdk/coercion'), require('@angular/cdk/collections'), require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@angular/forms'), require('@angular/cdk/table'), require('@angular/common')) :
     typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/selection', ['exports', '@angular/cdk/coercion', '@angular/cdk/collections', '@angular/core', 'rxjs', 'rxjs/operators', '@angular/forms', '@angular/cdk/table', '@angular/common'], factory) :
-    (global = global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.selection = {}), global.ng.cdk.coercion, global.ng.cdk.collections, global.ng.core, global.rxjs, global.rxjs.operators, global.ng.forms, global.ng.cdk.table, global.ng.common));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.selection = {}), global.ng.cdk.coercion, global.ng.cdk.collections, global.ng.core, global.rxjs, global.rxjs.operators, global.ng.forms, global.ng.cdk.table, global.ng.common));
 }(this, (function (exports, coercion, collections, core, rxjs, operators, forms, table, common) { 'use strict';
 
     /*! *****************************************************************************
