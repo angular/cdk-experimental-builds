@@ -59,5 +59,5 @@ export declare class CdkSelection<T> implements OnInit, AfterContentChecked, Col
     static ngAcceptInputType_multiple: BooleanInput;
 }
 declare type SelectAllState = 'all' | 'none' | 'partial';
-declare type TableDataSource<T> = DataSource<T> | Observable<ReadonlyArray<T> | T[]> | ReadonlyArray<T> | T[];
+declare type TableDataSource<T> = DataSource<T> | Observable<readonly T[]> | readonly T[];
 export {};
