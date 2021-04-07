@@ -34,7 +34,7 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
      * If this MenuItem is a regular MenuItem, outputs when it is triggered by a keyboard or mouse
      * event.
      */
-    triggered: EventEmitter<void>;
+    readonly triggered: EventEmitter<void>;
     /**
      * The tabindex for this menu item managed internally and used for implementing roving a
      * tab index.

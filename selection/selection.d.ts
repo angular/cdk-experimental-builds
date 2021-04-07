@@ -27,7 +27,7 @@ export declare class CdkSelection<T> implements OnInit, AfterContentChecked, Col
     set multiple(multiple: boolean);
     protected _multiple: boolean;
     /** Emits when selection changes. */
-    change: EventEmitter<SelectionChange<T>>;
+    readonly change: EventEmitter<SelectionChange<T>>;
     /** Latest data provided by the data source. */
     private _data;
     /** Subscription that listens for the data provided by the data source.  */

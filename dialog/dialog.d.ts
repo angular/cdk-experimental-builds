@@ -23,11 +23,11 @@ export declare class Dialog implements OnDestroy {
     private _scrollStrategy;
     /** Stream that emits when all dialogs are closed. */
     _getAfterAllClosed(): Observable<void>;
-    _afterAllClosedBase: Subject<void>;
+    readonly _afterAllClosedBase: Subject<void>;
     afterAllClosed: Observable<void>;
     /** Stream that emits when a dialog is opened. */
     get afterOpened(): Subject<DialogRef<any>>;
-    _afterOpened: Subject<DialogRef<any>>;
+    readonly _afterOpened: Subject<DialogRef<any, any>>;
     /** Stream that emits when a dialog is opened. */
     get openDialogs(): DialogRef<any>[];
     _openDialogs: DialogRef<any>[];

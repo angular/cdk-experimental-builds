@@ -512,7 +512,7 @@ class CdkEditControl {
     // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
     // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
     // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
+    // tslint:disable-next-line:no-host-decorator-in-concrete
     handleFormSubmit() {
         if (this.ignoreSubmitUnlessValid && !this.editRef.isValid()) {
             return;
@@ -533,7 +533,7 @@ class CdkEditControl {
     // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
     // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
     // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
+    // tslint:disable-next-line:no-host-decorator-in-concrete
     handlePossibleClickOut(evt) {
         if (closest(evt.target, EDIT_PANE_SELECTOR)) {
             return;
@@ -554,7 +554,7 @@ class CdkEditControl {
     // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
     // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
     // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
+    // tslint:disable-next-line:no-host-decorator-in-concrete
     _handleKeydown(event) {
         if (event.key === 'Escape' && !hasModifierKey(event)) {
             this.close();
@@ -603,7 +603,7 @@ class CdkEditRevert {
     // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
     // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
     // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
+    // tslint:disable-next-line:no-host-decorator-in-concrete
     revertEdit() {
         this.editRef.reset();
     }
@@ -637,7 +637,7 @@ class CdkEditClose {
     // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
     // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
     // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
+    // tslint:disable-next-line:no-host-decorator-in-concrete
     closeEdit() {
         // Note that we use `click` here, rather than a keyboard event, because some screen readers
         // will emit a fake click event instead of an enter keyboard event on buttons. For the keyboard
@@ -1184,7 +1184,7 @@ class CdkEditOpen {
     // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
     // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
     // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
+    // tslint:disable-next-line:no-host-decorator-in-concrete
     openEdit(evt) {
         this.editEventDispatcher.editing.next(closest(this.elementRef.nativeElement, CELL_SELECTOR));
         evt.stopPropagation();

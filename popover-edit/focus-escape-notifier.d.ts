@@ -18,7 +18,7 @@ export declare const enum FocusEscapeNotifierDirection {
  * focus leaves the region.
  */
 export declare class FocusEscapeNotifier extends FocusTrap {
-    private _escapeSubject;
+    private readonly _escapeSubject;
     constructor(element: HTMLElement, checker: InteractivityChecker, ngZone: NgZone, document: Document);
     escapes(): Observable<FocusEscapeNotifierDirection>;
 }

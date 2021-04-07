@@ -37,15 +37,15 @@ export declare class CdkDialogContainer extends BasePortalOutlet implements OnDe
     /** The portal host inside of this container into which the dialog content will be loaded. */
     _portalHost: CdkPortalOutlet;
     /** A subject emitting before the dialog enters the view. */
-    _beforeEnter: Subject<void>;
+    readonly _beforeEnter: Subject<void>;
     /** A subject emitting after the dialog enters the view. */
-    _afterEnter: Subject<void>;
+    readonly _afterEnter: Subject<void>;
     /** A subject emitting before the dialog exits the view. */
-    _beforeExit: Subject<void>;
+    readonly _beforeExit: Subject<void>;
     /** A subject emitting after the dialog exits the view. */
-    _afterExit: Subject<void>;
+    readonly _afterExit: Subject<void>;
     /** Stream of animation `done` events. */
-    _animationDone: Subject<AnimationEvent>;
+    readonly _animationDone: Subject<AnimationEvent>;
     constructor(_elementRef: ElementRef<HTMLElement>, _focusTrapFactory: FocusTrapFactory, _changeDetectorRef: ChangeDetectorRef, _document: any, 
     /** The dialog configuration. */
     _config: DialogConfig);
