@@ -33,13 +33,13 @@ export declare class MenuStack {
     /** Emits once the MenuStack has become empty after popping off elements. */
     private readonly _empty;
     /** Observable which emits the MenuStackItem which has been requested to close. */
-    readonly closed: Observable<MenuStackItem>;
+    readonly closed: Observable<MenuStackItem | undefined>;
     /**
      * Observable which emits when the MenuStack is empty after popping off the last element. It
      * emits a FocusNext event which specifies the action the closer has requested the listener
      * perform.
      */
-    readonly emptied: Observable<FocusNext>;
+    readonly emptied: Observable<FocusNext | undefined>;
     /** @param menu the MenuStackItem to put on the stack. */
     push(menu: MenuStackItem): void;
     /**

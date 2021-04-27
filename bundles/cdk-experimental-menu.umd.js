@@ -1657,10 +1657,12 @@
             var keyManager = this._keyManager;
             var trigger = this._openItem;
             if (menu === ((_a = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _a === void 0 ? void 0 : _a.getMenu())) {
-                (_b = trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
+                (_b = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
                 // If the user has moused over a sibling item we want to focus the element under mouse focus
                 // not the trigger which previously opened the now closed menu.
-                keyManager.setActiveItem(((_c = this._pointerTracker) === null || _c === void 0 ? void 0 : _c.activeElement) || trigger);
+                if (trigger) {
+                    keyManager.setActiveItem(((_c = this._pointerTracker) === null || _c === void 0 ? void 0 : _c.activeElement) || trigger);
+                }
             }
         };
         /** Set focus the either the current, previous or next item based on the FocusNext event. */
@@ -1900,10 +1902,12 @@
             var trigger = this._openItem;
             var keyManager = this._keyManager;
             if (menu === ((_a = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _a === void 0 ? void 0 : _a.getMenu())) {
-                (_b = trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
+                (_b = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
                 // If the user has moused over a sibling item we want to focus the element under mouse focus
                 // not the trigger which previously opened the now closed menu.
-                keyManager.setActiveItem(((_c = this._pointerTracker) === null || _c === void 0 ? void 0 : _c.activeElement) || trigger);
+                if (trigger) {
+                    keyManager.setActiveItem(((_c = this._pointerTracker) === null || _c === void 0 ? void 0 : _c.activeElement) || trigger);
+                }
             }
         };
         /**

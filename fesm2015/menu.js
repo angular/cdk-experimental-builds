@@ -1287,10 +1287,10 @@ class CdkMenu extends CdkMenuGroup {
     _subscribeToMenuStack() {
         this._menuStack.closed
             .pipe(takeUntil(this.closed))
-            .subscribe((item) => this._closeOpenMenu(item));
+            .subscribe(item => this._closeOpenMenu(item));
         this._menuStack.emptied
             .pipe(takeUntil(this.closed))
-            .subscribe((event) => this._toggleMenuFocus(event));
+            .subscribe(event => this._toggleMenuFocus(event));
     }
     /**
      * Close the open menu if the current active item opened the requested MenuStackItem.
@@ -1301,10 +1301,12 @@ class CdkMenu extends CdkMenuGroup {
         const keyManager = this._keyManager;
         const trigger = this._openItem;
         if (menu === ((_a = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _a === void 0 ? void 0 : _a.getMenu())) {
-            (_b = trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
+            (_b = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
             // If the user has moused over a sibling item we want to focus the element under mouse focus
             // not the trigger which previously opened the now closed menu.
-            keyManager.setActiveItem(((_c = this._pointerTracker) === null || _c === void 0 ? void 0 : _c.activeElement) || trigger);
+            if (trigger) {
+                keyManager.setActiveItem(((_c = this._pointerTracker) === null || _c === void 0 ? void 0 : _c.activeElement) || trigger);
+            }
         }
     }
     /** Set focus the either the current, previous or next item based on the FocusNext event. */
@@ -1529,10 +1531,10 @@ class CdkMenuBar extends CdkMenuGroup {
     _subscribeToMenuStack() {
         this._menuStack.closed
             .pipe(takeUntil(this._destroyed))
-            .subscribe((item) => this._closeOpenMenu(item));
+            .subscribe(item => this._closeOpenMenu(item));
         this._menuStack.emptied
             .pipe(takeUntil(this._destroyed))
-            .subscribe((event) => this._toggleOpenMenu(event));
+            .subscribe(event => this._toggleOpenMenu(event));
     }
     /**
      * Close the open menu if the current active item opened the requested MenuStackItem.
@@ -1543,10 +1545,12 @@ class CdkMenuBar extends CdkMenuGroup {
         const trigger = this._openItem;
         const keyManager = this._keyManager;
         if (menu === ((_a = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _a === void 0 ? void 0 : _a.getMenu())) {
-            (_b = trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
+            (_b = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.closeMenu();
             // If the user has moused over a sibling item we want to focus the element under mouse focus
             // not the trigger which previously opened the now closed menu.
-            keyManager.setActiveItem(((_c = this._pointerTracker) === null || _c === void 0 ? void 0 : _c.activeElement) || trigger);
+            if (trigger) {
+                keyManager.setActiveItem(((_c = this._pointerTracker) === null || _c === void 0 ? void 0 : _c.activeElement) || trigger);
+            }
         }
     }
     /**
@@ -1932,7 +1936,7 @@ class CdkContextMenuTrigger {
     }
     /** Subscribe to the menu stack close events and close this menu when requested. */
     _setMenuStackListener() {
-        this._menuStack.closed.pipe(takeUntil(this._destroyed)).subscribe((item) => {
+        this._menuStack.closed.pipe(takeUntil(this._destroyed)).subscribe(item => {
             if (item === this._menuPanel._menu && this.isOpen()) {
                 this.closed.next();
                 this._overlayRef.detach();
