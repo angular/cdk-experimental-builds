@@ -280,7 +280,7 @@
         }
         /** Tells the parent combobox to close the panel and sends back the content value. */
         CdkComboboxPanel.prototype.closePanel = function (data) {
-            this.valueUpdated.next(data);
+            this.valueUpdated.next(data || []);
         };
         // TODO: instead of using a focus function, potentially use cdk/a11y focus trapping
         CdkComboboxPanel.prototype.focusContent = function () {
