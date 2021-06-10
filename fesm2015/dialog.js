@@ -2,7 +2,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { FocusTrapFactory, A11yModule } from '@angular/cdk/a11y';
 import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, TemplatePortal, PortalModule } from '@angular/cdk/portal';
 import { DOCUMENT, Location } from '@angular/common';
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, Optional, Inject, HostBinding, ViewChild, InjectionToken, Injector, Injectable, Type, SkipSelf, NgModule } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, Optional, Inject, HostBinding, ViewChild, InjectionToken, Injector, InjectFlags, Injectable, Type, SkipSelf, NgModule } from '@angular/core';
 import { Subject, defer, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { ESCAPE, hasModifierKey } from '@angular/cdk/keycodes';
@@ -620,8 +620,8 @@ class Dialog {
             { provide: this._injector.get(DIALOG_CONTAINER), useValue: dialogContainer },
             { provide: DIALOG_DATA, useValue: config.data }
         ];
-        if (config.direction &&
-            (!userInjector || !userInjector.get(Directionality, null))) {
+        if (config.direction && (!userInjector ||
+            !userInjector.get(Directionality, null, InjectFlags.Optional))) {
             providers.push({
                 provide: Directionality,
                 useValue: { value: config.direction, change: of() }
