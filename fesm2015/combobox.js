@@ -3,6 +3,7 @@ import { OverlayConfig, Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Directionality } from '@angular/cdk/bidi';
 import { coerceBooleanProperty, coerceArray } from '@angular/cdk/coercion';
+import { _getEventTarget } from '@angular/cdk/platform';
 import { DOWN_ARROW, ENTER, ESCAPE, TAB } from '@angular/cdk/keycodes';
 import { Subject } from 'rxjs';
 
@@ -108,7 +109,7 @@ class CdkCombobox {
     /** Given a click in the document, determines if the click was inside a combobox. */
     _attemptClose(event) {
         if (this.isOpen()) {
-            let target = event.composedPath ? event.composedPath()[0] : event.target;
+            let target = _getEventTarget(event);
             while (target instanceof Element) {
                 if (target.className.indexOf('cdk-combobox') !== -1) {
                     return;
