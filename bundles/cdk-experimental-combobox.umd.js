@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/portal'), require('@angular/cdk/bidi'), require('@angular/cdk/coercion'), require('@angular/cdk/keycodes'), require('rxjs')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/combobox', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/portal', '@angular/cdk/bidi', '@angular/cdk/coercion', '@angular/cdk/keycodes', 'rxjs'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.combobox = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.portal, global.ng.cdk.bidi, global.ng.cdk.coercion, global.ng.cdk.keycodes, global.rxjs));
-}(this, (function (exports, core, overlay, portal, bidi, coercion, keycodes, rxjs) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/cdk/overlay'), require('@angular/cdk/portal'), require('@angular/cdk/bidi'), require('@angular/cdk/coercion'), require('@angular/cdk/platform'), require('@angular/cdk/keycodes'), require('rxjs')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/combobox', ['exports', '@angular/core', '@angular/cdk/overlay', '@angular/cdk/portal', '@angular/cdk/bidi', '@angular/cdk/coercion', '@angular/cdk/platform', '@angular/cdk/keycodes', 'rxjs'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.combobox = {}), global.ng.core, global.ng.cdk.overlay, global.ng.cdk.portal, global.ng.cdk.bidi, global.ng.cdk.coercion, global.ng.cdk.platform, global.ng.cdk.keycodes, global.rxjs));
+}(this, (function (exports, core, overlay, portal, bidi, coercion, platform, keycodes, rxjs) { 'use strict';
 
     /**
      * @license
@@ -123,7 +123,7 @@
         /** Given a click in the document, determines if the click was inside a combobox. */
         CdkCombobox.prototype._attemptClose = function (event) {
             if (this.isOpen()) {
-                var target = event.composedPath ? event.composedPath()[0] : event.target;
+                var target = platform._getEventTarget(event);
                 while (target instanceof Element) {
                     if (target.className.indexOf('cdk-combobox') !== -1) {
                         return;
