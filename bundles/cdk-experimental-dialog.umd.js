@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/animations'), require('@angular/cdk/a11y'), require('@angular/cdk/portal'), require('@angular/common'), require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@angular/cdk/keycodes'), require('@angular/cdk/bidi'), require('@angular/cdk/overlay')) :
-    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/dialog', ['exports', '@angular/animations', '@angular/cdk/a11y', '@angular/cdk/portal', '@angular/common', '@angular/core', 'rxjs', 'rxjs/operators', '@angular/cdk/keycodes', '@angular/cdk/bidi', '@angular/cdk/overlay'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.dialog = {}), global.ng.animations, global.ng.cdk.a11y, global.ng.cdk.portal, global.ng.common, global.ng.core, global.rxjs, global.rxjs.operators, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.ng.cdk.overlay));
-}(this, (function (exports, animations, a11y, portal, common, core, rxjs, operators, keycodes, bidi, overlay) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/animations'), require('@angular/cdk/a11y'), require('@angular/cdk/platform'), require('@angular/cdk/portal'), require('@angular/common'), require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@angular/cdk/keycodes'), require('@angular/cdk/bidi'), require('@angular/cdk/overlay')) :
+    typeof define === 'function' && define.amd ? define('@angular/cdk-experimental/dialog', ['exports', '@angular/animations', '@angular/cdk/a11y', '@angular/cdk/platform', '@angular/cdk/portal', '@angular/common', '@angular/core', 'rxjs', 'rxjs/operators', '@angular/cdk/keycodes', '@angular/cdk/bidi', '@angular/cdk/overlay'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.ng = global.ng || {}, global.ng.cdkExperimental = global.ng.cdkExperimental || {}, global.ng.cdkExperimental.dialog = {}), global.ng.animations, global.ng.cdk.a11y, global.ng.cdk.platform, global.ng.cdk.portal, global.ng.common, global.ng.core, global.rxjs, global.rxjs.operators, global.ng.cdk.keycodes, global.ng.cdk.bidi, global.ng.cdk.overlay));
+}(this, (function (exports, animations, a11y, platform, portal, common, core, rxjs, operators, keycodes, bidi, overlay) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -502,7 +502,7 @@
         /** Saves a reference to the element that was focused before the dialog was opened. */
         CdkDialogContainer.prototype._savePreviouslyFocusedElement = function () {
             if (this._document) {
-                this._elementFocusedBeforeDialogWasOpened = this._document.activeElement;
+                this._elementFocusedBeforeDialogWasOpened = platform._getFocusedElementPierceShadowDom();
             }
         };
         /** Focuses the dialog container. */
@@ -531,7 +531,7 @@
                 });
             }
             else {
-                var activeElement = this._document.activeElement;
+                var activeElement = platform._getFocusedElementPierceShadowDom();
                 // Otherwise ensure that focus is on the dialog container. It's possible that a different
                 // component tried to move focus while the open animation was running. See:
                 // https://github.com/angular/components/issues/16215. Note that we only want to do this

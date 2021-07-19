@@ -1,5 +1,6 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FocusTrapFactory, A11yModule } from '@angular/cdk/a11y';
+import { _getFocusedElementPierceShadowDom } from '@angular/cdk/platform';
 import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, TemplatePortal, PortalModule } from '@angular/cdk/portal';
 import { DOCUMENT, Location } from '@angular/common';
 import { Component, ViewEncapsulation, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, Optional, Inject, HostBinding, ViewChild, InjectionToken, Injector, InjectFlags, Injectable, Type, SkipSelf, NgModule } from '@angular/core';
@@ -183,7 +184,7 @@ class CdkDialogContainer extends BasePortalOutlet {
     /** Saves a reference to the element that was focused before the dialog was opened. */
     _savePreviouslyFocusedElement() {
         if (this._document) {
-            this._elementFocusedBeforeDialogWasOpened = this._document.activeElement;
+            this._elementFocusedBeforeDialogWasOpened = _getFocusedElementPierceShadowDom();
         }
     }
     /** Focuses the dialog container. */
@@ -212,7 +213,7 @@ class CdkDialogContainer extends BasePortalOutlet {
             });
         }
         else {
-            const activeElement = this._document.activeElement;
+            const activeElement = _getFocusedElementPierceShadowDom();
             // Otherwise ensure that focus is on the dialog container. It's possible that a different
             // component tried to move focus while the open animation was running. See:
             // https://github.com/angular/components/issues/16215. Note that we only want to do this
