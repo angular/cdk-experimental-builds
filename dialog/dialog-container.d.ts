@@ -6,9 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { AnimationEvent } from '@angular/animations';
-import { FocusTrapFactory } from '@angular/cdk/a11y';
+import { FocusTrapFactory, InteractivityChecker } from '@angular/cdk/a11y';
 import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, DomPortal, TemplatePortal } from '@angular/cdk/portal';
-import { ChangeDetectorRef, ComponentRef, ElementRef, EmbeddedViewRef, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, ComponentRef, ElementRef, EmbeddedViewRef, NgZone, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DialogConfig } from './dialog-config';
 export declare function throwDialogContentAlreadyAttachedError(): void;
@@ -20,6 +20,8 @@ export declare class CdkDialogContainer extends BasePortalOutlet implements OnDe
     private _elementRef;
     private _focusTrapFactory;
     private _changeDetectorRef;
+    private readonly _interactivityChecker;
+    private readonly _ngZone;
     /** The dialog configuration. */
     _config: DialogConfig;
     private readonly _document;
@@ -46,7 +48,7 @@ export declare class CdkDialogContainer extends BasePortalOutlet implements OnDe
     readonly _afterExit: Subject<void>;
     /** Stream of animation `done` events. */
     readonly _animationDone: Subject<AnimationEvent>;
-    constructor(_elementRef: ElementRef<HTMLElement>, _focusTrapFactory: FocusTrapFactory, _changeDetectorRef: ChangeDetectorRef, _document: any, 
+    constructor(_elementRef: ElementRef<HTMLElement>, _focusTrapFactory: FocusTrapFactory, _changeDetectorRef: ChangeDetectorRef, _interactivityChecker: InteractivityChecker, _ngZone: NgZone, _document: any, 
     /** The dialog configuration. */
     _config: DialogConfig);
     /** Initializes the dialog container with the attached content. */
@@ -79,10 +81,21 @@ export declare class CdkDialogContainer extends BasePortalOutlet implements OnDe
     /** Focuses the dialog container. */
     private _focusDialogContainer;
     /**
-     * Autofocus the first tabbable element inside of the dialog, if there is not a tabbable element,
-     * focus the dialog instead.
+     * Focuses the provided element. If the element is not focusable, it will add a tabIndex
+     * attribute to forcefully focus it. The attribute is removed after focus is moved.
+     * @param element The element to focus.
      */
-    private _autoFocusFirstTabbableElement;
+    private _forceFocus;
+    /**
+     * Focuses the first element that matches the given selector within the focus trap.
+     * @param selector The CSS selector for the element to set focus to.
+     */
+    private _focusByCssSelector;
+    /**
+     * Autofocus the element specified by the autoFocus field. When autoFocus is not 'dialog', if
+     * for some reason the element cannot be focused, the dialog container will be focused.
+     */
+    private _autoFocus;
     /** Returns the focus to the element focused before the dialog was open. */
     private _returnFocusAfterDialog;
 }

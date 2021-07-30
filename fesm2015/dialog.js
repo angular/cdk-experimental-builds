@@ -1,9 +1,9 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { FocusTrapFactory, A11yModule } from '@angular/cdk/a11y';
+import { FocusTrapFactory, InteractivityChecker, A11yModule } from '@angular/cdk/a11y';
 import { _getFocusedElementPierceShadowDom } from '@angular/cdk/platform';
 import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, TemplatePortal, PortalModule } from '@angular/cdk/portal';
 import { DOCUMENT, Location } from '@angular/common';
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, Optional, Inject, HostBinding, ViewChild, InjectionToken, Injector, InjectFlags, Injectable, Type, SkipSelf, NgModule } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, NgZone, Optional, Inject, HostBinding, ViewChild, InjectionToken, Injector, InjectFlags, Injectable, Type, SkipSelf, NgModule } from '@angular/core';
 import { Subject, defer, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { ESCAPE, hasModifierKey } from '@angular/cdk/keycodes';
@@ -40,8 +40,12 @@ class DialogConfig {
         this.ariaDescribedBy = null;
         /** Aria label to assign to the dialog element */
         this.ariaLabel = null;
-        /** Whether the dialog should focus the first focusable element on open. */
-        this.autoFocus = true;
+        /**
+         * Where the dialog should focus on open.
+         * @breaking-change 14.0.0 Remove boolean option from autoFocus. Use string or
+         * AutoFocusTarget instead.
+         */
+        this.autoFocus = 'first-tabbable';
         /** Duration of the enter animation. Has to be a valid CSS value (e.g. 100ms). */
         this.enterAnimationDuration = '225ms';
         /** Duration of the exit animation. Has to be a valid CSS value (e.g. 50ms). */
@@ -64,13 +68,15 @@ function throwDialogContentAlreadyAttachedError() {
  * @docs-private
  */
 class CdkDialogContainer extends BasePortalOutlet {
-    constructor(_elementRef, _focusTrapFactory, _changeDetectorRef, _document, 
+    constructor(_elementRef, _focusTrapFactory, _changeDetectorRef, _interactivityChecker, _ngZone, _document, 
     /** The dialog configuration. */
     _config) {
         super();
         this._elementRef = _elementRef;
         this._focusTrapFactory = _focusTrapFactory;
         this._changeDetectorRef = _changeDetectorRef;
+        this._interactivityChecker = _interactivityChecker;
+        this._ngZone = _ngZone;
         this._config = _config;
         /** State of the dialog animation. */
         this._state = 'enter';
@@ -110,7 +116,7 @@ class CdkDialogContainer extends BasePortalOutlet {
         })).subscribe(event => {
             // Emit lifecycle events based on animation `done` callback.
             if (event.toState === 'enter') {
-                this._autoFocusFirstTabbableElement();
+                this._autoFocus();
                 this._afterEnter.next();
                 this._afterEnter.complete();
             }
@@ -195,33 +201,70 @@ class CdkDialogContainer extends BasePortalOutlet {
         }
     }
     /**
-     * Autofocus the first tabbable element inside of the dialog, if there is not a tabbable element,
-     * focus the dialog instead.
+     * Focuses the provided element. If the element is not focusable, it will add a tabIndex
+     * attribute to forcefully focus it. The attribute is removed after focus is moved.
+     * @param element The element to focus.
      */
-    _autoFocusFirstTabbableElement() {
+    _forceFocus(element, options) {
+        if (!this._interactivityChecker.isFocusable(element)) {
+            element.tabIndex = -1;
+            // The tabindex attribute should be removed to avoid navigating to that element again
+            this._ngZone.runOutsideAngular(() => {
+                element.addEventListener('blur', () => element.removeAttribute('tabindex'));
+                element.addEventListener('mousedown', () => element.removeAttribute('tabindex'));
+            });
+        }
+        element.focus(options);
+    }
+    /**
+     * Focuses the first element that matches the given selector within the focus trap.
+     * @param selector The CSS selector for the element to set focus to.
+     */
+    _focusByCssSelector(selector, options) {
+        let elementToFocus = this._elementRef.nativeElement.querySelector(selector);
+        if (elementToFocus) {
+            this._forceFocus(elementToFocus, options);
+        }
+    }
+    /**
+     * Autofocus the element specified by the autoFocus field. When autoFocus is not 'dialog', if
+     * for some reason the element cannot be focused, the dialog container will be focused.
+     */
+    _autoFocus() {
         const element = this._elementRef.nativeElement;
         // If were to attempt to focus immediately, then the content of the dialog would not yet be
         // ready in instances where change detection has to run first. To deal with this, we simply
-        // wait for the microtask queue to be empty.
-        if (this._config.autoFocus) {
-            this._focusTrap.focusInitialElementWhenReady().then(hasMovedFocus => {
-                // If we didn't find any focusable elements inside the dialog, focus the
-                // container so the user can't tab into other elements behind it.
-                if (!hasMovedFocus) {
+        // wait for the microtask queue to be empty when setting focus when autoFocus isn't set to
+        // dialog. If the element inside the dialog can't be focused, then the container is focused
+        // so the user can't tab into other elements behind it.
+        switch (this._config.autoFocus) {
+            case false:
+            case 'dialog':
+                const activeElement = _getFocusedElementPierceShadowDom();
+                // Ensure that focus is on the dialog container. It's possible that a different
+                // component tried to move focus while the open animation was running. See:
+                // https://github.com/angular/components/issues/16215. Note that we only want to do this
+                // if the focus isn't inside the dialog already, because it's possible that the consumer
+                // turned off `autoFocus` in order to move focus themselves.
+                if (activeElement !== element && !element.contains(activeElement)) {
                     element.focus();
                 }
-            });
-        }
-        else {
-            const activeElement = _getFocusedElementPierceShadowDom();
-            // Otherwise ensure that focus is on the dialog container. It's possible that a different
-            // component tried to move focus while the open animation was running. See:
-            // https://github.com/angular/components/issues/16215. Note that we only want to do this
-            // if the focus isn't inside the dialog already, because it's possible that the consumer
-            // turned off `autoFocus` in order to move focus themselves.
-            if (activeElement !== element && !element.contains(activeElement)) {
-                element.focus();
-            }
+                break;
+            case true:
+            case 'first-tabbable':
+                this._focusTrap.focusInitialElementWhenReady()
+                    .then(hasMovedFocus => {
+                    if (!hasMovedFocus) {
+                        element.focus();
+                    }
+                });
+                break;
+            case 'first-heading':
+                this._focusByCssSelector('h1, h2, h3, h4, h5, h6, [role="heading"]');
+                break;
+            default:
+                this._focusByCssSelector(this._config.autoFocus);
+                break;
         }
     }
     /** Returns the focus to the element focused before the dialog was open. */
@@ -229,7 +272,7 @@ class CdkDialogContainer extends BasePortalOutlet {
         const toFocus = this._elementFocusedBeforeDialogWasOpened;
         // We need the extra check, because IE can set the `activeElement` to null in some cases.
         if (toFocus && typeof toFocus.focus === 'function') {
-            const activeElement = this._document.activeElement;
+            const activeElement = _getFocusedElementPierceShadowDom();
             const element = this._elementRef.nativeElement;
             // Make sure that focus is still inside the dialog or is on the body (usually because a
             // non-focusable element like the backdrop was clicked) before moving it. It's possible that
@@ -276,6 +319,8 @@ CdkDialogContainer.ctorParameters = () => [
     { type: ElementRef },
     { type: FocusTrapFactory },
     { type: ChangeDetectorRef },
+    { type: InteractivityChecker },
+    { type: NgZone },
     { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [DOCUMENT,] }] },
     { type: DialogConfig }
 ];

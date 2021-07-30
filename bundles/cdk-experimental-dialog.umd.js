@@ -352,8 +352,12 @@
             this.ariaDescribedBy = null;
             /** Aria label to assign to the dialog element */
             this.ariaLabel = null;
-            /** Whether the dialog should focus the first focusable element on open. */
-            this.autoFocus = true;
+            /**
+             * Where the dialog should focus on open.
+             * @breaking-change 14.0.0 Remove boolean option from autoFocus. Use string or
+             * AutoFocusTarget instead.
+             */
+            this.autoFocus = 'first-tabbable';
             /** Duration of the enter animation. Has to be a valid CSS value (e.g. 100ms). */
             this.enterAnimationDuration = '225ms';
             /** Duration of the exit animation. Has to be a valid CSS value (e.g. 50ms). */
@@ -371,13 +375,15 @@
      */
     var CdkDialogContainer = /** @class */ (function (_super) {
         __extends(CdkDialogContainer, _super);
-        function CdkDialogContainer(_elementRef, _focusTrapFactory, _changeDetectorRef, _document, 
+        function CdkDialogContainer(_elementRef, _focusTrapFactory, _changeDetectorRef, _interactivityChecker, _ngZone, _document, 
         /** The dialog configuration. */
         _config) {
             var _this = _super.call(this) || this;
             _this._elementRef = _elementRef;
             _this._focusTrapFactory = _focusTrapFactory;
             _this._changeDetectorRef = _changeDetectorRef;
+            _this._interactivityChecker = _interactivityChecker;
+            _this._ngZone = _ngZone;
             _this._config = _config;
             /** State of the dialog animation. */
             _this._state = 'enter';
@@ -417,7 +423,7 @@
             })).subscribe(function (event) {
                 // Emit lifecycle events based on animation `done` callback.
                 if (event.toState === 'enter') {
-                    _this._autoFocusFirstTabbableElement();
+                    _this._autoFocus();
                     _this._afterEnter.next();
                     _this._afterEnter.complete();
                 }
@@ -519,33 +525,70 @@
             }
         };
         /**
-         * Autofocus the first tabbable element inside of the dialog, if there is not a tabbable element,
-         * focus the dialog instead.
+         * Focuses the provided element. If the element is not focusable, it will add a tabIndex
+         * attribute to forcefully focus it. The attribute is removed after focus is moved.
+         * @param element The element to focus.
          */
-        CdkDialogContainer.prototype._autoFocusFirstTabbableElement = function () {
+        CdkDialogContainer.prototype._forceFocus = function (element, options) {
+            if (!this._interactivityChecker.isFocusable(element)) {
+                element.tabIndex = -1;
+                // The tabindex attribute should be removed to avoid navigating to that element again
+                this._ngZone.runOutsideAngular(function () {
+                    element.addEventListener('blur', function () { return element.removeAttribute('tabindex'); });
+                    element.addEventListener('mousedown', function () { return element.removeAttribute('tabindex'); });
+                });
+            }
+            element.focus(options);
+        };
+        /**
+         * Focuses the first element that matches the given selector within the focus trap.
+         * @param selector The CSS selector for the element to set focus to.
+         */
+        CdkDialogContainer.prototype._focusByCssSelector = function (selector, options) {
+            var elementToFocus = this._elementRef.nativeElement.querySelector(selector);
+            if (elementToFocus) {
+                this._forceFocus(elementToFocus, options);
+            }
+        };
+        /**
+         * Autofocus the element specified by the autoFocus field. When autoFocus is not 'dialog', if
+         * for some reason the element cannot be focused, the dialog container will be focused.
+         */
+        CdkDialogContainer.prototype._autoFocus = function () {
             var element = this._elementRef.nativeElement;
             // If were to attempt to focus immediately, then the content of the dialog would not yet be
             // ready in instances where change detection has to run first. To deal with this, we simply
-            // wait for the microtask queue to be empty.
-            if (this._config.autoFocus) {
-                this._focusTrap.focusInitialElementWhenReady().then(function (hasMovedFocus) {
-                    // If we didn't find any focusable elements inside the dialog, focus the
-                    // container so the user can't tab into other elements behind it.
-                    if (!hasMovedFocus) {
+            // wait for the microtask queue to be empty when setting focus when autoFocus isn't set to
+            // dialog. If the element inside the dialog can't be focused, then the container is focused
+            // so the user can't tab into other elements behind it.
+            switch (this._config.autoFocus) {
+                case false:
+                case 'dialog':
+                    var activeElement = platform._getFocusedElementPierceShadowDom();
+                    // Ensure that focus is on the dialog container. It's possible that a different
+                    // component tried to move focus while the open animation was running. See:
+                    // https://github.com/angular/components/issues/16215. Note that we only want to do this
+                    // if the focus isn't inside the dialog already, because it's possible that the consumer
+                    // turned off `autoFocus` in order to move focus themselves.
+                    if (activeElement !== element && !element.contains(activeElement)) {
                         element.focus();
                     }
-                });
-            }
-            else {
-                var activeElement = platform._getFocusedElementPierceShadowDom();
-                // Otherwise ensure that focus is on the dialog container. It's possible that a different
-                // component tried to move focus while the open animation was running. See:
-                // https://github.com/angular/components/issues/16215. Note that we only want to do this
-                // if the focus isn't inside the dialog already, because it's possible that the consumer
-                // turned off `autoFocus` in order to move focus themselves.
-                if (activeElement !== element && !element.contains(activeElement)) {
-                    element.focus();
-                }
+                    break;
+                case true:
+                case 'first-tabbable':
+                    this._focusTrap.focusInitialElementWhenReady()
+                        .then(function (hasMovedFocus) {
+                        if (!hasMovedFocus) {
+                            element.focus();
+                        }
+                    });
+                    break;
+                case 'first-heading':
+                    this._focusByCssSelector('h1, h2, h3, h4, h5, h6, [role="heading"]');
+                    break;
+                default:
+                    this._focusByCssSelector(this._config.autoFocus);
+                    break;
             }
         };
         /** Returns the focus to the element focused before the dialog was open. */
@@ -553,7 +596,7 @@
             var toFocus = this._elementFocusedBeforeDialogWasOpened;
             // We need the extra check, because IE can set the `activeElement` to null in some cases.
             if (toFocus && typeof toFocus.focus === 'function') {
-                var activeElement = this._document.activeElement;
+                var activeElement = platform._getFocusedElementPierceShadowDom();
                 var element = this._elementRef.nativeElement;
                 // Make sure that focus is still inside the dialog or is on the body (usually because a
                 // non-focusable element like the backdrop was clicked) before moving it. It's possible that
@@ -595,6 +638,8 @@
         { type: core.ElementRef },
         { type: a11y.FocusTrapFactory },
         { type: core.ChangeDetectorRef },
+        { type: a11y.InteractivityChecker },
+        { type: core.NgZone },
         { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [common.DOCUMENT,] }] },
         { type: DialogConfig }
     ]; };
