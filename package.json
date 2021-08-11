@@ -1,6 +1,6 @@
 {
   "name": "@angular/cdk-experimental",
-  "version": "12.2.0-sha-7a97590ae",
+  "version": "12.2.0",
   "description": "Experimental components for Angular CDK",
   "repository": {
     "type": "git",
@@ -12,16 +12,13 @@
   },
   "homepage": "https://github.com/angular/components#readme",
   "peerDependencies": {
-    "@angular/cdk": "12.2.0-sha-7a97590ae",
+    "@angular/cdk": "12.2.0",
     "@angular/core": "^12.0.0 || ^13.0.0-0"
   },
   "dependencies": {
     "tslib": "^2.2.0"
   },
   "sideEffects": false,
-  "publishConfig": {
-    "registry": "https://wombat-dressing-room.appspot.com"
-  },
   "main": "./bundles/cdk-experimental.umd.js",
   "fesm2015": "./fesm2015/cdk-experimental.js",
   "esm2015": "./esm2015/index.js",
