@@ -736,10 +736,10 @@
         HeaderRowEventDispatcher,
         ColumnResizeNotifierSource,
     ];
-    var TABLE_PROVIDERS = __spreadArray(__spreadArray([], __read(PROVIDERS)), [
+    var TABLE_PROVIDERS = __spreadArray(__spreadArray([], __read(PROVIDERS), false), [
         TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER,
-    ]);
-    var FLEX_PROVIDERS = __spreadArray(__spreadArray([], __read(PROVIDERS)), [FLEX_RESIZE_STRATEGY_PROVIDER]);
+    ], false);
+    var FLEX_PROVIDERS = __spreadArray(__spreadArray([], __read(PROVIDERS), false), [FLEX_RESIZE_STRATEGY_PROVIDER], false);
 
     /**
      * Explicitly enables column resizing for a table-based cdk-table.
@@ -762,9 +762,9 @@
     CdkColumnResize.decorators = [
         { type: core.Directive, args: [{
                     selector: 'table[cdk-table][columnResize]',
-                    providers: __spreadArray(__spreadArray([], __read(TABLE_PROVIDERS)), [
+                    providers: __spreadArray(__spreadArray([], __read(TABLE_PROVIDERS), false), [
                         { provide: ColumnResize, useExisting: CdkColumnResize },
-                    ]),
+                    ], false),
                 },] }
     ];
     CdkColumnResize.ctorParameters = function () { return [
@@ -797,9 +797,9 @@
     CdkColumnResizeFlex.decorators = [
         { type: core.Directive, args: [{
                     selector: 'cdk-table[columnResize]',
-                    providers: __spreadArray(__spreadArray([], __read(FLEX_PROVIDERS)), [
+                    providers: __spreadArray(__spreadArray([], __read(FLEX_PROVIDERS), false), [
                         { provide: ColumnResize, useExisting: CdkColumnResizeFlex },
-                    ]),
+                    ], false),
                 },] }
     ];
     CdkColumnResizeFlex.ctorParameters = function () { return [
@@ -832,9 +832,9 @@
     CdkDefaultEnabledColumnResize.decorators = [
         { type: core.Directive, args: [{
                     selector: 'table[cdk-table]',
-                    providers: __spreadArray(__spreadArray([], __read(TABLE_PROVIDERS)), [
+                    providers: __spreadArray(__spreadArray([], __read(TABLE_PROVIDERS), false), [
                         { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResize },
-                    ]),
+                    ], false),
                 },] }
     ];
     CdkDefaultEnabledColumnResize.ctorParameters = function () { return [
@@ -867,9 +867,9 @@
     CdkDefaultEnabledColumnResizeFlex.decorators = [
         { type: core.Directive, args: [{
                     selector: 'cdk-table',
-                    providers: __spreadArray(__spreadArray([], __read(FLEX_PROVIDERS)), [
+                    providers: __spreadArray(__spreadArray([], __read(FLEX_PROVIDERS), false), [
                         { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResizeFlex },
-                    ]),
+                    ], false),
                 },] }
     ];
     CdkDefaultEnabledColumnResizeFlex.ctorParameters = function () { return [

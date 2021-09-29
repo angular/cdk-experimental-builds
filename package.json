@@ -16,7 +16,7 @@
     "@angular/core": "^13.0.0-0 || ^14.0.0-0"
   },
   "dependencies": {
-    "tslib": "^2.2.0"
+    "tslib": "^2.3.0"
   },
   "sideEffects": false,
   "main": "./bundles/cdk-experimental.umd.js",

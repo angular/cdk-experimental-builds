@@ -568,7 +568,7 @@
             this._data.forEach(function (value, index) {
                 toSelect.push({ value: value, index: index });
             });
-            (_a = this._selection).select.apply(_a, __spreadArray([], __read(toSelect)));
+            (_a = this._selection).select.apply(_a, __spreadArray([], __read(toSelect), false));
         };
         CdkSelection.prototype._clearAll = function () {
             var _a;
@@ -576,7 +576,7 @@
             this._data.forEach(function (value, index) {
                 toDeselect.push({ value: value, index: index });
             });
-            (_a = this._selection).deselect.apply(_a, __spreadArray([], __read(toDeselect)));
+            (_a = this._selection).deselect.apply(_a, __spreadArray([], __read(toDeselect), false));
         };
         CdkSelection.prototype._updateSelectAllState = function () {
             if (this.isAllSelected()) {

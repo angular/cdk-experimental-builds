@@ -1299,7 +1299,7 @@
     var CdkMenuItemSelectable = /** @class */ (function (_super) {
         __extends(CdkMenuItemSelectable, _super);
         function CdkMenuItemSelectable() {
-            var _this = _super.apply(this, __spreadArray([], __read(arguments))) || this;
+            var _this = _super.apply(this, __spreadArray([], __read(arguments), false)) || this;
             /** Event emitted when the selectable item is clicked */
             _this.toggled = new i0.EventEmitter();
             _this._checked = false;
