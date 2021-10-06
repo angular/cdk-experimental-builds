@@ -699,9 +699,8 @@ CdkMenuItemTrigger.propDecorators = {
 // TODO refactor this to be configurable allowing for custom elements to be removed
 /** Removes all icons from within the given element. */
 function removeIcons(element) {
-    var _a;
     for (const icon of Array.from(element.querySelectorAll('mat-icon, .material-icons'))) {
-        (_a = icon.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(icon);
+        icon.remove();
     }
 }
 /**

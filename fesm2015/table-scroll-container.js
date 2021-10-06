@@ -45,11 +45,8 @@ class CdkTableScrollContainer {
     }
     ngOnDestroy() {
         var _a;
-        // TODO: Use remove() once we're off IE11.
-        if ((_a = this._styleElement) === null || _a === void 0 ? void 0 : _a.parentNode) {
-            this._styleElement.parentNode.removeChild(this._styleElement);
-            this._styleElement = undefined;
-        }
+        (_a = this._styleElement) === null || _a === void 0 ? void 0 : _a.remove();
+        this._styleElement = undefined;
     }
     stickyColumnsUpdated({ sizes }) {
         this._startSizes = sizes;

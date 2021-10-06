@@ -317,11 +317,9 @@ class CdkFlexTableResizeStrategy extends ResizeStrategy {
         return `cdk-column-${cssFriendlyColumnName}`;
     }
     ngOnDestroy() {
-        // TODO: Use remove() once we're off IE11.
-        if (this._styleElement && this._styleElement.parentNode) {
-            this._styleElement.parentNode.removeChild(this._styleElement);
-            this._styleElement = undefined;
-        }
+        var _a;
+        (_a = this._styleElement) === null || _a === void 0 ? void 0 : _a.remove();
+        this._styleElement = undefined;
     }
     _getPropertyValue(cssFriendlyColumnName, key) {
         const properties = this._getColumnPropertiesMap(cssFriendlyColumnName);
@@ -712,14 +710,11 @@ class Resizable {
         });
     }
     ngOnDestroy() {
+        var _a, _b;
         this.destroyed.next();
         this.destroyed.complete();
-        if (this.inlineHandle) {
-            this.elementRef.nativeElement.removeChild(this.inlineHandle);
-        }
-        if (this.overlayRef) {
-            this.overlayRef.dispose();
-        }
+        (_a = this.inlineHandle) === null || _a === void 0 ? void 0 : _a.remove();
+        (_b = this.overlayRef) === null || _b === void 0 ? void 0 : _b.dispose();
     }
     _createOverlayForHandle() {
         // Use of overlays allows us to properly capture click events spanning parts

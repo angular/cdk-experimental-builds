@@ -121,10 +121,9 @@ class CdkOption {
     }
     /** Remove any child from the given element which can be identified as an icon. */
     _removeIcons(element) {
-        var _a;
         // TODO: make this a configurable function that can removed any desired type of node.
         for (const icon of Array.from(element.querySelectorAll('mat-icon, .material-icons'))) {
-            (_a = icon.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(icon);
+            icon.remove();
         }
     }
     getElementRef() {

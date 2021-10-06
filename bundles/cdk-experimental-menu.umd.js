@@ -1040,11 +1040,10 @@
     /** Removes all icons from within the given element. */
     function removeIcons(element) {
         var e_1, _g;
-        var _a;
         try {
             for (var _h = __values(Array.from(element.querySelectorAll('mat-icon, .material-icons'))), _j = _h.next(); !_j.done; _j = _h.next()) {
                 var icon = _j.value;
-                (_a = icon.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(icon);
+                icon.remove();
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }

@@ -356,11 +356,8 @@
         };
         CdkTableScrollContainer.prototype.ngOnDestroy = function () {
             var _a;
-            // TODO: Use remove() once we're off IE11.
-            if ((_a = this._styleElement) === null || _a === void 0 ? void 0 : _a.parentNode) {
-                this._styleElement.parentNode.removeChild(this._styleElement);
-                this._styleElement = undefined;
-            }
+            (_a = this._styleElement) === null || _a === void 0 ? void 0 : _a.remove();
+            this._styleElement = undefined;
         };
         CdkTableScrollContainer.prototype.stickyColumnsUpdated = function (_b) {
             var sizes = _b.sizes;

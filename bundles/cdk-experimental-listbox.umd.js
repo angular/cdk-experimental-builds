@@ -441,12 +441,11 @@
         /** Remove any child from the given element which can be identified as an icon. */
         CdkOption.prototype._removeIcons = function (element) {
             var e_1, _c;
-            var _a;
             try {
                 // TODO: make this a configurable function that can removed any desired type of node.
                 for (var _d = __values(Array.from(element.querySelectorAll('mat-icon, .material-icons'))), _e = _d.next(); !_e.done; _e = _d.next()) {
                     var icon = _e.value;
-                    (_a = icon.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(icon);
+                    icon.remove();
                 }
             }
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
