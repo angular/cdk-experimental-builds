@@ -7,6 +7,7 @@
  */
 import { NgZone } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import * as i0 from "@angular/core";
 /** Coordinates events between the column resize directives. */
 export declare class HeaderRowEventDispatcher {
     private readonly _ngZone;
@@ -38,4 +39,6 @@ export declare class HeaderRowEventDispatcher {
      */
     resizeOverlayVisibleForHeaderRow(row: Element): Observable<boolean>;
     private _enterZone;
+    static ɵfac: i0.ɵɵFactoryDeclaration<HeaderRowEventDispatcher, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<HeaderRowEventDispatcher>;
 }

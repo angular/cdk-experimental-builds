@@ -11,6 +11,7 @@ import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, DomPortal, Template
 import { ChangeDetectorRef, ComponentRef, ElementRef, EmbeddedViewRef, NgZone, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DialogConfig } from './dialog-config';
+import * as i0 from "@angular/core";
 export declare function throwDialogContentAlreadyAttachedError(): void;
 /**
  * Internal component that wraps user-provided dialog content.
@@ -33,7 +34,7 @@ export declare class CdkDialogContainer extends BasePortalOutlet implements OnDe
     private _focusTrap;
     get _ariaLabel(): string | null;
     get _ariaDescribedBy(): string | null | undefined;
-    get _role(): import("@angular/cdk-experimental/dialog/dialog-config").DialogRole | undefined;
+    get _role(): import("./dialog-config").DialogRole | undefined;
     _ariaModal: boolean;
     get _tabindex(): number;
     /** The portal host inside of this container into which the dialog content will be loaded. */
@@ -98,4 +99,6 @@ export declare class CdkDialogContainer extends BasePortalOutlet implements OnDe
     private _autoFocus;
     /** Returns the focus to the element focused before the dialog was open. */
     private _returnFocusAfterDialog;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkDialogContainer, [null, null, null, null, null, { optional: true; }, null]>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CdkDialogContainer, "cdk-dialog-container", never, {}, {}, never, never>;
 }

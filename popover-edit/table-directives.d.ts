@@ -14,6 +14,7 @@ import { EditServices } from './edit-services';
 import { FocusDispatcher } from './focus-dispatcher';
 import { FocusEscapeNotifier, FocusEscapeNotifierFactory } from './focus-escape-notifier';
 import { EditRef } from './edit-ref';
+import * as i0 from "@angular/core";
 /**
  * Describes the number of columns before and after the originating cell that the
  * edit popup should span. In left to right locales, before means left and after means
@@ -38,6 +39,8 @@ export declare class CdkEditable implements AfterViewInit, OnDestroy {
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     private _listenForTableEvents;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditable, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditable, "table[editable], cdk-table[editable], mat-table[editable]", never, {}, {}, never>;
 }
 /**
  * Attaches an ng-template to a cell and shows it when instructed to by the
@@ -82,6 +85,8 @@ export declare class CdkPopoverEdit<C> implements AfterViewInit, OnDestroy {
     private _getPositionStrategy;
     private _updateOverlaySize;
     private _maybeReturnFocusToCell;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEdit<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEdit<any>, "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", never, { "template": "cdkPopoverEdit"; "context": "cdkPopoverEditContext"; "colspan": "cdkPopoverEditColspan"; "disabled": "cdkPopoverEditDisabled"; }, {}, never>;
 }
 /**
  * Attaches an ng-template to a cell and shows it when instructed to by the
@@ -93,6 +98,8 @@ export declare class CdkPopoverEditTabOut<C> extends CdkPopoverEdit<C> {
     protected focusTrap?: FocusEscapeNotifier;
     constructor(elementRef: ElementRef, viewContainerRef: ViewContainerRef, services: EditServices, focusEscapeNotifierFactory: FocusEscapeNotifierFactory);
     protected initFocusTrap(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEditTabOut<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEditTabOut<any>, "[cdkPopoverEdit][cdkPopoverEditTabOut]", never, { "template": "cdkPopoverEdit"; "context": "cdkPopoverEditContext"; "colspan": "cdkPopoverEditColspan"; "disabled": "cdkPopoverEditDisabled"; }, {}, never>;
 }
 /**
  * A structural directive that shows its contents when the table row containing
@@ -126,6 +133,8 @@ export declare class CdkRowHoverContent implements AfterViewInit, OnDestroy {
      */
     protected makeElementVisible(element: HTMLElement): void;
     private _listenForHoverAndFocusEvents;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkRowHoverContent, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowHoverContent, "[cdkRowHoverContent]", never, {}, {}, never>;
 }
 /**
  * Opens the closest edit popover to this element, whether it's associated with this exact
@@ -136,4 +145,6 @@ export declare class CdkEditOpen {
     protected readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
     constructor(elementRef: ElementRef<HTMLElement>, editEventDispatcher: EditEventDispatcher<EditRef<unknown>>);
     openEdit(evt: Event): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditOpen, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditOpen, "[cdkEditOpen]", never, {}, {}, never>;
 }

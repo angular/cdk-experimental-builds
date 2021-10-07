@@ -9,6 +9,7 @@ import { OnDestroy, NgZone } from '@angular/core';
 import { ControlContainer } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { EditEventDispatcher } from './edit-event-dispatcher';
+import * as i0 from "@angular/core";
 /**
  * Used for communication between the form within the edit lens and the
  * table that launched it. Provided by CdkEditControl within the lens.
@@ -46,4 +47,6 @@ export declare class EditRef<FormValue> implements OnDestroy {
      * revert value.
      */
     reset(value?: FormValue): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<EditRef<any>, [{ self: true; }, null, null]>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<EditRef<any>>;
 }

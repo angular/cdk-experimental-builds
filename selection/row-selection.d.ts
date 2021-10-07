@@ -7,6 +7,7 @@
  */
 import { NumberInput } from '@angular/cdk/coercion';
 import { CdkSelection } from './selection';
+import * as i0 from "@angular/core";
 /**
  * Applies `cdk-selected` class and `aria-selected` to an element.
  *
@@ -22,4 +23,6 @@ export declare class CdkRowSelection<T> {
     protected _index?: number;
     constructor(_selection: CdkSelection<T>);
     static ngAcceptInputType_index: NumberInput;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkRowSelection<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowSelection<any>, "[cdkRowSelection]", never, { "value": "cdkRowSelectionValue"; "index": "cdkRowSelectionIndex"; }, {}, never>;
 }

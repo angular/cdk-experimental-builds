@@ -13,6 +13,7 @@ import { CdkMenuItemTrigger } from './menu-item-trigger';
 import { Menu } from './menu-interface';
 import { FocusableElement } from './pointer-focus-tracker';
 import { Toggler, MenuAim } from './menu-aim';
+import * as i0 from "@angular/core";
 /**
  * Directive which provides the ability for an element to be focused and navigated to using the
  * keyboard when residing in a CdkMenu, CdkMenuBar, or CdkMenuGroup. It performs user defined
@@ -95,4 +96,6 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
     private _getMenuStack;
     ngOnDestroy(): void;
     static ngAcceptInputType_disabled: BooleanInput;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItem, [null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItem, "[cdkMenuItem]", ["cdkMenuItem"], { "disabled": "disabled"; }, { "triggered": "cdkMenuItemTriggered"; }, never>;
 }

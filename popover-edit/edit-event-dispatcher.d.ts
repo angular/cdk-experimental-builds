@@ -7,6 +7,7 @@
  */
 import { NgZone } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import * as i0 from "@angular/core";
 /**
  * The possible states for hover content:
  * OFF - Not rendered.
@@ -93,4 +94,6 @@ export declare class EditEventDispatcher<R> {
     private _getFirstRowWithHoverContent;
     private _getLastRowWithHoverContent;
     private _mapAllRowsToSingleRow;
+    static ɵfac: i0.ɵɵFactoryDeclaration<EditEventDispatcher<any>, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<EditEventDispatcher<any>>;
 }

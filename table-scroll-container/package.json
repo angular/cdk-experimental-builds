@@ -1,9 +1,9 @@
 {
   "name": "@angular/cdk-experimental/table-scroll-container",
-  "main": "../bundles/cdk-experimental-table-scroll-container.umd.js",
-  "fesm2015": "../fesm2015/table-scroll-container.js",
-  "esm2015": "../esm2015/table-scroll-container/index.js",
+  "fesm2020": "../fesm2020/table-scroll-container.mjs",
+  "fesm2015": "../fesm2015/table-scroll-container.mjs",
+  "esm2020": "../esm2020/table-scroll-container/index.mjs",
   "typings": "./index.d.ts",
-  "module": "../fesm2015/table-scroll-container.js",
-  "es2015": "../fesm2015/table-scroll-container.js"
+  "module": "../fesm2015/table-scroll-container.mjs",
+  "es2020": "../fesm2020/table-scroll-container.mjs"
 }

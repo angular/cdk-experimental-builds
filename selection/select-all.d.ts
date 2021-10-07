@@ -9,6 +9,7 @@ import { OnDestroy, OnInit } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { CdkSelection } from './selection';
+import * as i0 from "@angular/core";
 /**
  * Makes the element a select-all toggle.
  *
@@ -46,4 +47,6 @@ export declare class CdkSelectAll<T> implements OnDestroy, OnInit {
     private _configureControlValueAccessor;
     private _assertValidParentSelection;
     ngOnDestroy(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectAll<any>, [{ optional: true; }, { optional: true; self: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectAll<any>, "[cdkSelectAll]", ["cdkSelectAll"], {}, {}, never>;
 }

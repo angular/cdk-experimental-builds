@@ -8,6 +8,7 @@
 import { Subject } from 'rxjs';
 import { ElementRef, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { EditRef } from './edit-ref';
+import * as i0 from "@angular/core";
 /** Options for what do to when the user clicks outside of an edit lens. */
 export declare type PopoverEditClickOutBehavior = 'close' | 'submit' | 'noop';
 /**
@@ -57,6 +58,8 @@ export declare class CdkEditControl<FormValue> implements OnDestroy, OnInit {
     /** Triggers submit on tab out if clickOutBehavior is 'submit'. */
     private _handleBlur;
     private _triggerFormSubmit;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditControl<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditControl<any>, "form[cdkEditControl]", never, { "clickOutBehavior": "cdkEditControlClickOutBehavior"; "preservedFormValue": "cdkEditControlPreservedFormValue"; "ignoreSubmitUnlessValid": "cdkEditControlIgnoreSubmitUnlessValid"; }, { "preservedFormValueChange": "cdkEditControlPreservedFormValueChange"; }, never>;
 }
 /** Reverts the form to its initial or previously submitted state on click. */
 export declare class CdkEditRevert<FormValue> {
@@ -65,6 +68,8 @@ export declare class CdkEditRevert<FormValue> {
     type: string;
     constructor(editRef: EditRef<FormValue>);
     revertEdit(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditRevert<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditRevert<any>, "button[cdkEditRevert]", never, { "type": "type"; }, {}, never>;
 }
 /** Closes the lens on click. */
 export declare class CdkEditClose<FormValue> {
@@ -72,4 +77,6 @@ export declare class CdkEditClose<FormValue> {
     protected readonly editRef: EditRef<FormValue>;
     constructor(elementRef: ElementRef<HTMLElement>, editRef: EditRef<FormValue>);
     closeEdit(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditClose<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditClose<any>, "[cdkEditClose]", never, {}, {}, never>;
 }

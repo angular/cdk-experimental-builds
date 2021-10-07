@@ -7,6 +7,7 @@
  */
 import { Directionality } from '@angular/cdk/bidi';
 import { PartialObserver } from 'rxjs';
+import * as i0 from "@angular/core";
 /**
  * Service responsible for moving cell focus around in response to keyboard events.
  * May be overridden to customize the keyboard behavior of popover edit.
@@ -25,4 +26,6 @@ export declare class FocusDispatcher {
     moveFocusVertically(currentCell: HTMLElement, offset: number): void;
     /** Translates arrow keydown events into focus move operations. */
     protected handleKeyboardEvent(event: KeyboardEvent): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FocusDispatcher, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<FocusDispatcher>;
 }

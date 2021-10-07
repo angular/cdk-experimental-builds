@@ -1,9 +1,9 @@
 {
   "name": "@angular/cdk-experimental/combobox",
-  "main": "../bundles/cdk-experimental-combobox.umd.js",
-  "fesm2015": "../fesm2015/combobox.js",
-  "esm2015": "../esm2015/combobox/index.js",
+  "fesm2020": "../fesm2020/combobox.mjs",
+  "fesm2015": "../fesm2015/combobox.mjs",
+  "esm2020": "../esm2020/combobox/index.mjs",
   "typings": "./index.d.ts",
-  "module": "../fesm2015/combobox.js",
-  "es2015": "../fesm2015/combobox.js"
+  "module": "../fesm2015/combobox.mjs",
+  "es2020": "../fesm2020/combobox.mjs"
 }

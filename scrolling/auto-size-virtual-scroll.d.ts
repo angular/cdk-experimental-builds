@@ -10,6 +10,7 @@ import { ListRange } from '@angular/cdk/collections';
 import { CdkVirtualScrollViewport, VirtualScrollStrategy } from '@angular/cdk/scrolling';
 import { OnChanges } from '@angular/core';
 import { Observable } from 'rxjs';
+import * as i0 from "@angular/core";
 /**
  * A class that tracks the size of items that have been seen and uses it to estimate the average
  * item size.
@@ -156,4 +157,6 @@ export declare class CdkAutoSizeVirtualScroll implements OnChanges {
     ngOnChanges(): void;
     static ngAcceptInputType_minBufferPx: NumberInput;
     static ngAcceptInputType_maxBufferPx: NumberInput;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkAutoSizeVirtualScroll, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkAutoSizeVirtualScroll, "cdk-virtual-scroll-viewport[autosize]", never, { "minBufferPx": "minBufferPx"; "maxBufferPx": "maxBufferPx"; }, {}, never>;
 }

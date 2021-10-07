@@ -8,6 +8,7 @@
 import { OnDestroy, Provider } from '@angular/core';
 import { CdkTable, _CoalescedStyleScheduler } from '@angular/cdk/table';
 import { ColumnResize } from './column-resize';
+import * as i0 from "@angular/core";
 /**
  * Provides an implementation for resizing a column.
  * The details of how resizing works for tables for flex mat-tables are quite different.
@@ -25,6 +26,8 @@ export declare abstract class ResizeStrategy {
     abstract applyMaxColumnSize(cssFriendlyColumnName: string, columnHeader: HTMLElement, minSizeInPx: number): void;
     /** Adjusts the width of the table element by the specified delta. */
     protected updateTableWidthAndStickyColumns(delta: number): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ResizeStrategy, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ResizeStrategy>;
 }
 /**
  * The optimially performing resize strategy for &lt;table&gt; elements with table-layout: fixed.
@@ -41,6 +44,8 @@ export declare class TableLayoutFixedResizeStrategy extends ResizeStrategy {
     applyColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number, previousSizeInPx?: number): void;
     applyMinColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number): void;
     applyMaxColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<TableLayoutFixedResizeStrategy, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<TableLayoutFixedResizeStrategy>;
 }
 /**
  * The optimally performing resize strategy for flex mat-tables.
@@ -71,6 +76,8 @@ export declare class CdkFlexTableResizeStrategy extends ResizeStrategy implement
     private _getStyleSheet;
     private _getColumnPropertiesMap;
     private _applySizeCss;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkFlexTableResizeStrategy, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<CdkFlexTableResizeStrategy>;
 }
 export declare const TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER: Provider;
 export declare const FLEX_RESIZE_STRATEGY_PROVIDER: Provider;

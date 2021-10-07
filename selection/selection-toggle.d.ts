@@ -10,6 +10,7 @@ import { OnDestroy, OnInit } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { CdkSelection } from './selection';
+import * as i0 from "@angular/core";
 /**
  * Makes the element a selection toggle.
  *
@@ -41,4 +42,6 @@ export declare class CdkSelectionToggle<T> implements OnDestroy, OnInit {
     private _configureControlValueAccessor;
     private _isSelected;
     static ngAcceptInputType_index: NumberInput;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionToggle<any>, [{ optional: true; }, { optional: true; self: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectionToggle<any>, "[cdkSelectionToggle]", ["cdkSelectionToggle"], { "value": "cdkSelectionToggleValue"; "index": "cdkSelectionToggleIndex"; }, {}, never>;
 }

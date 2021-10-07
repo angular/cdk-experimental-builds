@@ -1,11 +1,5 @@
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 import { Observable, Subject } from 'rxjs';
+import * as i0 from "@angular/core";
 /** Indicates the width of a column. */
 export interface ColumnSize {
     /** The ID/name of the column, as defined in CdkColumnDef. */
@@ -39,6 +33,8 @@ export declare class ColumnResizeNotifierSource {
     readonly resizeCompleted: Subject<ColumnSize>;
     /** Triggers a resize action. */
     readonly triggerResize: Subject<ColumnSizeAction>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResizeNotifierSource, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ColumnResizeNotifierSource>;
 }
 /** Service for triggering column resizes imperatively or being notified of them. */
 export declare class ColumnResizeNotifier {
@@ -48,4 +44,6 @@ export declare class ColumnResizeNotifier {
     constructor(_source: ColumnResizeNotifierSource);
     /** Instantly resizes the specified column. */
     resize(columnId: string, size: number): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResizeNotifier, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ColumnResizeNotifier>;
 }

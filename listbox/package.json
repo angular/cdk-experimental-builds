@@ -1,9 +1,9 @@
 {
   "name": "@angular/cdk-experimental/listbox",
-  "main": "../bundles/cdk-experimental-listbox.umd.js",
-  "fesm2015": "../fesm2015/listbox.js",
-  "esm2015": "../esm2015/listbox/index.js",
+  "fesm2020": "../fesm2020/listbox.mjs",
+  "fesm2015": "../fesm2015/listbox.mjs",
+  "esm2020": "../esm2020/listbox/index.mjs",
   "typings": "./index.d.ts",
-  "module": "../fesm2015/listbox.js",
-  "es2015": "../fesm2015/listbox.js"
+  "module": "../fesm2015/listbox.mjs",
+  "es2020": "../fesm2020/listbox.mjs"
 }
