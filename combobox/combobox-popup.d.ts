@@ -7,6 +7,7 @@
  */
 import { ElementRef, InjectionToken, OnInit } from '@angular/core';
 import { AriaHasPopupValue, CdkComboboxPanel } from './combobox-panel';
+import * as i0 from "@angular/core";
 export declare const PANEL: InjectionToken<CdkComboboxPanel<unknown>>;
 export declare class CdkComboboxPopup<T = unknown> implements OnInit {
     private readonly _elementRef;
@@ -23,4 +24,6 @@ export declare class CdkComboboxPopup<T = unknown> implements OnInit {
     ngOnInit(): void;
     registerWithPanel(): void;
     focusFirstElement(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkComboboxPopup<any>, [null, { optional: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkComboboxPopup<any>, "[cdkComboboxPopup]", ["cdkComboboxPopup"], { "role": "role"; "firstFocus": "firstFocus"; "id": "id"; "_explicitPanel": "parentPanel"; }, {}, never>;
 }

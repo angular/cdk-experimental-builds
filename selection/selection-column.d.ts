@@ -8,6 +8,7 @@
 import { CdkTable } from '@angular/cdk/table';
 import { OnDestroy, OnInit } from '@angular/core';
 import { CdkSelection } from './selection';
+import * as i0 from "@angular/core";
 /**
  * Column that adds row selecting checkboxes and a select-all checkbox if `cdkSelectionMultiple` is
  * `true`.
@@ -28,4 +29,6 @@ export declare class CdkSelectionColumn<T> implements OnInit, OnDestroy {
     ngOnInit(): void;
     ngOnDestroy(): void;
     private _syncColumnDefName;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionColumn<any>, [{ optional: true; }, { optional: true; }]>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CdkSelectionColumn<any>, "cdk-selection-column", never, { "name": "cdkSelectionColumnName"; }, {}, never, never>;
 }

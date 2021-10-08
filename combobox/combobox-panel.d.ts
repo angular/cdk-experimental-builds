@@ -1,3 +1,6 @@
+import { TemplateRef } from '@angular/core';
+import { Subject } from 'rxjs';
+import * as i0 from "@angular/core";
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -6,8 +9,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 export declare type AriaHasPopupValue = 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
-import { TemplateRef } from '@angular/core';
-import { Subject } from 'rxjs';
 export declare class CdkComboboxPanel<T = unknown> {
     readonly _templateRef: TemplateRef<unknown>;
     valueUpdated: Subject<T | T[]>;
@@ -21,4 +22,6 @@ export declare class CdkComboboxPanel<T = unknown> {
     focusContent(): void;
     /** Registers the content's id and the content type with the panel. */
     _registerContent(contentId: string, contentType: AriaHasPopupValue): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkComboboxPanel<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkComboboxPanel<any>, "ng-template[cdkComboboxPanel]", ["cdkComboboxPanel"], {}, {}, never>;
 }

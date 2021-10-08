@@ -12,6 +12,7 @@ import { CdkMenuPanel } from './menu-panel';
 import { Menu } from './menu-interface';
 import { MenuStack } from './menu-stack';
 import { MenuAim } from './menu-aim';
+import * as i0 from "@angular/core";
 /**
  * Whether the target element is a menu item to be ignored by the overlay background click handler.
  */
@@ -113,4 +114,6 @@ export declare class CdkMenuItemTrigger implements OnDestroy {
     private _subscribeToOutsideClicks;
     /** Destroy and unset the overlay reference it if exists */
     private _destroyOverlay;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemTrigger, [null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemTrigger, "[cdkMenuTriggerFor]", ["cdkMenuTriggerFor"], { "menuPanel": "cdkMenuTriggerFor"; }, { "opened": "cdkMenuOpened"; "closed": "cdkMenuClosed"; }, never>;
 }

@@ -12,6 +12,7 @@ import { Subject } from 'rxjs';
 import { ColumnResizeNotifierSource } from './column-resize-notifier';
 import { HeaderRowEventDispatcher } from './event-dispatcher';
 import { ResizeRef } from './resize-ref';
+import * as i0 from "@angular/core";
 /**
  * Base class for a component shown over the edge of a resizable column that is responsible
  * for handling column resize mouse events and displaying any visible UI on the column edge.
@@ -37,4 +38,6 @@ export declare abstract class ResizeOverlayHandle implements AfterViewInit, OnDe
     private _updateOverlayOffset;
     private _isLtr;
     private _notifyResizeEnded;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ResizeOverlayHandle, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<ResizeOverlayHandle, never, never, {}, {}, never>;
 }

@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 import { ControlValueAccessor } from '@angular/forms';
 import { CdkComboboxPanel } from '@angular/cdk-experimental/combobox';
 import { Directionality } from '@angular/cdk/bidi';
+import * as i0 from "@angular/core";
 export declare const CDK_LISTBOX_VALUE_ACCESSOR: any;
 export declare const PANEL: InjectionToken<CdkComboboxPanel<unknown>>;
 export declare class CdkOption<T = unknown> implements ListKeyManagerOption, Highlightable {
@@ -62,6 +63,8 @@ export declare class CdkOption<T = unknown> implements ListKeyManagerOption, Hig
     setInactiveStyles(): void;
     static ngAcceptInputType_selected: BooleanInput;
     static ngAcceptInputType_disabled: BooleanInput;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkOption<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkOption<any>, "[cdkOption]", ["cdkOption"], { "id": "id"; "selected": "selected"; "disabled": "disabled"; "value": "value"; }, { "selectionChange": "selectionChange"; }, never>;
 }
 export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnInit, ControlValueAccessor {
     readonly _parentPanel?: CdkComboboxPanel<T> | undefined;
@@ -153,6 +156,8 @@ export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnIni
     static ngAcceptInputType_multiple: BooleanInput;
     static ngAcceptInputType_useActiveDescendant: BooleanInput;
     static ngAcceptInputType_autoFocus: BooleanInput;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkListbox<any>, [{ optional: true; }, { optional: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "id": "id"; "multiple": "multiple"; "disabled": "disabled"; "useActiveDescendant": "useActiveDescendant"; "autoFocus": "autoFocus"; "orientation": "listboxOrientation"; "compareWith": "compareWith"; "_explicitPanel": "parentPanel"; }, { "selectionChange": "selectionChange"; }, ["_options"]>;
 }
 /** Change event that is being fired whenever the selected state of an option changes. */
 export interface ListboxSelectionChangeEvent<T> {

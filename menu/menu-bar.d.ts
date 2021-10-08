@@ -12,6 +12,7 @@ import { CdkMenuGroup } from './menu-group';
 import { Menu } from './menu-interface';
 import { MenuStack } from './menu-stack';
 import { MenuAim } from './menu-aim';
+import * as i0 from "@angular/core";
 /**
  * Directive applied to an element which configures it as a MenuBar by setting the appropriate
  * role, aria attributes, and accessible keyboard and mouse handling logic. The component that
@@ -82,4 +83,6 @@ export declare class CdkMenuBar extends CdkMenuGroup implements Menu, AfterConte
     /** Return true if the MenuBar has an open submenu. */
     private _hasOpenSubmenu;
     ngOnDestroy(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuBar, [null, null, null, { optional: true; self: true; }, { optional: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuBar, "[cdkMenuBar]", ["cdkMenuBar"], { "orientation": "cdkMenuBarOrientation"; }, {}, ["_allItems"]>;
 }

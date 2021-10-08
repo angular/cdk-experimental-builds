@@ -10,6 +10,7 @@ import { Directionality } from '@angular/cdk/bidi';
 import { Overlay } from '@angular/cdk/overlay';
 import { BooleanInput } from '@angular/cdk/coercion';
 import { CdkMenuPanel } from './menu-panel';
+import * as i0 from "@angular/core";
 /** Tracks the last open context menu trigger across the entire application. */
 export declare class ContextMenuTracker {
     /** The last open context menu trigger. */
@@ -19,6 +20,8 @@ export declare class ContextMenuTracker {
      * @param trigger the trigger for the currently open Context Menu.
      */
     update(trigger: CdkContextMenuTrigger): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ContextMenuTracker, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ContextMenuTracker>;
 }
 /** Configuration options passed to the context menu. */
 export declare type ContextMenuOptions = {
@@ -115,4 +118,6 @@ export declare class CdkContextMenuTrigger implements OnDestroy {
     /** Set the menu panels menu stack back to null. */
     private _resetPanelMenuStack;
     static ngAcceptInputType_disabled: BooleanInput;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkContextMenuTrigger, [null, null, null, null, { optional: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkContextMenuTrigger, "[cdkContextMenuTriggerFor]", ["cdkContextMenuTriggerFor"], { "menuPanel": "cdkContextMenuTriggerFor"; "disabled": "cdkContextMenuDisabled"; }, { "opened": "cdkContextMenuOpened"; "closed": "cdkContextMenuClosed"; }, never>;
 }

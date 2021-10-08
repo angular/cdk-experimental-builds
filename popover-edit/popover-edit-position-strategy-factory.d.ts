@@ -7,6 +7,7 @@
  */
 import { Directionality } from '@angular/cdk/bidi';
 import { Overlay, OverlaySizeConfig, PositionStrategy } from '@angular/cdk/overlay';
+import * as i0 from "@angular/core";
 /**
  * Overridable factory responsible for configuring how cdkPopoverEdit popovers are positioned
  * and sized.
@@ -22,6 +23,8 @@ export declare abstract class PopoverEditPositionStrategyFactory {
      * The cells will be provided in DOM order.
      */
     abstract sizeConfigForCells(cells: HTMLElement[]): OverlaySizeConfig;
+    static ɵfac: i0.ɵɵFactoryDeclaration<PopoverEditPositionStrategyFactory, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<PopoverEditPositionStrategyFactory>;
 }
 /**
  * Default implementation of PopoverEditPositionStrategyFactory.
@@ -34,4 +37,6 @@ export declare class DefaultPopoverEditPositionStrategyFactory extends PopoverEd
     constructor(direction: Directionality, overlay: Overlay);
     positionStrategyForCells(cells: HTMLElement[]): PositionStrategy;
     sizeConfigForCells(cells: HTMLElement[]): OverlaySizeConfig;
+    static ɵfac: i0.ɵɵFactoryDeclaration<DefaultPopoverEditPositionStrategyFactory, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<DefaultPopoverEditPositionStrategyFactory>;
 }

@@ -8,6 +8,7 @@
 import { BooleanInput } from '@angular/cdk/coercion';
 import { EventEmitter } from '@angular/core';
 import { CdkMenuItem } from './menu-item';
+import * as i0 from "@angular/core";
 /**
  * Base class providing checked state for MenuItems along with outputting a clicked event when the
  * element is triggered. It provides functionality for selectable elements.
@@ -26,4 +27,6 @@ export declare abstract class CdkMenuItemSelectable extends CdkMenuItem {
     /** If the element is not disabled emit the click event */
     trigger(): void;
     static ngAcceptInputType_checked: BooleanInput;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemSelectable, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemSelectable, never, never, { "checked": "checked"; "name": "name"; "id": "id"; }, { "toggled": "cdkMenuItemToggled"; }, never>;
 }

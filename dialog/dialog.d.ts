@@ -12,6 +12,7 @@ import { Location } from '@angular/common';
 import { DialogConfig } from './dialog-config';
 import { CdkDialogContainer } from './dialog-container';
 import { ComponentType, Overlay, OverlayRef } from '@angular/cdk/overlay';
+import * as i0 from "@angular/core";
 /**
  * Service to open modal dialogs.
  */
@@ -94,4 +95,6 @@ export declare class Dialog implements OnDestroy {
      * are undefined.
      */
     private _applyConfigDefaults;
+    static ɵfac: i0.ɵɵFactoryDeclaration<Dialog, [null, null, null, null, { optional: true; skipSelf: true; }, { optional: true; }]>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<Dialog>;
 }

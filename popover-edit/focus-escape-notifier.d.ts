@@ -8,6 +8,7 @@
 import { NgZone } from '@angular/core';
 import { FocusTrap, InteractivityChecker } from '@angular/cdk/a11y';
 import { Observable } from 'rxjs';
+import * as i0 from "@angular/core";
 /** Value indicating whether focus left the target area before or after the enclosed elements. */
 export declare const enum FocusEscapeNotifierDirection {
     START = 0,
@@ -34,4 +35,6 @@ export declare class FocusEscapeNotifierFactory {
      * @returns The created focus escape notifier instance.
      */
     create(element: HTMLElement): FocusEscapeNotifier;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FocusEscapeNotifierFactory, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<FocusEscapeNotifierFactory>;
 }

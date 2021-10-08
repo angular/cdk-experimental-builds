@@ -8,6 +8,7 @@
 import { NgZone, OnDestroy, InjectionToken } from '@angular/core';
 import { PointerFocusTracker, FocusableElement } from './pointer-focus-tracker';
 import { Menu } from './menu-interface';
+import * as i0 from "@angular/core";
 /**
  * MenuAim is responsible for determining if a sibling menuitem's menu should be closed when a
  * Toggler item is hovered into. It is up to the hovered in item to call the MenuAim service in
@@ -82,10 +83,14 @@ export declare class TargetMenuAim implements MenuAim, OnDestroy {
     /** Subscribe to the root menus mouse move events and update the tracked mouse points. */
     private _subscribeToMouseMoves;
     ngOnDestroy(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<TargetMenuAim, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<TargetMenuAim>;
 }
 /**
  * CdkTargetMenuAim is a provider for the TargetMenuAim service. It should be added to an
  * element with either the `cdkMenu` or `cdkMenuBar` directive and child menu items.
  */
 export declare class CdkTargetMenuAim {
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkTargetMenuAim, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkTargetMenuAim, "[cdkTargetMenuAim]", ["cdkTargetMenuAim"], {}, {}, never>;
 }

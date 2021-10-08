@@ -13,6 +13,7 @@ import { CdkMenuPanel } from './menu-panel';
 import { Menu } from './menu-interface';
 import { MenuStack } from './menu-stack';
 import { MenuAim } from './menu-aim';
+import * as i0 from "@angular/core";
 /**
  * Directive which configures the element as a Menu which should contain child elements marked as
  * CdkMenuItem or CdkMenuGroup. Sets the appropriate role and aria-attributes for a menu and
@@ -107,4 +108,6 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
     ngOnDestroy(): void;
     /** Emit and complete the closed event emitter */
     private _emitClosedEvent;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenu, [null, null, { optional: true; self: true; }, { optional: true; }, { optional: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenu, "[cdkMenu]", ["cdkMenu"], { "orientation": "cdkMenuOrientation"; "_explicitPanel": "cdkMenuPanel"; }, { "closed": "closed"; }, ["_nestedGroups", "_allItems"]>;
 }

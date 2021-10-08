@@ -1,3 +1,9 @@
+import { AfterContentInit, ElementRef, EventEmitter, OnDestroy, ViewContainerRef } from '@angular/core';
+import { CdkComboboxPanel, AriaHasPopupValue } from './combobox-panel';
+import { Overlay } from '@angular/cdk/overlay';
+import { Directionality } from '@angular/cdk/bidi';
+import { BooleanInput } from '@angular/cdk/coercion';
+import * as i0 from "@angular/core";
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -7,11 +13,6 @@
  */
 export declare type OpenAction = 'focus' | 'click' | 'downKey' | 'toggle';
 export declare type OpenActionInput = OpenAction | OpenAction[] | string | null | undefined;
-import { AfterContentInit, ElementRef, EventEmitter, OnDestroy, ViewContainerRef } from '@angular/core';
-import { CdkComboboxPanel, AriaHasPopupValue } from './combobox-panel';
-import { Overlay } from '@angular/cdk/overlay';
-import { Directionality } from '@angular/cdk/bidi';
-import { BooleanInput } from '@angular/cdk/coercion';
 export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContentInit {
     private readonly _elementRef;
     private readonly _overlay;
@@ -68,4 +69,6 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContent
     static ngAcceptInputType_openActions: OpenActionInput;
     static ngAcceptInputType_autoSetText: OpenActionInput;
     static ngAcceptInputType_disabled: BooleanInput;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkCombobox<any>, [null, null, null, { optional: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkCombobox<any>, "[cdkCombobox]", ["cdkCombobox"], { "panel": "cdkComboboxTriggerFor"; "value": "value"; "disabled": "disabled"; "openActions": "openActions"; "autoSetText": "autoSetText"; }, { "opened": "comboboxPanelOpened"; "closed": "comboboxPanelClosed"; "panelValueChanged": "panelValueChanged"; }, never>;
 }

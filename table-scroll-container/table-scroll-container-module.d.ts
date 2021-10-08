@@ -1,9 +1,7 @@
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
+import * as i0 from "@angular/core";
+import * as i1 from "./table-scroll-container";
 export declare class CdkTableScrollContainerModule {
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkTableScrollContainerModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkTableScrollContainerModule, [typeof i1.CdkTableScrollContainer], never, [typeof i1.CdkTableScrollContainer]>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<CdkTableScrollContainerModule>;
 }

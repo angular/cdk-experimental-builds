@@ -7,6 +7,7 @@
  */
 import { EventEmitter, AfterContentInit, OnDestroy } from '@angular/core';
 import { CdkMenuItem } from './menu-item';
+import * as i0 from "@angular/core";
 /**
  * Directive which acts as a grouping container for `CdkMenuItem` instances with
  * `role="menuitemradio"`, similar to a `role="radiogroup"` element.
@@ -27,4 +28,6 @@ export declare class CdkMenuGroup implements AfterContentInit, OnDestroy {
     /** Register each selectable to emit on the change Emitter when clicked */
     private _registerClickListener;
     ngOnDestroy(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuGroup, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuGroup, "[cdkMenuGroup]", ["cdkMenuGroup"], {}, { "change": "change"; }, ["_selectableItems"]>;
 }

@@ -10,6 +10,7 @@ import { CdkTable } from '@angular/cdk/table';
 import { ColumnResize } from '../column-resize';
 import { ColumnResizeNotifier, ColumnResizeNotifierSource } from '../column-resize-notifier';
 import { HeaderRowEventDispatcher } from '../event-dispatcher';
+import * as i0 from "@angular/core";
 /**
  * Implicitly enables column resizing for a flex cdk-table.
  * Individual columns will be resizable unless opted out.
@@ -22,4 +23,6 @@ export declare class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
     protected readonly notifier: ColumnResizeNotifierSource;
     protected readonly table: CdkTable<unknown>;
     constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkDefaultEnabledColumnResizeFlex, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResizeFlex, "cdk-table", never, {}, {}, never>;
 }

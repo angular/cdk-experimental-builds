@@ -12,6 +12,7 @@ import { CdkMenuItemSelectable } from './menu-item-selectable';
 import { CdkMenuItemTrigger } from './menu-item-trigger';
 import { Menu } from './menu-interface';
 import { MenuAim } from './menu-aim';
+import * as i0 from "@angular/core";
 /**
  * A directive providing behavior for the "menuitemradio" ARIA role, which behaves similarly to
  * a conventional radio-button. Any sibling `CdkMenuItemRadio` instances within the same `CdkMenu`
@@ -29,4 +30,6 @@ export declare class CdkMenuItemRadio extends CdkMenuItemSelectable implements O
     /** Toggles the checked state of the radio-button. */
     trigger(): void;
     ngOnDestroy(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemRadio, [null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemRadio, "[cdkMenuItemRadio]", ["cdkMenuItemRadio"], {}, {}, never>;
 }

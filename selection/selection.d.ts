@@ -10,6 +10,7 @@ import { CollectionViewer, DataSource, ListRange } from '@angular/cdk/collection
 import { AfterContentChecked, EventEmitter, OnDestroy, OnInit, TrackByFunction } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SelectionChange } from './selection-set';
+import * as i0 from "@angular/core";
 /**
  * Manages the selection states of the items and provides methods to check and update the selection
  * states.
@@ -57,6 +58,8 @@ export declare class CdkSelection<T> implements OnInit, AfterContentChecked, Col
     private _updateSelectAllState;
     selectAllState: SelectAllState;
     static ngAcceptInputType_multiple: BooleanInput;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelection<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelection<any>, "[cdkSelection]", ["cdkSelection"], { "dataSource": "dataSource"; "trackByFn": "trackBy"; "multiple": "cdkSelectionMultiple"; }, { "change": "cdkSelectionChange"; }, never>;
 }
 declare type SelectAllState = 'all' | 'none' | 'partial';
 declare type TableDataSource<T> = DataSource<T> | Observable<readonly T[]> | readonly T[];

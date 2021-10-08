@@ -9,6 +9,7 @@ import { AfterViewInit, ElementRef, NgZone, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ColumnResizeNotifier, ColumnResizeNotifierSource } from './column-resize-notifier';
 import { HeaderRowEventDispatcher } from './event-dispatcher';
+import * as i0 from "@angular/core";
 /**
  * Base class for ColumnResize directives which attach to mat-table elements to
  * provide common events and services for column resizing.
@@ -33,4 +34,6 @@ export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
     private _listenForRowHoverEvents;
     private _listenForResizeActivity;
     private _listenForHoverActivity;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResize, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<ColumnResize, never, never, {}, {}, never>;
 }
