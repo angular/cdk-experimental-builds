@@ -116,9 +116,11 @@ class CdkDialogContainer extends BasePortalOutlet {
         // We use a Subject with a distinctUntilChanged, rather than a callback attached to .done,
         // because some browsers fire the done event twice and we don't want to emit duplicate events.
         // See: https://github.com/angular/angular/issues/24084
-        this._animationDone.pipe(distinctUntilChanged((x, y) => {
+        this._animationDone
+            .pipe(distinctUntilChanged((x, y) => {
             return x.fromState === y.fromState && x.toState === y.toState;
-        })).subscribe(event => {
+        }))
+            .subscribe(event => {
             // Emit lifecycle events based on animation `done` callback.
             if (event.toState === 'enter') {
                 this._autoFocus();
@@ -136,10 +138,18 @@ class CdkDialogContainer extends BasePortalOutlet {
     // metadata is not inherited by child classes, instead the host binding data is defined in a way
     // that can be inherited.
     // tslint:disable:no-host-decorator-in-concrete no-private-getters
-    get _ariaLabel() { return this._config.ariaLabel || null; }
-    get _ariaDescribedBy() { return this._config.ariaDescribedBy; }
-    get _role() { return this._config.role; }
-    get _tabindex() { return -1; }
+    get _ariaLabel() {
+        return this._config.ariaLabel || null;
+    }
+    get _ariaDescribedBy() {
+        return this._config.ariaDescribedBy;
+    }
+    get _role() {
+        return this._config.role;
+    }
+    get _tabindex() {
+        return -1;
+    }
     /** Initializes the dialog container with the attached content. */
     _initializeWithAttachedContent() {
         // Save the previously focused element. This element will be re-focused
@@ -257,8 +267,7 @@ class CdkDialogContainer extends BasePortalOutlet {
                 break;
             case true:
             case 'first-tabbable':
-                this._focusTrap.focusInitialElementWhenReady()
-                    .then(hasMovedFocus => {
+                this._focusTrap.focusInitialElementWhenReady().then(hasMovedFocus => {
                     if (!hasMovedFocus) {
                         element.focus();
                     }
@@ -283,7 +292,9 @@ class CdkDialogContainer extends BasePortalOutlet {
             // non-focusable element like the backdrop was clicked) before moving it. It's possible that
             // the consumer moved it themselves before the animation was done, in which case we shouldn't
             // do anything.
-            if (!activeElement || activeElement === this._document.body || activeElement === element ||
+            if (!activeElement ||
+                activeElement === this._document.body ||
+                activeElement === element ||
                 element.contains(activeElement)) {
                 toFocus.focus();
             }
@@ -297,7 +308,7 @@ CdkDialogContainer.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", ver
             state('exit, void', style({ opacity: 0 })),
             transition('* => enter', animate('{{enterAnimationDuration}}')),
             transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
-        ])
+        ]),
     ], changeDetection: i0.ChangeDetectionStrategy.Default, encapsulation: i0.ViewEncapsulation.None });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkDialogContainer, decorators: [{
             type: Component,
@@ -307,7 +318,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15",
                             state('exit, void', style({ opacity: 0 })),
                             transition('* => enter', animate('{{enterAnimationDuration}}')),
                             transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
-                        ])
+                        ]),
                     ], host: {
                         '[@dialog]': `{
       value: _state,
@@ -378,7 +389,8 @@ class DialogRef {
             this.componentInstance = null;
         });
         // Close when escape keydown event occurs
-        _overlayRef.keydownEvents()
+        _overlayRef
+            .keydownEvents()
             .pipe(filter(event => {
             return event.keyCode === ESCAPE && !this.disableClose && !hasModifierKey(event);
         }))
@@ -506,8 +518,9 @@ class Dialog {
         this._parentDialog = _parentDialog;
         this._afterAllClosedBase = new Subject();
         // TODO(jelbourn): tighten the type on the right-hand side of this expression.
-        this.afterAllClosed = defer(() => this.openDialogs.length ?
-            this._getAfterAllClosed() : this._getAfterAllClosed().pipe(startWith(undefined)));
+        this.afterAllClosed = defer(() => this.openDialogs.length
+            ? this._getAfterAllClosed()
+            : this._getAfterAllClosed().pipe(startWith(undefined)));
         this._afterOpened = new Subject();
         this._openDialogs = [];
         // Close all of the dialogs when the user goes forwards/backwards in history or when the
@@ -603,7 +616,7 @@ class Dialog {
             minWidth: config.minWidth,
             minHeight: config.minHeight,
             maxWidth: config.maxWidth,
-            maxHeight: config.maxHeight
+            maxHeight: config.maxHeight,
         });
         if (config.backdropClass) {
             overlayConfig.backdropClass = config.backdropClass;
@@ -621,7 +634,7 @@ class Dialog {
         const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
         const injector = Injector.create({
             parent: userInjector || this._injector,
-            providers: [{ provide: DialogConfig, useValue: config }]
+            providers: [{ provide: DialogConfig, useValue: config }],
         });
         const containerPortal = new ComponentPortal(container, config.viewContainerRef, injector);
         const containerRef = overlay.attach(containerPortal);
@@ -659,7 +672,10 @@ class Dialog {
         // Create a reference to the dialog we're creating in order to give the user a handle
         // to modify and close it.
         const dialogRef = this._createDialogRef(overlayRef, dialogContainer, config);
-        dialogContainer.attachTemplatePortal(new TemplatePortal(componentOrTemplateRef, null, { $implicit: config.data, dialogRef }));
+        dialogContainer.attachTemplatePortal(new TemplatePortal(componentOrTemplateRef, null, {
+            $implicit: config.data,
+            dialogRef,
+        }));
         return dialogRef;
     }
     /**
@@ -675,13 +691,14 @@ class Dialog {
         const providers = [
             { provide: this._injector.get(DIALOG_REF), useValue: dialogRef },
             { provide: this._injector.get(DIALOG_CONTAINER), useValue: dialogContainer },
-            { provide: DIALOG_DATA, useValue: config.data }
+            { provide: DIALOG_DATA, useValue: config.data },
         ];
-        if (config.direction && (!userInjector ||
-            !userInjector.get(Directionality, null, InjectFlags.Optional))) {
+        if (config.direction &&
+            (!userInjector ||
+                !userInjector.get(Directionality, null, InjectFlags.Optional))) {
             providers.push({
                 provide: Directionality,
-                useValue: { value: config.direction, change: of() }
+                useValue: { value: config.direction, change: of() },
             });
         }
         return Injector.create({ parent: userInjector || this._injector, providers });
@@ -730,9 +747,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15",
 class DialogModule {
 }
 DialogModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: DialogModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
-DialogModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: DialogModule, declarations: [CdkDialogContainer], imports: [OverlayModule,
-        PortalModule,
-        A11yModule], exports: [
+DialogModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: DialogModule, declarations: [CdkDialogContainer], imports: [OverlayModule, PortalModule, A11yModule], exports: [
         // Re-export the PortalModule so that people extending the `CdkDialogContainer`
         // don't have to remember to import it or be faced with an unhelpful error.
         PortalModule,
@@ -743,31 +758,21 @@ DialogModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "
         { provide: DIALOG_REF, useValue: DialogRef },
         { provide: DIALOG_CONTAINER, useValue: CdkDialogContainer },
         { provide: DIALOG_CONFIG, useValue: DialogConfig },
-    ], imports: [[
-            OverlayModule,
-            PortalModule,
-            A11yModule,
-        ], 
+    ], imports: [[OverlayModule, PortalModule, A11yModule], 
         // Re-export the PortalModule so that people extending the `CdkDialogContainer`
         // don't have to remember to import it or be faced with an unhelpful error.
         PortalModule] });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: DialogModule, decorators: [{
             type: NgModule,
             args: [{
-                    imports: [
-                        OverlayModule,
-                        PortalModule,
-                        A11yModule,
-                    ],
+                    imports: [OverlayModule, PortalModule, A11yModule],
                     exports: [
                         // Re-export the PortalModule so that people extending the `CdkDialogContainer`
                         // don't have to remember to import it or be faced with an unhelpful error.
                         PortalModule,
                         CdkDialogContainer,
                     ],
-                    declarations: [
-                        CdkDialogContainer,
-                    ],
+                    declarations: [CdkDialogContainer],
                     providers: [
                         Dialog,
                         MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,

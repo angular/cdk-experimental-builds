@@ -1941,15 +1941,13 @@ class CdkContextMenuTrigger {
             // since we're moving this menu we need to close any submenus first otherwise they end up
             // disconnected from this one.
             this._menuStack.closeSubMenuOf(this._menuPanel._menu);
-            this._overlayRef.getConfig()
-                .positionStrategy.setOrigin(coordinates);
+            this._overlayRef.getConfig().positionStrategy.setOrigin(coordinates);
             this._overlayRef.updatePosition();
         }
         else {
             this.opened.next();
             if (this._overlayRef) {
-                this._overlayRef.getConfig()
-                    .positionStrategy.setOrigin(coordinates);
+                this._overlayRef.getConfig().positionStrategy.setOrigin(coordinates);
                 this._overlayRef.updatePosition();
             }
             else {

@@ -102,9 +102,7 @@ class CdkTableScrollContainer {
     }
 }
 CdkTableScrollContainer.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkTableScrollContainer, deps: [{ token: i0.ElementRef }, { token: DOCUMENT }, { token: i1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkTableScrollContainer.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.0.0-next.15", type: CdkTableScrollContainer, selector: "[cdkTableScrollContainer]", host: { classAttribute: "cdk-table-scroll-container" }, providers: [
-        { provide: STICKY_POSITIONING_LISTENER, useExisting: CdkTableScrollContainer },
-    ], ngImport: i0 });
+CdkTableScrollContainer.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.0.0-next.15", type: CdkTableScrollContainer, selector: "[cdkTableScrollContainer]", host: { classAttribute: "cdk-table-scroll-container" }, providers: [{ provide: STICKY_POSITIONING_LISTENER, useExisting: CdkTableScrollContainer }], ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkTableScrollContainer, decorators: [{
             type: Directive,
             args: [{
@@ -112,9 +110,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15",
                     host: {
                         'class': 'cdk-table-scroll-container',
                     },
-                    providers: [
-                        { provide: STICKY_POSITIONING_LISTENER, useExisting: CdkTableScrollContainer },
-                    ],
+                    providers: [{ provide: STICKY_POSITIONING_LISTENER, useExisting: CdkTableScrollContainer }],
                 }]
         }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: Document, decorators: [{
                     type: Inject,

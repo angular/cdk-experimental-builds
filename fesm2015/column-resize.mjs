@@ -64,18 +64,26 @@ class ColumnResize {
     _listenForRowHoverEvents() {
         this.ngZone.runOutsideAngular(() => {
             const element = this.elementRef.nativeElement;
-            fromEvent(element, 'mouseover').pipe(map(event => _closest(event.target, HEADER_CELL_SELECTOR)), takeUntil(this.destroyed)).subscribe(this.eventDispatcher.headerCellHovered);
-            fromEvent(element, 'mouseleave').pipe(filter(event => !!event.relatedTarget &&
-                !_matches(event.relatedTarget, RESIZE_OVERLAY_SELECTOR)), mapTo(null), takeUntil(this.destroyed)).subscribe(this.eventDispatcher.headerCellHovered);
+            fromEvent(element, 'mouseover')
+                .pipe(map(event => _closest(event.target, HEADER_CELL_SELECTOR)), takeUntil(this.destroyed))
+                .subscribe(this.eventDispatcher.headerCellHovered);
+            fromEvent(element, 'mouseleave')
+                .pipe(filter(event => !!event.relatedTarget &&
+                !_matches(event.relatedTarget, RESIZE_OVERLAY_SELECTOR)), mapTo(null), takeUntil(this.destroyed))
+                .subscribe(this.eventDispatcher.headerCellHovered);
         });
     }
     _listenForResizeActivity() {
-        merge(this.eventDispatcher.overlayHandleActiveForCell.pipe(mapTo(undefined)), this.notifier.triggerResize.pipe(mapTo(undefined)), this.notifier.resizeCompleted.pipe(mapTo(undefined))).pipe(take(1), takeUntil(this.destroyed)).subscribe(() => {
+        merge(this.eventDispatcher.overlayHandleActiveForCell.pipe(mapTo(undefined)), this.notifier.triggerResize.pipe(mapTo(undefined)), this.notifier.resizeCompleted.pipe(mapTo(undefined)))
+            .pipe(take(1), takeUntil(this.destroyed))
+            .subscribe(() => {
             this.setResized();
         });
     }
     _listenForHoverActivity() {
-        this.eventDispatcher.headerRowHoveredOrActiveDistinct.pipe(startWith(null), pairwise(), takeUntil(this.destroyed)).subscribe(([previousRow, hoveredRow]) => {
+        this.eventDispatcher.headerRowHoveredOrActiveDistinct
+            .pipe(startWith(null), pairwise(), takeUntil(this.destroyed))
+            .subscribe(([previousRow, hoveredRow]) => {
             if (hoveredRow) {
                 hoveredRow.classList.add(HOVER_OR_ACTIVE_CLASS);
             }
@@ -126,7 +134,12 @@ class ColumnResizeNotifier {
     }
     /** Instantly resizes the specified column. */
     resize(columnId, size) {
-        this._source.triggerResize.next({ columnId, size, completeImmediately: true, isStickyColumn: true });
+        this._source.triggerResize.next({
+            columnId,
+            size,
+            completeImmediately: true,
+            isStickyColumn: true,
+        });
     }
 }
 ColumnResizeNotifier.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: ColumnResizeNotifier, deps: [{ token: ColumnResizeNotifierSource }], target: i0.ɵɵFactoryTarget.Injectable });
@@ -186,10 +199,10 @@ class HeaderRowEventDispatcher {
         return this._lastSeenRowHover;
     }
     _enterZone() {
-        return (source) => new Observable((observer) => source.subscribe({
-            next: (value) => this._ngZone.run(() => observer.next(value)),
-            error: (err) => observer.error(err),
-            complete: () => observer.complete()
+        return (source) => new Observable(observer => source.subscribe({
+            next: value => this._ngZone.run(() => observer.next(value)),
+            error: err => observer.error(err),
+            complete: () => observer.complete(),
         }));
     }
 }
@@ -303,7 +316,8 @@ class CdkFlexTableResizeStrategy extends ResizeStrategy {
     applyColumnSize(cssFriendlyColumnName, columnHeader, sizeInPx, previousSizeInPx) {
         // Optimization: Check applied width first as we probably set it already before reading
         // offsetWidth which triggers layout.
-        const delta = sizeInPx - (previousSizeInPx !== null && previousSizeInPx !== void 0 ? previousSizeInPx : (this._getAppliedWidth(cssFriendlyColumnName) || columnHeader.offsetWidth));
+        const delta = sizeInPx -
+            (previousSizeInPx !== null && previousSizeInPx !== void 0 ? previousSizeInPx : (this._getAppliedWidth(cssFriendlyColumnName) || columnHeader.offsetWidth));
         if (delta === 0) {
             return;
         }
@@ -468,18 +482,12 @@ class CdkColumnResize extends ColumnResize {
     }
 }
 CdkColumnResize.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkColumnResize, deps: [{ token: ColumnResizeNotifier }, { token: i0.ElementRef }, { token: HeaderRowEventDispatcher }, { token: i0.NgZone }, { token: ColumnResizeNotifierSource }, { token: i3.CdkTable }], target: i0.ɵɵFactoryTarget.Directive });
-CdkColumnResize.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.0.0-next.15", type: CdkColumnResize, selector: "table[cdk-table][columnResize]", providers: [
-        ...TABLE_PROVIDERS,
-        { provide: ColumnResize, useExisting: CdkColumnResize },
-    ], usesInheritance: true, ngImport: i0 });
+CdkColumnResize.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.0.0-next.15", type: CdkColumnResize, selector: "table[cdk-table][columnResize]", providers: [...TABLE_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResize }], usesInheritance: true, ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkColumnResize, decorators: [{
             type: Directive,
             args: [{
                     selector: 'table[cdk-table][columnResize]',
-                    providers: [
-                        ...TABLE_PROVIDERS,
-                        { provide: ColumnResize, useExisting: CdkColumnResize },
-                    ],
+                    providers: [...TABLE_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResize }],
                 }]
         }], ctorParameters: function () { return [{ type: ColumnResizeNotifier }, { type: i0.ElementRef }, { type: HeaderRowEventDispatcher }, { type: i0.NgZone }, { type: ColumnResizeNotifierSource }, { type: i3.CdkTable }]; } });
 
@@ -506,18 +514,12 @@ class CdkColumnResizeFlex extends ColumnResize {
     }
 }
 CdkColumnResizeFlex.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkColumnResizeFlex, deps: [{ token: ColumnResizeNotifier }, { token: i0.ElementRef }, { token: HeaderRowEventDispatcher }, { token: i0.NgZone }, { token: ColumnResizeNotifierSource }, { token: i3.CdkTable }], target: i0.ɵɵFactoryTarget.Directive });
-CdkColumnResizeFlex.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.0.0-next.15", type: CdkColumnResizeFlex, selector: "cdk-table[columnResize]", providers: [
-        ...FLEX_PROVIDERS,
-        { provide: ColumnResize, useExisting: CdkColumnResizeFlex },
-    ], usesInheritance: true, ngImport: i0 });
+CdkColumnResizeFlex.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.0.0-next.15", type: CdkColumnResizeFlex, selector: "cdk-table[columnResize]", providers: [...FLEX_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResizeFlex }], usesInheritance: true, ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkColumnResizeFlex, decorators: [{
             type: Directive,
             args: [{
                     selector: 'cdk-table[columnResize]',
-                    providers: [
-                        ...FLEX_PROVIDERS,
-                        { provide: ColumnResize, useExisting: CdkColumnResizeFlex },
-                    ],
+                    providers: [...FLEX_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResizeFlex }],
                 }]
         }], ctorParameters: function () { return [{ type: ColumnResizeNotifier }, { type: i0.ElementRef }, { type: HeaderRowEventDispatcher }, { type: i0.NgZone }, { type: ColumnResizeNotifierSource }, { type: i3.CdkTable }]; } });
 
@@ -735,18 +737,21 @@ class Resizable {
         // of two table cells and is also useful for displaying a resize thumb
         // over both cells and extending it down the table as needed.
         const isRtl = this.directionality.value === 'rtl';
-        const positionStrategy = this.overlay.position()
+        const positionStrategy = this.overlay
+            .position()
             .flexibleConnectedTo(this.elementRef.nativeElement)
             .withFlexibleDimensions(false)
             .withGrowAfterOpen(false)
             .withPush(false)
             .withDefaultOffsetX(isRtl ? 1 : 0)
-            .withPositions([{
+            .withPositions([
+            {
                 originX: isRtl ? 'start' : 'end',
                 originY: 'top',
                 overlayX: 'center',
                 overlayY: 'top',
-            }]);
+            },
+        ]);
         return this.overlay.create({
             // Always position the overlay based on left-indexed coordinates.
             direction: 'ltr',
@@ -759,8 +764,10 @@ class Resizable {
     _listenForRowHoverEvents() {
         const element = this.elementRef.nativeElement;
         const takeUntilDestroyed = takeUntil(this.destroyed);
-        this.eventDispatcher.resizeOverlayVisibleForHeaderRow(_closest(element, HEADER_ROW_SELECTOR))
-            .pipe(takeUntilDestroyed).subscribe(hoveringRow => {
+        this.eventDispatcher
+            .resizeOverlayVisibleForHeaderRow(_closest(element, HEADER_ROW_SELECTOR))
+            .pipe(takeUntilDestroyed)
+            .subscribe(hoveringRow => {
             if (hoveringRow) {
                 if (!this.overlayRef) {
                     this.overlayRef = this._createOverlayForHandle();
@@ -775,14 +782,18 @@ class Resizable {
     }
     _listenForResizeEvents() {
         const takeUntilDestroyed = takeUntil(this.destroyed);
-        merge(this.resizeNotifier.resizeCanceled, this.resizeNotifier.triggerResize).pipe(takeUntilDestroyed, filter(columnSize => columnSize.columnId === this.columnDef.name)).subscribe(({ size, previousSize, completeImmediately }) => {
+        merge(this.resizeNotifier.resizeCanceled, this.resizeNotifier.triggerResize)
+            .pipe(takeUntilDestroyed, filter(columnSize => columnSize.columnId === this.columnDef.name))
+            .subscribe(({ size, previousSize, completeImmediately }) => {
             this.elementRef.nativeElement.classList.add(OVERLAY_ACTIVE_CLASS);
             this._applySize(size, previousSize);
             if (completeImmediately) {
                 this._completeResizeOperation();
             }
         });
-        merge(this.resizeNotifier.resizeCanceled, this.resizeNotifier.resizeCompleted).pipe(takeUntilDestroyed).subscribe(columnSize => {
+        merge(this.resizeNotifier.resizeCanceled, this.resizeNotifier.resizeCompleted)
+            .pipe(takeUntilDestroyed)
+            .subscribe(columnSize => {
             this._cleanUpAfterResize(columnSize);
         });
     }
@@ -807,10 +818,12 @@ class Resizable {
     _createHandlePortal() {
         const injector = Injector.create({
             parent: this.injector,
-            providers: [{
+            providers: [
+                {
                     provide: ResizeRef,
-                    useValue: new ResizeRef(this.elementRef, this.overlayRef, this.minWidthPx, this.maxWidthPx)
-                }]
+                    useValue: new ResizeRef(this.elementRef, this.overlayRef, this.minWidthPx, this.maxWidthPx),
+                },
+            ],
         });
         return new ComponentPortal(this.getOverlayHandleComponentType(), this.viewContainerRef, injector);
     }
@@ -875,11 +888,15 @@ class ResizeOverlayHandle {
     }
     _listenForMouseEvents() {
         this.ngZone.runOutsideAngular(() => {
-            fromEvent(this.elementRef.nativeElement, 'mouseenter').pipe(mapTo(this.resizeRef.origin.nativeElement), takeUntil(this.destroyed)).subscribe(cell => this.eventDispatcher.headerCellHovered.next(cell));
-            fromEvent(this.elementRef.nativeElement, 'mouseleave').pipe(map(event => event.relatedTarget &&
-                _closest(event.relatedTarget, HEADER_CELL_SELECTOR)), takeUntil(this.destroyed)).subscribe(cell => this.eventDispatcher.headerCellHovered.next(cell));
+            fromEvent(this.elementRef.nativeElement, 'mouseenter')
+                .pipe(mapTo(this.resizeRef.origin.nativeElement), takeUntil(this.destroyed))
+                .subscribe(cell => this.eventDispatcher.headerCellHovered.next(cell));
+            fromEvent(this.elementRef.nativeElement, 'mouseleave')
+                .pipe(map(event => event.relatedTarget && _closest(event.relatedTarget, HEADER_CELL_SELECTOR)), takeUntil(this.destroyed))
+                .subscribe(cell => this.eventDispatcher.headerCellHovered.next(cell));
             fromEvent(this.elementRef.nativeElement, 'mousedown')
-                .pipe(takeUntil(this.destroyed)).subscribe(mousedownEvent => {
+                .pipe(takeUntil(this.destroyed))
+                .subscribe(mousedownEvent => {
                 this._dragStarted(mousedownEvent);
             });
         });
@@ -891,8 +908,7 @@ class ResizeOverlayHandle {
         }
         const mouseup = fromEvent(this.document, 'mouseup');
         const mousemove = fromEvent(this.document, 'mousemove');
-        const escape = fromEvent(this.document, 'keyup')
-            .pipe(filter(event => event.keyCode === ESCAPE));
+        const escape = fromEvent(this.document, 'keyup').pipe(filter(event => event.keyCode === ESCAPE));
         const startX = mousedownEvent.screenX;
         const initialSize = this._getOriginWidth();
         let overlayOffset = 0;
@@ -908,19 +924,21 @@ class ResizeOverlayHandle {
         escape.pipe(takeUntil(merge(mouseup, this.destroyed))).subscribe(() => {
             this._notifyResizeEnded(initialSize);
         });
-        mousemove.pipe(map(({ screenX }) => screenX), startWith(startX), distinctUntilChanged(), pairwise(), takeUntil(merge(mouseup, escape, this.destroyed))).subscribe(([prevX, currX]) => {
+        mousemove
+            .pipe(map(({ screenX }) => screenX), startWith(startX), distinctUntilChanged(), pairwise(), takeUntil(merge(mouseup, escape, this.destroyed)))
+            .subscribe(([prevX, currX]) => {
             let deltaX = currX - prevX;
             // If the mouse moved further than the resize was able to match, limit the
             // movement of the overlay to match the actual size and position of the origin.
             if (overshot !== 0) {
-                if (overshot < 0 && deltaX < 0 || overshot > 0 && deltaX > 0) {
+                if ((overshot < 0 && deltaX < 0) || (overshot > 0 && deltaX > 0)) {
                     overshot += deltaX;
                     return;
                 }
                 else {
                     const remainingOvershot = overshot + deltaX;
-                    overshot = overshot > 0 ?
-                        Math.max(remainingOvershot, 0) : Math.min(remainingOvershot, 0);
+                    overshot =
+                        overshot > 0 ? Math.max(remainingOvershot, 0) : Math.min(remainingOvershot, 0);
                     deltaX = remainingOvershot - overshot;
                     if (deltaX === 0) {
                         return;
@@ -958,8 +976,7 @@ class ResizeOverlayHandle {
         return this.resizeRef.origin.nativeElement.offsetLeft;
     }
     _updateOverlayOffset(offset) {
-        this.resizeRef.overlayRef.overlayElement.style.transform =
-            `translateX(${coerceCssPixelValue(offset)})`;
+        this.resizeRef.overlayRef.overlayElement.style.transform = `translateX(${coerceCssPixelValue(offset)})`;
     }
     _isLtr() {
         return this.directionality.value === 'ltr';

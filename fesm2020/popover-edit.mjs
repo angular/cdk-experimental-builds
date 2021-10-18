@@ -42,9 +42,9 @@ const EDIT_PANE_SELECTOR = `.${EDIT_PANE_CLASS}, .mat-edit-pane`;
  */
 /** IE 11 compatible matches implementation. */
 function matches(element, selector) {
-    return element.matches ?
-        element.matches(selector) :
-        element['msMatchesSelector'](selector);
+    return element.matches
+        ? element.matches(selector)
+        : element['msMatchesSelector'](selector);
 }
 /** IE 11 compatible closest implementation that is able to start from non-Element Nodes. */
 function closest(element, selector) {
@@ -55,8 +55,10 @@ function closest(element, selector) {
     while (curr != null && !(curr instanceof Element)) {
         curr = curr.parentNode;
     }
-    return curr && (hasNativeClosest ?
-        curr.closest(selector) : polyfillClosest(curr, selector));
+    return (curr &&
+        (hasNativeClosest
+            ? curr.closest(selector)
+            : polyfillClosest(curr, selector)));
 }
 /** Polyfill for browsers without Element.closest. */
 function polyfillClosest(element, selector) {
@@ -208,15 +210,15 @@ class EditEventDispatcher {
      * re-entering the zone for stream pipelines.
      */
     _enterZone() {
-        return (source) => new Observable((observer) => source.subscribe({
-            next: (value) => this._ngZone.run(() => observer.next(value)),
-            error: (err) => observer.error(err),
-            complete: () => observer.complete()
+        return (source) => new Observable(observer => source.subscribe({
+            next: value => this._ngZone.run(() => observer.next(value)),
+            error: err => observer.error(err),
+            complete: () => observer.complete(),
         }));
     }
     _getFirstRowWithHoverContent() {
         return this._mapAllRowsToSingleRow(rows => {
-            for (let i = 0, row; row = rows[i]; i++) {
+            for (let i = 0, row; (row = rows[i]); i++) {
                 if (this._rowsWithHoverContent.has(row)) {
                     return row;
                 }
@@ -226,7 +228,7 @@ class EditEventDispatcher {
     }
     _getLastRowWithHoverContent() {
         return this._mapAllRowsToSingleRow(rows => {
-            for (let i = rows.length - 1, row; row = rows[i]; i--) {
+            for (let i = rows.length - 1, row; (row = rows[i]); i--) {
                 if (this._rowsWithHoverContent.has(row)) {
                     return row;
                 }
@@ -243,7 +245,7 @@ EditEventDispatcher.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", 
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: EditEventDispatcher, decorators: [{
             type: Injectable
         }], ctorParameters: function () { return [{ type: i0.NgZone }]; } });
-function computeHoverContentState([firstRow, lastRow, activeRow, hoverRow]) {
+function computeHoverContentState([firstRow, lastRow, activeRow, hoverRow,]) {
     const hoverContentState = new Map();
     // Add focusable rows.
     for (const focussableRow of [
@@ -367,7 +369,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15",
 class FocusDispatcher {
     constructor(directionality) {
         this.directionality = directionality;
-        this.keyObserver = { next: (event) => this.handleKeyboardEvent(event) };
+        this.keyObserver = { next: event => this.handleKeyboardEvent(event) };
     }
     /**
      * Moves focus to earlier or later cells (in dom order) by offset cells relative to
@@ -615,7 +617,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15",
                     selector: 'button[cdkEditRevert]',
                     host: {
                         'type': 'button', // Prevents accidental form submits.
-                    }
+                    },
                 }]
         }], ctorParameters: function () { return [{ type: EditRef }]; }, propDecorators: { type: [{
                 type: Input
@@ -693,17 +695,20 @@ class DefaultPopoverEditPositionStrategyFactory extends PopoverEditPositionStrat
         this.overlay = overlay;
     }
     positionStrategyForCells(cells) {
-        return this.overlay.position()
+        return this.overlay
+            .position()
             .flexibleConnectedTo(cells[0])
             .withGrowAfterOpen()
             .withPush()
             .withViewportMargin(16)
-            .withPositions([{
+            .withPositions([
+            {
                 originX: 'start',
                 originY: 'top',
                 overlayX: 'start',
                 overlayY: 'top',
-            }]);
+            },
+        ]);
     }
     sizeConfigForCells(cells) {
         if (cells.length === 0) {
@@ -846,20 +851,34 @@ class CdkEditable {
         const toClosest = (selector) => map((event) => closest(event.target, selector));
         this.ngZone.runOutsideAngular(() => {
             // Track mouse movement over the table to hide/show hover content.
-            fromEvent(element, 'mouseover').pipe(toClosest(ROW_SELECTOR), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.hovering);
-            fromEvent(element, 'mouseleave').pipe(mapTo(null), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.hovering);
-            fromEvent(element, 'mousemove').pipe(throttleTime(MOUSE_MOVE_THROTTLE_TIME_MS), toClosest(ROW_SELECTOR), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.mouseMove);
+            fromEvent(element, 'mouseover')
+                .pipe(toClosest(ROW_SELECTOR), takeUntil(this.destroyed))
+                .subscribe(this.editEventDispatcher.hovering);
+            fromEvent(element, 'mouseleave')
+                .pipe(mapTo(null), takeUntil(this.destroyed))
+                .subscribe(this.editEventDispatcher.hovering);
+            fromEvent(element, 'mousemove')
+                .pipe(throttleTime(MOUSE_MOVE_THROTTLE_TIME_MS), toClosest(ROW_SELECTOR), takeUntil(this.destroyed))
+                .subscribe(this.editEventDispatcher.mouseMove);
             // Track focus within the table to hide/show/make focusable hover content.
-            fromEventPattern(handler => element.addEventListener('focus', handler, true), handler => element.removeEventListener('focus', handler, true)).pipe(toClosest(ROW_SELECTOR), share(), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.focused);
-            merge(fromEventPattern(handler => element.addEventListener('blur', handler, true), handler => element.removeEventListener('blur', handler, true)), fromEvent(element, 'keydown').pipe(filter(event => event.key === 'Escape'))).pipe(mapTo(null), share(), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.focused);
+            fromEventPattern(handler => element.addEventListener('focus', handler, true), handler => element.removeEventListener('focus', handler, true))
+                .pipe(toClosest(ROW_SELECTOR), share(), takeUntil(this.destroyed))
+                .subscribe(this.editEventDispatcher.focused);
+            merge(fromEventPattern(handler => element.addEventListener('blur', handler, true), handler => element.removeEventListener('blur', handler, true)), fromEvent(element, 'keydown').pipe(filter(event => event.key === 'Escape')))
+                .pipe(mapTo(null), share(), takeUntil(this.destroyed))
+                .subscribe(this.editEventDispatcher.focused);
             // Keep track of rows within the table. This is used to know which rows with hover content
             // are first or last in the table. They are kept focusable in case focus enters from above
             // or below the table.
-            this.ngZone.onStable.pipe(
+            this.ngZone.onStable
+                .pipe(
             // Optimization: ignore dom changes while focus is within the table as we already
             // ensure that rows above and below the focused/active row are tabbable.
-            withLatestFrom(this.editEventDispatcher.editingOrFocused), filter(([_, activeRow]) => activeRow == null), map(() => element.querySelectorAll(ROW_SELECTOR)), share(), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.allRows);
-            fromEvent(element, 'keydown').pipe(filter(event => event.key === 'Enter'), toClosest(CELL_SELECTOR), takeUntil(this.destroyed)).subscribe(this.editEventDispatcher.editing);
+            withLatestFrom(this.editEventDispatcher.editingOrFocused), filter(([_, activeRow]) => activeRow == null), map(() => element.querySelectorAll(ROW_SELECTOR)), share(), takeUntil(this.destroyed))
+                .subscribe(this.editEventDispatcher.allRows);
+            fromEvent(element, 'keydown')
+                .pipe(filter(event => event.key === 'Enter'), toClosest(CELL_SELECTOR), takeUntil(this.destroyed))
+                .subscribe(this.editEventDispatcher.editing);
             // Keydown must be used here or else key autorepeat does not work properly on some platforms.
             fromEvent(element, 'keydown')
                 .pipe(takeUntil(this.destroyed))
@@ -958,9 +977,10 @@ class CdkPopoverEdit {
         return EDIT_PANE_CLASS;
     }
     _startListeningToEditEvents() {
-        this.services.editEventDispatcher.editingCell(this.elementRef.nativeElement)
+        this.services.editEventDispatcher
+            .editingCell(this.elementRef.nativeElement)
             .pipe(takeUntil(this.destroyed))
-            .subscribe((open) => {
+            .subscribe(open => {
             if (open && this.template) {
                 if (!this.overlayRef) {
                     this._createEditOverlay();
@@ -1019,8 +1039,7 @@ class CdkPopoverEdit {
         this.overlayRef.updateSize(this.services.positionFactory.sizeConfigForCells(this._getOverlayCells()));
     }
     _maybeReturnFocusToCell() {
-        if (closest(document.activeElement, EDIT_PANE_SELECTOR) ===
-            this.overlayRef.overlayElement) {
+        if (closest(document.activeElement, EDIT_PANE_SELECTOR) === this.overlayRef.overlayElement) {
             this.elementRef.nativeElement.focus();
         }
     }
@@ -1047,7 +1066,10 @@ class CdkPopoverEditTabOut extends CdkPopoverEdit {
     }
     initFocusTrap() {
         this.focusTrap = this.focusEscapeNotifierFactory.create(this.overlayRef.overlayElement);
-        this.focusTrap.escapes().pipe(takeUntil(this.destroyed)).subscribe(direction => {
+        this.focusTrap
+            .escapes()
+            .pipe(takeUntil(this.destroyed))
+            .subscribe(direction => {
             if (this.services.editEventDispatcher.editRef) {
                 this.services.editEventDispatcher.editRef.blur();
             }
@@ -1099,8 +1121,7 @@ class CdkRowHoverContent {
      * In the CDK version, this is a noop but subclasses such as MatRowHoverContent use this
      * to prepare/style the inserted element.
      */
-    initElement(_) {
-    }
+    initElement(_) { }
     /**
      * Called when the hover content needs to be focusable to preserve a reasonable tab ordering
      * but should not yet be shown.
@@ -1116,7 +1137,8 @@ class CdkRowHoverContent {
         element.style.opacity = '';
     }
     _listenForHoverAndFocusEvents() {
-        this.services.editEventDispatcher.hoverOrFocusOnRow(this._row)
+        this.services.editEventDispatcher
+            .hoverOrFocusOnRow(this._row)
             .pipe(takeUntil(this.destroyed))
             .subscribe(eventState => {
             // When in FOCUSABLE state, add the hover content to the dom but make it transparent so
@@ -1222,24 +1244,24 @@ CdkPopoverEditModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "12.0.0", ve
         CdkEditClose,
         CdkEditable,
         CdkEditOpen] });
-CdkPopoverEditModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkPopoverEditModule, providers: [{
+CdkPopoverEditModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkPopoverEditModule, providers: [
+        {
             provide: PopoverEditPositionStrategyFactory,
-            useClass: DefaultPopoverEditPositionStrategyFactory
-        }], imports: [[
-            OverlayModule,
-        ]] });
+            useClass: DefaultPopoverEditPositionStrategyFactory,
+        },
+    ], imports: [[OverlayModule]] });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkPopoverEditModule, decorators: [{
             type: NgModule,
             args: [{
-                    imports: [
-                        OverlayModule,
-                    ],
+                    imports: [OverlayModule],
                     exports: EXPORTED_DECLARATIONS,
                     declarations: EXPORTED_DECLARATIONS,
-                    providers: [{
+                    providers: [
+                        {
                             provide: PopoverEditPositionStrategyFactory,
-                            useClass: DefaultPopoverEditPositionStrategyFactory
-                        }],
+                            useClass: DefaultPopoverEditPositionStrategyFactory,
+                        },
+                    ],
                 }]
         }] });
 
