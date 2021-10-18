@@ -22,7 +22,7 @@ let listboxId = 0;
 const CDK_LISTBOX_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => CdkListbox),
-    multi: true
+    multi: true,
 };
 const PANEL = new InjectionToken('CdkComboboxPanel');
 class CdkOption {
@@ -99,13 +99,13 @@ class CdkOption {
     }
     /** Returns true if the option or listbox are disabled, and false otherwise. */
     _isInteractionDisabled() {
-        return (this.listbox.disabled || this._disabled);
+        return this.listbox.disabled || this._disabled;
     }
     /** Emits a change event extending the Option Selection Change Event interface. */
     _emitSelectionChange(isUserInput = false) {
         this.selectionChange.emit({
             source: this,
-            isUserInput: isUserInput
+            isUserInput: isUserInput,
         });
     }
     /** Returns the tab index which depends on the disabled property. */
@@ -158,8 +158,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15",
                         '[attr.aria-disabled]': '_isInteractionDisabled()',
                         '[class.cdk-option-disabled]': '_isInteractionDisabled()',
                         '[class.cdk-option-active]': '_active',
-                        '[class.cdk-option-selected]': 'selected'
-                    }
+                        '[class.cdk-option-selected]': 'selected',
+                    },
                 }]
         }], ctorParameters: function () {
         return [{ type: i0.ElementRef }, { type: CdkListbox, decorators: [{
@@ -273,7 +273,8 @@ class CdkListbox {
         });
     }
     _initSelectionModel() {
-        this._selectionModel.changed.pipe(takeUntil(this._destroyed))
+        this._selectionModel.changed
+            .pipe(takeUntil(this._destroyed))
             .subscribe((event) => {
             for (const option of event.added) {
                 option.selected = true;
@@ -300,10 +301,10 @@ class CdkListbox {
             manager.onKeydown(event);
         }
         /** Will select an option if shift was pressed while navigating to the option */
-        const isArrow = (keyCode === UP_ARROW
-            || keyCode === DOWN_ARROW
-            || keyCode === LEFT_ARROW
-            || keyCode === RIGHT_ARROW);
+        const isArrow = keyCode === UP_ARROW ||
+            keyCode === DOWN_ARROW ||
+            keyCode === LEFT_ARROW ||
+            keyCode === RIGHT_ARROW;
         if (isArrow && event.shiftKey && previousActiveIndex !== this._listKeyManager.activeItemIndex) {
             this._toggleActiveOption();
         }
@@ -312,7 +313,7 @@ class CdkListbox {
     _emitChangeEvent(option) {
         this.selectionChange.emit({
             source: this,
-            option: option
+            option: option,
         });
     }
     /** Updates the selection model after a toggle. */
@@ -321,8 +322,7 @@ class CdkListbox {
             const previouslySelected = this._selectionModel.selected[0];
             this.deselect(previouslySelected);
         }
-        option.selected ? this._selectionModel.select(option) :
-            this._selectionModel.deselect(option);
+        option.selected ? this._selectionModel.select(option) : this._selectionModel.deselect(option);
     }
     _updatePanelForSelection(option) {
         const panel = this._parentPanel || this._explicitPanel;
@@ -366,8 +366,7 @@ class CdkListbox {
             this.setAllSelected(false);
         }
         else if (!this.multiple && value) {
-            this._selectionModel =
-                new SelectionModel(value, (_a = this._selectionModel) === null || _a === void 0 ? void 0 : _a.selected);
+            this._selectionModel = new SelectionModel(value, (_a = this._selectionModel) === null || _a === void 0 ? void 0 : _a.selected);
         }
     }
     _focusActiveOption() {
@@ -468,9 +467,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15",
                         '[attr.aria-disabled]': 'disabled',
                         '[attr.aria-multiselectable]': 'multiple',
                         '[attr.aria-activedescendant]': '_getAriaActiveDescendant()',
-                        '[attr.aria-orientation]': 'orientation'
+                        '[attr.aria-orientation]': 'orientation',
                     },
-                    providers: [CDK_LISTBOX_VALUE_ACCESSOR]
+                    providers: [CDK_LISTBOX_VALUE_ACCESSOR],
                 }]
         }], ctorParameters: function () {
         return [{ type: i2.CdkComboboxPanel, decorators: [{

@@ -121,8 +121,8 @@ class AutoSizeVirtualScrollStrategy {
     scrollToIndex() {
         if (typeof ngDevMode === 'undefined' || ngDevMode) {
             // TODO(mmalerba): Implement.
-            throw Error('cdk-virtual-scroll: scrollToIndex is currently not supported for the autosize'
-                + ' scroll strategy');
+            throw Error('cdk-virtual-scroll: scrollToIndex is currently not supported for the autosize' +
+                ' scroll strategy');
         }
     }
     /**
@@ -133,7 +133,7 @@ class AutoSizeVirtualScrollStrategy {
      */
     updateBufferSize(minBufferPx, maxBufferPx) {
         if (maxBufferPx < minBufferPx) {
-            throw ('CDK virtual scroll: maxBufferPx must be greater than or equal to minBufferPx');
+            throw 'CDK virtual scroll: maxBufferPx must be greater than or equal to minBufferPx';
         }
         this._minBufferPx = minBufferPx;
         this._maxBufferPx = maxBufferPx;
@@ -176,12 +176,12 @@ class AutoSizeVirtualScrollStrategy {
         // The current amount of buffer past the start of the viewport.
         const startBuffer = this._lastScrollOffset - this._lastRenderedContentOffset;
         // The current amount of buffer past the end of the viewport.
-        const endBuffer = (this._lastRenderedContentOffset + this._lastRenderedContentSize) -
+        const endBuffer = this._lastRenderedContentOffset +
+            this._lastRenderedContentSize -
             (this._lastScrollOffset + viewport.getViewportSize());
         // The amount of unfilled space that should be filled on the side the user is scrolling toward
         // in order to safely absorb the scroll delta.
-        const underscan = scrollMagnitude + this._minBufferPx -
-            (scrollDelta < 0 ? startBuffer : endBuffer);
+        const underscan = scrollMagnitude + this._minBufferPx - (scrollDelta < 0 ? startBuffer : endBuffer);
         // Check if there's unfilled space that we need to render new elements to fill.
         if (underscan > 0) {
             // Check if the scroll magnitude was larger than the viewport size. In this case the user
@@ -200,8 +200,7 @@ class AutoSizeVirtualScrollStrategy {
                     this._averager.getAverageItemSize()));
                 // The amount of filled space beyond what is necessary on the side the user is scrolling
                 // away from.
-                const overscan = (scrollDelta < 0 ? endBuffer : startBuffer) - this._minBufferPx +
-                    scrollMagnitude;
+                const overscan = (scrollDelta < 0 ? endBuffer : startBuffer) - this._minBufferPx + scrollMagnitude;
                 // The number of currently rendered items to remove on the side the user is scrolling away
                 // from. If removal has failed in recent cycles we are less aggressive in how much we try to
                 // remove.
@@ -319,8 +318,7 @@ class AutoSizeVirtualScrollStrategy {
         const viewport = this._viewport;
         const range = {
             start: startIndex,
-            end: startIndex +
-                Math.ceil(viewport.getViewportSize() / this._averager.getAverageItemSize())
+            end: startIndex + Math.ceil(viewport.getViewportSize() / this._averager.getAverageItemSize()),
         };
         const extra = range.end - viewport.getDataLength();
         if (extra > 0) {
@@ -374,35 +372,47 @@ class CdkAutoSizeVirtualScroll {
      * The minimum amount of buffer rendered beyond the viewport (in pixels).
      * If the amount of buffer dips below this number, more items will be rendered. Defaults to 100px.
      */
-    get minBufferPx() { return this._minBufferPx; }
-    set minBufferPx(value) { this._minBufferPx = coerceNumberProperty(value); }
+    get minBufferPx() {
+        return this._minBufferPx;
+    }
+    set minBufferPx(value) {
+        this._minBufferPx = coerceNumberProperty(value);
+    }
     /**
      * The number of pixels worth of buffer to shoot for when rendering new items.
      * If the actual amount turns out to be less it will not necessarily trigger an additional
      * rendering cycle (as long as the amount of buffer is still greater than `minBufferPx`).
      * Defaults to 200px.
      */
-    get maxBufferPx() { return this._maxBufferPx; }
-    set maxBufferPx(value) { this._maxBufferPx = coerceNumberProperty(value); }
+    get maxBufferPx() {
+        return this._maxBufferPx;
+    }
+    set maxBufferPx(value) {
+        this._maxBufferPx = coerceNumberProperty(value);
+    }
     ngOnChanges() {
         this._scrollStrategy.updateBufferSize(this.minBufferPx, this.maxBufferPx);
     }
 }
 CdkAutoSizeVirtualScroll.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkAutoSizeVirtualScroll, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-CdkAutoSizeVirtualScroll.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.0.0-next.15", type: CdkAutoSizeVirtualScroll, selector: "cdk-virtual-scroll-viewport[autosize]", inputs: { minBufferPx: "minBufferPx", maxBufferPx: "maxBufferPx" }, providers: [{
+CdkAutoSizeVirtualScroll.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.0.0-next.15", type: CdkAutoSizeVirtualScroll, selector: "cdk-virtual-scroll-viewport[autosize]", inputs: { minBufferPx: "minBufferPx", maxBufferPx: "maxBufferPx" }, providers: [
+        {
             provide: VIRTUAL_SCROLL_STRATEGY,
             useFactory: _autoSizeVirtualScrollStrategyFactory,
             deps: [forwardRef(() => CdkAutoSizeVirtualScroll)],
-        }], usesOnChanges: true, ngImport: i0 });
+        },
+    ], usesOnChanges: true, ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkAutoSizeVirtualScroll, decorators: [{
             type: Directive,
             args: [{
                     selector: 'cdk-virtual-scroll-viewport[autosize]',
-                    providers: [{
+                    providers: [
+                        {
                             provide: VIRTUAL_SCROLL_STRATEGY,
                             useFactory: _autoSizeVirtualScrollStrategyFactory,
                             deps: [forwardRef(() => CdkAutoSizeVirtualScroll)],
-                        }],
+                        },
+                    ],
                 }]
         }], propDecorators: { minBufferPx: [{
                 type: Input

@@ -24,10 +24,18 @@ class CdkCombobox {
         this.panelValueChanged = new EventEmitter();
         this.contentId = '';
     }
-    get panel() { return this._panel; }
-    set panel(panel) { this._panel = panel; }
-    get disabled() { return this._disabled; }
-    set disabled(value) { this._disabled = coerceBooleanProperty(value); }
+    get panel() {
+        return this._panel;
+    }
+    set panel(panel) {
+        this._panel = panel;
+    }
+    get disabled() {
+        return this._disabled;
+    }
+    set disabled(value) {
+        this._disabled = coerceBooleanProperty(value);
+    }
     get openActions() {
         return this._openActions;
     }
@@ -35,8 +43,12 @@ class CdkCombobox {
         this._openActions = this._coerceOpenActionProperty(action);
     }
     /** Whether the textContent is automatically updated upon change of the combobox value. */
-    get autoSetText() { return this._autoSetText; }
-    set autoSetText(value) { this._autoSetText = coerceBooleanProperty(value); }
+    get autoSetText() {
+        return this._autoSetText;
+    }
+    set autoSetText(value) {
+        this._autoSetText = coerceBooleanProperty(value);
+    }
     ngAfterContentInit() {
         this._panel?.valueUpdated.subscribe(data => {
             this._setComboboxValue(data);
@@ -148,7 +160,7 @@ class CdkCombobox {
         return this.disabled ? null : '0';
     }
     _setComboboxValue(value) {
-        const valueChanged = (this.value !== value);
+        const valueChanged = this.value !== value;
         this.value = value;
         if (valueChanged) {
             this.panelValueChanged.emit(coerceArray(value));
@@ -221,8 +233,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15",
                         '[attr.aria-owns]': 'contentId',
                         '[attr.aria-haspopup]': 'contentType',
                         '[attr.aria-expanded]': 'isOpen()',
-                        '[attr.tabindex]': '_getTabIndex()'
-                    }
+                        '[attr.tabindex]': '_getTabIndex()',
+                    },
                 }]
         }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: i1.Overlay }, { type: i0.ViewContainerRef }, { type: i2.Directionality, decorators: [{
                     type: Optional
@@ -286,7 +298,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15",
             type: Directive,
             args: [{
                     host: {
-                        'class': 'cdk-combobox-panel'
+                        'class': 'cdk-combobox-panel',
                     },
                     selector: 'ng-template[cdkComboboxPanel]',
                     exportAs: 'cdkComboboxPanel',
@@ -353,8 +365,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15",
                         '[attr.role]': 'role',
                         '[id]': 'id',
                         'tabindex': '-1',
-                        '(focus)': 'focusFirstElement()'
-                    }
+                        '(focus)': 'focusFirstElement()',
+                    },
                 }]
         }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: CdkComboboxPanel, decorators: [{
                     type: Optional

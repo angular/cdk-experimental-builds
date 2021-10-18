@@ -153,14 +153,15 @@ class CdkSelection {
         if (dataStream == null && (typeof ngDevMode === 'undefined' || ngDevMode)) {
             throw Error('Unknown data source');
         }
-        this._renderChangeSubscription =
-            dataStream.pipe(takeUntil(this._destroyed)).subscribe((data) => {
-                this._data = data || [];
-            });
+        this._renderChangeSubscription = dataStream
+            .pipe(takeUntil(this._destroyed))
+            .subscribe(data => {
+            this._data = data || [];
+        });
     }
     ngOnInit() {
         this._selection = new SelectionSet(this._multiple, this.trackByFn);
-        this._selection.changed.pipe(takeUntil(this._destroyed)).subscribe((change) => {
+        this._selection.changed.pipe(takeUntil(this._destroyed)).subscribe(change => {
             this._updateSelectAllState();
             this.change.emit(change);
         });
@@ -217,8 +218,8 @@ class CdkSelection {
     }
     /** Checks whether partially selected. */
     isPartialSelected() {
-        return !this.isAllSelected() &&
-            this._data.some((value, index) => this._selection.isSelected({ value, index }));
+        return (!this.isAllSelected() &&
+            this._data.some((value, index) => this._selection.isSelected({ value, index })));
     }
     _selectAll() {
         const toSelect = [];
@@ -329,7 +330,7 @@ class CdkSelectAll {
                     this.toggle();
                 }
             });
-            this.checked.pipe(takeUntil(this._destroyed)).subscribe((state) => {
+            this.checked.pipe(takeUntil(this._destroyed)).subscribe(state => {
                 this._controlValueAccessor[0].writeValue(state);
             });
         }
@@ -397,8 +398,12 @@ class CdkSelectionToggle {
         this._destroyed = new Subject();
     }
     /** The index of the value in the list. Required when used with `trackBy` */
-    get index() { return this._index; }
-    set index(index) { this._index = coerceNumberProperty(index); }
+    get index() {
+        return this._index;
+    }
+    set index(index) {
+        this._index = coerceNumberProperty(index);
+    }
     /** Toggles the selection */
     toggle() {
         this._selection.toggleSelection(this.value, this.index);
@@ -423,7 +428,7 @@ class CdkSelectionToggle {
                     this.toggle();
                 }
             });
-            this.checked.pipe(takeUntil(this._destroyed)).subscribe((state) => {
+            this.checked.pipe(takeUntil(this._destroyed)).subscribe(state => {
                 this._controlValueAccessors[0].writeValue(state);
             });
         }
@@ -498,7 +503,7 @@ class CdkSelectionColumn {
             this._columnDef.headerCell = this._headerCell;
             this._table.addColumnDef(this._columnDef);
         }
-        else if ((typeof ngDevMode === 'undefined' || ngDevMode)) {
+        else if (typeof ngDevMode === 'undefined' || ngDevMode) {
             throw Error('CdkSelectionColumn: missing parent table');
         }
     }
@@ -607,8 +612,12 @@ class CdkRowSelection {
     constructor(_selection) {
         this._selection = _selection;
     }
-    get index() { return this._index; }
-    set index(index) { this._index = coerceNumberProperty(index); }
+    get index() {
+        return this._index;
+    }
+    set index(index) {
+        this._index = coerceNumberProperty(index);
+    }
 }
 CdkRowSelection.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkRowSelection, deps: [{ token: CdkSelection }], target: i0.ɵɵFactoryTarget.Directive });
 CdkRowSelection.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.0.0-next.15", type: CdkRowSelection, selector: "[cdkRowSelection]", inputs: { value: ["cdkRowSelectionValue", "value"], index: ["cdkRowSelectionIndex", "index"] }, host: { properties: { "class.cdk-selected": "_selection.isSelected(this.value, this.index)", "attr.aria-selected": "_selection.isSelected(this.value, this.index)" } }, ngImport: i0 });
@@ -643,30 +652,13 @@ CdkSelectionModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "12.0.0", vers
         CdkSelectionToggle,
         CdkSelectAll,
         CdkSelectionColumn,
-        CdkRowSelection], imports: [CommonModule,
-        CdkTableModule], exports: [CdkSelection,
-        CdkSelectionToggle,
-        CdkSelectAll,
-        CdkSelectionColumn,
-        CdkRowSelection] });
-CdkSelectionModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkSelectionModule, imports: [[
-            CommonModule,
-            CdkTableModule,
-        ]] });
+        CdkRowSelection], imports: [CommonModule, CdkTableModule], exports: [CdkSelection, CdkSelectionToggle, CdkSelectAll, CdkSelectionColumn, CdkRowSelection] });
+CdkSelectionModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkSelectionModule, imports: [[CommonModule, CdkTableModule]] });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0-next.15", ngImport: i0, type: CdkSelectionModule, decorators: [{
             type: NgModule,
             args: [{
-                    imports: [
-                        CommonModule,
-                        CdkTableModule,
-                    ],
-                    exports: [
-                        CdkSelection,
-                        CdkSelectionToggle,
-                        CdkSelectAll,
-                        CdkSelectionColumn,
-                        CdkRowSelection,
-                    ],
+                    imports: [CommonModule, CdkTableModule],
+                    exports: [CdkSelection, CdkSelectionToggle, CdkSelectAll, CdkSelectionColumn, CdkRowSelection],
                     declarations: [
                         CdkSelection,
                         CdkSelectionToggle,
