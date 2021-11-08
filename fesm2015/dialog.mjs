@@ -5,7 +5,7 @@ import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, TemplatePortal, Por
 import * as i2 from '@angular/common';
 import { DOCUMENT } from '@angular/common';
 import * as i0 from '@angular/core';
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, Optional, Inject, HostBinding, ViewChild, InjectionToken, Injector, InjectFlags, Injectable, SkipSelf, NgModule } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, Optional, Inject, ViewChild, InjectionToken, Injector, InjectFlags, Injectable, SkipSelf, NgModule } from '@angular/core';
 import { Subject, defer, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import * as i1 from '@angular/cdk/a11y';
@@ -89,7 +89,6 @@ class CdkDialogContainer extends BasePortalOutlet {
         this._elementFocusedBeforeDialogWasOpened = null;
         /** The class that traps and manages focus within the dialog. */
         this._focusTrap = this._focusTrapFactory.create(this._elementRef.nativeElement);
-        this._ariaModal = true;
         /** A subject emitting before the dialog enters the view. */
         this._beforeEnter = new Subject();
         /** A subject emitting after the dialog enters the view. */
@@ -133,22 +132,6 @@ class CdkDialogContainer extends BasePortalOutlet {
                 this._afterExit.complete();
             }
         });
-    }
-    // @HostBinding is used in the class as it is expected to be extended. Since @Component decorator
-    // metadata is not inherited by child classes, instead the host binding data is defined in a way
-    // that can be inherited.
-    // tslint:disable:no-host-decorator-in-concrete no-private-getters
-    get _ariaLabel() {
-        return this._config.ariaLabel || null;
-    }
-    get _ariaDescribedBy() {
-        return this._config.ariaDescribedBy;
-    }
-    get _role() {
-        return this._config.role;
-    }
-    get _tabindex() {
-        return -1;
     }
     /** Initializes the dialog container with the attached content. */
     _initializeWithAttachedContent() {
@@ -302,7 +285,7 @@ class CdkDialogContainer extends BasePortalOutlet {
     }
 }
 CdkDialogContainer.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.0", ngImport: i0, type: CdkDialogContainer, deps: [{ token: i0.ElementRef }, { token: i1.FocusTrapFactory }, { token: i0.ChangeDetectorRef }, { token: i1.InteractivityChecker }, { token: i0.NgZone }, { token: DOCUMENT, optional: true }, { token: DialogConfig }], target: i0.ɵɵFactoryTarget.Component });
-CdkDialogContainer.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "13.0.0", type: CdkDialogContainer, selector: "cdk-dialog-container", host: { listeners: { "@dialog.start": "_onAnimationStart($event)", "@dialog.done": "_animationDone.next($event)" }, properties: { "@dialog": "{\n      value: _state,\n      params: {\n        enterAnimationDuration: _config.enterAnimationDuration,\n        exitAnimationDuration: _config.exitAnimationDuration\n      }\n    }", "attr.aria-label": "this._ariaLabel", "attr.aria-describedby": "this._ariaDescribedBy", "attr.role": "this._role", "attr.aria-modal": "this._ariaModal", "attr.tabindex": "this._tabindex" } }, viewQueries: [{ propertyName: "_portalHost", first: true, predicate: CdkPortalOutlet, descendants: true, static: true }], usesInheritance: true, ngImport: i0, template: "<ng-template cdkPortalOutlet></ng-template>\n", styles: ["cdk-dialog-container{background:#fff;border-radius:5px;display:block;padding:10px}\n"], directives: [{ type: i3.CdkPortalOutlet, selector: "[cdkPortalOutlet]", inputs: ["cdkPortalOutlet"], outputs: ["attached"], exportAs: ["cdkPortalOutlet"] }], animations: [
+CdkDialogContainer.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "13.0.0", type: CdkDialogContainer, selector: "cdk-dialog-container", host: { attributes: { "tabindex": "-1", "aria-modal": "true" }, listeners: { "@dialog.start": "_onAnimationStart($event)", "@dialog.done": "_animationDone.next($event)" }, properties: { "@dialog": "{\n      value: _state,\n      params: {\n        enterAnimationDuration: _config.enterAnimationDuration,\n        exitAnimationDuration: _config.exitAnimationDuration\n      }\n    }", "attr.role": "_config.role", "attr.aria-label": "_config.ariaLabel || null", "attr.aria-describedby": "_config.ariaDescribedBy" } }, viewQueries: [{ propertyName: "_portalHost", first: true, predicate: CdkPortalOutlet, descendants: true, static: true }], usesInheritance: true, ngImport: i0, template: "<ng-template cdkPortalOutlet></ng-template>\n", styles: ["cdk-dialog-container{background:#fff;border-radius:5px;display:block;padding:10px}\n"], directives: [{ type: i3.CdkPortalOutlet, selector: "[cdkPortalOutlet]", inputs: ["cdkPortalOutlet"], outputs: ["attached"], exportAs: ["cdkPortalOutlet"] }], animations: [
         trigger('dialog', [
             state('enter', style({ opacity: 1 })),
             state('exit, void', style({ opacity: 0 })),
@@ -329,6 +312,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImpor
     }`,
                         '(@dialog.start)': '_onAnimationStart($event)',
                         '(@dialog.done)': '_animationDone.next($event)',
+                        'tabindex': '-1',
+                        '[attr.role]': '_config.role',
+                        'aria-modal': 'true',
+                        '[attr.aria-label]': '_config.ariaLabel || null',
+                        '[attr.aria-describedby]': '_config.ariaDescribedBy',
                     }, template: "<ng-template cdkPortalOutlet></ng-template>\n", styles: ["cdk-dialog-container{background:#fff;border-radius:5px;display:block;padding:10px}\n"] }]
         }], ctorParameters: function () {
         return [{ type: i0.ElementRef }, { type: i1.FocusTrapFactory }, { type: i0.ChangeDetectorRef }, { type: i1.InteractivityChecker }, { type: i0.NgZone }, { type: undefined, decorators: [{
@@ -337,22 +325,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImpor
                         type: Inject,
                         args: [DOCUMENT]
                     }] }, { type: DialogConfig }];
-    }, propDecorators: { _ariaLabel: [{
-                type: HostBinding,
-                args: ['attr.aria-label']
-            }], _ariaDescribedBy: [{
-                type: HostBinding,
-                args: ['attr.aria-describedby']
-            }], _role: [{
-                type: HostBinding,
-                args: ['attr.role']
-            }], _ariaModal: [{
-                type: HostBinding,
-                args: ['attr.aria-modal']
-            }], _tabindex: [{
-                type: HostBinding,
-                args: ['attr.tabindex']
-            }], _portalHost: [{
+    }, propDecorators: { _portalHost: [{
                 type: ViewChild,
                 args: [CdkPortalOutlet, { static: true }]
             }] } });
