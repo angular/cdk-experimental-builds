@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Injectable, Self, EventEmitter, Directive, HostListener, Input, Inject, NgModule } from '@angular/core';
+import { Injectable, Self, EventEmitter, Directive, Input, Inject, NgModule } from '@angular/core';
 import { Subject, pipe, combineLatest, Observable, fromEvent, fromEventPattern, merge } from 'rxjs';
 import { distinctUntilChanged, startWith, shareReplay, filter, map, auditTime, audit, debounceTime, skip, take, takeUntil, mapTo, throttleTime, share, withLatestFrom } from 'rxjs/operators';
 import * as i1 from '@angular/forms';
@@ -507,10 +507,6 @@ class CdkEditControl {
      * the form for validity before proceeding.
      * Updates the revert state with the latest submitted value then closes the edit.
      */
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable-next-line:no-host-decorator-in-concrete
     handleFormSubmit() {
         if (this.ignoreSubmitUnlessValid && !this.editRef.isValid()) {
             return;
@@ -528,10 +524,6 @@ class CdkEditControl {
      * Called on click anywhere in the document.
      * If the click was outside of the lens, trigger the specified click out behavior.
      */
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable-next-line:no-host-decorator-in-concrete
     handlePossibleClickOut(evt) {
         if (closest(evt.target, EDIT_PANE_SELECTOR)) {
             return;
@@ -549,10 +541,6 @@ class CdkEditControl {
                 break;
         }
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable-next-line:no-host-decorator-in-concrete
     _handleKeydown(event) {
         if (event.key === 'Escape' && !hasModifierKey(event)) {
             this.close();
@@ -583,17 +571,13 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImpor
                     ],
                     outputs: ['preservedFormValueChange: cdkEditControlPreservedFormValueChange'],
                     providers: [EditRef],
+                    host: {
+                        '(ngSubmit)': 'handleFormSubmit()',
+                        '(document:click)': 'handlePossibleClickOut($event)',
+                        '(keydown)': '_handleKeydown($event)',
+                    },
                 }]
-        }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: EditRef }]; }, propDecorators: { handleFormSubmit: [{
-                type: HostListener,
-                args: ['ngSubmit']
-            }], handlePossibleClickOut: [{
-                type: HostListener,
-                args: ['document:click', ['$event']]
-            }], _handleKeydown: [{
-                type: HostListener,
-                args: ['keydown', ['$event']]
-            }] } });
+        }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: EditRef }]; } });
 /** Reverts the form to its initial or previously submitted state on click. */
 class CdkEditRevert {
     constructor(editRef) {
@@ -601,10 +585,6 @@ class CdkEditRevert {
         /** Type of the button. Defaults to `button` to avoid accident form submits. */
         this.type = 'button';
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable-next-line:no-host-decorator-in-concrete
     revertEdit() {
         this.editRef.reset();
     }
@@ -616,14 +596,12 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImpor
             args: [{
                     selector: 'button[cdkEditRevert]',
                     host: {
-                        'type': 'button', // Prevents accidental form submits.
+                        'type': 'button',
+                        '(click)': 'revertEdit()',
                     },
                 }]
         }], ctorParameters: function () { return [{ type: EditRef }]; }, propDecorators: { type: [{
                 type: Input
-            }], revertEdit: [{
-                type: HostListener,
-                args: ['click']
             }] } });
 /** Closes the lens on click. */
 class CdkEditClose {
@@ -636,10 +614,6 @@ class CdkEditClose {
             nativeElement.setAttribute('type', 'button');
         }
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable-next-line:no-host-decorator-in-concrete
     closeEdit() {
         // Note that we use `click` here, rather than a keyboard event, because some screen readers
         // will emit a fake click event instead of an enter keyboard event on buttons. For the keyboard
@@ -653,17 +627,15 @@ CdkEditClose.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "1
 CdkEditClose.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.0.0", type: CdkEditClose, selector: "[cdkEditClose]", host: { listeners: { "click": "closeEdit()", "keydown.enter": "closeEdit()", "keydown.space": "closeEdit()" } }, ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImport: i0, type: CdkEditClose, decorators: [{
             type: Directive,
-            args: [{ selector: '[cdkEditClose]' }]
-        }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: EditRef }]; }, propDecorators: { closeEdit: [{
-                type: HostListener,
-                args: ['click']
-            }, {
-                type: HostListener,
-                args: ['keydown.enter']
-            }, {
-                type: HostListener,
-                args: ['keydown.space']
-            }] } });
+            args: [{
+                    selector: '[cdkEditClose]',
+                    host: {
+                        '(click)': 'closeEdit()',
+                        '(keydown.enter)': 'closeEdit()',
+                        '(keydown.space)': 'closeEdit()',
+                    },
+                }]
+        }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: EditRef }]; } });
 
 /**
  * @license
@@ -1188,10 +1160,6 @@ class CdkEditOpen {
             nativeElement.setAttribute('type', 'button');
         }
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable-next-line:no-host-decorator-in-concrete
     openEdit(evt) {
         this.editEventDispatcher.editing.next(closest(this.elementRef.nativeElement, CELL_SELECTOR));
         evt.stopPropagation();
@@ -1203,11 +1171,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImpor
             type: Directive,
             args: [{
                     selector: '[cdkEditOpen]',
+                    host: {
+                        '(click)': 'openEdit($event)',
+                    },
                 }]
-        }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: EditEventDispatcher }]; }, propDecorators: { openEdit: [{
-                type: HostListener,
-                args: ['click', ['$event']]
-            }] } });
+        }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: EditEventDispatcher }]; } });
 
 /**
  * @license

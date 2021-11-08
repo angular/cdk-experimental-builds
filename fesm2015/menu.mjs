@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { InjectionToken, Injectable, Directive, EventEmitter, Optional, Inject, Input, Output, Self, HostListener, ContentChildren, NgModule } from '@angular/core';
+import { InjectionToken, Injectable, Directive, EventEmitter, Optional, Inject, Input, Output, Self, ContentChildren, NgModule } from '@angular/core';
 import * as i1 from '@angular/cdk/overlay';
 import { OverlayConfig, OverlayModule } from '@angular/cdk/overlay';
 import { FocusKeyManager } from '@angular/cdk/a11y';
@@ -765,20 +765,12 @@ class CdkMenuItem {
     focus() {
         this._elementRef.nativeElement.focus();
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
     /** Reset the _tabindex to -1. */
     _resetTabIndex() {
         if (!this._isStandaloneItem()) {
             this._tabindex = -1;
         }
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
     /**
      * Set the tab index to 0 if not disabled and it's a focus event, or a mouse enter if this element
      * is not in a menu bar.
@@ -797,10 +789,6 @@ class CdkMenuItem {
     _isStandaloneItem() {
         return !this._parentMenu;
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
     /**
      * If the menu item is not disabled and the element does not have a menu trigger attached, emit
      * on the cdkMenuItemTriggered emitter and close all open menus.
@@ -843,10 +831,6 @@ class CdkMenuItem {
         removeIcons(clone);
         return ((_a = clone.textContent) === null || _a === void 0 ? void 0 : _a.trim()) || '';
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
     /**
      * Handles keyboard events for the menu item, specifically either triggering the user defined
      * callback or opening/closing the current menu based on whether the left or right arrow key was
@@ -931,6 +915,12 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImpor
                         'role': 'menuitem',
                         'class': 'cdk-menu-item',
                         '[attr.aria-disabled]': 'disabled || null',
+                        '(blur)': '_resetTabIndex()',
+                        '(mouseout)': '_resetTabIndex()',
+                        '(focus)': '_setTabIndex()',
+                        '(mouseenter)': '_setTabIndex($event)',
+                        '(click)': 'trigger()',
+                        '(keydown)': '_onKeydown($event)',
                     },
                 }]
         }], ctorParameters: function () {
@@ -956,43 +946,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImpor
             }], triggered: [{
                 type: Output,
                 args: ['cdkMenuItemTriggered']
-            }],
-        /** Reset the _tabindex to -1. */
-        _resetTabIndex: [{
-                type: HostListener,
-                args: ['blur']
-            }, {
-                type: HostListener,
-                args: ['mouseout']
-            }],
-        /**
-         * Set the tab index to 0 if not disabled and it's a focus event, or a mouse enter if this element
-         * is not in a menu bar.
-         */
-        _setTabIndex: [{
-                type: HostListener,
-                args: ['focus']
-            }, {
-                type: HostListener,
-                args: ['mouseenter', ['$event']]
-            }],
-        /**
-         * If the menu item is not disabled and the element does not have a menu trigger attached, emit
-         * on the cdkMenuItemTriggered emitter and close all open menus.
-         */
-        trigger: [{
-                type: HostListener,
-                args: ['click']
-            }],
-        /**
-         * Handles keyboard events for the menu item, specifically either triggering the user defined
-         * callback or opening/closing the current menu based on whether the left or right arrow key was
-         * pressed.
-         * @param event the keyboard event to handle
-         */
-        _onKeydown: [{
-                type: HostListener,
-                args: ['keydown', ['$event']]
             }] } });
 
 /**
@@ -1245,10 +1198,6 @@ class CdkMenu extends CdkMenuGroup {
         this._subscribeToMouseManager();
         (_a = this._menuAim) === null || _a === void 0 ? void 0 : _a.initialize(this, this._pointerTracker);
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
     /** Place focus on the first MenuItem in the menu and set the focus origin. */
     focusFirstItem(focusOrigin = 'program') {
         this._keyManager.setFocusOrigin(focusOrigin);
@@ -1259,10 +1208,6 @@ class CdkMenu extends CdkMenuGroup {
         this._keyManager.setFocusOrigin(focusOrigin);
         this._keyManager.setLastItemActive();
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
     /** Handle keyboard events for the Menu. */
     _handleKeyEvent(event) {
         const keyManager = this._keyManager;
@@ -1456,6 +1401,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImpor
                         'class': 'cdk-menu',
                         '[class.cdk-menu-inline]': '_isInline()',
                         '[attr.aria-orientation]': 'orientation',
+                        '(focus)': 'focusFirstItem()',
+                        '(keydown)': '_handleKeyEvent($event)',
                     },
                     providers: [
                         { provide: CdkMenuGroup, useExisting: CdkMenu },
@@ -1489,16 +1436,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImpor
             }], _explicitPanel: [{
                 type: Input,
                 args: ['cdkMenuPanel']
-            }],
-        /** Place focus on the first MenuItem in the menu and set the focus origin. */
-        focusFirstItem: [{
-                type: HostListener,
-                args: ['focus']
-            }],
-        /** Handle keyboard events for the Menu. */
-        _handleKeyEvent: [{
-                type: HostListener,
-                args: ['keydown', ['$event']]
             }] } });
 
 /**
@@ -1539,10 +1476,6 @@ class CdkMenuBar extends CdkMenuGroup {
         this._subscribeToMouseManager();
         (_a = this._menuAim) === null || _a === void 0 ? void 0 : _a.initialize(this, this._pointerTracker);
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
     /** Place focus on the first MenuItem in the menu and set the focus origin. */
     focusFirstItem(focusOrigin = 'program') {
         this._keyManager.setFocusOrigin(focusOrigin);
@@ -1553,10 +1486,6 @@ class CdkMenuBar extends CdkMenuGroup {
         this._keyManager.setFocusOrigin(focusOrigin);
         this._keyManager.setLastItemActive();
     }
-    // In Ivy the `host` metadata will be merged, whereas in ViewEngine it is overridden. In order
-    // to avoid double event listeners, we need to use `HostListener`. Once Ivy is the default, we
-    // can move this back into `host`.
-    // tslint:disable:no-host-decorator-in-concrete
     /**
      * Handle keyboard events, specifically changing the focused element and/or toggling the active
      * items menu.
@@ -1726,6 +1655,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImpor
                         'class': 'cdk-menu-bar',
                         'tabindex': '0',
                         '[attr.aria-orientation]': 'orientation',
+                        '(focus)': 'focusFirstItem()',
+                        '(keydown)': '_handleKeyEvent($event)',
                     },
                     providers: [
                         { provide: CdkMenuGroup, useExisting: CdkMenuBar },
@@ -1750,20 +1681,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImpor
             }], _allItems: [{
                 type: ContentChildren,
                 args: [CdkMenuItem, { descendants: true }]
-            }],
-        /** Place focus on the first MenuItem in the menu and set the focus origin. */
-        focusFirstItem: [{
-                type: HostListener,
-                args: ['focus']
-            }],
-        /**
-         * Handle keyboard events, specifically changing the focused element and/or toggling the active
-         * items menu.
-         * @param event the KeyboardEvent to handle.
-         */
-        _handleKeyEvent: [{
-                type: HostListener,
-                args: ['keydown', ['$event']]
             }] } });
 
 /**
