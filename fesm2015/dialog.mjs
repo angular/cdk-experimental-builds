@@ -758,7 +758,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.1", ngImpor
                         { provide: DIALOG_CONTAINER, useValue: CdkDialogContainer },
                         { provide: DIALOG_CONFIG, useValue: DialogConfig },
                     ],
-                    entryComponents: [CdkDialogContainer],
                 }]
         }] });
 
