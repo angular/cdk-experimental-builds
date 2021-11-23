@@ -1376,6 +1376,7 @@ class CdkMenu extends CdkMenuGroup {
     }
     ngOnDestroy() {
         var _a;
+        super.ngOnDestroy();
         this._emitClosedEvent();
         (_a = this._pointerTracker) === null || _a === void 0 ? void 0 : _a.destroy();
     }

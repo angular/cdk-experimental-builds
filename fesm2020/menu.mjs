@@ -1352,6 +1352,7 @@ class CdkMenu extends CdkMenuGroup {
         return this._menuStack instanceof NoopMenuStack;
     }
     ngOnDestroy() {
+        super.ngOnDestroy();
         this._emitClosedEvent();
         this._pointerTracker?.destroy();
     }
