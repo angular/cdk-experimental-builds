@@ -685,6 +685,7 @@ class Resizable {
         this.maxWidthPxInternal = Number.MAX_SAFE_INTEGER;
         this.destroyed = new Subject();
         this._viewInitialized = false;
+        this._isDestroyed = false;
     }
     /** The minimum width to allow the column to be sized to. */
     get minWidthPx() {
@@ -713,12 +714,15 @@ class Resizable {
         this._listenForResizeEvents();
         this._appendInlineHandle();
         this.styleScheduler.scheduleEnd(() => {
+            if (this._isDestroyed)
+                return;
             this._viewInitialized = true;
             this._applyMinWidthPx();
             this._applyMaxWidthPx();
         });
     }
     ngOnDestroy() {
+        this._isDestroyed = true;
         this.destroyed.next();
         this.destroyed.complete();
         this.inlineHandle?.remove();

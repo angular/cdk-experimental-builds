@@ -41,6 +41,7 @@ export declare abstract class Resizable<HandleComponent extends ResizeOverlayHan
     protected abstract readonly viewContainerRef: ViewContainerRef;
     protected abstract readonly changeDetectorRef: ChangeDetectorRef;
     private _viewInitialized;
+    private _isDestroyed;
     /** The minimum width to allow the column to be sized to. */
     get minWidthPx(): number;
     set minWidthPx(value: number);
