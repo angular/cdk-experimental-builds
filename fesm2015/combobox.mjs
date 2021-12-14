@@ -213,7 +213,7 @@ class CdkCombobox {
     _coerceOpenActionProperty(input) {
         let actions = typeof input === 'string' ? input.trim().split(/[ ,]+/) : input;
         if ((typeof ngDevMode === 'undefined' || ngDevMode) &&
-            actions.some(a => allowedOpenActions.indexOf(a) === -1)) {
+            (actions === null || actions === void 0 ? void 0 : actions.some(a => allowedOpenActions.indexOf(a) === -1))) {
             throw Error(`${input} is not a support open action for CdkCombobox`);
         }
         return actions;

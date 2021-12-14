@@ -141,7 +141,7 @@ export declare class CdkAutoSizeVirtualScroll implements OnChanges {
      * If the amount of buffer dips below this number, more items will be rendered. Defaults to 100px.
      */
     get minBufferPx(): number;
-    set minBufferPx(value: number);
+    set minBufferPx(value: NumberInput);
     _minBufferPx: number;
     /**
      * The number of pixels worth of buffer to shoot for when rendering new items.
@@ -150,13 +150,11 @@ export declare class CdkAutoSizeVirtualScroll implements OnChanges {
      * Defaults to 200px.
      */
     get maxBufferPx(): number;
-    set maxBufferPx(value: number);
+    set maxBufferPx(value: NumberInput);
     _maxBufferPx: number;
     /** The scroll strategy used by this directive. */
     _scrollStrategy: AutoSizeVirtualScrollStrategy;
     ngOnChanges(): void;
-    static ngAcceptInputType_minBufferPx: NumberInput;
-    static ngAcceptInputType_maxBufferPx: NumberInput;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkAutoSizeVirtualScroll, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkAutoSizeVirtualScroll, "cdk-virtual-scroll-viewport[autosize]", never, { "minBufferPx": "minBufferPx"; "maxBufferPx": "maxBufferPx"; }, {}, never>;
 }

@@ -59,7 +59,7 @@ export declare class CdkContextMenuTrigger implements OnDestroy {
     readonly closed: EventEmitter<void>;
     /** Whether the context menu should be disabled. */
     get disabled(): boolean;
-    set disabled(value: boolean);
+    set disabled(value: BooleanInput);
     private _disabled;
     /** A reference to the overlay which manages the triggered menu. */
     private _overlayRef;
@@ -117,7 +117,6 @@ export declare class CdkContextMenuTrigger implements OnDestroy {
     private _destroyOverlay;
     /** Set the menu panels menu stack back to null. */
     private _resetPanelMenuStack;
-    static ngAcceptInputType_disabled: BooleanInput;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkContextMenuTrigger, [null, null, null, null, { optional: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkContextMenuTrigger, "[cdkContextMenuTriggerFor]", ["cdkContextMenuTriggerFor"], { "menuPanel": "cdkContextMenuTriggerFor"; "disabled": "cdkContextMenuDisabled"; }, { "opened": "cdkContextMenuOpened"; "closed": "cdkContextMenuClosed"; }, never>;
 }

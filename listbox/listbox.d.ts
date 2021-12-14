@@ -26,9 +26,9 @@ export declare class CdkOption<T = unknown> implements ListKeyManagerOption, Hig
     /** The id of the option, set to a uniqueid if the user does not provide one. */
     id: string;
     get selected(): boolean;
-    set selected(value: boolean);
+    set selected(value: BooleanInput);
     get disabled(): boolean;
-    set disabled(value: boolean);
+    set disabled(value: BooleanInput);
     /** The form value of the option. */
     get value(): T;
     set value(value: T);
@@ -61,8 +61,6 @@ export declare class CdkOption<T = unknown> implements ListKeyManagerOption, Hig
     setActiveStyles(): void;
     /** Sets the active property to false to disable the active css class. */
     setInactiveStyles(): void;
-    static ngAcceptInputType_selected: BooleanInput;
-    static ngAcceptInputType_disabled: BooleanInput;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkOption<any>, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkOption<any>, "[cdkOption]", ["cdkOption"], { "id": "id"; "selected": "selected"; "disabled": "disabled"; "value": "value"; }, { "selectionChange": "selectionChange"; }, never>;
 }
@@ -91,15 +89,15 @@ export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnIni
      * If `multiple` switches from `true` to `false`, all options are deselected.
      */
     get multiple(): boolean;
-    set multiple(value: boolean);
+    set multiple(value: BooleanInput);
     get disabled(): boolean;
-    set disabled(value: boolean);
+    set disabled(value: BooleanInput);
     /** Whether the listbox will use active descendant or will move focus onto the options. */
     get useActiveDescendant(): boolean;
-    set useActiveDescendant(shouldUseActiveDescendant: boolean);
+    set useActiveDescendant(shouldUseActiveDescendant: BooleanInput);
     /** Whether on focus the listbox will focus its active option, default to true. */
     get autoFocus(): boolean;
-    set autoFocus(shouldAutoFocus: boolean);
+    set autoFocus(shouldAutoFocus: BooleanInput);
     /** Determines the orientation for the list key manager. Affects keyboard interaction. */
     orientation: 'horizontal' | 'vertical';
     compareWith: (o1: T, o2: T) => boolean;
@@ -152,10 +150,6 @@ export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnIni
     getSelectedValues(): T[];
     /** Selects an option that has the corresponding given value. */
     private _setSelectionByValue;
-    static ngAcceptInputType_disabled: BooleanInput;
-    static ngAcceptInputType_multiple: BooleanInput;
-    static ngAcceptInputType_useActiveDescendant: BooleanInput;
-    static ngAcceptInputType_autoFocus: BooleanInput;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkListbox<any>, [{ optional: true; }, { optional: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "id": "id"; "multiple": "multiple"; "disabled": "disabled"; "useActiveDescendant": "useActiveDescendant"; "autoFocus": "autoFocus"; "orientation": "listboxOrientation"; "compareWith": "compareWith"; "_explicitPanel": "parentPanel"; }, { "selectionChange": "selectionChange"; }, ["_options"]>;
 }

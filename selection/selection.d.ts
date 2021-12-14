@@ -25,7 +25,7 @@ export declare class CdkSelection<T> implements OnInit, AfterContentChecked, Col
     trackByFn: TrackByFunction<T>;
     /** Whether to support multiple selection */
     get multiple(): boolean;
-    set multiple(multiple: boolean);
+    set multiple(multiple: BooleanInput);
     protected _multiple: boolean;
     /** Emits when selection changes. */
     readonly change: EventEmitter<SelectionChange<T>>;
@@ -57,7 +57,6 @@ export declare class CdkSelection<T> implements OnInit, AfterContentChecked, Col
     private _clearAll;
     private _updateSelectAllState;
     selectAllState: SelectAllState;
-    static ngAcceptInputType_multiple: BooleanInput;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelection<any>, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelection<any>, "[cdkSelection]", ["cdkSelection"], { "dataSource": "dataSource"; "trackByFn": "trackBy"; "multiple": "cdkSelectionMultiple"; }, { "change": "cdkSelectionChange"; }, never>;
 }

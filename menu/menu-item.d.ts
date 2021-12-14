@@ -29,7 +29,7 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
     private readonly _menuTrigger?;
     /**  Whether the CdkMenuItem is disabled - defaults to false */
     get disabled(): boolean;
-    set disabled(value: boolean);
+    set disabled(value: BooleanInput);
     private _disabled;
     /**
      * If this MenuItem is a regular MenuItem, outputs when it is triggered by a keyboard or mouse
@@ -95,7 +95,6 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
     /** Get the MenuStack from the parent menu. */
     private _getMenuStack;
     ngOnDestroy(): void;
-    static ngAcceptInputType_disabled: BooleanInput;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItem, [null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItem, "[cdkMenuItem]", ["cdkMenuItem"], { "disabled": "disabled"; }, { "triggered": "cdkMenuItemTriggered"; }, never>;
 }

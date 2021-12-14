@@ -28,7 +28,7 @@ export declare class CdkSelectionToggle<T> implements OnDestroy, OnInit {
     value: T;
     /** The index of the value in the list. Required when used with `trackBy` */
     get index(): number | undefined;
-    set index(index: number | undefined);
+    set index(index: NumberInput);
     protected _index?: number;
     /** The checked state of the selection toggle */
     readonly checked: Observable<boolean>;
@@ -41,7 +41,6 @@ export declare class CdkSelectionToggle<T> implements OnDestroy, OnInit {
     private _assertValidParentSelection;
     private _configureControlValueAccessor;
     private _isSelected;
-    static ngAcceptInputType_index: NumberInput;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionToggle<any>, [{ optional: true; }, { optional: true; self: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectionToggle<any>, "[cdkSelectionToggle]", ["cdkSelectionToggle"], { "value": "cdkSelectionToggleValue"; "index": "cdkSelectionToggleIndex"; }, {}, never>;
 }
