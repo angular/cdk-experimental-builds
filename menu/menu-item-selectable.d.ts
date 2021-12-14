@@ -18,7 +18,7 @@ export declare abstract class CdkMenuItemSelectable extends CdkMenuItem {
     readonly toggled: EventEmitter<CdkMenuItemSelectable>;
     /** Whether the element is checked */
     get checked(): boolean;
-    set checked(value: boolean);
+    set checked(value: BooleanInput);
     private _checked;
     /** The name of the selectable element with a default value */
     name: string;
@@ -26,7 +26,6 @@ export declare abstract class CdkMenuItemSelectable extends CdkMenuItem {
     id: string;
     /** If the element is not disabled emit the click event */
     trigger(): void;
-    static ngAcceptInputType_checked: BooleanInput;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemSelectable, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemSelectable, never, never, { "checked": "checked"; "name": "name"; "id": "id"; }, { "toggled": "cdkMenuItemToggled"; }, never>;
 }

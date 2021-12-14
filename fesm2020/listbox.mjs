@@ -206,8 +206,9 @@ class CdkListbox {
         return this._multiple;
     }
     set multiple(value) {
-        this._updateSelectionOnMultiSelectionChange(value);
-        this._multiple = coerceBooleanProperty(value);
+        const coercedValue = coerceBooleanProperty(value);
+        this._updateSelectionOnMultiSelectionChange(coercedValue);
+        this._multiple = coercedValue;
     }
     get disabled() {
         return this._disabled;

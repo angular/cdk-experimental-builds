@@ -23,14 +23,14 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContent
     private _panel;
     value: T | T[];
     get disabled(): boolean;
-    set disabled(value: boolean);
+    set disabled(value: BooleanInput);
     private _disabled;
     get openActions(): OpenAction[];
-    set openActions(action: OpenAction[]);
+    set openActions(action: OpenActionInput);
     private _openActions;
     /** Whether the textContent is automatically updated upon change of the combobox value. */
     get autoSetText(): boolean;
-    set autoSetText(value: boolean);
+    set autoSetText(value: BooleanInput);
     private _autoSetText;
     readonly opened: EventEmitter<void>;
     readonly closed: EventEmitter<void>;
@@ -66,9 +66,6 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContent
     private _getOverlayPositions;
     private _getPanelContent;
     private _coerceOpenActionProperty;
-    static ngAcceptInputType_openActions: OpenActionInput;
-    static ngAcceptInputType_autoSetText: OpenActionInput;
-    static ngAcceptInputType_disabled: BooleanInput;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkCombobox<any>, [null, null, null, { optional: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkCombobox<any>, "[cdkCombobox]", ["cdkCombobox"], { "panel": "cdkComboboxTriggerFor"; "value": "value"; "disabled": "disabled"; "openActions": "openActions"; "autoSetText": "autoSetText"; }, { "opened": "comboboxPanelOpened"; "closed": "comboboxPanelClosed"; "panelValueChanged": "panelValueChanged"; }, never>;
 }
