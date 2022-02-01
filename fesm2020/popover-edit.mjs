@@ -40,13 +40,7 @@ const EDIT_PANE_SELECTOR = `.${EDIT_PANE_CLASS}, .mat-edit-pane`;
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/** IE 11 compatible matches implementation. */
-function matches(element, selector) {
-    return element.matches
-        ? element.matches(selector)
-        : element['msMatchesSelector'](selector);
-}
-/** IE 11 compatible closest implementation that is able to start from non-Element Nodes. */
+/** closest implementation that is able to start from non-Element Nodes. */
 function closest(element, selector) {
     if (!(element instanceof Node)) {
         return null;
@@ -55,20 +49,8 @@ function closest(element, selector) {
     while (curr != null && !(curr instanceof Element)) {
         curr = curr.parentNode;
     }
-    return (curr &&
-        (hasNativeClosest
-            ? curr.closest(selector)
-            : polyfillClosest(curr, selector)));
+    return curr?.closest(selector) ?? null;
 }
-/** Polyfill for browsers without Element.closest. */
-function polyfillClosest(element, selector) {
-    let curr = element;
-    while (curr != null && !(curr instanceof Element && matches(curr, selector))) {
-        curr = curr.parentNode;
-    }
-    return (curr || null);
-}
-const hasNativeClosest = !!Element.prototype.closest;
 
 /**
  * @license
@@ -1253,5 +1235,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.2.0", ngImpor
  * Generated bundle index. Do not edit.
  */
 
-export { CdkEditClose, CdkEditControl, CdkEditOpen, CdkEditRevert, CdkEditable, CdkPopoverEdit, CdkPopoverEditModule, CdkPopoverEditTabOut, CdkRowHoverContent, DefaultPopoverEditPositionStrategyFactory, EditEventDispatcher, EditRef, FocusDispatcher, FormValueContainer, PopoverEditPositionStrategyFactory, CELL_SELECTOR as _CELL_SELECTOR, closest as _closest, matches as _matches };
+export { CdkEditClose, CdkEditControl, CdkEditOpen, CdkEditRevert, CdkEditable, CdkPopoverEdit, CdkPopoverEditModule, CdkPopoverEditTabOut, CdkRowHoverContent, DefaultPopoverEditPositionStrategyFactory, EditEventDispatcher, EditRef, FocusDispatcher, FormValueContainer, PopoverEditPositionStrategyFactory, CELL_SELECTOR as _CELL_SELECTOR, closest as _closest };
 //# sourceMappingURL=popover-edit.mjs.map
