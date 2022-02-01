@@ -5,8 +5,8 @@ import { OverlayConfig, OverlayModule } from '@angular/cdk/overlay';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW, ENTER, SPACE, TAB, ESCAPE, hasModifierKey } from '@angular/cdk/keycodes';
 import * as i2 from '@angular/cdk/bidi';
-import { Subject, fromEvent, merge, defer } from 'rxjs';
-import { filter, takeUntil, startWith, mergeMap, mapTo, mergeAll, take, switchMap } from 'rxjs/operators';
+import { Subject, fromEvent, merge, defer, partition } from 'rxjs';
+import { filter, takeUntil, startWith, mergeMap, mapTo, mergeAll, take, switchMap, skip } from 'rxjs/operators';
 import * as i1$1 from '@angular/cdk/collections';
 import { UniqueSelectionDispatcher } from '@angular/cdk/collections';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
@@ -1852,6 +1852,9 @@ class CdkContextMenuTrigger {
      * @param coordinates where to open the context menu
      */
     open(coordinates) {
+        this._open(coordinates, false);
+    }
+    _open(coordinates, ignoreFirstOutsideAuxClick) {
         if (this.disabled) {
             return;
         }
@@ -1872,7 +1875,7 @@ class CdkContextMenuTrigger {
                 this._overlayRef = this._overlay.create(this._getOverlayConfig(coordinates));
             }
             this._overlayRef.attach(this._getMenuContent());
-            this._subscribeToOutsideClicks();
+            this._subscribeToOutsideClicks(ignoreFirstOutsideAuxClick);
         }
     }
     /** Close the opened menu. */
@@ -1892,7 +1895,7 @@ class CdkContextMenuTrigger {
             // resulting in multiple stacked context menus being displayed.
             event.stopPropagation();
             this._contextMenuTracker.update(this);
-            this.open({ x: event.clientX, y: event.clientY });
+            this._open({ x: event.clientX, y: event.clientY }, true);
             // A context menu can be triggered via a mouse right click or a keyboard shortcut.
             if (event.button === 2) {
                 this._menuPanel._menu?.focusFirstItem('mouse');
@@ -1968,12 +1971,16 @@ class CdkContextMenuTrigger {
      * Subscribe to the overlays outside pointer events stream and handle closing out the stack if a
      * click occurs outside the menus.
      */
-    _subscribeToOutsideClicks() {
+    _subscribeToOutsideClicks(ignoreFirstAuxClick) {
         if (this._overlayRef) {
-            this._overlayRef
-                .outsidePointerEvents()
-                .pipe(takeUntil(this._stopOutsideClicksListener))
-                .subscribe(event => {
+            let outsideClicks = this._overlayRef.outsidePointerEvents();
+            // If the menu was triggered by the `contextmenu` event, skip the first `auxclick` event
+            // because it fires when the mouse is released on the same click that opened the menu.
+            if (ignoreFirstAuxClick) {
+                const [auxClicks, nonAuxClicks] = partition(outsideClicks, ({ type }) => type === 'auxclick');
+                outsideClicks = merge(nonAuxClicks, auxClicks.pipe(skip(1)));
+            }
+            outsideClicks.pipe(takeUntil(this._stopOutsideClicksListener)).subscribe(event => {
                 if (!isClickInsideMenuOverlay(event.target)) {
                     this._menuStack.closeAll();
                 }

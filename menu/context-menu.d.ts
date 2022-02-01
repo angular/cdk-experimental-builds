@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ViewContainerRef, EventEmitter, OnDestroy, InjectionToken } from '@angular/core';
+import { EventEmitter, InjectionToken, OnDestroy, ViewContainerRef } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { Overlay } from '@angular/cdk/overlay';
 import { BooleanInput } from '@angular/cdk/coercion';
@@ -77,6 +77,7 @@ export declare class CdkContextMenuTrigger implements OnDestroy {
      * @param coordinates where to open the context menu
      */
     open(coordinates: ContextMenuCoordinates): void;
+    private _open;
     /** Close the opened menu. */
     close(): void;
     /**
