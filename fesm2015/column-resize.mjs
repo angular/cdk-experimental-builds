@@ -68,7 +68,8 @@ class ColumnResize {
                 .pipe(map(event => _closest(event.target, HEADER_CELL_SELECTOR)), takeUntil(this.destroyed))
                 .subscribe(this.eventDispatcher.headerCellHovered);
             fromEvent(element, 'mouseleave')
-                .pipe(filter(event => { var _a; return !!((_a = event.relatedTarget) === null || _a === void 0 ? void 0 : _a.matches(RESIZE_OVERLAY_SELECTOR)); }), mapTo(null), takeUntil(this.destroyed))
+                .pipe(filter(event => !!event.relatedTarget &&
+                !event.relatedTarget.matches(RESIZE_OVERLAY_SELECTOR)), mapTo(null), takeUntil(this.destroyed))
                 .subscribe(this.eventDispatcher.headerCellHovered);
         });
     }
