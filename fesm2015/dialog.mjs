@@ -1,4 +1,4 @@
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { trigger, state, style, transition, group, animate, query, animateChild } from '@angular/animations';
 import { _getFocusedElementPierceShadowDom } from '@angular/cdk/platform';
 import * as i3 from '@angular/cdk/portal';
 import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, TemplatePortal, PortalModule } from '@angular/cdk/portal';
@@ -289,8 +289,14 @@ CdkDialogContainer.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", ver
         trigger('dialog', [
             state('enter', style({ opacity: 1 })),
             state('exit, void', style({ opacity: 0 })),
-            transition('* => enter', animate('{{enterAnimationDuration}}')),
-            transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
+            transition('* => enter', group([
+                animate('{{enterAnimationDuration}}'),
+                query('@*', animateChild(), { optional: true }),
+            ])),
+            transition('* => exit, * => void', group([
+                animate('{{exitAnimationDuration}}'),
+                query('@*', animateChild(), { optional: true }),
+            ])),
         ]),
     ], changeDetection: i0.ChangeDetectionStrategy.Default, encapsulation: i0.ViewEncapsulation.None });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.2.0", ngImport: i0, type: CdkDialogContainer, decorators: [{
@@ -299,8 +305,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.2.0", ngImpor
                         trigger('dialog', [
                             state('enter', style({ opacity: 1 })),
                             state('exit, void', style({ opacity: 0 })),
-                            transition('* => enter', animate('{{enterAnimationDuration}}')),
-                            transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
+                            transition('* => enter', group([
+                                animate('{{enterAnimationDuration}}'),
+                                query('@*', animateChild(), { optional: true }),
+                            ])),
+                            transition('* => exit, * => void', group([
+                                animate('{{exitAnimationDuration}}'),
+                                query('@*', animateChild(), { optional: true }),
+                            ])),
                         ]),
                     ], host: {
                         '[@dialog]': `{
