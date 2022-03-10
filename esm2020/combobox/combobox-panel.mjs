@@ -33,9 +33,9 @@ export class CdkComboboxPanel {
         this.contentTypeUpdated.next(this.contentType);
     }
 }
-CdkComboboxPanel.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.5", ngImport: i0, type: CdkComboboxPanel, deps: [{ token: i0.TemplateRef }], target: i0.ɵɵFactoryTarget.Directive });
-CdkComboboxPanel.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.5", type: CdkComboboxPanel, selector: "ng-template[cdkComboboxPanel]", host: { classAttribute: "cdk-combobox-panel" }, exportAs: ["cdkComboboxPanel"], ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.5", ngImport: i0, type: CdkComboboxPanel, decorators: [{
+CdkComboboxPanel.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkComboboxPanel, deps: [{ token: i0.TemplateRef }], target: i0.ɵɵFactoryTarget.Directive });
+CdkComboboxPanel.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkComboboxPanel, selector: "ng-template[cdkComboboxPanel]", host: { classAttribute: "cdk-combobox-panel" }, exportAs: ["cdkComboboxPanel"], ngImport: i0 });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkComboboxPanel, decorators: [{
             type: Directive,
             args: [{
                     host: {

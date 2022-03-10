@@ -22,12 +22,12 @@ export class CdkMenuItemCheckbox extends CdkMenuItemSelectable {
         }
     }
 }
-CdkMenuItemCheckbox.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.5", ngImport: i0, type: CdkMenuItemCheckbox, deps: null, target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuItemCheckbox.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.5", type: CdkMenuItemCheckbox, selector: "[cdkMenuItemCheckbox]", host: { attributes: { "type": "button", "role": "menuitemcheckbox" }, properties: { "tabindex": "_tabindex", "attr.aria-checked": "checked || null", "attr.aria-disabled": "disabled || null" } }, providers: [
+CdkMenuItemCheckbox.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkMenuItemCheckbox, deps: null, target: i0.ɵɵFactoryTarget.Directive });
+CdkMenuItemCheckbox.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkMenuItemCheckbox, selector: "[cdkMenuItemCheckbox]", host: { attributes: { "type": "button", "role": "menuitemcheckbox" }, properties: { "tabindex": "_tabindex", "attr.aria-checked": "checked || null", "attr.aria-disabled": "disabled || null" } }, providers: [
         { provide: CdkMenuItemSelectable, useExisting: CdkMenuItemCheckbox },
         { provide: CdkMenuItem, useExisting: CdkMenuItemSelectable },
     ], exportAs: ["cdkMenuItemCheckbox"], usesInheritance: true, ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.5", ngImport: i0, type: CdkMenuItemCheckbox, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkMenuItemCheckbox, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkMenuItemCheckbox]',
