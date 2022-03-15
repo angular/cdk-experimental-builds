@@ -5,11 +5,12 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { EventEmitter, InjectionToken, OnDestroy, ViewContainerRef } from '@angular/core';
+import { EventEmitter, InjectionToken, Injector, OnDestroy, ViewContainerRef } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { Overlay } from '@angular/cdk/overlay';
 import { BooleanInput } from '@angular/cdk/coercion';
-import { CdkMenuPanel } from './menu-panel';
+import { MenuStack } from './menu-stack';
+import { MenuTrigger } from './menu-trigger';
 import * as i0 from "@angular/core";
 /** Tracks the last open context menu trigger across the entire application. */
 export declare class ContextMenuTracker {
@@ -42,17 +43,14 @@ export declare type ContextMenuCoordinates = {
  * right-clicks within that element. It is aware of nested Context Menus and the lowest level
  * non-disabled context menu will trigger.
  */
-export declare class CdkContextMenuTrigger implements OnDestroy {
+export declare class CdkContextMenuTrigger extends MenuTrigger implements OnDestroy {
     protected readonly _viewContainerRef: ViewContainerRef;
     private readonly _overlay;
     private readonly _contextMenuTracker;
     private readonly _options;
     private readonly _directionality?;
     /** Template reference variable to the menu to open on right click. */
-    get menuPanel(): CdkMenuPanel;
-    set menuPanel(panel: CdkMenuPanel);
-    /** Reference to the MenuPanel this trigger toggles. */
-    private _menuPanel;
+    private _menuTemplateRef;
     /** Emits when the attached menu is requested to open. */
     readonly opened: EventEmitter<void>;
     /** Emits when the attached menu is requested to close. */
@@ -64,14 +62,12 @@ export declare class CdkContextMenuTrigger implements OnDestroy {
     /** A reference to the overlay which manages the triggered menu. */
     private _overlayRef;
     /** The content of the menu panel opened by this trigger. */
-    private _panelContent;
+    private _menuPortal;
     /** Emits when the element is destroyed. */
     private readonly _destroyed;
-    /** The menu stack for this trigger and its associated menus. */
-    private readonly _menuStack;
     /** Emits when the outside pointer events listener on the overlay should be stopped. */
     private readonly _stopOutsideClicksListener;
-    constructor(_viewContainerRef: ViewContainerRef, _overlay: Overlay, _contextMenuTracker: ContextMenuTracker, _options: ContextMenuOptions, _directionality?: Directionality | undefined);
+    constructor(injector: Injector, _viewContainerRef: ViewContainerRef, _overlay: Overlay, _contextMenuTracker: ContextMenuTracker, menuStack: MenuStack, _options: ContextMenuOptions, _directionality?: Directionality | undefined);
     /**
      * Open the attached menu at the specified location.
      * @param coordinates where to open the context menu
@@ -116,8 +112,6 @@ export declare class CdkContextMenuTrigger implements OnDestroy {
     ngOnDestroy(): void;
     /** Destroy and unset the overlay reference it if exists. */
     private _destroyOverlay;
-    /** Set the menu panels menu stack back to null. */
-    private _resetPanelMenuStack;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkContextMenuTrigger, [null, null, null, null, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkContextMenuTrigger, "[cdkContextMenuTriggerFor]", ["cdkContextMenuTriggerFor"], { "menuPanel": "cdkContextMenuTriggerFor"; "disabled": "cdkContextMenuDisabled"; }, { "opened": "cdkContextMenuOpened"; "closed": "cdkContextMenuClosed"; }, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkContextMenuTrigger, [null, null, null, null, null, null, { optional: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkContextMenuTrigger, "[cdkContextMenuTriggerFor]", ["cdkContextMenuTriggerFor"], { "_menuTemplateRef": "cdkContextMenuTriggerFor"; "disabled": "cdkContextMenuDisabled"; }, { "opened": "cdkContextMenuOpened"; "closed": "cdkContextMenuClosed"; }, never>;
 }

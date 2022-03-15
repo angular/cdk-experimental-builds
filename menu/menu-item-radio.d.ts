@@ -6,12 +6,13 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { UniqueSelectionDispatcher } from '@angular/cdk/collections';
-import { OnDestroy, ElementRef, NgZone } from '@angular/core';
+import { ElementRef, NgZone, OnDestroy } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { CdkMenuItemSelectable } from './menu-item-selectable';
 import { CdkMenuItemTrigger } from './menu-item-trigger';
 import { Menu } from './menu-interface';
 import { MenuAim } from './menu-aim';
+import { MenuStack } from './menu-stack';
 import * as i0 from "@angular/core";
 /**
  * A directive providing behavior for the "menuitemradio" ARIA role, which behaves similarly to
@@ -22,7 +23,7 @@ export declare class CdkMenuItemRadio extends CdkMenuItemSelectable implements O
     private readonly _selectionDispatcher;
     /** Function to unregister the selection dispatcher */
     private _removeDispatcherListener;
-    constructor(_selectionDispatcher: UniqueSelectionDispatcher, element: ElementRef<HTMLElement>, ngZone: NgZone, parentMenu?: Menu, menuAim?: MenuAim, dir?: Directionality, 
+    constructor(_selectionDispatcher: UniqueSelectionDispatcher, element: ElementRef<HTMLElement>, ngZone: NgZone, menuStack?: MenuStack, parentMenu?: Menu, menuAim?: MenuAim, dir?: Directionality, 
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     menuTrigger?: CdkMenuItemTrigger);
     /** Configure the unique selection dispatcher listener in order to toggle the checked state  */
@@ -30,6 +31,6 @@ export declare class CdkMenuItemRadio extends CdkMenuItemSelectable implements O
     /** Toggles the checked state of the radio-button. */
     trigger(): void;
     ngOnDestroy(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemRadio, [null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemRadio, [null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemRadio, "[cdkMenuItemRadio]", ["cdkMenuItemRadio"], {}, {}, never>;
 }

@@ -5,14 +5,14 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { EventEmitter, AfterContentInit, OnDestroy, OnInit, NgZone, ElementRef } from '@angular/core';
+import { AfterContentInit, ElementRef, EventEmitter, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { FocusOrigin } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import { CdkMenuGroup } from './menu-group';
-import { CdkMenuPanel } from './menu-panel';
 import { Menu } from './menu-interface';
 import { MenuStack } from './menu-stack';
 import { MenuAim } from './menu-aim';
+import { MenuTrigger } from './menu-trigger';
 import * as i0 from "@angular/core";
 /**
  * Directive which configures the element as a Menu which should contain child elements marked as
@@ -24,9 +24,10 @@ import * as i0 from "@angular/core";
 export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentInit, OnInit, OnDestroy {
     private readonly _ngZone;
     readonly _elementRef: ElementRef<HTMLElement>;
+    readonly _menuStack?: MenuStack | undefined;
+    private _parentTrigger?;
     private readonly _menuAim?;
     private readonly _dir?;
-    private readonly _menuPanel?;
     /**
      * Sets the aria-orientation attribute and determines where menus will be opened.
      * Does not affect styling/layout.
@@ -34,8 +35,6 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
     orientation: 'horizontal' | 'vertical';
     /** Event emitted when the menu is closed. */
     readonly closed: EventEmitter<void | 'click' | 'tab' | 'escape'>;
-    /** Track the Menus making up the open menu stack. */
-    _menuStack: MenuStack;
     /** Handles keyboard events for the menu. */
     private _keyManager;
     /** Manages items under mouse focus. */
@@ -46,15 +45,7 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
     private readonly _allItems;
     /** The Menu Item which triggered the open submenu. */
     private _openItem?;
-    /**
-     * A reference to the enclosing parent menu panel.
-     *
-     * Required to be set when using ViewEngine since ViewEngine does support injecting a reference to
-     * the parent directive if the parent directive is placed on an `ng-template`. If using Ivy, the
-     * injected value will be used over this one.
-     */
-    private readonly _explicitPanel?;
-    constructor(_ngZone: NgZone, _elementRef: ElementRef<HTMLElement>, _menuAim?: MenuAim | undefined, _dir?: Directionality | undefined, _menuPanel?: CdkMenuPanel | undefined);
+    constructor(_ngZone: NgZone, _elementRef: ElementRef<HTMLElement>, _menuStack?: MenuStack | undefined, _parentTrigger?: MenuTrigger | undefined, _menuAim?: MenuAim | undefined, _dir?: Directionality | undefined);
     ngOnInit(): void;
     ngAfterContentInit(): void;
     /** Place focus on the first MenuItem in the menu and set the focus origin. */
@@ -63,13 +54,6 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
     focusLastItem(focusOrigin?: FocusOrigin): void;
     /** Handle keyboard events for the Menu. */
     _handleKeyEvent(event: KeyboardEvent): void;
-    /** Register this menu with its enclosing parent menu panel */
-    private _registerWithParentPanel;
-    /**
-     * Get the enclosing CdkMenuPanel defaulting to the injected reference over the developer
-     * provided reference.
-     */
-    private _getMenuPanel;
     /**
      * Complete the change emitter if there are any nested MenuGroups or register to complete the
      * change emitter if a MenuGroup is rendered at some point
@@ -108,6 +92,6 @@ export declare class CdkMenu extends CdkMenuGroup implements Menu, AfterContentI
     ngOnDestroy(): void;
     /** Emit and complete the closed event emitter */
     private _emitClosedEvent;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenu, [null, null, { optional: true; self: true; }, { optional: true; }, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenu, "[cdkMenu]", ["cdkMenu"], { "orientation": "cdkMenuOrientation"; "_explicitPanel": "cdkMenuPanel"; }, { "closed": "closed"; }, ["_nestedGroups", "_allItems"]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenu, [null, null, { optional: true; }, { optional: true; }, { optional: true; self: true; }, { optional: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenu, "[cdkMenu]", ["cdkMenu"], { "orientation": "cdkMenuOrientation"; }, { "closed": "closed"; }, ["_nestedGroups", "_allItems"]>;
 }

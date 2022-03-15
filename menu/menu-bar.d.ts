@@ -20,9 +20,9 @@ import * as i0 from "@angular/core";
  *
  */
 export declare class CdkMenuBar extends CdkMenuGroup implements Menu, AfterContentInit, OnDestroy {
-    readonly _menuStack: MenuStack;
     private readonly _ngZone;
     readonly _elementRef: ElementRef<HTMLElement>;
+    readonly _menuStack: MenuStack;
     private readonly _menuAim?;
     private readonly _dir?;
     /**
@@ -40,7 +40,7 @@ export declare class CdkMenuBar extends CdkMenuGroup implements Menu, AfterConte
     private readonly _allItems;
     /** The Menu Item which triggered the open submenu. */
     private _openItem?;
-    constructor(_menuStack: MenuStack, _ngZone: NgZone, _elementRef: ElementRef<HTMLElement>, _menuAim?: MenuAim | undefined, _dir?: Directionality | undefined);
+    constructor(_ngZone: NgZone, _elementRef: ElementRef<HTMLElement>, _menuStack: MenuStack, _menuAim?: MenuAim | undefined, _dir?: Directionality | undefined);
     ngAfterContentInit(): void;
     /** Place focus on the first MenuItem in the menu and set the focus origin. */
     focusFirstItem(focusOrigin?: FocusOrigin): void;
