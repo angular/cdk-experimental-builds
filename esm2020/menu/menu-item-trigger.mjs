@@ -321,9 +321,9 @@ export class CdkMenuItemTrigger {
         }
     }
 }
-CdkMenuItemTrigger.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.2.0", ngImport: i0, type: CdkMenuItemTrigger, deps: [{ token: i0.ElementRef }, { token: i0.ViewContainerRef }, { token: i1.Overlay }, { token: i0.NgZone }, { token: CDK_MENU, optional: true }, { token: MENU_AIM, optional: true }, { token: i2.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuItemTrigger.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.2.0", type: CdkMenuItemTrigger, selector: "[cdkMenuTriggerFor]", inputs: { menuPanel: ["cdkMenuTriggerFor", "menuPanel"] }, outputs: { opened: "cdkMenuOpened", closed: "cdkMenuClosed" }, host: { attributes: { "aria-haspopup": "menu" }, listeners: { "keydown": "_toggleOnKeydown($event)", "click": "toggle()" }, properties: { "attr.aria-expanded": "isMenuOpen()" }, classAttribute: "cdk-menu-trigger" }, exportAs: ["cdkMenuTriggerFor"], ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.2.0", ngImport: i0, type: CdkMenuItemTrigger, decorators: [{
+CdkMenuItemTrigger.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.3.0", ngImport: i0, type: CdkMenuItemTrigger, deps: [{ token: i0.ElementRef }, { token: i0.ViewContainerRef }, { token: i1.Overlay }, { token: i0.NgZone }, { token: CDK_MENU, optional: true }, { token: MENU_AIM, optional: true }, { token: i2.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
+CdkMenuItemTrigger.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.3.0", type: CdkMenuItemTrigger, selector: "[cdkMenuTriggerFor]", inputs: { menuPanel: ["cdkMenuTriggerFor", "menuPanel"] }, outputs: { opened: "cdkMenuOpened", closed: "cdkMenuClosed" }, host: { attributes: { "aria-haspopup": "menu" }, listeners: { "keydown": "_toggleOnKeydown($event)", "click": "toggle()" }, properties: { "attr.aria-expanded": "isMenuOpen()" }, classAttribute: "cdk-menu-trigger" }, exportAs: ["cdkMenuTriggerFor"], ngImport: i0 });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.3.0", ngImport: i0, type: CdkMenuItemTrigger, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkMenuTriggerFor]',

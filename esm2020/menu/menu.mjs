@@ -248,12 +248,12 @@ export class CdkMenu extends CdkMenuGroup {
         this.closed.complete();
     }
 }
-CdkMenu.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.2.0", ngImport: i0, type: CdkMenu, deps: [{ token: i0.NgZone }, { token: i0.ElementRef }, { token: MENU_AIM, optional: true, self: true }, { token: i1.Directionality, optional: true }, { token: i2.CdkMenuPanel, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenu.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.2.0", type: CdkMenu, selector: "[cdkMenu]", inputs: { orientation: ["cdkMenuOrientation", "orientation"], _explicitPanel: ["cdkMenuPanel", "_explicitPanel"] }, outputs: { closed: "closed" }, host: { attributes: { "role": "menu" }, listeners: { "focus": "focusFirstItem()", "keydown": "_handleKeyEvent($event)" }, properties: { "tabindex": "_isInline() ? 0 : null", "class.cdk-menu-inline": "_isInline()", "attr.aria-orientation": "orientation" }, classAttribute: "cdk-menu" }, providers: [
+CdkMenu.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.3.0", ngImport: i0, type: CdkMenu, deps: [{ token: i0.NgZone }, { token: i0.ElementRef }, { token: MENU_AIM, optional: true, self: true }, { token: i1.Directionality, optional: true }, { token: i2.CdkMenuPanel, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
+CdkMenu.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.3.0", type: CdkMenu, selector: "[cdkMenu]", inputs: { orientation: ["cdkMenuOrientation", "orientation"], _explicitPanel: ["cdkMenuPanel", "_explicitPanel"] }, outputs: { closed: "closed" }, host: { attributes: { "role": "menu" }, listeners: { "focus": "focusFirstItem()", "keydown": "_handleKeyEvent($event)" }, properties: { "tabindex": "_isInline() ? 0 : null", "class.cdk-menu-inline": "_isInline()", "attr.aria-orientation": "orientation" }, classAttribute: "cdk-menu" }, providers: [
         { provide: CdkMenuGroup, useExisting: CdkMenu },
         { provide: CDK_MENU, useExisting: CdkMenu },
     ], queries: [{ propertyName: "_nestedGroups", predicate: CdkMenuGroup, descendants: true }, { propertyName: "_allItems", predicate: CdkMenuItem, descendants: true }], exportAs: ["cdkMenu"], usesInheritance: true, ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.2.0", ngImport: i0, type: CdkMenu, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.3.0", ngImport: i0, type: CdkMenu, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkMenu]',

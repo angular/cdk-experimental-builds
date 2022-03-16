@@ -46,9 +46,9 @@ export class CdkMenuGroup {
         this._selectableChanges.complete();
     }
 }
-CdkMenuGroup.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.2.0", ngImport: i0, type: CdkMenuGroup, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuGroup.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.2.0", type: CdkMenuGroup, selector: "[cdkMenuGroup]", outputs: { change: "change" }, host: { attributes: { "role": "group" }, classAttribute: "cdk-menu-group" }, providers: [{ provide: UniqueSelectionDispatcher, useClass: UniqueSelectionDispatcher }], queries: [{ propertyName: "_selectableItems", predicate: CdkMenuItemSelectable, descendants: true }], exportAs: ["cdkMenuGroup"], ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.2.0", ngImport: i0, type: CdkMenuGroup, decorators: [{
+CdkMenuGroup.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.3.0", ngImport: i0, type: CdkMenuGroup, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+CdkMenuGroup.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "13.3.0", type: CdkMenuGroup, selector: "[cdkMenuGroup]", outputs: { change: "change" }, host: { attributes: { "role": "group" }, classAttribute: "cdk-menu-group" }, providers: [{ provide: UniqueSelectionDispatcher, useClass: UniqueSelectionDispatcher }], queries: [{ propertyName: "_selectableItems", predicate: CdkMenuItemSelectable, descendants: true }], exportAs: ["cdkMenuGroup"], ngImport: i0 });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.3.0", ngImport: i0, type: CdkMenuGroup, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkMenuGroup]',
