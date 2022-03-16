@@ -5,13 +5,13 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ElementRef, EventEmitter, Injector, NgZone, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
+import { EventEmitter, ElementRef, ViewContainerRef, OnDestroy, NgZone } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { Overlay } from '@angular/cdk/overlay';
+import { CdkMenuPanel } from './menu-panel';
 import { Menu } from './menu-interface';
 import { MenuStack } from './menu-stack';
 import { MenuAim } from './menu-aim';
-import { MenuTrigger } from './menu-trigger';
 import * as i0 from "@angular/core";
 /**
  * Whether the target element is a menu item to be ignored by the overlay background click handler.
@@ -26,7 +26,7 @@ export declare function isClickInsideMenuOverlay(target: Element): boolean;
  * The directive must be placed along with the `cdkMenuItem` directive in order to enable full
  * functionality.
  */
-export declare class CdkMenuItemTrigger extends MenuTrigger implements OnDestroy {
+export declare class CdkMenuItemTrigger implements OnDestroy {
     private readonly _elementRef;
     protected readonly _viewContainerRef: ViewContainerRef;
     private readonly _overlay;
@@ -35,20 +35,25 @@ export declare class CdkMenuItemTrigger extends MenuTrigger implements OnDestroy
     private readonly _menuAim?;
     private readonly _directionality?;
     /** Template reference variable to the menu this trigger opens */
-    _menuTemplateRef?: TemplateRef<unknown>;
+    get menuPanel(): CdkMenuPanel | undefined;
+    set menuPanel(panel: CdkMenuPanel | undefined);
+    /** Reference to the MenuPanel this trigger toggles. */
+    private _menuPanel?;
     /** Emits when the attached menu is requested to open */
     readonly opened: EventEmitter<void>;
     /** Emits when the attached menu is requested to close */
     readonly closed: EventEmitter<void>;
+    /** The menu stack for this trigger and its sub-menus. */
+    _menuStack: MenuStack;
     /** A reference to the overlay which manages the triggered menu */
     private _overlayRef;
     /** The content of the menu panel opened by this trigger. */
-    private _menuPortal;
+    private _panelContent;
     /** Emits when this trigger is destroyed. */
     private readonly _destroyed;
     /** Emits when the outside pointer events listener on the overlay should be stopped. */
     private readonly _stopOutsideClicksListener;
-    constructor(injector: Injector, _elementRef: ElementRef<HTMLElement>, _viewContainerRef: ViewContainerRef, _overlay: Overlay, _ngZone: NgZone, menuStack: MenuStack, _parentMenu?: Menu | undefined, _menuAim?: MenuAim | undefined, _directionality?: Directionality | undefined);
+    constructor(_elementRef: ElementRef<HTMLElement>, _viewContainerRef: ViewContainerRef, _overlay: Overlay, _ngZone: NgZone, _parentMenu?: Menu | undefined, _menuAim?: MenuAim | undefined, _directionality?: Directionality | undefined);
     /** Open/close the attached menu if the trigger has been configured with one */
     toggle(): void;
     /** Open the attached menu. */
@@ -97,7 +102,11 @@ export declare class CdkMenuItemTrigger extends MenuTrigger implements OnDestroy
      * this triggers when requested.
      */
     private _registerCloseHandler;
+    /** Get the menu stack for this trigger - either from the parent or this trigger. */
+    private _getMenuStack;
     ngOnDestroy(): void;
+    /** Set the menu panels menu stack back to null. */
+    private _resetPanelMenuStack;
     /**
      * Subscribe to the overlays outside pointer events stream and handle closing out the stack if a
      * click occurs outside the menus.
@@ -105,6 +114,6 @@ export declare class CdkMenuItemTrigger extends MenuTrigger implements OnDestroy
     private _subscribeToOutsideClicks;
     /** Destroy and unset the overlay reference it if exists */
     private _destroyOverlay;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemTrigger, [null, null, null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemTrigger, "[cdkMenuTriggerFor]", ["cdkMenuTriggerFor"], { "_menuTemplateRef": "cdkMenuTriggerFor"; }, { "opened": "cdkMenuOpened"; "closed": "cdkMenuClosed"; }, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemTrigger, [null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemTrigger, "[cdkMenuTriggerFor]", ["cdkMenuTriggerFor"], { "menuPanel": "cdkMenuTriggerFor"; }, { "opened": "cdkMenuOpened"; "closed": "cdkMenuClosed"; }, never>;
 }

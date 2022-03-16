@@ -6,6 +6,11 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /**
+ * Throws an exception when a menu panel already has a menu stack.
+ * @docs-private
+ */
+export declare function throwExistingMenuStackError(): void;
+/**
  * Throws an exception when an instance of the PointerFocusTracker is not provided.
  * @docs-private
  */

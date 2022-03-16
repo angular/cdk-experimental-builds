@@ -5,9 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
-import * as i0 from "@angular/core";
 /** Events to emit as specified by the caller once the MenuStack is empty. */
 export declare const enum FocusNext {
     nextItem = 0,
@@ -19,10 +17,8 @@ export declare const enum FocusNext {
  */
 export interface MenuStackItem {
     /** A reference to the previous Menus MenuStack instance. */
-    _menuStack?: MenuStack;
+    _menuStack: MenuStack | null;
 }
-/** Injection token used for an implementation of MenuStack. */
-export declare const MENU_STACK: InjectionToken<MenuStack>;
 /**
  * MenuStack allows subscribers to listen for close events (when a MenuStackItem is popped off
  * of the stack) in order to perform closing actions. Upon the MenuStack being empty it emits
@@ -74,6 +70,9 @@ export declare class MenuStack {
     length(): number;
     /** Get the top most element on the stack. */
     peek(): MenuStackItem | undefined;
-    static ɵfac: i0.ɵɵFactoryDeclaration<MenuStack, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<MenuStack>;
+}
+/** NoopMenuStack is a placeholder MenuStack used for inline menus. */
+export declare class NoopMenuStack extends MenuStack {
+    /** Noop push - does not add elements to the MenuStack. */
+    push(_: MenuStackItem): void;
 }

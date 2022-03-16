@@ -11,9 +11,8 @@ import { FocusableOption } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import { CdkMenuItemTrigger } from './menu-item-trigger';
 import { Menu } from './menu-interface';
-import { MenuStack } from './menu-stack';
 import { FocusableElement } from './pointer-focus-tracker';
-import { MenuAim, Toggler } from './menu-aim';
+import { Toggler, MenuAim } from './menu-aim';
 import * as i0 from "@angular/core";
 /**
  * Directive which provides the ability for an element to be focused and navigated to using the
@@ -23,7 +22,6 @@ import * as i0 from "@angular/core";
 export declare class CdkMenuItem implements FocusableOption, FocusableElement, Toggler, OnDestroy {
     readonly _elementRef: ElementRef<HTMLElement>;
     private readonly _ngZone;
-    private readonly _menuStack?;
     private readonly _parentMenu?;
     private readonly _menuAim?;
     private readonly _dir?;
@@ -45,7 +43,7 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
     _tabindex: 0 | -1;
     /** Emits when the menu item is destroyed. */
     private readonly _destroyed;
-    constructor(_elementRef: ElementRef<HTMLElement>, _ngZone: NgZone, _menuStack?: MenuStack | undefined, _parentMenu?: Menu | undefined, _menuAim?: MenuAim | undefined, _dir?: Directionality | undefined, 
+    constructor(_elementRef: ElementRef<HTMLElement>, _ngZone: NgZone, _parentMenu?: Menu | undefined, _menuAim?: MenuAim | undefined, _dir?: Directionality | undefined, 
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     _menuTrigger?: CdkMenuItemTrigger | undefined);
     /** Place focus on the element. */
@@ -94,7 +92,9 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
      * otherwise or if no parent.
      */
     private _isParentVertical;
+    /** Get the MenuStack from the parent menu. */
+    private _getMenuStack;
     ngOnDestroy(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItem, [null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItem, [null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItem, "[cdkMenuItem]", ["cdkMenuItem"], { "disabled": "disabled"; }, { "triggered": "cdkMenuItemTriggered"; }, never>;
 }
