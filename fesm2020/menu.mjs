@@ -1,7 +1,7 @@
 import * as i0 from '@angular/core';
 import { InjectionToken, Injectable, Directive, Injector, Inject, EventEmitter, Optional, SkipSelf, Input, Output, Self, ContentChildren, NgModule } from '@angular/core';
 import * as i1 from '@angular/cdk/overlay';
-import { OverlayConfig, OverlayModule } from '@angular/cdk/overlay';
+import { OverlayConfig, STANDARD_DROPDOWN_BELOW_POSITIONS, STANDARD_DROPDOWN_ADJACENT_POSITIONS, OverlayModule } from '@angular/cdk/overlay';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW, ENTER, SPACE, TAB, ESCAPE, hasModifierKey } from '@angular/cdk/keycodes';
 import * as i1$1 from '@angular/cdk/bidi';
@@ -582,20 +582,10 @@ class CdkMenuItemTrigger extends MenuTrigger {
     }
     /** Determine and return where to position the opened menu relative to the menu item */
     _getOverlayPositions() {
-        // TODO: use a common positioning config from (possibly) cdk/overlay
-        return !this._parentMenu || this._parentMenu.orientation === 'horizontal'
-            ? [
-                { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top' },
-                { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom' },
-                { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top' },
-                { originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'bottom' },
-            ]
-            : [
-                { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
-                { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
-                { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
-                { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' },
-            ];
+        return (this.menuPosition ??
+            (!this._parentMenu || this._parentMenu.orientation === 'horizontal'
+                ? STANDARD_DROPDOWN_BELOW_POSITIONS
+                : STANDARD_DROPDOWN_ADJACENT_POSITIONS));
     }
     /**
      * Get the portal to be attached to the overlay which contains the menu. Allows for the menu
@@ -657,7 +647,7 @@ class CdkMenuItemTrigger extends MenuTrigger {
     }
 }
 CdkMenuItemTrigger.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkMenuItemTrigger, deps: [{ token: i0.Injector }, { token: i0.ElementRef }, { token: i0.ViewContainerRef }, { token: i1.Overlay }, { token: i0.NgZone }, { token: MENU_STACK }, { token: CDK_MENU, optional: true }, { token: MENU_AIM, optional: true }, { token: i1$1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuItemTrigger.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkMenuItemTrigger, selector: "[cdkMenuTriggerFor]", inputs: { _menuTemplateRef: ["cdkMenuTriggerFor", "_menuTemplateRef"] }, outputs: { opened: "cdkMenuOpened", closed: "cdkMenuClosed" }, host: { attributes: { "aria-haspopup": "menu" }, listeners: { "keydown": "_toggleOnKeydown($event)", "click": "toggle()" }, properties: { "attr.aria-expanded": "isMenuOpen()" }, classAttribute: "cdk-menu-trigger" }, providers: [
+CdkMenuItemTrigger.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkMenuItemTrigger, selector: "[cdkMenuTriggerFor]", inputs: { _menuTemplateRef: ["cdkMenuTriggerFor", "_menuTemplateRef"], menuPosition: ["cdkMenuPosition", "menuPosition"] }, outputs: { opened: "cdkMenuOpened", closed: "cdkMenuClosed" }, host: { attributes: { "aria-haspopup": "menu" }, listeners: { "keydown": "_toggleOnKeydown($event)", "click": "toggle()" }, properties: { "attr.aria-expanded": "isMenuOpen()" }, classAttribute: "cdk-menu-trigger" }, providers: [
         { provide: MENU_TRIGGER, useExisting: CdkMenuItemTrigger },
         {
             provide: MENU_STACK,
@@ -704,6 +694,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
                 }] }]; }, propDecorators: { _menuTemplateRef: [{
                 type: Input,
                 args: ['cdkMenuTriggerFor']
+            }], menuPosition: [{
+                type: Input,
+                args: ['cdkMenuPosition']
             }], opened: [{
                 type: Output,
                 args: ['cdkMenuOpened']
@@ -719,13 +712,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-// TODO refactor this to be configurable allowing for custom elements to be removed
-/** Removes all icons from within the given element. */
-function removeIcons(element) {
-    for (const icon of Array.from(element.querySelectorAll('mat-icon, .material-icons'))) {
-        icon.remove();
-    }
-}
 /**
  * Directive which provides the ability for an element to be focused and navigated to using the
  * keyboard when residing in a CdkMenu, CdkMenuBar, or CdkMenuGroup. It performs user defined
@@ -827,11 +813,7 @@ class CdkMenuItem {
     }
     /** Get the label for this element which is required by the FocusableOption interface. */
     getLabel() {
-        // TODO cloning the tree may be expensive; implement a better method
-        // we know that the current node is an element type
-        const clone = this._elementRef.nativeElement.cloneNode(true);
-        removeIcons(clone);
-        return clone.textContent?.trim() || '';
+        return this.typeahead || this._elementRef.nativeElement.textContent?.trim() || '';
     }
     /**
      * Handles keyboard events for the menu item, specifically either triggering the user defined
@@ -895,7 +877,7 @@ class CdkMenuItem {
     }
 }
 CdkMenuItem.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkMenuItem, deps: [{ token: i0.ElementRef }, { token: i0.NgZone }, { token: MENU_STACK, optional: true }, { token: CDK_MENU, optional: true }, { token: MENU_AIM, optional: true }, { token: i1$1.Directionality, optional: true }, { token: CdkMenuItemTrigger, optional: true, self: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuItem.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkMenuItem, selector: "[cdkMenuItem]", inputs: { disabled: "disabled" }, outputs: { triggered: "cdkMenuItemTriggered" }, host: { attributes: { "type": "button", "role": "menuitem" }, listeners: { "blur": "_resetTabIndex()", "mouseout": "_resetTabIndex()", "focus": "_setTabIndex()", "mouseenter": "_setTabIndex($event)", "click": "trigger()", "keydown": "_onKeydown($event)" }, properties: { "tabindex": "_tabindex", "attr.aria-disabled": "disabled || null" }, classAttribute: "cdk-menu-item" }, exportAs: ["cdkMenuItem"], ngImport: i0 });
+CdkMenuItem.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkMenuItem, selector: "[cdkMenuItem]", inputs: { disabled: "disabled", typeahead: "typeahead" }, outputs: { triggered: "cdkMenuItemTriggered" }, host: { attributes: { "type": "button", "role": "menuitem" }, listeners: { "blur": "_resetTabIndex()", "mouseout": "_resetTabIndex()", "focus": "_setTabIndex()", "mouseenter": "_setTabIndex($event)", "click": "trigger()", "keydown": "_onKeydown($event)" }, properties: { "tabindex": "_tabindex", "attr.aria-disabled": "disabled || null" }, classAttribute: "cdk-menu-item" }, exportAs: ["cdkMenuItem"], ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkMenuItem, decorators: [{
             type: Directive,
             args: [{
@@ -937,6 +919,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
                 }, {
                     type: Optional
                 }] }]; }, propDecorators: { disabled: [{
+                type: Input
+            }], typeahead: [{
                 type: Input
             }], triggered: [{
                 type: Output,
@@ -1751,6 +1735,13 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+// In cases where the first menu item in the context menu is a trigger the submenu opens on a
+// hover event. We offset the context menu 2px by default to prevent this from occurring.
+const CONTEXT_MENU_POSITIONS = STANDARD_DROPDOWN_BELOW_POSITIONS.map(position => {
+    const offsetX = position.overlayX === 'start' ? 2 : -2;
+    const offsetY = position.overlayY === 'top' ? 2 : -2;
+    return { ...position, offsetX, offsetY };
+});
 /** Tracks the last open context menu trigger across the entire application. */
 class ContextMenuTracker {
     /**
@@ -1770,20 +1761,17 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
             type: Injectable,
             args: [{ providedIn: 'root' }]
         }] });
-/** Injection token for the ContextMenu options object. */
-const CDK_CONTEXT_MENU_DEFAULT_OPTIONS = new InjectionToken('cdk-context-menu-default-options');
 /**
  * A directive which when placed on some element opens a the Menu it is bound to when a user
  * right-clicks within that element. It is aware of nested Context Menus and the lowest level
  * non-disabled context menu will trigger.
  */
 class CdkContextMenuTrigger extends MenuTrigger {
-    constructor(injector, _viewContainerRef, _overlay, _contextMenuTracker, menuStack, _options, _directionality) {
+    constructor(injector, _viewContainerRef, _overlay, _contextMenuTracker, menuStack, _directionality) {
         super(injector, menuStack);
         this._viewContainerRef = _viewContainerRef;
         this._overlay = _overlay;
         this._contextMenuTracker = _contextMenuTracker;
-        this._options = _options;
         this._directionality = _directionality;
         /** Emits when the attached menu is requested to open. */
         this.opened = new EventEmitter();
@@ -1889,21 +1877,7 @@ class CdkContextMenuTrigger extends MenuTrigger {
         return this._overlay
             .position()
             .flexibleConnectedTo(coordinates)
-            .withDefaultOffsetX(this._options.offsetX)
-            .withDefaultOffsetY(this._options.offsetY)
-            .withPositions(this._getOverlayPositions());
-    }
-    /**
-     * Determine and return where to position the opened menu relative to the mouse location.
-     */
-    _getOverlayPositions() {
-        // TODO: this should be configurable through the injected context menu options
-        return [
-            { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
-            { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
-            { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
-            { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' },
-        ];
+            .withPositions(this.menuPosition ?? CONTEXT_MENU_POSITIONS);
     }
     /**
      * Get the portal to be attached to the overlay which contains the menu. Allows for the menu
@@ -1958,11 +1932,8 @@ class CdkContextMenuTrigger extends MenuTrigger {
         }
     }
 }
-CdkContextMenuTrigger.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkContextMenuTrigger, deps: [{ token: i0.Injector }, { token: i0.ViewContainerRef }, { token: i1.Overlay }, { token: ContextMenuTracker }, { token: MENU_STACK }, { token: CDK_CONTEXT_MENU_DEFAULT_OPTIONS }, { token: i1$1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkContextMenuTrigger.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkContextMenuTrigger, selector: "[cdkContextMenuTriggerFor]", inputs: { _menuTemplateRef: ["cdkContextMenuTriggerFor", "_menuTemplateRef"], disabled: ["cdkContextMenuDisabled", "disabled"] }, outputs: { opened: "cdkContextMenuOpened", closed: "cdkContextMenuClosed" }, host: { listeners: { "contextmenu": "_openOnContextMenu($event)" } }, providers: [
-        // In cases where the first menu item in the context menu is a trigger the submenu opens on a
-        // hover event. Offsetting the opened context menu by 2px prevents this from occurring.
-        { provide: CDK_CONTEXT_MENU_DEFAULT_OPTIONS, useValue: { offsetX: 2, offsetY: 2 } },
+CdkContextMenuTrigger.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkContextMenuTrigger, deps: [{ token: i0.Injector }, { token: i0.ViewContainerRef }, { token: i1.Overlay }, { token: ContextMenuTracker }, { token: MENU_STACK }, { token: i1$1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
+CdkContextMenuTrigger.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkContextMenuTrigger, selector: "[cdkContextMenuTriggerFor]", inputs: { _menuTemplateRef: ["cdkContextMenuTriggerFor", "_menuTemplateRef"], menuPosition: ["cdkMenuPosition", "menuPosition"], disabled: ["cdkContextMenuDisabled", "disabled"] }, outputs: { opened: "cdkContextMenuOpened", closed: "cdkContextMenuClosed" }, host: { listeners: { "contextmenu": "_openOnContextMenu($event)" } }, providers: [
         { provide: MENU_TRIGGER, useExisting: CdkContextMenuTrigger },
         { provide: MENU_STACK, useClass: MenuStack },
     ], exportAs: ["cdkContextMenuTriggerFor"], usesInheritance: true, ngImport: i0 });
@@ -1975,9 +1946,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
                         '(contextmenu)': '_openOnContextMenu($event)',
                     },
                     providers: [
-                        // In cases where the first menu item in the context menu is a trigger the submenu opens on a
-                        // hover event. Offsetting the opened context menu by 2px prevents this from occurring.
-                        { provide: CDK_CONTEXT_MENU_DEFAULT_OPTIONS, useValue: { offsetX: 2, offsetY: 2 } },
                         { provide: MENU_TRIGGER, useExisting: CdkContextMenuTrigger },
                         { provide: MENU_STACK, useClass: MenuStack },
                     ],
@@ -1985,14 +1953,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
         }], ctorParameters: function () { return [{ type: i0.Injector }, { type: i0.ViewContainerRef }, { type: i1.Overlay }, { type: ContextMenuTracker }, { type: MenuStack, decorators: [{
                     type: Inject,
                     args: [MENU_STACK]
-                }] }, { type: undefined, decorators: [{
-                    type: Inject,
-                    args: [CDK_CONTEXT_MENU_DEFAULT_OPTIONS]
                 }] }, { type: i1$1.Directionality, decorators: [{
                     type: Optional
                 }] }]; }, propDecorators: { _menuTemplateRef: [{
                 type: Input,
                 args: ['cdkContextMenuTriggerFor']
+            }], menuPosition: [{
+                type: Input,
+                args: ['cdkMenuPosition']
             }], opened: [{
                 type: Output,
                 args: ['cdkContextMenuOpened']
@@ -2072,5 +2040,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
  * Generated bundle index. Do not edit.
  */
 
-export { CDK_CONTEXT_MENU_DEFAULT_OPTIONS, CDK_MENU, CdkContextMenuTrigger, CdkMenu, CdkMenuBar, CdkMenuGroup, CdkMenuItem, CdkMenuItemCheckbox, CdkMenuItemRadio, CdkMenuItemTrigger, CdkMenuModule, CdkTargetMenuAim, ContextMenuTracker, MENU_AIM, MENU_STACK, MENU_TRIGGER, MenuStack, MenuTrigger, TargetMenuAim, isClickInsideMenuOverlay };
+export { CDK_MENU, CdkContextMenuTrigger, CdkMenu, CdkMenuBar, CdkMenuGroup, CdkMenuItem, CdkMenuItemCheckbox, CdkMenuItemRadio, CdkMenuItemTrigger, CdkMenuModule, CdkTargetMenuAim, ContextMenuTracker, MENU_AIM, MENU_STACK, MENU_TRIGGER, MenuStack, MenuTrigger, TargetMenuAim, isClickInsideMenuOverlay };
 //# sourceMappingURL=menu.mjs.map

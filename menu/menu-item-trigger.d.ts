@@ -7,7 +7,7 @@
  */
 import { ElementRef, EventEmitter, Injector, NgZone, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
-import { Overlay } from '@angular/cdk/overlay';
+import { ConnectedPosition, Overlay } from '@angular/cdk/overlay';
 import { Menu } from './menu-interface';
 import { MenuStack } from './menu-stack';
 import { MenuAim } from './menu-aim';
@@ -36,6 +36,8 @@ export declare class CdkMenuItemTrigger extends MenuTrigger implements OnDestroy
     private readonly _directionality?;
     /** Template reference variable to the menu this trigger opens */
     _menuTemplateRef?: TemplateRef<unknown>;
+    /** A list of preferred menu positions to be used when constructing the `FlexibleConnectedPositionStrategy` for this trigger's menu. */
+    menuPosition: ConnectedPosition[];
     /** Emits when the attached menu is requested to open */
     readonly opened: EventEmitter<void>;
     /** Emits when the attached menu is requested to close */
@@ -106,5 +108,5 @@ export declare class CdkMenuItemTrigger extends MenuTrigger implements OnDestroy
     /** Destroy and unset the overlay reference it if exists */
     private _destroyOverlay;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemTrigger, [null, null, null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemTrigger, "[cdkMenuTriggerFor]", ["cdkMenuTriggerFor"], { "_menuTemplateRef": "cdkMenuTriggerFor"; }, { "opened": "cdkMenuOpened"; "closed": "cdkMenuClosed"; }, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemTrigger, "[cdkMenuTriggerFor]", ["cdkMenuTriggerFor"], { "_menuTemplateRef": "cdkMenuTriggerFor"; "menuPosition": "cdkMenuPosition"; }, { "opened": "cdkMenuOpened"; "closed": "cdkMenuClosed"; }, never>;
 }

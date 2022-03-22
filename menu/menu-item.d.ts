@@ -34,6 +34,11 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
     set disabled(value: BooleanInput);
     private _disabled;
     /**
+     * The text used to locate this item during menu typeahead. If not specified,
+     * the `textContent` of the item will be used.
+     */
+    typeahead: string;
+    /**
      * If this MenuItem is a regular MenuItem, outputs when it is triggered by a keyboard or mouse
      * event.
      */
@@ -96,5 +101,5 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
     private _isParentVertical;
     ngOnDestroy(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItem, [null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItem, "[cdkMenuItem]", ["cdkMenuItem"], { "disabled": "disabled"; }, { "triggered": "cdkMenuItemTriggered"; }, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItem, "[cdkMenuItem]", ["cdkMenuItem"], { "disabled": "disabled"; "typeahead": "typeahead"; }, { "triggered": "cdkMenuItemTriggered"; }, never>;
 }
