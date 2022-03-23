@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { forwardRef, InjectionToken, EventEmitter, Directive, Inject, Input, Output, Optional, ContentChildren, NgModule } from '@angular/core';
+import { forwardRef, EventEmitter, Directive, Inject, Input, Output, Optional, ContentChildren, NgModule } from '@angular/core';
 import { ActiveDescendantKeyManager } from '@angular/cdk/a11y';
 import { SPACE, ENTER, UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW } from '@angular/cdk/keycodes';
 import { coerceBooleanProperty, coerceArray } from '@angular/cdk/coercion';
@@ -7,8 +7,9 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { defer, merge, Subject } from 'rxjs';
 import { startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import * as i1 from '@angular/cdk/bidi';
 import * as i2 from '@angular/cdk-experimental/combobox';
+import { CDK_COMBOBOX } from '@angular/cdk-experimental/combobox';
+import * as i1 from '@angular/cdk/bidi';
 
 /**
  * @license
@@ -24,7 +25,6 @@ const CDK_LISTBOX_VALUE_ACCESSOR = {
     useExisting: forwardRef(() => CdkListbox),
     multi: true,
 };
-const PANEL = new InjectionToken('CdkComboboxPanel');
 class CdkOption {
     constructor(_elementRef, listbox) {
         this._elementRef = _elementRef;
@@ -114,21 +114,8 @@ class CdkOption {
     }
     /** Get the label for this element which is required by the FocusableOption interface. */
     getLabel() {
-        var _a;
-        // we know that the current node is an element type
-        const clone = this._elementRef.nativeElement.cloneNode(true);
-        this._removeIcons(clone);
-        return ((_a = clone.textContent) === null || _a === void 0 ? void 0 : _a.trim()) || '';
-    }
-    /** Remove any child from the given element which can be identified as an icon. */
-    _removeIcons(element) {
-        // TODO: make this a configurable function that can removed any desired type of node.
-        for (const icon of Array.from(element.querySelectorAll('mat-icon, .material-icons'))) {
-            icon.remove();
-        }
-    }
-    getElementRef() {
-        return this._elementRef;
+        var _a, _b;
+        return ((_a = this.typeahead) !== null && _a !== void 0 ? _a : (_b = this._elementRef.nativeElement.textContent) === null || _b === void 0 ? void 0 : _b.trim()) || '';
     }
     /** Sets the active property to true to enable the active css class. */
     setActiveStyles() {
@@ -140,7 +127,7 @@ class CdkOption {
     }
 }
 CdkOption.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkOption, deps: [{ token: i0.ElementRef }, { token: forwardRef(() => CdkListbox) }], target: i0.ɵɵFactoryTarget.Directive });
-CdkOption.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkOption, selector: "[cdkOption]", inputs: { id: "id", selected: "selected", disabled: "disabled", value: "value" }, outputs: { selectionChange: "selectionChange" }, host: { attributes: { "role": "option" }, listeners: { "click": "toggle()", "focus": "activate()", "blur": "deactivate()" }, properties: { "id": "id", "attr.aria-selected": "selected || null", "attr.tabindex": "_getTabIndex()", "attr.aria-disabled": "_isInteractionDisabled()", "class.cdk-option-disabled": "_isInteractionDisabled()", "class.cdk-option-active": "_active", "class.cdk-option-selected": "selected" }, classAttribute: "cdk-option" }, exportAs: ["cdkOption"], ngImport: i0 });
+CdkOption.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkOption, selector: "[cdkOption]", inputs: { id: "id", selected: "selected", disabled: "disabled", value: "value", typeahead: "typeahead" }, outputs: { selectionChange: "selectionChange" }, host: { attributes: { "role": "option" }, listeners: { "click": "toggle()", "focus": "activate()", "blur": "deactivate()" }, properties: { "id": "id", "attr.aria-selected": "selected || null", "attr.tabindex": "_getTabIndex()", "attr.aria-disabled": "_isInteractionDisabled()", "class.cdk-option-disabled": "_isInteractionDisabled()", "class.cdk-option-active": "_active", "class.cdk-option-selected": "selected" }, classAttribute: "cdk-option" }, exportAs: ["cdkOption"], ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkOption, decorators: [{
             type: Directive,
             args: [{
@@ -174,12 +161,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
                 type: Input
             }], value: [{
                 type: Input
+            }], typeahead: [{
+                type: Input
             }], selectionChange: [{
                 type: Output
             }] } });
 class CdkListbox {
-    constructor(_parentPanel, _dir) {
-        this._parentPanel = _parentPanel;
+    constructor(_combobox, _dir) {
+        this._combobox = _combobox;
         this._dir = _dir;
         this._tabIndex = 0;
         /** `View -> model callback called when select has been touched` */
@@ -237,9 +226,10 @@ class CdkListbox {
         this._selectionModel = new SelectionModel(this.multiple);
     }
     ngAfterContentInit() {
+        var _a;
         this._initKeyManager();
         this._initSelectionModel();
-        this._registerWithPanel();
+        (_a = this._combobox) === null || _a === void 0 ? void 0 : _a._registerContent(this.id, 'listbox');
         this.optionSelectionChanges.subscribe(event => {
             this._emitChangeEvent(event.source);
             this._updateSelectionModel(event.source);
@@ -251,10 +241,6 @@ class CdkListbox {
         this._listKeyManager.change.complete();
         this._destroyed.next();
         this._destroyed.complete();
-    }
-    _registerWithPanel() {
-        const panel = this._parentPanel || this._explicitPanel;
-        panel === null || panel === void 0 ? void 0 : panel._registerContent(this.id, 'listbox');
     }
     _initKeyManager() {
         var _a;
@@ -326,12 +312,13 @@ class CdkListbox {
         option.selected ? this._selectionModel.select(option) : this._selectionModel.deselect(option);
     }
     _updatePanelForSelection(option) {
-        const panel = this._parentPanel || this._explicitPanel;
-        if (!this.multiple) {
-            option.selected ? panel === null || panel === void 0 ? void 0 : panel.closePanel(option.value) : panel === null || panel === void 0 ? void 0 : panel.closePanel();
-        }
-        else {
-            panel === null || panel === void 0 ? void 0 : panel.closePanel(this.getSelectedValues());
+        if (this._combobox) {
+            if (!this.multiple) {
+                this._combobox.updateAndClose(option.selected ? option.value : []);
+            }
+            else {
+                this._combobox.updateAndClose(this.getSelectedValues());
+            }
         }
     }
     /** Toggles the selected state of the active option if not disabled. */
@@ -451,8 +438,8 @@ class CdkListbox {
         }
     }
 }
-CdkListbox.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkListbox, deps: [{ token: PANEL, optional: true }, { token: i1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkListbox.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkListbox, selector: "[cdkListbox]", inputs: { id: "id", multiple: "multiple", disabled: "disabled", useActiveDescendant: "useActiveDescendant", autoFocus: "autoFocus", orientation: ["listboxOrientation", "orientation"], compareWith: "compareWith", _explicitPanel: ["parentPanel", "_explicitPanel"] }, outputs: { selectionChange: "selectionChange" }, host: { attributes: { "role": "listbox" }, listeners: { "focus": "_focusActiveOption()", "keydown": "_keydown($event)" }, properties: { "id": "id", "attr.tabindex": "_tabIndex", "attr.aria-disabled": "disabled", "attr.aria-multiselectable": "multiple", "attr.aria-activedescendant": "_getAriaActiveDescendant()", "attr.aria-orientation": "orientation" }, classAttribute: "cdk-listbox" }, providers: [CDK_LISTBOX_VALUE_ACCESSOR], queries: [{ propertyName: "_options", predicate: CdkOption, descendants: true }], exportAs: ["cdkListbox"], ngImport: i0 });
+CdkListbox.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkListbox, deps: [{ token: CDK_COMBOBOX, optional: true }, { token: i1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
+CdkListbox.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkListbox, selector: "[cdkListbox]", inputs: { id: "id", multiple: "multiple", disabled: "disabled", useActiveDescendant: "useActiveDescendant", autoFocus: "autoFocus", orientation: ["listboxOrientation", "orientation"], compareWith: "compareWith" }, outputs: { selectionChange: "selectionChange" }, host: { attributes: { "role": "listbox" }, listeners: { "focus": "_focusActiveOption()", "keydown": "_keydown($event)" }, properties: { "id": "id", "attr.tabindex": "_tabIndex", "attr.aria-disabled": "disabled", "attr.aria-multiselectable": "multiple", "attr.aria-activedescendant": "_getAriaActiveDescendant()", "attr.aria-orientation": "orientation" }, classAttribute: "cdk-listbox" }, providers: [CDK_LISTBOX_VALUE_ACCESSOR], queries: [{ propertyName: "_options", predicate: CdkOption, descendants: true }], exportAs: ["cdkListbox"], ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkListbox, decorators: [{
             type: Directive,
             args: [{
@@ -473,11 +460,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
                     providers: [CDK_LISTBOX_VALUE_ACCESSOR],
                 }]
         }], ctorParameters: function () {
-        return [{ type: i2.CdkComboboxPanel, decorators: [{
+        return [{ type: i2.CdkCombobox, decorators: [{
                         type: Optional
                     }, {
                         type: Inject,
-                        args: [PANEL]
+                        args: [CDK_COMBOBOX]
                     }] }, { type: i1.Directionality, decorators: [{
                         type: Optional
                     }] }];
@@ -501,9 +488,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
                 args: ['listboxOrientation']
             }], compareWith: [{
                 type: Input
-            }], _explicitPanel: [{
-                type: Input,
-                args: ['parentPanel']
             }] } });
 
 /**
@@ -547,5 +531,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
  * Generated bundle index. Do not edit.
  */
 
-export { CDK_LISTBOX_VALUE_ACCESSOR, CdkListbox, CdkListboxModule, CdkOption, PANEL };
+export { CDK_LISTBOX_VALUE_ACCESSOR, CdkListbox, CdkListboxModule, CdkOption };
 //# sourceMappingURL=listbox.mjs.map

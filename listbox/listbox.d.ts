@@ -5,17 +5,20 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AfterContentInit, ElementRef, EventEmitter, InjectionToken, OnDestroy, OnInit, QueryList } from '@angular/core';
+import { AfterContentInit, ElementRef, EventEmitter, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { ActiveDescendantKeyManager, Highlightable, ListKeyManagerOption } from '@angular/cdk/a11y';
 import { BooleanInput } from '@angular/cdk/coercion';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Observable } from 'rxjs';
 import { ControlValueAccessor } from '@angular/forms';
-import { CdkComboboxPanel } from '@angular/cdk-experimental/combobox';
 import { Directionality } from '@angular/cdk/bidi';
+import { CdkCombobox } from '@angular/cdk-experimental/combobox';
 import * as i0 from "@angular/core";
-export declare const CDK_LISTBOX_VALUE_ACCESSOR: any;
-export declare const PANEL: InjectionToken<CdkComboboxPanel<unknown>>;
+export declare const CDK_LISTBOX_VALUE_ACCESSOR: {
+    provide: import("@angular/core").InjectionToken<readonly ControlValueAccessor[]>;
+    useExisting: import("@angular/core").Type<any>;
+    multi: boolean;
+};
 export declare class CdkOption<T = unknown> implements ListKeyManagerOption, Highlightable {
     private readonly _elementRef;
     readonly listbox: CdkListbox<T>;
@@ -32,6 +35,11 @@ export declare class CdkOption<T = unknown> implements ListKeyManagerOption, Hig
     /** The form value of the option. */
     get value(): T;
     set value(value: T);
+    /**
+     * The text used to locate this item during menu typeahead. If not specified,
+     * the `textContent` of the item will be used.
+     */
+    typeahead: string;
     readonly selectionChange: EventEmitter<OptionSelectionChangeEvent<T>>;
     constructor(_elementRef: ElementRef, listbox: CdkListbox<T>);
     /** Toggles the selected state, emits a change event through the injected listbox. */
@@ -54,18 +62,15 @@ export declare class CdkOption<T = unknown> implements ListKeyManagerOption, Hig
     _getTabIndex(): string | null;
     /** Get the label for this element which is required by the FocusableOption interface. */
     getLabel(): string;
-    /** Remove any child from the given element which can be identified as an icon. */
-    private _removeIcons;
-    getElementRef(): ElementRef<any>;
     /** Sets the active property to true to enable the active css class. */
     setActiveStyles(): void;
     /** Sets the active property to false to disable the active css class. */
     setInactiveStyles(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkOption<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkOption<any>, "[cdkOption]", ["cdkOption"], { "id": "id"; "selected": "selected"; "disabled": "disabled"; "value": "value"; }, { "selectionChange": "selectionChange"; }, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkOption<any>, "[cdkOption]", ["cdkOption"], { "id": "id"; "selected": "selected"; "disabled": "disabled"; "value": "value"; "typeahead": "typeahead"; }, { "selectionChange": "selectionChange"; }, never>;
 }
 export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnInit, ControlValueAccessor {
-    readonly _parentPanel?: CdkComboboxPanel<T> | undefined;
+    private readonly _combobox;
     private readonly _dir?;
     _listKeyManager: ActiveDescendantKeyManager<CdkOption<T>>;
     _selectionModel: SelectionModel<CdkOption<T>>;
@@ -101,12 +106,10 @@ export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnIni
     /** Determines the orientation for the list key manager. Affects keyboard interaction. */
     orientation: 'horizontal' | 'vertical';
     compareWith: (o1: T, o2: T) => boolean;
-    private readonly _explicitPanel;
-    constructor(_parentPanel?: CdkComboboxPanel<T> | undefined, _dir?: Directionality | undefined);
+    constructor(_combobox: CdkCombobox, _dir?: Directionality | undefined);
     ngOnInit(): void;
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
-    private _registerWithPanel;
     private _initKeyManager;
     private _initSelectionModel;
     _keydown(event: KeyboardEvent): void;
@@ -151,7 +154,7 @@ export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnIni
     /** Selects an option that has the corresponding given value. */
     private _setSelectionByValue;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkListbox<any>, [{ optional: true; }, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "id": "id"; "multiple": "multiple"; "disabled": "disabled"; "useActiveDescendant": "useActiveDescendant"; "autoFocus": "autoFocus"; "orientation": "listboxOrientation"; "compareWith": "compareWith"; "_explicitPanel": "parentPanel"; }, { "selectionChange": "selectionChange"; }, ["_options"]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "id": "id"; "multiple": "multiple"; "disabled": "disabled"; "useActiveDescendant": "useActiveDescendant"; "autoFocus": "autoFocus"; "orientation": "listboxOrientation"; "compareWith": "compareWith"; }, { "selectionChange": "selectionChange"; }, ["_options"]>;
 }
 /** Change event that is being fired whenever the selected state of an option changes. */
 export interface ListboxSelectionChangeEvent<T> {

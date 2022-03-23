@@ -1,26 +1,20 @@
-import { AfterContentInit, ElementRef, EventEmitter, OnDestroy, ViewContainerRef } from '@angular/core';
-import { CdkComboboxPanel, AriaHasPopupValue } from './combobox-panel';
+import { ElementRef, EventEmitter, InjectionToken, Injector, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Overlay } from '@angular/cdk/overlay';
 import { Directionality } from '@angular/cdk/bidi';
 import { BooleanInput } from '@angular/cdk/coercion';
 import * as i0 from "@angular/core";
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
+export declare type AriaHasPopupValue = 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
 export declare type OpenAction = 'focus' | 'click' | 'downKey' | 'toggle';
 export declare type OpenActionInput = OpenAction | OpenAction[] | string | null | undefined;
-export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContentInit {
+export declare const CDK_COMBOBOX: InjectionToken<CdkCombobox<unknown>>;
+export declare class CdkCombobox<T = unknown> implements OnDestroy {
     private readonly _elementRef;
     private readonly _overlay;
     protected readonly _viewContainerRef: ViewContainerRef;
+    private readonly _injector;
+    private readonly _doc;
     private readonly _directionality?;
-    get panel(): CdkComboboxPanel<T> | undefined;
-    set panel(panel: CdkComboboxPanel<T> | undefined);
-    private _panel;
+    _panelTemplateRef: TemplateRef<unknown>;
     value: T | T[];
     get disabled(): boolean;
     set disabled(value: BooleanInput);
@@ -36,11 +30,10 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContent
     readonly closed: EventEmitter<void>;
     readonly panelValueChanged: EventEmitter<T[]>;
     private _overlayRef;
-    private _panelContent;
+    private _panelPortal;
     contentId: string;
     contentType: AriaHasPopupValue;
-    constructor(_elementRef: ElementRef<HTMLElement>, _overlay: Overlay, _viewContainerRef: ViewContainerRef, _directionality?: Directionality | undefined);
-    ngAfterContentInit(): void;
+    constructor(_elementRef: ElementRef<HTMLElement>, _overlay: Overlay, _viewContainerRef: ViewContainerRef, _injector: Injector, _doc: any, _directionality?: Directionality | undefined);
     ngOnDestroy(): void;
     _keydown(event: KeyboardEvent): void;
     /** Handles click or focus interactions. */
@@ -59,13 +52,17 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy, AfterContent
     hasPanel(): boolean;
     _getTabIndex(): string | null;
     private _setComboboxValue;
+    updateAndClose(value: T | T[]): void;
     private _setTextContent;
     private _isTextTrigger;
     private _getOverlayConfig;
     private _getOverlayPositionStrategy;
     private _getOverlayPositions;
+    private _getPanelInjector;
     private _getPanelContent;
     private _coerceOpenActionProperty;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkCombobox<any>, [null, null, null, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkCombobox<any>, "[cdkCombobox]", ["cdkCombobox"], { "panel": "cdkComboboxTriggerFor"; "value": "value"; "disabled": "disabled"; "openActions": "openActions"; "autoSetText": "autoSetText"; }, { "opened": "comboboxPanelOpened"; "closed": "comboboxPanelClosed"; "panelValueChanged": "panelValueChanged"; }, never>;
+    /** Registers the content's id and the content type with the panel. */
+    _registerContent(contentId: string, contentType: AriaHasPopupValue): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkCombobox<any>, [null, null, null, null, null, { optional: true; }]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkCombobox<any>, "[cdkCombobox]", ["cdkCombobox"], { "_panelTemplateRef": "cdkComboboxTriggerFor"; "value": "value"; "disabled": "disabled"; "openActions": "openActions"; "autoSetText": "autoSetText"; }, { "opened": "comboboxPanelOpened"; "closed": "comboboxPanelClosed"; "panelValueChanged": "panelValueChanged"; }, never>;
 }
