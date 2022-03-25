@@ -622,8 +622,9 @@ class Dialog {
      * @returns A promise resolving to a ComponentRef for the attached container.
      */
     _attachDialogContainer(overlay, config) {
+        var _a, _b;
         const container = config.containerComponent || this._injector.get(DIALOG_CONTAINER);
-        const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
+        const userInjector = (_a = config.injector) !== null && _a !== void 0 ? _a : (_b = config.viewContainerRef) === null || _b === void 0 ? void 0 : _b.injector;
         const injector = Injector.create({
             parent: userInjector || this._injector,
             providers: [{ provide: DialogConfig, useValue: config }],

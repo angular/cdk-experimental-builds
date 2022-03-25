@@ -621,7 +621,7 @@ class Dialog {
      */
     _attachDialogContainer(overlay, config) {
         const container = config.containerComponent || this._injector.get(DIALOG_CONTAINER);
-        const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
+        const userInjector = config.injector ?? config.viewContainerRef?.injector;
         const injector = Injector.create({
             parent: userInjector || this._injector,
             providers: [{ provide: DialogConfig, useValue: config }],
