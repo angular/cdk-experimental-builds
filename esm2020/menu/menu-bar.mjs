@@ -208,13 +208,13 @@ export class CdkMenuBar extends CdkMenuGroup {
         this._pointerTracker?.destroy();
     }
 }
-CdkMenuBar.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkMenuBar, deps: [{ token: i0.NgZone }, { token: i0.ElementRef }, { token: MENU_STACK }, { token: MENU_AIM, optional: true, self: true }, { token: i1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuBar.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkMenuBar, selector: "[cdkMenuBar]", inputs: { orientation: ["cdkMenuBarOrientation", "orientation"] }, host: { attributes: { "role": "menubar", "tabindex": "0" }, listeners: { "focus": "focusFirstItem()", "keydown": "_handleKeyEvent($event)" }, properties: { "attr.aria-orientation": "orientation" }, classAttribute: "cdk-menu-bar" }, providers: [
+CdkMenuBar.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuBar, deps: [{ token: i0.NgZone }, { token: i0.ElementRef }, { token: MENU_STACK }, { token: MENU_AIM, optional: true, self: true }, { token: i1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
+CdkMenuBar.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuBar, selector: "[cdkMenuBar]", inputs: { orientation: ["cdkMenuBarOrientation", "orientation"] }, host: { attributes: { "role": "menubar", "tabindex": "0" }, listeners: { "focus": "focusFirstItem()", "keydown": "_handleKeyEvent($event)" }, properties: { "attr.aria-orientation": "orientation" }, classAttribute: "cdk-menu-bar" }, providers: [
         { provide: CdkMenuGroup, useExisting: CdkMenuBar },
         { provide: CDK_MENU, useExisting: CdkMenuBar },
         { provide: MENU_STACK, useClass: MenuStack },
     ], queries: [{ propertyName: "_allItems", predicate: CdkMenuItem, descendants: true }], exportAs: ["cdkMenuBar"], usesInheritance: true, ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkMenuBar, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuBar, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkMenuBar]',

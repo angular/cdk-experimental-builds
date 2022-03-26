@@ -32,9 +32,9 @@ export class MenuTrigger {
         this.childMenu = child;
     }
 }
-MenuTrigger.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: MenuTrigger, deps: [{ token: i0.Injector }, { token: MENU_STACK }], target: i0.ɵɵFactoryTarget.Injectable });
-MenuTrigger.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: MenuTrigger });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: MenuTrigger, decorators: [{
+MenuTrigger.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: MenuTrigger, deps: [{ token: i0.Injector }, { token: MENU_STACK }], target: i0.ɵɵFactoryTarget.Injectable });
+MenuTrigger.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: MenuTrigger });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: MenuTrigger, decorators: [{
             type: Injectable
         }], ctorParameters: function () { return [{ type: i0.Injector }, { type: i1.MenuStack, decorators: [{
                     type: Inject,

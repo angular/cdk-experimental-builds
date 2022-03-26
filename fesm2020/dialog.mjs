@@ -289,8 +289,8 @@ class CdkDialogContainer extends BasePortalOutlet {
         }
     }
 }
-CdkDialogContainer.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkDialogContainer, deps: [{ token: i0.ElementRef }, { token: i1.FocusTrapFactory }, { token: i0.ChangeDetectorRef }, { token: i1.InteractivityChecker }, { token: i0.NgZone }, { token: DOCUMENT, optional: true }, { token: DialogConfig }], target: i0.ɵɵFactoryTarget.Component });
-CdkDialogContainer.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkDialogContainer, selector: "cdk-dialog-container", host: { attributes: { "tabindex": "-1", "aria-modal": "true" }, listeners: { "@dialog.start": "_onAnimationStart($event)", "@dialog.done": "_animationDone.next($event)" }, properties: { "@dialog": "{\n      value: _state,\n      params: {\n        enterAnimationDuration: _config.enterAnimationDuration,\n        exitAnimationDuration: _config.exitAnimationDuration\n      }\n    }", "attr.role": "_config.role", "attr.aria-label": "_config.ariaLabel || null", "attr.aria-describedby": "_config.ariaDescribedBy" } }, viewQueries: [{ propertyName: "_portalHost", first: true, predicate: CdkPortalOutlet, descendants: true, static: true }], usesInheritance: true, ngImport: i0, template: "<ng-template cdkPortalOutlet></ng-template>\n", styles: ["cdk-dialog-container{background:#fff;border-radius:5px;display:block;padding:10px}\n"], directives: [{ type: i3.CdkPortalOutlet, selector: "[cdkPortalOutlet]", inputs: ["cdkPortalOutlet"], outputs: ["attached"], exportAs: ["cdkPortalOutlet"] }], animations: [
+CdkDialogContainer.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkDialogContainer, deps: [{ token: i0.ElementRef }, { token: i1.FocusTrapFactory }, { token: i0.ChangeDetectorRef }, { token: i1.InteractivityChecker }, { token: i0.NgZone }, { token: DOCUMENT, optional: true }, { token: DialogConfig }], target: i0.ɵɵFactoryTarget.Component });
+CdkDialogContainer.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkDialogContainer, selector: "cdk-dialog-container", host: { attributes: { "tabindex": "-1", "aria-modal": "true" }, listeners: { "@dialog.start": "_onAnimationStart($event)", "@dialog.done": "_animationDone.next($event)" }, properties: { "@dialog": "{\n      value: _state,\n      params: {\n        enterAnimationDuration: _config.enterAnimationDuration,\n        exitAnimationDuration: _config.exitAnimationDuration\n      }\n    }", "attr.role": "_config.role", "attr.aria-label": "_config.ariaLabel || null", "attr.aria-describedby": "_config.ariaDescribedBy" } }, viewQueries: [{ propertyName: "_portalHost", first: true, predicate: CdkPortalOutlet, descendants: true, static: true }], usesInheritance: true, ngImport: i0, template: "<ng-template cdkPortalOutlet></ng-template>\n", styles: ["cdk-dialog-container{background:#fff;border-radius:5px;display:block;padding:10px}\n"], directives: [{ type: i3.CdkPortalOutlet, selector: "[cdkPortalOutlet]", inputs: ["cdkPortalOutlet"], outputs: ["attached"], exportAs: ["cdkPortalOutlet"] }], animations: [
         trigger('dialog', [
             state('enter', style({ opacity: 1 })),
             state('exit, void', style({ opacity: 0 })),
@@ -304,7 +304,7 @@ CdkDialogContainer.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", ver
             ])),
         ]),
     ], changeDetection: i0.ChangeDetectionStrategy.Default, encapsulation: i0.ViewEncapsulation.None });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkDialogContainer, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkDialogContainer, decorators: [{
             type: Component,
             args: [{ selector: 'cdk-dialog-container', encapsulation: ViewEncapsulation.None, changeDetection: ChangeDetectionStrategy.Default, animations: [
                         trigger('dialog', [
@@ -709,9 +709,9 @@ class Dialog {
         return { ...new dialogConfig(), ...config };
     }
 }
-Dialog.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: Dialog, deps: [{ token: i1$1.Overlay }, { token: i0.Injector }, { token: DIALOG_REF }, { token: DIALOG_SCROLL_STRATEGY }, { token: Dialog, optional: true, skipSelf: true }, { token: i2.Location, optional: true }], target: i0.ɵɵFactoryTarget.Injectable });
-Dialog.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: Dialog });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: Dialog, decorators: [{
+Dialog.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: Dialog, deps: [{ token: i1$1.Overlay }, { token: i0.Injector }, { token: DIALOG_REF }, { token: DIALOG_SCROLL_STRATEGY }, { token: Dialog, optional: true, skipSelf: true }, { token: i2.Location, optional: true }], target: i0.ɵɵFactoryTarget.Injectable });
+Dialog.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: Dialog });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: Dialog, decorators: [{
             type: Injectable
         }], ctorParameters: function () { return [{ type: i1$1.Overlay }, { type: i0.Injector }, { type: i0.Type, decorators: [{
                     type: Inject,
@@ -736,13 +736,13 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", 
  */
 class DialogModule {
 }
-DialogModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: DialogModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
-DialogModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: DialogModule, declarations: [CdkDialogContainer], imports: [OverlayModule, PortalModule, A11yModule], exports: [
+DialogModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: DialogModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+DialogModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: DialogModule, declarations: [CdkDialogContainer], imports: [OverlayModule, PortalModule, A11yModule], exports: [
         // Re-export the PortalModule so that people extending the `CdkDialogContainer`
         // don't have to remember to import it or be faced with an unhelpful error.
         PortalModule,
         CdkDialogContainer] });
-DialogModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: DialogModule, providers: [
+DialogModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: DialogModule, providers: [
         Dialog,
         MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
         { provide: DIALOG_REF, useValue: DialogRef },
@@ -752,7 +752,7 @@ DialogModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "
         // Re-export the PortalModule so that people extending the `CdkDialogContainer`
         // don't have to remember to import it or be faced with an unhelpful error.
         PortalModule] });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: DialogModule, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: DialogModule, decorators: [{
             type: NgModule,
             args: [{
                     imports: [OverlayModule, PortalModule, A11yModule],

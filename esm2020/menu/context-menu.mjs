@@ -39,9 +39,9 @@ export class ContextMenuTracker {
         }
     }
 }
-ContextMenuTracker.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: ContextMenuTracker, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-ContextMenuTracker.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: ContextMenuTracker, providedIn: 'root' });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: ContextMenuTracker, decorators: [{
+ContextMenuTracker.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: ContextMenuTracker, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+ContextMenuTracker.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: ContextMenuTracker, providedIn: 'root' });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: ContextMenuTracker, decorators: [{
             type: Injectable,
             args: [{ providedIn: 'root' }]
         }] });
@@ -216,12 +216,12 @@ export class CdkContextMenuTrigger extends MenuTrigger {
         }
     }
 }
-CdkContextMenuTrigger.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkContextMenuTrigger, deps: [{ token: i0.Injector }, { token: i0.ViewContainerRef }, { token: i1.Overlay }, { token: ContextMenuTracker }, { token: MENU_STACK }, { token: i2.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkContextMenuTrigger.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.6", type: CdkContextMenuTrigger, selector: "[cdkContextMenuTriggerFor]", inputs: { _menuTemplateRef: ["cdkContextMenuTriggerFor", "_menuTemplateRef"], menuPosition: ["cdkMenuPosition", "menuPosition"], disabled: ["cdkContextMenuDisabled", "disabled"] }, outputs: { opened: "cdkContextMenuOpened", closed: "cdkContextMenuClosed" }, host: { listeners: { "contextmenu": "_openOnContextMenu($event)" } }, providers: [
+CdkContextMenuTrigger.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkContextMenuTrigger, deps: [{ token: i0.Injector }, { token: i0.ViewContainerRef }, { token: i1.Overlay }, { token: ContextMenuTracker }, { token: MENU_STACK }, { token: i2.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
+CdkContextMenuTrigger.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkContextMenuTrigger, selector: "[cdkContextMenuTriggerFor]", inputs: { _menuTemplateRef: ["cdkContextMenuTriggerFor", "_menuTemplateRef"], menuPosition: ["cdkMenuPosition", "menuPosition"], disabled: ["cdkContextMenuDisabled", "disabled"] }, outputs: { opened: "cdkContextMenuOpened", closed: "cdkContextMenuClosed" }, host: { listeners: { "contextmenu": "_openOnContextMenu($event)" } }, providers: [
         { provide: MENU_TRIGGER, useExisting: CdkContextMenuTrigger },
         { provide: MENU_STACK, useClass: MenuStack },
     ], exportAs: ["cdkContextMenuTriggerFor"], usesInheritance: true, ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.6", ngImport: i0, type: CdkContextMenuTrigger, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkContextMenuTrigger, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkContextMenuTriggerFor]',
