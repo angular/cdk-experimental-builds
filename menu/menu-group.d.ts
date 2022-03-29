@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { EventEmitter, AfterContentInit, OnDestroy } from '@angular/core';
+import { AfterContentInit, EventEmitter, OnDestroy } from '@angular/core';
 import { CdkMenuItem } from './menu-item';
 import * as i0 from "@angular/core";
 /**
@@ -20,6 +20,7 @@ export declare class CdkMenuGroup implements AfterContentInit, OnDestroy {
     /** Emits when the _selectableItems QueryList triggers a change */
     private readonly _selectableChanges;
     ngAfterContentInit(): void;
+    ngOnDestroy(): void;
     /**
      * Register the child selectable elements with the change emitter and ensure any new child
      * elements do so as well.
@@ -27,7 +28,6 @@ export declare class CdkMenuGroup implements AfterContentInit, OnDestroy {
     private _registerMenuSelectionListeners;
     /** Register each selectable to emit on the change Emitter when clicked */
     private _registerClickListener;
-    ngOnDestroy(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuGroup, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuGroup, "[cdkMenuGroup]", ["cdkMenuGroup"], {}, { "change": "change"; }, ["_selectableItems"]>;
 }

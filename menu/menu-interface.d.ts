@@ -15,7 +15,7 @@ export interface Menu extends MenuStackItem {
     /** The element the Menu directive is placed on. */
     _elementRef: ElementRef<HTMLElement>;
     /** The orientation of the menu */
-    orientation: 'horizontal' | 'vertical';
+    readonly orientation: 'horizontal' | 'vertical';
     /** Place focus on the first MenuItem in the menu. */
     focusFirstItem(focusOrigin: FocusOrigin): void;
     /** Place focus on the last MenuItem in the menu. */
