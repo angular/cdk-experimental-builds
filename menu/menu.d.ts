@@ -27,7 +27,7 @@ export declare class CdkMenu extends CdkMenuBase implements AfterContentInit, On
     readonly closed: EventEmitter<void>;
     /** List of nested CdkMenuGroup elements */
     private readonly _nestedGroups;
-    constructor(_ngZone: NgZone, elementRef: ElementRef<HTMLElement>, menuStack?: MenuStack, _parentTrigger?: MenuTrigger | undefined, _menuAim?: MenuAim | undefined, dir?: Directionality);
+    constructor(_ngZone: NgZone, elementRef: ElementRef<HTMLElement>, menuStack: MenuStack, _parentTrigger?: MenuTrigger | undefined, _menuAim?: MenuAim | undefined, dir?: Directionality);
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
     /** Handle keyboard events for the Menu. */
@@ -52,6 +52,6 @@ export declare class CdkMenu extends CdkMenuBase implements AfterContentInit, On
      */
     _isInline(): boolean;
     private _subscribeToMenuStackEmptied;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenu, [null, null, { optional: true; }, { optional: true; }, { optional: true; self: true; }, { optional: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenu, [null, null, null, { optional: true; }, { optional: true; self: true; }, { optional: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenu, "[cdkMenu]", ["cdkMenu"], {}, { "closed": "closed"; }, ["_nestedGroups"]>;
 }

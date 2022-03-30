@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, Optional } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as i0 from "@angular/core";
 /** Events to emit as specified by the caller once the MenuStack is empty. */
@@ -23,6 +23,18 @@ export interface MenuStackItem {
 }
 /** Injection token used for an implementation of MenuStack. */
 export declare const MENU_STACK: InjectionToken<MenuStack>;
+/** A provider that provides the parent menu stack, or a new menu stack if there is no parent one. */
+export declare const PARENT_OR_NEW_MENU_STACK_PROVIDER: {
+    provide: InjectionToken<MenuStack>;
+    deps: Optional[][];
+    useFactory: (parentMenuStack?: MenuStack | undefined) => MenuStack;
+};
+/** A provider that provides the parent menu stack, or a new menu stack if there is no parent one. */
+export declare const PARENT_OR_NEW_INLINE_MENU_STACK_PROVIDER: {
+    provide: InjectionToken<MenuStack>;
+    deps: Optional[][];
+    useFactory: (parentMenuStack?: MenuStack | undefined) => MenuStack;
+};
 /**
  * MenuStack allows subscribers to listen for close events (when a MenuStackItem is popped off
  * of the stack) in order to perform closing actions. Upon the MenuStack being empty it emits
@@ -44,6 +56,8 @@ export declare class MenuStack {
      * perform.
      */
     readonly emptied: Observable<FocusNext | undefined>;
+    private _hasInlineMenu;
+    static inline(): MenuStack;
     /** @param menu the MenuStackItem to put on the stack. */
     push(menu: MenuStackItem): void;
     /**
@@ -74,6 +88,7 @@ export declare class MenuStack {
     length(): number;
     /** Get the top most element on the stack. */
     peek(): MenuStackItem | undefined;
+    hasInlineMenu(): boolean;
     static ɵfac: i0.ɵɵFactoryDeclaration<MenuStack, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<MenuStack>;
 }

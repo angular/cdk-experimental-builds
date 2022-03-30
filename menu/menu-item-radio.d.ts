@@ -23,7 +23,7 @@ export declare class CdkMenuItemRadio extends CdkMenuItemSelectable implements O
     private readonly _selectionDispatcher;
     /** Function to unregister the selection dispatcher */
     private _removeDispatcherListener;
-    constructor(_selectionDispatcher: UniqueSelectionDispatcher, element: ElementRef<HTMLElement>, ngZone: NgZone, menuStack?: MenuStack, parentMenu?: Menu, menuAim?: MenuAim, dir?: Directionality, 
+    constructor(_selectionDispatcher: UniqueSelectionDispatcher, element: ElementRef<HTMLElement>, ngZone: NgZone, menuStack: MenuStack, parentMenu?: Menu, menuAim?: MenuAim, dir?: Directionality, 
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     menuTrigger?: CdkMenuItemTrigger);
     /** Configure the unique selection dispatcher listener in order to toggle the checked state  */
@@ -31,6 +31,6 @@ export declare class CdkMenuItemRadio extends CdkMenuItemSelectable implements O
     /** Toggles the checked state of the radio-button. */
     trigger(): void;
     ngOnDestroy(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemRadio, [null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemRadio, [null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemRadio, "[cdkMenuItemRadio]", ["cdkMenuItemRadio"], {}, {}, never>;
 }

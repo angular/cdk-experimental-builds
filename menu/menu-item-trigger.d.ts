@@ -5,9 +5,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ElementRef, EventEmitter, Injector, NgZone, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
+import { ElementRef, Injector, NgZone, OnDestroy, ViewContainerRef } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
-import { ConnectedPosition, Overlay } from '@angular/cdk/overlay';
+import { Overlay } from '@angular/cdk/overlay';
 import { Menu } from './menu-interface';
 import { MenuStack } from './menu-stack';
 import { MenuAim } from './menu-aim';
@@ -34,33 +34,13 @@ export declare class CdkMenuItemTrigger extends MenuTrigger implements OnDestroy
     private readonly _parentMenu?;
     private readonly _menuAim?;
     private readonly _directionality?;
-    /** Template reference variable to the menu this trigger opens */
-    _menuTemplateRef?: TemplateRef<unknown>;
-    /** A list of preferred menu positions to be used when constructing the `FlexibleConnectedPositionStrategy` for this trigger's menu. */
-    menuPosition: ConnectedPosition[];
-    /** Emits when the attached menu is requested to open */
-    readonly opened: EventEmitter<void>;
-    /** Emits when the attached menu is requested to close */
-    readonly closed: EventEmitter<void>;
-    /** A reference to the overlay which manages the triggered menu */
-    private _overlayRef;
-    /** The content of the menu panel opened by this trigger. */
-    private _menuPortal;
-    /** Emits when this trigger is destroyed. */
-    private readonly _destroyed;
-    /** Emits when the outside pointer events listener on the overlay should be stopped. */
-    private readonly _stopOutsideClicksListener;
     constructor(injector: Injector, _elementRef: ElementRef<HTMLElement>, _viewContainerRef: ViewContainerRef, _overlay: Overlay, _ngZone: NgZone, menuStack: MenuStack, _parentMenu?: Menu | undefined, _menuAim?: MenuAim | undefined, _directionality?: Directionality | undefined);
     /** Open/close the attached menu if the trigger has been configured with one */
     toggle(): void;
     /** Open the attached menu. */
-    openMenu(): void;
+    open(): void;
     /** Close the opened menu. */
-    closeMenu(): void;
-    /** Return true if the trigger has an attached menu */
-    hasMenu(): boolean;
-    /** Whether the menu this button is a trigger for is open */
-    isMenuOpen(): boolean;
+    close(): void;
     /**
      * Get a reference to the rendered Menu if the Menu is open and it is visible in the DOM.
      * @return the menu if it is open, otherwise undefined.
@@ -99,14 +79,11 @@ export declare class CdkMenuItemTrigger extends MenuTrigger implements OnDestroy
      * this triggers when requested.
      */
     private _registerCloseHandler;
-    ngOnDestroy(): void;
     /**
      * Subscribe to the overlays outside pointer events stream and handle closing out the stack if a
      * click occurs outside the menus.
      */
     private _subscribeToOutsideClicks;
-    /** Destroy and unset the overlay reference it if exists */
-    private _destroyOverlay;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemTrigger, [null, null, null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemTrigger, "[cdkMenuTriggerFor]", ["cdkMenuTriggerFor"], { "_menuTemplateRef": "cdkMenuTriggerFor"; "menuPosition": "cdkMenuPosition"; }, { "opened": "cdkMenuOpened"; "closed": "cdkMenuClosed"; }, never>;
 }

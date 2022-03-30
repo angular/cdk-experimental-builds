@@ -5,9 +5,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { EventEmitter, Injector, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Injector, OnDestroy, ViewContainerRef } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
-import { ConnectedPosition, Overlay } from '@angular/cdk/overlay';
+import { Overlay } from '@angular/cdk/overlay';
 import { BooleanInput } from '@angular/cdk/coercion';
 import { MenuStack } from './menu-stack';
 import { MenuTrigger } from './menu-trigger';
@@ -39,26 +39,10 @@ export declare class CdkContextMenuTrigger extends MenuTrigger implements OnDest
     private readonly _overlay;
     private readonly _contextMenuTracker;
     private readonly _directionality?;
-    /** Template reference variable to the menu to open on right click. */
-    private _menuTemplateRef;
-    /** A list of preferred menu positions to be used when constructing the `FlexibleConnectedPositionStrategy` for this trigger's menu. */
-    menuPosition: ConnectedPosition[];
-    /** Emits when the attached menu is requested to open. */
-    readonly opened: EventEmitter<void>;
-    /** Emits when the attached menu is requested to close. */
-    readonly closed: EventEmitter<void>;
     /** Whether the context menu should be disabled. */
     get disabled(): boolean;
     set disabled(value: BooleanInput);
     private _disabled;
-    /** A reference to the overlay which manages the triggered menu. */
-    private _overlayRef;
-    /** The content of the menu panel opened by this trigger. */
-    private _menuPortal;
-    /** Emits when the element is destroyed. */
-    private readonly _destroyed;
-    /** Emits when the outside pointer events listener on the overlay should be stopped. */
-    private readonly _stopOutsideClicksListener;
     constructor(injector: Injector, _viewContainerRef: ViewContainerRef, _overlay: Overlay, _contextMenuTracker: ContextMenuTracker, menuStack: MenuStack, _directionality?: Directionality | undefined);
     /**
      * Open the attached menu at the specified location.
@@ -73,8 +57,6 @@ export declare class CdkContextMenuTrigger extends MenuTrigger implements OnDest
      * @param event the mouse event which opens the context menu.
      */
     _openOnContextMenu(event: MouseEvent): void;
-    /** Whether the attached menu is open. */
-    isOpen(): boolean;
     /**
      * Get the configuration object used to create the overlay.
      * @param coordinates the location to place the opened menu
@@ -97,9 +79,6 @@ export declare class CdkContextMenuTrigger extends MenuTrigger implements OnDest
      * click occurs outside the menus.
      */
     private _subscribeToOutsideClicks;
-    ngOnDestroy(): void;
-    /** Destroy and unset the overlay reference it if exists. */
-    private _destroyOverlay;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkContextMenuTrigger, [null, null, null, null, null, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkContextMenuTrigger, "[cdkContextMenuTriggerFor]", ["cdkContextMenuTriggerFor"], { "_menuTemplateRef": "cdkContextMenuTriggerFor"; "menuPosition": "cdkMenuPosition"; "disabled": "cdkContextMenuDisabled"; }, { "opened": "cdkContextMenuOpened"; "closed": "cdkContextMenuClosed"; }, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkContextMenuTrigger, "[cdkContextMenuTriggerFor]", ["cdkContextMenuTriggerFor"], { "_menuTemplateRef": "cdkContextMenuTriggerFor"; "menuPosition": "cdkContextMenuPosition"; "disabled": "cdkContextMenuDisabled"; }, { "opened": "cdkContextMenuOpened"; "closed": "cdkContextMenuClosed"; }, never>;
 }

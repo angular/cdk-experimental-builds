@@ -23,7 +23,7 @@ import * as i0 from "@angular/core";
 export declare class CdkMenuItem implements FocusableOption, FocusableElement, Toggler, OnDestroy {
     readonly _elementRef: ElementRef<HTMLElement>;
     private readonly _ngZone;
-    private readonly _menuStack?;
+    private readonly _menuStack;
     private readonly _parentMenu?;
     private readonly _menuAim?;
     private readonly _dir?;
@@ -50,7 +50,7 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
     _tabindex: 0 | -1;
     /** Emits when the menu item is destroyed. */
     private readonly _destroyed;
-    constructor(_elementRef: ElementRef<HTMLElement>, _ngZone: NgZone, _menuStack?: MenuStack | undefined, _parentMenu?: Menu | undefined, _menuAim?: MenuAim | undefined, _dir?: Directionality | undefined, 
+    constructor(_elementRef: ElementRef<HTMLElement>, _ngZone: NgZone, _menuStack: MenuStack, _parentMenu?: Menu | undefined, _menuAim?: MenuAim | undefined, _dir?: Directionality | undefined, 
     /** Reference to the CdkMenuItemTrigger directive if one is added to the same element */
     _menuTrigger?: CdkMenuItemTrigger | undefined);
     /** Place focus on the element. */
@@ -100,6 +100,6 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
      */
     private _isParentVertical;
     ngOnDestroy(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItem, [null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItem, [null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItem, "[cdkMenuItem]", ["cdkMenuItem"], { "disabled": "disabled"; "typeahead": "typeahead"; }, { "triggered": "cdkMenuItemTriggered"; }, never>;
 }
