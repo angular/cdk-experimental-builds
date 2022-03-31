@@ -22,6 +22,7 @@ export declare class CdkMenuBar extends CdkMenuBase implements AfterContentInit,
     private readonly _menuAim?;
     readonly orientation: 'horizontal' | 'vertical';
     menuStack: MenuStack;
+    _isInline: boolean;
     constructor(_ngZone: NgZone, elementRef: ElementRef<HTMLElement>, menuStack: MenuStack, _menuAim?: MenuAim | undefined, dir?: Directionality);
     ngAfterContentInit(): void;
     ngOnDestroy(): void;

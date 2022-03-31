@@ -84,6 +84,9 @@ export declare class CdkMenuItemTrigger extends MenuTrigger implements OnDestroy
      * click occurs outside the menus.
      */
     private _subscribeToOutsideClicks;
+    private _subscribeToHasFocus;
+    _setHasFocus(hasFocus: boolean): void;
+    private _subscribeToMenuStackClosed;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemTrigger, [null, null, null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemTrigger, "[cdkMenuTriggerFor]", ["cdkMenuTriggerFor"], { "_menuTemplateRef": "cdkMenuTriggerFor"; "menuPosition": "cdkMenuPosition"; }, { "opened": "cdkMenuOpened"; "closed": "cdkMenuClosed"; }, never>;
 }

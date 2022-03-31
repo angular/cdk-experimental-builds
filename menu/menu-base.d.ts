@@ -24,6 +24,8 @@ export declare abstract class CdkMenuBase extends CdkMenuGroup implements Menu, 
      * Does not affect styling/layout.
      */
     orientation: 'horizontal' | 'vertical';
+    _isInline: boolean;
+    _hasFocus: boolean;
     /** All child MenuItem elements nested in this Menu. */
     protected readonly items: QueryList<CdkMenuItem>;
     /** Handles keyboard events for the menu. */
@@ -47,9 +49,10 @@ export declare abstract class CdkMenuBase extends CdkMenuGroup implements Menu, 
     protected hasOpenSubmenu(): boolean;
     /**
      * Close the open menu if the current active item opened the requested MenuStackItem.
-     * @param item the MenuStackItem requested to be closed.
+     * @param menu the MenuStackItem requested to be closed.
+     * @param focusParentTrigger whether to focus the parent trigger after closing the menu.
      */
-    protected closeOpenMenu(menu: MenuStackItem | undefined): void;
+    protected closeOpenMenu(menu?: MenuStackItem, focusParentTrigger?: boolean): void;
     /** Setup the FocusKeyManager with the correct orientation for the menu. */
     private _setKeyManager;
     /**
@@ -59,6 +62,7 @@ export declare abstract class CdkMenuBase extends CdkMenuGroup implements Menu, 
     private _subscribeToMenuOpen;
     /** Subscribe to the MenuStack close and empty observables. */
     private _subscribeToMenuStackClosed;
+    private _subscribeToHasFocus;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuBase, [null, null, { optional: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuBase, never, never, {}, {}, ["items"]>;
 }

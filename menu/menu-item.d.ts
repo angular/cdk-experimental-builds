@@ -89,6 +89,8 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
      * @param event the keyboard event to handle
      */
     _onKeydown(event: KeyboardEvent): void;
+    private _backArrowPressed;
+    private _forwardArrowPressed;
     /**
      * Subscribe to the mouseenter events and close any sibling menu items if this element is moused
      * into.

@@ -3,7 +3,7 @@ import { InjectionToken, Optional, SkipSelf, Inject, Injectable, Directive, Even
 import * as i1 from '@angular/cdk/overlay';
 import { OverlayConfig, STANDARD_DROPDOWN_BELOW_POSITIONS, STANDARD_DROPDOWN_ADJACENT_POSITIONS, OverlayModule } from '@angular/cdk/overlay';
 import { UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW, ENTER, SPACE, TAB, ESCAPE, hasModifierKey } from '@angular/cdk/keycodes';
-import { filter, takeUntil, startWith, mergeMap, mapTo, mergeAll, switchMap, take, skip } from 'rxjs/operators';
+import { startWith, debounceTime, distinctUntilChanged, filter, takeUntil, mergeMap, mapTo, mergeAll, switchMap, take, skip } from 'rxjs/operators';
 import * as i1$2 from '@angular/cdk/collections';
 import { UniqueSelectionDispatcher } from '@angular/cdk/collections';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
@@ -57,8 +57,10 @@ class MenuStack {
         this._close = new Subject();
         /** Emits once the MenuStack has become empty after popping off elements. */
         this._empty = new Subject();
+        this._hasFocus = new Subject();
         /** Observable which emits the MenuStackItem which has been requested to close. */
         this.closed = this._close;
+        this.hasFocus = this._hasFocus.pipe(startWith(false), debounceTime(0), distinctUntilChanged());
         /**
          * Observable which emits when the MenuStack is empty after popping off the last element. It
          * emits a FocusNext event which specifies the action the closer has requested the listener
@@ -80,19 +82,18 @@ class MenuStack {
      * Pop items off of the stack up to and including `lastItem` and emit each on the close
      * observable. If the stack is empty or `lastItem` is not on the stack it does nothing.
      * @param lastItem the last item to pop off the stack.
-     * @param focusNext the event to emit on the `empty` observable if the method call resulted in an
-     * empty stack. Does not emit if the stack was initially empty or if `lastItem` was not on the
-     * stack.
+     * @param options Options that configure behavior on close.
      */
-    close(lastItem, focusNext) {
+    close(lastItem, options) {
+        const { focusNextOnEmpty, focusParentTrigger } = Object.assign({}, options);
         if (this._elements.indexOf(lastItem) >= 0) {
             let poppedElement;
             do {
                 poppedElement = this._elements.pop();
-                this._close.next(poppedElement);
+                this._close.next({ item: poppedElement, focusParentTrigger });
             } while (poppedElement !== lastItem);
             if (this.isEmpty()) {
-                this._empty.next(focusNext);
+                this._empty.next(focusNextOnEmpty);
             }
         }
     }
@@ -107,25 +108,25 @@ class MenuStack {
         if (this._elements.indexOf(lastItem) >= 0) {
             removed = this.peek() !== lastItem;
             while (this.peek() !== lastItem) {
-                this._close.next(this._elements.pop());
+                this._close.next({ item: this._elements.pop() });
             }
         }
         return removed;
     }
     /**
      * Pop off all MenuStackItems and emit each one on the `close` observable one by one.
-     * @param focusNext the event to emit on the `empty` observable once the stack is emptied. Does
-     * not emit if the stack was initially empty.
+     * @param options Options that configure behavior on close.
      */
-    closeAll(focusNext) {
+    closeAll(options) {
+        const { focusNextOnEmpty, focusParentTrigger } = Object.assign({}, options);
         if (!this.isEmpty()) {
             while (!this.isEmpty()) {
                 const menuStackItem = this._elements.pop();
                 if (menuStackItem) {
-                    this._close.next(menuStackItem);
+                    this._close.next({ item: menuStackItem, focusParentTrigger });
                 }
             }
-            this._empty.next(focusNext);
+            this._empty.next(focusNextOnEmpty);
         }
     }
     /** Return true if this stack is empty. */
@@ -140,8 +141,13 @@ class MenuStack {
     peek() {
         return this._elements[this._elements.length - 1];
     }
+    /** Whether the menu stack is associated with an inline menu. */
     hasInlineMenu() {
         return this._hasInlineMenu;
+    }
+    /** Sets whether the menu stack contains the focused element. */
+    setHasFocus(hasFocus) {
+        this._hasFocus.next(hasFocus);
     }
 }
 MenuStack.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: MenuStack, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
@@ -475,7 +481,9 @@ class CdkMenuItemTrigger extends MenuTrigger {
         this._menuAim = _menuAim;
         this._directionality = _directionality;
         this._registerCloseHandler();
+        this._subscribeToMenuStackClosed();
         this._subscribeToMouseEnter();
+        this._subscribeToHasFocus();
     }
     /** Open/close the attached menu if the trigger has been configured with one */
     toggle() {
@@ -632,7 +640,7 @@ class CdkMenuItemTrigger extends MenuTrigger {
      */
     _registerCloseHandler() {
         if (!this._parentMenu) {
-            this.menuStack.closed.pipe(takeUntil(this._destroyed)).subscribe(item => {
+            this.menuStack.closed.pipe(takeUntil(this._destroyed)).subscribe(({ item }) => {
                 if (item === this.childMenu) {
                     this.close();
                 }
@@ -655,9 +663,32 @@ class CdkMenuItemTrigger extends MenuTrigger {
             });
         }
     }
+    _subscribeToHasFocus() {
+        if (!this._parentMenu) {
+            this.menuStack.hasFocus.pipe(takeUntil(this._destroyed)).subscribe(hasFocus => {
+                if (!hasFocus) {
+                    this.menuStack.closeAll();
+                }
+            });
+        }
+    }
+    _setHasFocus(hasFocus) {
+        if (!this._parentMenu) {
+            this.menuStack.setHasFocus(hasFocus);
+        }
+    }
+    _subscribeToMenuStackClosed() {
+        if (!this._parentMenu) {
+            this.menuStack.closed.subscribe(({ focusParentTrigger }) => {
+                if (focusParentTrigger && !this.menuStack.length()) {
+                    this._elementRef.nativeElement.focus();
+                }
+            });
+        }
+    }
 }
 CdkMenuItemTrigger.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuItemTrigger, deps: [{ token: i0.Injector }, { token: i0.ElementRef }, { token: i0.ViewContainerRef }, { token: i1.Overlay }, { token: i0.NgZone }, { token: MENU_STACK }, { token: CDK_MENU, optional: true }, { token: MENU_AIM, optional: true }, { token: i1$1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuItemTrigger.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuItemTrigger, selector: "[cdkMenuTriggerFor]", inputs: { _menuTemplateRef: ["cdkMenuTriggerFor", "_menuTemplateRef"], menuPosition: ["cdkMenuPosition", "menuPosition"] }, outputs: { opened: "cdkMenuOpened", closed: "cdkMenuClosed" }, host: { attributes: { "aria-haspopup": "menu" }, listeners: { "keydown": "_toggleOnKeydown($event)", "click": "toggle()" }, properties: { "attr.aria-expanded": "isOpen()" }, classAttribute: "cdk-menu-trigger" }, providers: [
+CdkMenuItemTrigger.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuItemTrigger, selector: "[cdkMenuTriggerFor]", inputs: { _menuTemplateRef: ["cdkMenuTriggerFor", "_menuTemplateRef"], menuPosition: ["cdkMenuPosition", "menuPosition"] }, outputs: { opened: "cdkMenuOpened", closed: "cdkMenuClosed" }, host: { attributes: { "aria-haspopup": "menu" }, listeners: { "focusin": "_setHasFocus(true)", "focusout": "_setHasFocus(false)", "keydown": "_toggleOnKeydown($event)", "click": "toggle()" }, properties: { "attr.aria-expanded": "isOpen()" }, classAttribute: "cdk-menu-trigger" }, providers: [
         { provide: MENU_TRIGGER, useExisting: CdkMenuItemTrigger },
         PARENT_OR_NEW_MENU_STACK_PROVIDER,
     ], exportAs: ["cdkMenuTriggerFor"], usesInheritance: true, ngImport: i0 });
@@ -669,9 +700,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", 
                     host: {
                         'class': 'cdk-menu-trigger',
                         'aria-haspopup': 'menu',
+                        '[attr.aria-expanded]': 'isOpen()',
+                        '(focusin)': '_setHasFocus(true)',
+                        '(focusout)': '_setHasFocus(false)',
                         '(keydown)': '_toggleOnKeydown($event)',
                         '(click)': 'toggle()',
-                        '[attr.aria-expanded]': 'isOpen()',
                     },
                     inputs: ['_menuTemplateRef: cdkMenuTriggerFor', 'menuPosition: cdkMenuPosition'],
                     outputs: ['opened: cdkMenuOpened', 'closed: cdkMenuClosed'],
@@ -783,7 +816,7 @@ class CdkMenuItem {
     trigger() {
         if (!this.disabled && !this.hasMenu()) {
             this.triggered.next();
-            this._menuStack.closeAll();
+            this._menuStack.closeAll({ focusParentTrigger: true });
         }
     }
     /** Whether the menu item opens a menu. */
@@ -828,36 +861,40 @@ class CdkMenuItem {
                 break;
             case RIGHT_ARROW:
                 if (this._parentMenu && this._isParentVertical()) {
-                    if (((_a = this._dir) === null || _a === void 0 ? void 0 : _a.value) === 'rtl') {
-                        if (this._menuStack.hasInlineMenu() || this._menuStack.length() > 1) {
-                            event.preventDefault();
-                            this._menuStack.close(this._parentMenu, 1 /* previousItem */);
-                        }
+                    if (((_a = this._dir) === null || _a === void 0 ? void 0 : _a.value) !== 'rtl') {
+                        this._forwardArrowPressed(event);
                     }
-                    else if (!this.hasMenu()) {
-                        if (this._menuStack.hasInlineMenu()) {
-                            event.preventDefault();
-                            this._menuStack.closeAll(0 /* nextItem */);
-                        }
+                    else {
+                        this._backArrowPressed(event);
                     }
                 }
                 break;
             case LEFT_ARROW:
                 if (this._parentMenu && this._isParentVertical()) {
                     if (((_b = this._dir) === null || _b === void 0 ? void 0 : _b.value) !== 'rtl') {
-                        if (this._menuStack.hasInlineMenu() || this._menuStack.length() > 1) {
-                            event.preventDefault();
-                            this._menuStack.close(this._parentMenu, 1 /* previousItem */);
-                        }
+                        this._backArrowPressed(event);
                     }
-                    else if (!this.hasMenu()) {
-                        if (this._menuStack.hasInlineMenu()) {
-                            event.preventDefault();
-                            this._menuStack.closeAll(0 /* nextItem */);
-                        }
+                    else {
+                        this._forwardArrowPressed(event);
                     }
                 }
                 break;
+        }
+    }
+    _backArrowPressed(event) {
+        const parentMenu = this._parentMenu;
+        if (this._menuStack.hasInlineMenu() || this._menuStack.length() > 1) {
+            event.preventDefault();
+            this._menuStack.close(parentMenu, {
+                focusNextOnEmpty: 1 /* previousItem */,
+                focusParentTrigger: true,
+            });
+        }
+    }
+    _forwardArrowPressed(event) {
+        if (!this.hasMenu() && this._menuStack.hasInlineMenu()) {
+            event.preventDefault();
+            this._menuStack.closeAll({ focusNextOnEmpty: 0 /* nextItem */, focusParentTrigger: true });
         }
     }
     /**
@@ -892,7 +929,7 @@ class CdkMenuItem {
     }
 }
 CdkMenuItem.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuItem, deps: [{ token: i0.ElementRef }, { token: i0.NgZone }, { token: MENU_STACK }, { token: CDK_MENU, optional: true }, { token: MENU_AIM, optional: true }, { token: i1$1.Directionality, optional: true }, { token: CdkMenuItemTrigger, optional: true, self: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuItem.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuItem, selector: "[cdkMenuItem]", inputs: { disabled: "disabled", typeahead: "typeahead" }, outputs: { triggered: "cdkMenuItemTriggered" }, host: { attributes: { "type": "button", "role": "menuitem" }, listeners: { "blur": "_resetTabIndex()", "mouseout": "_resetTabIndex()", "focus": "_setTabIndex()", "mouseenter": "_setTabIndex($event)", "click": "trigger()", "keydown": "_onKeydown($event)" }, properties: { "tabindex": "_tabindex", "attr.aria-disabled": "disabled || null" }, classAttribute: "cdk-menu-item" }, exportAs: ["cdkMenuItem"], ngImport: i0 });
+CdkMenuItem.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuItem, selector: "[cdkMenuItem]", inputs: { disabled: "disabled", typeahead: "typeahead" }, outputs: { triggered: "cdkMenuItemTriggered" }, host: { attributes: { "type": "button", "role": "menuitem" }, listeners: { "blur": "_resetTabIndex()", "focus": "_setTabIndex()", "click": "trigger()", "keydown": "_onKeydown($event)" }, properties: { "tabindex": "_tabindex", "attr.aria-disabled": "disabled || null" }, classAttribute: "cdk-menu-item" }, exportAs: ["cdkMenuItem"], ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuItem, decorators: [{
             type: Directive,
             args: [{
@@ -905,9 +942,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", 
                         'class': 'cdk-menu-item',
                         '[attr.aria-disabled]': 'disabled || null',
                         '(blur)': '_resetTabIndex()',
-                        '(mouseout)': '_resetTabIndex()',
                         '(focus)': '_setTabIndex()',
-                        '(mouseenter)': '_setTabIndex($event)',
                         '(click)': 'trigger()',
                         '(keydown)': '_onKeydown($event)',
                     },
@@ -1123,12 +1158,15 @@ class CdkMenuBase extends CdkMenuGroup {
          * Does not affect styling/layout.
          */
         this.orientation = 'vertical';
+        this._isInline = false;
+        this._hasFocus = false;
         /** Emits when the MenuBar is destroyed. */
         this.destroyed = new Subject();
     }
     ngAfterContentInit() {
         super.ngAfterContentInit();
         this._setKeyManager();
+        this._subscribeToHasFocus();
         this._subscribeToMenuOpen();
         this._subscribeToMenuStackClosed();
     }
@@ -1157,18 +1195,24 @@ class CdkMenuBase extends CdkMenuGroup {
     }
     /**
      * Close the open menu if the current active item opened the requested MenuStackItem.
-     * @param item the MenuStackItem requested to be closed.
+     * @param menu the MenuStackItem requested to be closed.
+     * @param focusParentTrigger whether to focus the parent trigger after closing the menu.
      */
-    closeOpenMenu(menu) {
-        var _a, _b, _c;
+    closeOpenMenu(menu, focusParentTrigger) {
+        var _a, _b;
         const keyManager = this.keyManager;
         const trigger = this.openItem;
         if (menu === ((_a = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _a === void 0 ? void 0 : _a.getMenu())) {
             (_b = trigger === null || trigger === void 0 ? void 0 : trigger.getMenuTrigger()) === null || _b === void 0 ? void 0 : _b.close();
             // If the user has moused over a sibling item we want to focus the element under mouse focus
             // not the trigger which previously opened the now closed menu.
-            if (trigger) {
-                keyManager.setActiveItem(((_c = this.pointerTracker) === null || _c === void 0 ? void 0 : _c.activeElement) || trigger);
+            if (focusParentTrigger) {
+                if (trigger) {
+                    keyManager.setActiveItem(trigger);
+                }
+                else {
+                    keyManager.setFirstItemActive();
+                }
             }
         }
     }
@@ -1202,17 +1246,27 @@ class CdkMenuBase extends CdkMenuGroup {
     _subscribeToMenuStackClosed() {
         this.menuStack.closed
             .pipe(takeUntil(this.destroyed))
-            .subscribe(item => this.closeOpenMenu(item));
+            .subscribe(({ item, focusParentTrigger }) => this.closeOpenMenu(item, focusParentTrigger));
+    }
+    _subscribeToHasFocus() {
+        if (this._isInline) {
+            this.menuStack.hasFocus.pipe(takeUntil(this.destroyed)).subscribe(hasFocus => {
+                this._hasFocus = hasFocus;
+            });
+        }
     }
 }
 CdkMenuBase.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuBase, deps: [{ token: i0.ElementRef }, { token: MENU_STACK }, { token: i1$1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuBase.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuBase, host: { listeners: { "focus": "focusFirstItem()" }, properties: { "attr.aria-orientation": "orientation" } }, queries: [{ propertyName: "items", predicate: CdkMenuItem, descendants: true }], usesInheritance: true, ngImport: i0 });
+CdkMenuBase.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuBase, host: { listeners: { "focus": "focusFirstItem()", "focusin": "menuStack.setHasFocus(true)", "focusout": "menuStack.setHasFocus(false)" }, properties: { "tabindex": "_isInline ? (_hasFocus ? -1 : 0) : null", "attr.aria-orientation": "orientation" } }, queries: [{ propertyName: "items", predicate: CdkMenuItem, descendants: true }], usesInheritance: true, ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuBase, decorators: [{
             type: Directive,
             args: [{
                     host: {
+                        '[tabindex]': '_isInline ? (_hasFocus ? -1 : 0) : null',
                         '[attr.aria-orientation]': 'orientation',
                         '(focus)': 'focusFirstItem()',
+                        '(focusin)': 'menuStack.setHasFocus(true)',
+                        '(focusout)': 'menuStack.setHasFocus(false)',
                     },
                 }]
         }], ctorParameters: function () {
@@ -1250,8 +1304,9 @@ class CdkMenu extends CdkMenuBase {
         this._menuAim = _menuAim;
         /** Event emitted when the menu is closed. */
         this.closed = new EventEmitter();
+        this._isInline = !this._parentTrigger;
         this.destroyed.subscribe(this.closed);
-        if (!this._isInline()) {
+        if (!this._isInline) {
             this.menuStack.push(this);
         }
         (_a = this._parentTrigger) === null || _a === void 0 ? void 0 : _a.registerChildMenu(this);
@@ -1293,11 +1348,14 @@ class CdkMenu extends CdkMenuBase {
             case ESCAPE:
                 if (!hasModifierKey(event)) {
                     event.preventDefault();
-                    this.menuStack.close(this, 2 /* currentItem */);
+                    this.menuStack.close(this, {
+                        focusNextOnEmpty: 2 /* currentItem */,
+                        focusParentTrigger: true,
+                    });
                 }
                 break;
             case TAB:
-                this.menuStack.closeAll();
+                this.menuStack.closeAll({ focusParentTrigger: true });
                 break;
             default:
                 keyManager.onKeydown(event);
@@ -1333,9 +1391,6 @@ class CdkMenu extends CdkMenuBase {
     _subscribeToMouseManager() {
         this._ngZone.runOutsideAngular(() => {
             this.pointerTracker = new PointerFocusTracker(this.items);
-            this.pointerTracker.entered
-                .pipe(takeUntil(this.closed))
-                .subscribe(item => this.keyManager.setActiveItem(item));
         });
     }
     /** Set focus the either the current, previous or next item based on the FocusNext event. */
@@ -1358,13 +1413,6 @@ class CdkMenu extends CdkMenuBase {
                 break;
         }
     }
-    /**
-     * Return true if this menu is an inline menu. That is, it does not exist in a pop-up and is
-     * always visible in the dom.
-     */
-    _isInline() {
-        return !this._parentTrigger;
-    }
     _subscribeToMenuStackEmptied() {
         this.menuStack.emptied
             .pipe(takeUntil(this.destroyed))
@@ -1372,7 +1420,7 @@ class CdkMenu extends CdkMenuBase {
     }
 }
 CdkMenu.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenu, deps: [{ token: i0.NgZone }, { token: i0.ElementRef }, { token: MENU_STACK }, { token: MENU_TRIGGER, optional: true }, { token: MENU_AIM, optional: true, self: true }, { token: i1$1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenu.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenu, selector: "[cdkMenu]", outputs: { closed: "closed" }, host: { attributes: { "role": "menu" }, listeners: { "keydown": "_handleKeyEvent($event)" }, properties: { "tabindex": "_isInline() ? 0 : null", "class.cdk-menu-inline": "_isInline()" }, classAttribute: "cdk-menu" }, providers: [
+CdkMenu.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenu, selector: "[cdkMenu]", outputs: { closed: "closed" }, host: { attributes: { "role": "menu" }, listeners: { "keydown": "_handleKeyEvent($event)" }, properties: { "class.cdk-menu-inline": "_isInline" }, classAttribute: "cdk-menu" }, providers: [
         { provide: CdkMenuGroup, useExisting: CdkMenu },
         { provide: CDK_MENU, useExisting: CdkMenu },
         PARENT_OR_NEW_INLINE_MENU_STACK_PROVIDER,
@@ -1385,8 +1433,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", 
                     host: {
                         'role': 'menu',
                         'class': 'cdk-menu',
-                        '[tabindex]': '_isInline() ? 0 : null',
-                        '[class.cdk-menu-inline]': '_isInline()',
+                        '[class.cdk-menu-inline]': '_isInline',
                         '(keydown)': '_handleKeyEvent($event)',
                     },
                     providers: [
@@ -1440,6 +1487,7 @@ class CdkMenuBar extends CdkMenuBase {
         this._ngZone = _ngZone;
         this._menuAim = _menuAim;
         this.orientation = 'horizontal';
+        this._isInline = true;
     }
     ngAfterContentInit() {
         var _a;
@@ -1500,11 +1548,6 @@ class CdkMenuBar extends CdkMenuBase {
     _subscribeToMouseManager() {
         this._ngZone.runOutsideAngular(() => {
             this.pointerTracker = new PointerFocusTracker(this.items);
-            this.pointerTracker.entered.pipe(takeUntil(this.destroyed)).subscribe(item => {
-                if (this.hasOpenSubmenu()) {
-                    this.keyManager.setActiveItem(item);
-                }
-            });
         });
     }
     /**
@@ -1539,7 +1582,7 @@ class CdkMenuBar extends CdkMenuBase {
     }
 }
 CdkMenuBar.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuBar, deps: [{ token: i0.NgZone }, { token: i0.ElementRef }, { token: MENU_STACK }, { token: MENU_AIM, optional: true, self: true }, { token: i1$1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuBar.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuBar, selector: "[cdkMenuBar]", host: { attributes: { "role": "menubar", "tabindex": "0" }, listeners: { "keydown": "_handleKeyEvent($event)" }, classAttribute: "cdk-menu-bar" }, providers: [
+CdkMenuBar.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuBar, selector: "[cdkMenuBar]", host: { attributes: { "role": "menubar" }, listeners: { "keydown": "_handleKeyEvent($event)" }, classAttribute: "cdk-menu-bar" }, providers: [
         { provide: CdkMenuGroup, useExisting: CdkMenuBar },
         { provide: CDK_MENU, useExisting: CdkMenuBar },
         { provide: MENU_STACK, useFactory: () => MenuStack.inline() },
@@ -1552,7 +1595,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", 
                     host: {
                         'role': 'menubar',
                         'class': 'cdk-menu-bar',
-                        'tabindex': '0',
                         '(keydown)': '_handleKeyEvent($event)',
                     },
                     providers: [
@@ -1851,7 +1893,7 @@ class CdkContextMenuTrigger extends MenuTrigger {
     }
     /** Subscribe to the menu stack close events and close this menu when requested. */
     _setMenuStackListener() {
-        this.menuStack.closed.pipe(takeUntil(this._destroyed)).subscribe(item => {
+        this.menuStack.closed.pipe(takeUntil(this._destroyed)).subscribe(({ item }) => {
             if (item === this.childMenu && this.isOpen()) {
                 this.closed.next();
                 this._overlayRef.detach();

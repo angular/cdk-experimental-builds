@@ -27,6 +27,7 @@ export declare class CdkMenu extends CdkMenuBase implements AfterContentInit, On
     readonly closed: EventEmitter<void>;
     /** List of nested CdkMenuGroup elements */
     private readonly _nestedGroups;
+    _isInline: boolean;
     constructor(_ngZone: NgZone, elementRef: ElementRef<HTMLElement>, menuStack: MenuStack, _parentTrigger?: MenuTrigger | undefined, _menuAim?: MenuAim | undefined, dir?: Directionality);
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
@@ -46,11 +47,6 @@ export declare class CdkMenu extends CdkMenuBase implements AfterContentInit, On
     private _subscribeToMouseManager;
     /** Set focus the either the current, previous or next item based on the FocusNext event. */
     private _toggleMenuFocus;
-    /**
-     * Return true if this menu is an inline menu. That is, it does not exist in a pop-up and is
-     * always visible in the dom.
-     */
-    _isInline(): boolean;
     private _subscribeToMenuStackEmptied;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenu, [null, null, null, { optional: true; }, { optional: true; self: true; }, { optional: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenu, "[cdkMenu]", ["cdkMenu"], {}, { "closed": "closed"; }, ["_nestedGroups"]>;
