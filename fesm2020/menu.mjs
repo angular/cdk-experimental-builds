@@ -1,16 +1,44 @@
 import * as i0 from '@angular/core';
-import { InjectionToken, Optional, SkipSelf, Inject, Injectable, Directive, EventEmitter, Injector, Self, Input, Output, ContentChildren, NgModule } from '@angular/core';
+import { Directive, InjectionToken, Optional, SkipSelf, Inject, Injectable, EventEmitter, Injector, Self, Input, Output, ContentChildren, NgModule } from '@angular/core';
 import * as i1 from '@angular/cdk/overlay';
 import { OverlayConfig, STANDARD_DROPDOWN_BELOW_POSITIONS, STANDARD_DROPDOWN_ADJACENT_POSITIONS, OverlayModule } from '@angular/cdk/overlay';
 import { UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW, ENTER, SPACE, TAB, ESCAPE, hasModifierKey } from '@angular/cdk/keycodes';
 import * as i1$1 from '@angular/cdk/bidi';
-import { startWith, debounceTime, distinctUntilChanged, filter, takeUntil, mergeMap, mapTo, mergeAll, switchMap, take, skip } from 'rxjs/operators';
+import { startWith, debounceTime, distinctUntilChanged, mergeMap, mapTo, takeUntil, mergeAll, filter, switchMap, skip } from 'rxjs/operators';
 import * as i1$2 from '@angular/cdk/collections';
 import { UniqueSelectionDispatcher } from '@angular/cdk/collections';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Subject, fromEvent, merge, defer, partition } from 'rxjs';
-import { TemplatePortal } from '@angular/cdk/portal';
+import { Subject, defer, fromEvent, merge, partition } from 'rxjs';
 import { FocusKeyManager } from '@angular/cdk/a11y';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { TemplatePortal } from '@angular/cdk/portal';
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * Directive which acts as a grouping container for `CdkMenuItem` instances with
+ * `role="menuitemradio"`, similar to a `role="radiogroup"` element.
+ */
+class CdkMenuGroup {
+}
+CdkMenuGroup.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuGroup, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+CdkMenuGroup.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuGroup, selector: "[cdkMenuGroup]", host: { attributes: { "role": "group" }, classAttribute: "cdk-menu-group" }, providers: [{ provide: UniqueSelectionDispatcher, useClass: UniqueSelectionDispatcher }], exportAs: ["cdkMenuGroup"], ngImport: i0 });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuGroup, decorators: [{
+            type: Directive,
+            args: [{
+                    selector: '[cdkMenuGroup]',
+                    exportAs: 'cdkMenuGroup',
+                    host: {
+                        'role': 'group',
+                        'class': 'cdk-menu-group',
+                    },
+                    providers: [{ provide: UniqueSelectionDispatcher, useClass: UniqueSelectionDispatcher }],
+                }]
+        }] });
 
 /**
  * @license
@@ -155,6 +183,53 @@ MenuStack.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: MenuStack, decorators: [{
             type: Injectable
         }] });
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * PointerFocusTracker keeps track of the currently active item under mouse focus. It also has
+ * observables which emit when the users mouse enters and leaves a tracked element.
+ */
+class PointerFocusTracker {
+    constructor(_items) {
+        this._items = _items;
+        /** Emits when an element is moused into. */
+        this.entered = this._getItemPointerEntries();
+        /** Emits when an element is moused out. */
+        this.exited = this._getItemPointerExits();
+        /** Emits when this is destroyed. */
+        this._destroyed = new Subject();
+        this.entered.subscribe(element => (this.activeElement = element));
+        this.exited.subscribe(() => {
+            this.previousElement = this.activeElement;
+            this.activeElement = undefined;
+        });
+    }
+    /**
+     * Gets a stream of pointer (mouse) entries into the given items.
+     * This should typically run outside the Angular zone.
+     */
+    _getItemPointerEntries() {
+        return defer(() => this._items.changes.pipe(startWith(this._items), mergeMap((list) => list.map(element => fromEvent(element._elementRef.nativeElement, 'mouseenter').pipe(mapTo(element), takeUntil(this._items.changes)))), mergeAll()));
+    }
+    /**
+     * Gets a stream of pointer (mouse) exits out of the given items.
+     * This should typically run outside the Angular zone.
+     */
+    _getItemPointerExits() {
+        return defer(() => this._items.changes.pipe(startWith(this._items), mergeMap((list) => list.map(element => fromEvent(element._elementRef.nativeElement, 'mouseout').pipe(mapTo(element), takeUntil(this._items.changes)))), mergeAll()));
+    }
+    /** Stop the managers listeners. */
+    destroy() {
+        this._destroyed.next();
+        this._destroyed.complete();
+    }
+}
 
 /**
  * @license
@@ -429,9 +504,14 @@ class MenuTrigger {
     }
 }
 MenuTrigger.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: MenuTrigger, deps: [{ token: i0.Injector }, { token: MENU_STACK }], target: i0.ɵɵFactoryTarget.Directive });
-MenuTrigger.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: MenuTrigger, ngImport: i0 });
+MenuTrigger.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: MenuTrigger, host: { properties: { "attr.aria-controls": "childMenu?.id" } }, ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: MenuTrigger, decorators: [{
-            type: Directive
+            type: Directive,
+            args: [{
+                    host: {
+                        '[attr.aria-controls]': 'childMenu?.id',
+                    },
+                }]
         }], ctorParameters: function () { return [{ type: i0.Injector }, { type: MenuStack, decorators: [{
                     type: Inject,
                     args: [MENU_STACK]
@@ -761,6 +841,8 @@ class CdkMenuItem {
          * tab index.
          */
         this._tabindex = -1;
+        /** Whether the item should close the menu if triggered by the spacebar. */
+        this.closeOnSpacebarTrigger = true;
         /** Emits when the menu item is destroyed. */
         this._destroyed = new Subject();
         this._setupMouseEnter();
@@ -806,10 +888,13 @@ class CdkMenuItem {
      * If the menu item is not disabled and the element does not have a menu trigger attached, emit
      * on the cdkMenuItemTriggered emitter and close all open menus.
      */
-    trigger() {
+    trigger(options) {
+        const { keepOpen } = { ...options };
         if (!this.disabled && !this.hasMenu()) {
             this.triggered.next();
-            this._menuStack.closeAll({ focusParentTrigger: true });
+            if (!keepOpen) {
+                this._menuStack.closeAll({ focusParentTrigger: true });
+            }
         }
     }
     /** Whether the menu item opens a menu. */
@@ -846,7 +931,7 @@ class CdkMenuItem {
             case SPACE:
             case ENTER:
                 event.preventDefault();
-                this.trigger();
+                this.trigger({ keepOpen: event.keyCode === SPACE && !this.closeOnSpacebarTrigger });
                 break;
             case RIGHT_ARROW:
                 if (this._parentMenu && this._isParentVertical()) {
@@ -917,17 +1002,16 @@ class CdkMenuItem {
     }
 }
 CdkMenuItem.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuItem, deps: [{ token: i0.ElementRef }, { token: i0.NgZone }, { token: MENU_STACK }, { token: CDK_MENU, optional: true }, { token: MENU_AIM, optional: true }, { token: i1$1.Directionality, optional: true }, { token: CdkMenuItemTrigger, optional: true, self: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuItem.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuItem, selector: "[cdkMenuItem]", inputs: { disabled: "disabled", typeahead: "typeahead" }, outputs: { triggered: "cdkMenuItemTriggered" }, host: { attributes: { "type": "button", "role": "menuitem" }, listeners: { "blur": "_resetTabIndex()", "focus": "_setTabIndex()", "click": "trigger()", "keydown": "_onKeydown($event)" }, properties: { "tabindex": "_tabindex", "attr.aria-disabled": "disabled || null" }, classAttribute: "cdk-menu-item" }, exportAs: ["cdkMenuItem"], ngImport: i0 });
+CdkMenuItem.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuItem, selector: "[cdkMenuItem]", inputs: { disabled: "disabled", typeahead: "typeahead" }, outputs: { triggered: "cdkMenuItemTriggered" }, host: { attributes: { "role": "menuitem" }, listeners: { "blur": "_resetTabIndex()", "focus": "_setTabIndex()", "click": "trigger()", "keydown": "_onKeydown($event)" }, properties: { "tabindex": "_tabindex", "attr.aria-disabled": "disabled || null" }, classAttribute: "cdk-menu-item" }, exportAs: ["cdkMenuItem"], ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuItem, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkMenuItem]',
                     exportAs: 'cdkMenuItem',
                     host: {
-                        '[tabindex]': '_tabindex',
-                        'type': 'button',
                         'role': 'menuitem',
                         'class': 'cdk-menu-item',
+                        '[tabindex]': '_tabindex',
                         '[attr.aria-disabled]': 'disabled || null',
                         '(blur)': '_resetTabIndex()',
                         '(focus)': '_setTabIndex()',
@@ -970,175 +1054,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", 
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/** Counter used to set a unique id and name for a selectable item */
-let nextId = 0;
-/**
- * Base class providing checked state for MenuItems along with outputting a clicked event when the
- * element is triggered. It provides functionality for selectable elements.
- */
-class CdkMenuItemSelectable extends CdkMenuItem {
-    constructor() {
-        super(...arguments);
-        /** Event emitted when the selectable item is clicked */
-        this.toggled = new EventEmitter();
-        this._checked = false;
-        /** The name of the selectable element with a default value */
-        this.name = `cdk-selectable-item-${nextId++}`;
-        /** The id of the selectable element with a default value */
-        this.id = `cdk-selectable-item-${nextId++}`;
-    }
-    /** Whether the element is checked */
-    get checked() {
-        return this._checked;
-    }
-    set checked(value) {
-        this._checked = coerceBooleanProperty(value);
-    }
-    /** If the element is not disabled emit the click event */
-    trigger() {
-        if (!this.disabled) {
-            this.toggled.next(this);
-        }
-    }
-}
-CdkMenuItemSelectable.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuItemSelectable, deps: null, target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuItemSelectable.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuItemSelectable, inputs: { checked: "checked", name: "name", id: "id" }, outputs: { toggled: "cdkMenuItemToggled" }, usesInheritance: true, ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuItemSelectable, decorators: [{
-            type: Directive
-        }], propDecorators: { toggled: [{
-                type: Output,
-                args: ['cdkMenuItemToggled']
-            }], checked: [{
-                type: Input
-            }], name: [{
-                type: Input
-            }], id: [{
-                type: Input
-            }] } });
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-/**
- * Directive which acts as a grouping container for `CdkMenuItem` instances with
- * `role="menuitemradio"`, similar to a `role="radiogroup"` element.
- */
-class CdkMenuGroup {
-    constructor() {
-        /** Emits the element when checkbox or radiobutton state changed  */
-        this.change = new EventEmitter();
-        /** Emits when the _selectableItems QueryList triggers a change */
-        this._selectableChanges = new EventEmitter();
-    }
-    ngAfterContentInit() {
-        this._registerMenuSelectionListeners();
-    }
-    ngOnDestroy() {
-        this._selectableChanges.next();
-        this._selectableChanges.complete();
-    }
-    /**
-     * Register the child selectable elements with the change emitter and ensure any new child
-     * elements do so as well.
-     */
-    _registerMenuSelectionListeners() {
-        this._selectableItems.forEach(selectable => this._registerClickListener(selectable));
-        this._selectableItems.changes.subscribe((selectableItems) => {
-            this._selectableChanges.next();
-            selectableItems.forEach(selectable => this._registerClickListener(selectable));
-        });
-    }
-    /** Register each selectable to emit on the change Emitter when clicked */
-    _registerClickListener(selectable) {
-        selectable.toggled
-            .pipe(takeUntil(this._selectableChanges))
-            .subscribe(() => this.change.next(selectable));
-    }
-}
-CdkMenuGroup.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuGroup, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuGroup.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuGroup, selector: "[cdkMenuGroup]", outputs: { change: "change" }, host: { attributes: { "role": "group" }, classAttribute: "cdk-menu-group" }, providers: [{ provide: UniqueSelectionDispatcher, useClass: UniqueSelectionDispatcher }], queries: [{ propertyName: "_selectableItems", predicate: CdkMenuItemSelectable, descendants: true }], exportAs: ["cdkMenuGroup"], ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuGroup, decorators: [{
-            type: Directive,
-            args: [{
-                    selector: '[cdkMenuGroup]',
-                    exportAs: 'cdkMenuGroup',
-                    host: {
-                        'role': 'group',
-                        'class': 'cdk-menu-group',
-                    },
-                    providers: [{ provide: UniqueSelectionDispatcher, useClass: UniqueSelectionDispatcher }],
-                }]
-        }], propDecorators: { change: [{
-                type: Output
-            }], _selectableItems: [{
-                type: ContentChildren,
-                args: [CdkMenuItemSelectable, { descendants: true }]
-            }] } });
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-/**
- * PointerFocusTracker keeps track of the currently active item under mouse focus. It also has
- * observables which emit when the users mouse enters and leaves a tracked element.
- */
-class PointerFocusTracker {
-    constructor(_items) {
-        this._items = _items;
-        /** Emits when an element is moused into. */
-        this.entered = this._getItemPointerEntries();
-        /** Emits when an element is moused out. */
-        this.exited = this._getItemPointerExits();
-        /** Emits when this is destroyed. */
-        this._destroyed = new Subject();
-        this.entered.subscribe(element => (this.activeElement = element));
-        this.exited.subscribe(() => {
-            this.previousElement = this.activeElement;
-            this.activeElement = undefined;
-        });
-    }
-    /**
-     * Gets a stream of pointer (mouse) entries into the given items.
-     * This should typically run outside the Angular zone.
-     */
-    _getItemPointerEntries() {
-        return defer(() => this._items.changes.pipe(startWith(this._items), mergeMap((list) => list.map(element => fromEvent(element._elementRef.nativeElement, 'mouseenter').pipe(mapTo(element), takeUntil(this._items.changes)))), mergeAll()));
-    }
-    /**
-     * Gets a stream of pointer (mouse) exits out of the given items.
-     * This should typically run outside the Angular zone.
-     */
-    _getItemPointerExits() {
-        return defer(() => this._items.changes.pipe(startWith(this._items), mergeMap((list) => list.map(element => fromEvent(element._elementRef.nativeElement, 'mouseout').pipe(mapTo(element), takeUntil(this._items.changes)))), mergeAll()));
-    }
-    /** Stop the managers listeners. */
-    destroy() {
-        this._destroyed.next();
-        this._destroyed.complete();
-    }
-}
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
+let nextId$1 = 0;
 class CdkMenuBase extends CdkMenuGroup {
     constructor(_elementRef, menuStack, dir) {
         super();
         this._elementRef = _elementRef;
         this.menuStack = menuStack;
         this.dir = dir;
+        this.id = `cdk-menu-${nextId$1++}`;
         /**
          * Sets the aria-orientation attribute and determines where menus will be opened.
          * Does not affect styling/layout.
@@ -1150,14 +1073,12 @@ class CdkMenuBase extends CdkMenuGroup {
         this.destroyed = new Subject();
     }
     ngAfterContentInit() {
-        super.ngAfterContentInit();
         this._setKeyManager();
         this._subscribeToHasFocus();
         this._subscribeToMenuOpen();
         this._subscribeToMenuStackClosed();
     }
     ngOnDestroy() {
-        super.ngOnDestroy();
         this.destroyed.next();
         this.destroyed.complete();
     }
@@ -1241,12 +1162,13 @@ class CdkMenuBase extends CdkMenuGroup {
     }
 }
 CdkMenuBase.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuBase, deps: [{ token: i0.ElementRef }, { token: MENU_STACK }, { token: i1$1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuBase.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuBase, host: { listeners: { "focus": "focusFirstItem()", "focusin": "menuStack.setHasFocus(true)", "focusout": "menuStack.setHasFocus(false)" }, properties: { "tabindex": "_isInline ? (_hasFocus ? -1 : 0) : null", "attr.aria-orientation": "orientation" } }, queries: [{ propertyName: "items", predicate: CdkMenuItem, descendants: true }], usesInheritance: true, ngImport: i0 });
+CdkMenuBase.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuBase, inputs: { id: "id" }, host: { listeners: { "focus": "focusFirstItem()", "focusin": "menuStack.setHasFocus(true)", "focusout": "menuStack.setHasFocus(false)" }, properties: { "tabindex": "_isInline ? (_hasFocus ? -1 : 0) : null", "id": "id", "attr.aria-orientation": "orientation" } }, queries: [{ propertyName: "items", predicate: CdkMenuItem, descendants: true }], usesInheritance: true, ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuBase, decorators: [{
             type: Directive,
             args: [{
                     host: {
                         '[tabindex]': '_isInline ? (_hasFocus ? -1 : 0) : null',
+                        '[id]': 'id',
                         '[attr.aria-orientation]': 'orientation',
                         '(focus)': 'focusFirstItem()',
                         '(focusin)': 'menuStack.setHasFocus(true)',
@@ -1258,7 +1180,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", 
                     args: [MENU_STACK]
                 }] }, { type: i1$1.Directionality, decorators: [{
                     type: Optional
-                }] }]; }, propDecorators: { items: [{
+                }] }]; }, propDecorators: { id: [{
+                type: Input
+            }], items: [{
                 type: ContentChildren,
                 args: [CdkMenuItem, { descendants: true }]
             }] } });
@@ -1294,7 +1218,6 @@ class CdkMenu extends CdkMenuBase {
     }
     ngAfterContentInit() {
         super.ngAfterContentInit();
-        this._completeChangeEmitter();
         this._subscribeToMenuStackEmptied();
         this._subscribeToMouseManager();
         this._menuAim?.initialize(this, this.pointerTracker);
@@ -1341,29 +1264,6 @@ class CdkMenu extends CdkMenuBase {
         }
     }
     /**
-     * Complete the change emitter if there are any nested MenuGroups or register to complete the
-     * change emitter if a MenuGroup is rendered at some point
-     */
-    // TODO(mmalerba): This doesnt' quite work. It causes change events to stop
-    //  firing for radio items directly in the menu if a second group of options
-    //  is added in a menu-group.
-    _completeChangeEmitter() {
-        if (this._hasNestedGroups()) {
-            this.change.complete();
-        }
-        else {
-            this._nestedGroups.changes.pipe(take(1)).subscribe(() => this.change.complete());
-        }
-    }
-    /** Return true if there are nested CdkMenuGroup elements within the Menu */
-    _hasNestedGroups() {
-        // view engine has a bug where @ContentChildren will return the current element
-        // along with children if the selectors match - not just the children.
-        // Here, if there is at least one element, we check to see if the first element is a CdkMenu in
-        // order to ensure that we return true iff there are child CdkMenuGroup elements.
-        return this._nestedGroups.length > 0 && !(this._nestedGroups.first instanceof CdkMenu);
-    }
-    /**
      * Set the PointerFocusTracker and ensure that when mouse focus changes the key manager is updated
      * with the latest menu item under mouse focus.
      */
@@ -1403,7 +1303,7 @@ CdkMenu.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0
         { provide: CdkMenuGroup, useExisting: CdkMenu },
         { provide: CDK_MENU, useExisting: CdkMenu },
         PARENT_OR_NEW_INLINE_MENU_STACK_PROVIDER,
-    ], queries: [{ propertyName: "_nestedGroups", predicate: CdkMenuGroup, descendants: true }], exportAs: ["cdkMenu"], usesInheritance: true, ngImport: i0 });
+    ], exportAs: ["cdkMenu"], usesInheritance: true, ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenu, decorators: [{
             type: Directive,
             args: [{
@@ -1440,9 +1340,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", 
                     type: Optional
                 }] }]; }, propDecorators: { closed: [{
                 type: Output
-            }], _nestedGroups: [{
-                type: ContentChildren,
-                args: [CdkMenuGroup, { descendants: true }]
             }] } });
 
 /**
@@ -1599,6 +1496,48 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", 
  * found in the LICENSE file at https://angular.io/license
  */
 /**
+ * Base class providing checked state for MenuItems along with outputting a clicked event when the
+ * element is triggered. It provides functionality for selectable elements.
+ */
+class CdkMenuItemSelectable extends CdkMenuItem {
+    constructor() {
+        super(...arguments);
+        this._checked = false;
+        this.closeOnSpacebarTrigger = false;
+    }
+    /** Whether the element is checked */
+    get checked() {
+        return this._checked;
+    }
+    set checked(value) {
+        this._checked = coerceBooleanProperty(value);
+    }
+}
+CdkMenuItemSelectable.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuItemSelectable, deps: null, target: i0.ɵɵFactoryTarget.Directive });
+CdkMenuItemSelectable.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuItemSelectable, inputs: { checked: ["cdkMenuItemChecked", "checked"] }, host: { properties: { "attr.aria-checked": "!!checked", "attr.aria-disabled": "disabled || null" } }, usesInheritance: true, ngImport: i0 });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuItemSelectable, decorators: [{
+            type: Directive,
+            args: [{
+                    host: {
+                        '[attr.aria-checked]': '!!checked',
+                        '[attr.aria-disabled]': 'disabled || null',
+                    },
+                }]
+        }], propDecorators: { checked: [{
+                type: Input,
+                args: ['cdkMenuItemChecked']
+            }] } });
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/** Counter used to set a unique id and name for a selectable item */
+let nextId = 0;
+/**
  * A directive providing behavior for the "menuitemradio" ARIA role, which behaves similarly to
  * a conventional radio-button. Any sibling `CdkMenuItemRadio` instances within the same `CdkMenu`
  * or `CdkMenuGroup` comprise a radio group with unique selection enforced.
@@ -1611,17 +1550,20 @@ class CdkMenuItemRadio extends CdkMenuItemSelectable {
     menuTrigger) {
         super(element, ngZone, menuStack, parentMenu, menuAim, dir, menuTrigger);
         this._selectionDispatcher = _selectionDispatcher;
+        this._id = `${nextId++}`;
         this._registerDispatcherListener();
     }
     /** Configure the unique selection dispatcher listener in order to toggle the checked state  */
     _registerDispatcherListener() {
-        this._removeDispatcherListener = this._selectionDispatcher.listen((id, name) => (this.checked = this.id === id && this.name === name));
+        this._removeDispatcherListener = this._selectionDispatcher.listen((id) => {
+            this.checked = this._id === id;
+        });
     }
     /** Toggles the checked state of the radio-button. */
-    trigger() {
-        super.trigger();
+    trigger(options) {
+        super.trigger(options);
         if (!this.disabled) {
-            this._selectionDispatcher.notify(this.id, this.name);
+            this._selectionDispatcher.notify(this._id, '');
         }
     }
     ngOnDestroy() {
@@ -1630,7 +1572,7 @@ class CdkMenuItemRadio extends CdkMenuItemSelectable {
     }
 }
 CdkMenuItemRadio.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuItemRadio, deps: [{ token: i1$2.UniqueSelectionDispatcher }, { token: i0.ElementRef }, { token: i0.NgZone }, { token: MENU_STACK }, { token: CDK_MENU, optional: true }, { token: MENU_AIM, optional: true }, { token: i1$1.Directionality, optional: true }, { token: CdkMenuItemTrigger, optional: true, self: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuItemRadio.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuItemRadio, selector: "[cdkMenuItemRadio]", host: { attributes: { "type": "button", "role": "menuitemradio" }, properties: { "tabindex": "_tabindex", "attr.aria-checked": "checked || null", "attr.aria-disabled": "disabled || null" } }, providers: [
+CdkMenuItemRadio.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuItemRadio, selector: "[cdkMenuItemRadio]", host: { attributes: { "role": "menuitemradio" } }, providers: [
         { provide: CdkMenuItemSelectable, useExisting: CdkMenuItemRadio },
         { provide: CdkMenuItem, useExisting: CdkMenuItemSelectable },
     ], exportAs: ["cdkMenuItemRadio"], usesInheritance: true, ngImport: i0 });
@@ -1640,11 +1582,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", 
                     selector: '[cdkMenuItemRadio]',
                     exportAs: 'cdkMenuItemRadio',
                     host: {
-                        '[tabindex]': '_tabindex',
-                        'type': 'button',
                         'role': 'menuitemradio',
-                        '[attr.aria-checked]': 'checked || null',
-                        '[attr.aria-disabled]': 'disabled || null',
                     },
                     providers: [
                         { provide: CdkMenuItemSelectable, useExisting: CdkMenuItemRadio },
@@ -1685,15 +1623,15 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", 
  */
 class CdkMenuItemCheckbox extends CdkMenuItemSelectable {
     /** Toggle the checked state of the checkbox. */
-    trigger() {
-        super.trigger();
+    trigger(options) {
+        super.trigger(options);
         if (!this.disabled) {
             this.checked = !this.checked;
         }
     }
 }
 CdkMenuItemCheckbox.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.0-next.9", ngImport: i0, type: CdkMenuItemCheckbox, deps: null, target: i0.ɵɵFactoryTarget.Directive });
-CdkMenuItemCheckbox.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuItemCheckbox, selector: "[cdkMenuItemCheckbox]", host: { attributes: { "type": "button", "role": "menuitemcheckbox" }, properties: { "tabindex": "_tabindex", "attr.aria-checked": "checked || null", "attr.aria-disabled": "disabled || null" } }, providers: [
+CdkMenuItemCheckbox.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "12.0.0", version: "14.0.0-next.9", type: CdkMenuItemCheckbox, selector: "[cdkMenuItemCheckbox]", host: { attributes: { "role": "menuitemcheckbox" } }, providers: [
         { provide: CdkMenuItemSelectable, useExisting: CdkMenuItemCheckbox },
         { provide: CdkMenuItem, useExisting: CdkMenuItemSelectable },
     ], exportAs: ["cdkMenuItemCheckbox"], usesInheritance: true, ngImport: i0 });
@@ -1703,11 +1641,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.0-next.9", 
                     selector: '[cdkMenuItemCheckbox]',
                     exportAs: 'cdkMenuItemCheckbox',
                     host: {
-                        '[tabindex]': '_tabindex',
-                        'type': 'button',
                         'role': 'menuitemcheckbox',
-                        '[attr.aria-checked]': 'checked || null',
-                        '[attr.aria-disabled]': 'disabled || null',
                     },
                     providers: [
                         { provide: CdkMenuItemSelectable, useExisting: CdkMenuItemCheckbox },

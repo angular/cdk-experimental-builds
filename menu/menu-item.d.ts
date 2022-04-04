@@ -48,6 +48,8 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
      * tab index.
      */
     _tabindex: 0 | -1;
+    /** Whether the item should close the menu if triggered by the spacebar. */
+    protected closeOnSpacebarTrigger: boolean;
     /** Emits when the menu item is destroyed. */
     private readonly _destroyed;
     constructor(_elementRef: ElementRef<HTMLElement>, _ngZone: NgZone, _menuStack: MenuStack, _parentMenu?: Menu | undefined, _menuAim?: MenuAim | undefined, _dir?: Directionality | undefined, 
@@ -68,7 +70,9 @@ export declare class CdkMenuItem implements FocusableOption, FocusableElement, T
      * If the menu item is not disabled and the element does not have a menu trigger attached, emit
      * on the cdkMenuItemTriggered emitter and close all open menus.
      */
-    trigger(): void;
+    trigger(options?: {
+        keepOpen: boolean;
+    }): void;
     /** Whether the menu item opens a menu. */
     hasMenu(): boolean;
     /** Return true if this MenuItem has an attached menu and it is open. */

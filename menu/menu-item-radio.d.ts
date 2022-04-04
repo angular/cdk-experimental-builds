@@ -21,6 +21,7 @@ import * as i0 from "@angular/core";
  */
 export declare class CdkMenuItemRadio extends CdkMenuItemSelectable implements OnDestroy {
     private readonly _selectionDispatcher;
+    private _id;
     /** Function to unregister the selection dispatcher */
     private _removeDispatcherListener;
     constructor(_selectionDispatcher: UniqueSelectionDispatcher, element: ElementRef<HTMLElement>, ngZone: NgZone, menuStack: MenuStack, parentMenu?: Menu, menuAim?: MenuAim, dir?: Directionality, 
@@ -29,7 +30,9 @@ export declare class CdkMenuItemRadio extends CdkMenuItemSelectable implements O
     /** Configure the unique selection dispatcher listener in order to toggle the checked state  */
     private _registerDispatcherListener;
     /** Toggles the checked state of the radio-button. */
-    trigger(): void;
+    trigger(options?: {
+        keepOpen: boolean;
+    }): void;
     ngOnDestroy(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemRadio, [null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; self: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemRadio, "[cdkMenuItemRadio]", ["cdkMenuItemRadio"], {}, {}, never>;

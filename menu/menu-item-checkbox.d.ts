@@ -6,7 +6,9 @@ import * as i0 from "@angular/core";
  */
 export declare class CdkMenuItemCheckbox extends CdkMenuItemSelectable {
     /** Toggle the checked state of the checkbox. */
-    trigger(): void;
+    trigger(options?: {
+        keepOpen: boolean;
+    }): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemCheckbox, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemCheckbox, "[cdkMenuItemCheckbox]", ["cdkMenuItemCheckbox"], {}, {}, never>;
 }

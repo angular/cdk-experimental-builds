@@ -19,6 +19,7 @@ export declare abstract class CdkMenuBase extends CdkMenuGroup implements Menu, 
     readonly _elementRef: ElementRef<HTMLElement>;
     readonly menuStack: MenuStack;
     protected readonly dir?: Directionality | undefined;
+    id: string;
     /**
      * Sets the aria-orientation attribute and determines where menus will be opened.
      * Does not affect styling/layout.
@@ -64,5 +65,5 @@ export declare abstract class CdkMenuBase extends CdkMenuGroup implements Menu, 
     private _subscribeToMenuStackClosed;
     private _subscribeToHasFocus;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuBase, [null, null, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuBase, never, never, {}, {}, ["items"]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuBase, never, never, { "id": "id"; }, {}, ["items"]>;
 }

@@ -12,6 +12,7 @@ import { FocusOrigin } from '@angular/cdk/a11y';
 export declare const CDK_MENU: InjectionToken<Menu>;
 /** Interface which specifies Menu operations and used to break circular dependency issues */
 export interface Menu extends MenuStackItem {
+    id: string;
     /** The element the Menu directive is placed on. */
     _elementRef: ElementRef<HTMLElement>;
     /** The orientation of the menu */

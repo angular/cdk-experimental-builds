@@ -25,21 +25,12 @@ export declare class CdkMenu extends CdkMenuBase implements AfterContentInit, On
     private readonly _menuAim?;
     /** Event emitted when the menu is closed. */
     readonly closed: EventEmitter<void>;
-    /** List of nested CdkMenuGroup elements */
-    private readonly _nestedGroups;
     _isInline: boolean;
     constructor(_ngZone: NgZone, elementRef: ElementRef<HTMLElement>, menuStack: MenuStack, _parentTrigger?: MenuTrigger | undefined, _menuAim?: MenuAim | undefined, dir?: Directionality);
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
     /** Handle keyboard events for the Menu. */
     _handleKeyEvent(event: KeyboardEvent): void;
-    /**
-     * Complete the change emitter if there are any nested MenuGroups or register to complete the
-     * change emitter if a MenuGroup is rendered at some point
-     */
-    private _completeChangeEmitter;
-    /** Return true if there are nested CdkMenuGroup elements within the Menu */
-    private _hasNestedGroups;
     /**
      * Set the PointerFocusTracker and ensure that when mouse focus changes the key manager is updated
      * with the latest menu item under mouse focus.
@@ -49,5 +40,5 @@ export declare class CdkMenu extends CdkMenuBase implements AfterContentInit, On
     private _toggleMenuFocus;
     private _subscribeToMenuStackEmptied;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenu, [null, null, null, { optional: true; }, { optional: true; self: true; }, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenu, "[cdkMenu]", ["cdkMenu"], {}, { "closed": "closed"; }, ["_nestedGroups"]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenu, "[cdkMenu]", ["cdkMenu"], {}, { "closed": "closed"; }, never>;
 }
