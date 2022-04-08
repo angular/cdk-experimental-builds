@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { QueryList, ElementRef } from '@angular/core';
+import { ElementRef, QueryList } from '@angular/core';
 import { Observable } from 'rxjs';
 /** Item to track for mouse focus events. */
 export interface FocusableElement {
@@ -17,6 +17,7 @@ export interface FocusableElement {
  * observables which emit when the users mouse enters and leaves a tracked element.
  */
 export declare class PointerFocusTracker<T extends FocusableElement> {
+    /** The list of items being tracked. */
     private readonly _items;
     /** Emits when an element is moused into. */
     readonly entered: Observable<T>;
@@ -28,7 +29,11 @@ export declare class PointerFocusTracker<T extends FocusableElement> {
     previousElement?: T;
     /** Emits when this is destroyed. */
     private readonly _destroyed;
-    constructor(_items: QueryList<T>);
+    constructor(
+    /** The list of items being tracked. */
+    _items: QueryList<T>);
+    /** Stop the managers listeners. */
+    destroy(): void;
     /**
      * Gets a stream of pointer (mouse) entries into the given items.
      * This should typically run outside the Angular zone.
@@ -39,6 +44,4 @@ export declare class PointerFocusTracker<T extends FocusableElement> {
      * This should typically run outside the Angular zone.
      */
     private _getItemPointerExits;
-    /** Stop the managers listeners. */
-    destroy(): void;
 }

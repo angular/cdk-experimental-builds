@@ -9,7 +9,7 @@ import { AfterContentInit, ElementRef, EventEmitter, NgZone, OnDestroy } from '@
 import { Directionality } from '@angular/cdk/bidi';
 import { MenuStack } from './menu-stack';
 import { MenuAim } from './menu-aim';
-import { MenuTrigger } from './menu-trigger';
+import { CdkMenuTriggerBase } from './menu-trigger-base';
 import { CdkMenuBase } from './menu-base';
 import * as i0 from "@angular/core";
 /**
@@ -20,24 +20,40 @@ import * as i0 from "@angular/core";
  * It also acts as a RadioGroup for elements marked with role `menuitemradio`.
  */
 export declare class CdkMenu extends CdkMenuBase implements AfterContentInit, OnDestroy {
-    private readonly _ngZone;
+    /** The trigger that opened this menu. */
     private _parentTrigger?;
-    private readonly _menuAim?;
     /** Event emitted when the menu is closed. */
     readonly closed: EventEmitter<void>;
-    _isInline: boolean;
-    constructor(_ngZone: NgZone, elementRef: ElementRef<HTMLElement>, menuStack: MenuStack, _parentTrigger?: MenuTrigger | undefined, _menuAim?: MenuAim | undefined, dir?: Directionality);
+    /** The direction items in the menu flow. */
+    readonly orientation = "vertical";
+    /** Whether the menu is displayed inline (i.e. always present vs a conditional popup that the user triggers with a trigger element). */
+    readonly isInline: boolean;
+    constructor(
+    /** The host element. */
+    elementRef: ElementRef<HTMLElement>, 
+    /** The Angular zone. */
+    ngZone: NgZone, 
+    /** The menu stack this menu is part of. */
+    menuStack: MenuStack, 
+    /** The trigger that opened this menu. */
+    _parentTrigger?: CdkMenuTriggerBase | undefined, 
+    /** The menu aim service used by this menu. */
+    menuAim?: MenuAim, 
+    /** The directionality of the page. */
+    dir?: Directionality);
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
-    /** Handle keyboard events for the Menu. */
+    /**
+     * Handle keyboard events for the Menu.
+     * @param event The keyboard event to be handled.
+     */
     _handleKeyEvent(event: KeyboardEvent): void;
     /**
-     * Set the PointerFocusTracker and ensure that when mouse focus changes the key manager is updated
-     * with the latest menu item under mouse focus.
+     * Set focus the either the current, previous or next item based on the FocusNext event.
+     * @param focusNext The element to focus.
      */
-    private _subscribeToMouseManager;
-    /** Set focus the either the current, previous or next item based on the FocusNext event. */
     private _toggleMenuFocus;
+    /** Subscribe to the MenuStack emptied events. */
     private _subscribeToMenuStackEmptied;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenu, [null, null, null, { optional: true; }, { optional: true; self: true; }, { optional: true; }]>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenu, "[cdkMenu]", ["cdkMenu"], {}, { "closed": "closed"; }, never>;
