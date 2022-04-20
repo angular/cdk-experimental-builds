@@ -5,96 +5,99 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { TemplateRef, Injector, OnDestroy, Type } from '@angular/core';
+import { TemplateRef, Injector, OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { DialogRef } from './dialog-ref';
-import { Location } from '@angular/common';
 import { DialogConfig } from './dialog-config';
-import { CdkDialogContainer } from './dialog-container';
-import { ComponentType, Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { ComponentType, Overlay, OverlayContainer } from '@angular/cdk/overlay';
 import * as i0 from "@angular/core";
-/**
- * Service to open modal dialogs.
- */
 export declare class Dialog implements OnDestroy {
     private _overlay;
     private _injector;
-    private _dialogRefConstructor;
+    private _defaultOptions;
     private _parentDialog;
+    private _overlayContainer;
+    private _openDialogsAtThisLevel;
+    private readonly _afterAllClosedAtThisLevel;
+    private readonly _afterOpenedAtThisLevel;
+    private _ariaHiddenElements;
     private _scrollStrategy;
-    /** Stream that emits when all dialogs are closed. */
-    _getAfterAllClosed(): Observable<void>;
-    readonly _afterAllClosedBase: Subject<void>;
-    afterAllClosed: Observable<void>;
-    /** Stream that emits when a dialog is opened. */
-    get afterOpened(): Subject<DialogRef<any>>;
-    readonly _afterOpened: Subject<DialogRef<any, any>>;
-    /** Stream that emits when a dialog is opened. */
-    get openDialogs(): DialogRef<any>[];
-    _openDialogs: DialogRef<any>[];
-    constructor(_overlay: Overlay, _injector: Injector, _dialogRefConstructor: Type<DialogRef<any>>, scrollStrategy: any, _parentDialog: Dialog, location: Location);
-    /** Gets an open dialog by id. */
-    getById(id: string): DialogRef<any> | undefined;
-    /** Closes all open dialogs. */
-    closeAll(): void;
-    /** Opens a dialog from a component. */
-    openFromComponent<T>(component: ComponentType<T>, config?: DialogConfig): DialogRef<any>;
-    /** Opens a dialog from a template. */
-    openFromTemplate<T>(template: TemplateRef<T>, config?: DialogConfig): DialogRef<any>;
-    ngOnDestroy(): void;
+    /** Keeps track of the currently-open dialogs. */
+    get openDialogs(): DialogRef<any, any>[];
+    /** Stream that emits when a dialog has been opened. */
+    get afterOpened(): Subject<DialogRef<any, any>>;
     /**
-     * Forwards emitting events for when dialogs are opened and all dialogs are closed.
+     * Stream that emits when all open dialog have finished closing.
+     * Will emit on subscribe if there are no open dialogs to begin with.
      */
-    private _registerDialogRef;
+    readonly afterAllClosed: Observable<void>;
+    constructor(_overlay: Overlay, _injector: Injector, _defaultOptions: DialogConfig, _parentDialog: Dialog, _overlayContainer: OverlayContainer, scrollStrategy: any);
+    /**
+     * Opens a modal dialog containing the given component.
+     * @param component Type of the component to load into the dialog.
+     * @param config Extra configuration options.
+     * @returns Reference to the newly-opened dialog.
+     */
+    open<R = unknown, D = unknown, C = unknown>(component: ComponentType<C>, config?: DialogConfig<D, DialogRef<R, C>>): DialogRef<R, C>;
+    /**
+     * Opens a modal dialog containing the given template.
+     * @param template TemplateRef to instantiate as the dialog content.
+     * @param config Extra configuration options.
+     * @returns Reference to the newly-opened dialog.
+     */
+    open<R = unknown, D = unknown, C = unknown>(template: TemplateRef<C>, config?: DialogConfig<D, DialogRef<R, C>>): DialogRef<R, C>;
+    open<R = unknown, D = unknown, C = unknown>(componentOrTemplateRef: ComponentType<C> | TemplateRef<C>, config?: DialogConfig<D, DialogRef<R, C>>): DialogRef<R, C>;
+    /**
+     * Closes all of the currently-open dialogs.
+     */
+    closeAll(): void;
+    /**
+     * Finds an open dialog by its id.
+     * @param id ID to use when looking up the dialog.
+     */
+    getDialogById<R, C>(id: string): DialogRef<R, C> | undefined;
+    ngOnDestroy(): void;
     /**
      * Creates an overlay config from a dialog config.
      * @param config The dialog configuration.
      * @returns The overlay configuration.
      */
-    protected _createOverlay(config: DialogConfig): OverlayRef;
+    private _getOverlayConfig;
     /**
-     * Attaches an MatDialogContainer to a dialog's already-created overlay.
+     * Attaches a dialog container to a dialog's already-created overlay.
      * @param overlay Reference to the dialog's underlying overlay.
      * @param config The dialog configuration.
      * @returns A promise resolving to a ComponentRef for the attached container.
      */
-    protected _attachDialogContainer(overlay: OverlayRef, config: DialogConfig): CdkDialogContainer;
+    private _attachContainer;
     /**
-     * Attaches the user-provided component to the already-created MatDialogContainer.
+     * Attaches the user-provided component to the already-created dialog container.
      * @param componentOrTemplateRef The type of component being loaded into the dialog,
      *     or a TemplateRef to instantiate as the content.
-     * @param dialogContainer Reference to the wrapping MatDialogContainer.
-     * @param overlayRef Reference to the overlay in which the dialog resides.
-     * @param config The dialog configuration.
-     * @returns A promise resolving to the MatDialogRef that should be returned to the user.
+     * @param dialogRef Reference to the dialog being opened.
+     * @param dialogContainer Component that is going to wrap the dialog content.
+     * @param config Configuration used to open the dialog.
      */
-    protected _attachDialogContentForComponent<T>(componentOrTemplateRef: ComponentType<T>, dialogContainer: CdkDialogContainer, overlayRef: OverlayRef, config: DialogConfig): DialogRef<any>;
-    /**
-     * Attaches the user-provided component to the already-created MatDialogContainer.
-     * @param componentOrTemplateRef The type of component being loaded into the dialog,
-     *     or a TemplateRef to instantiate as the content.
-     * @param dialogContainer Reference to the wrapping MatDialogContainer.
-     * @param overlayRef Reference to the overlay in which the dialog resides.
-     * @param config The dialog configuration.
-     * @returns A promise resolving to the MatDialogRef that should be returned to the user.
-     */
-    protected _attachDialogContentForTemplate<T>(componentOrTemplateRef: TemplateRef<T>, dialogContainer: CdkDialogContainer, overlayRef: OverlayRef, config: DialogConfig): DialogRef<any>;
+    private _attachDialogContent;
     /**
      * Creates a custom injector to be used inside the dialog. This allows a component loaded inside
      * of a dialog to close itself and, optionally, to return a value.
      * @param config Config object that is used to construct the dialog.
-     * @param dialogRef Reference to the dialog.
-     * @param container Dialog container element that wraps all of the contents.
+     * @param dialogRef Reference to the dialog being opened.
+     * @param dialogContainer Component that is going to wrap the dialog content.
      * @returns The custom injector that can be used inside the dialog.
      */
     private _createInjector;
-    /** Creates a new dialog ref. */
-    private _createDialogRef;
     /**
-     * Expands the provided configuration object to include the default values for properties which
-     * are undefined.
+     * Removes a dialog from the array of open dialogs.
+     * @param dialogRef Dialog to be removed.
      */
-    private _applyConfigDefaults;
-    static ɵfac: i0.ɵɵFactoryDeclaration<Dialog, [null, null, null, null, { optional: true; skipSelf: true; }, { optional: true; }]>;
+    private _removeOpenDialog;
+    /** Hides all of the content that isn't an overlay from assistive technology. */
+    private _hideNonDialogContentFromAssistiveTechnology;
+    /** Closes all of the dialogs in an array. */
+    private _closeDialogs;
+    private _getAfterAllClosed;
+    static ɵfac: i0.ɵɵFactoryDeclaration<Dialog, [null, null, { optional: true; }, { optional: true; skipSelf: true; }, null, null]>;
     static ɵprov: i0.ɵɵInjectableDeclaration<Dialog>;
 }
