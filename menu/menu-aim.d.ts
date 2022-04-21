@@ -103,5 +103,5 @@ export declare class TargetMenuAim implements MenuAim, OnDestroy {
  */
 export declare class CdkTargetMenuAim {
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkTargetMenuAim, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkTargetMenuAim, "[cdkTargetMenuAim]", ["cdkTargetMenuAim"], {}, {}, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkTargetMenuAim, "[cdkTargetMenuAim]", ["cdkTargetMenuAim"], {}, {}, never, never, false>;
 }

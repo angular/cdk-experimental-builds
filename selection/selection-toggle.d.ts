@@ -42,5 +42,5 @@ export declare class CdkSelectionToggle<T> implements OnDestroy, OnInit {
     private _configureControlValueAccessor;
     private _isSelected;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionToggle<any>, [{ optional: true; }, { optional: true; self: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectionToggle<any>, "[cdkSelectionToggle]", ["cdkSelectionToggle"], { "value": "cdkSelectionToggleValue"; "index": "cdkSelectionToggleIndex"; }, {}, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectionToggle<any>, "[cdkSelectionToggle]", ["cdkSelectionToggle"], { "value": "cdkSelectionToggleValue"; "index": "cdkSelectionToggleIndex"; }, {}, never, never, false>;
 }

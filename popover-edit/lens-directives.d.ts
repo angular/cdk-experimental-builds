@@ -59,7 +59,7 @@ export declare class CdkEditControl<FormValue> implements OnDestroy, OnInit {
     private _handleBlur;
     private _triggerFormSubmit;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditControl<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditControl<any>, "form[cdkEditControl]", never, { "clickOutBehavior": "cdkEditControlClickOutBehavior"; "preservedFormValue": "cdkEditControlPreservedFormValue"; "ignoreSubmitUnlessValid": "cdkEditControlIgnoreSubmitUnlessValid"; }, { "preservedFormValueChange": "cdkEditControlPreservedFormValueChange"; }, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditControl<any>, "form[cdkEditControl]", never, { "clickOutBehavior": "cdkEditControlClickOutBehavior"; "preservedFormValue": "cdkEditControlPreservedFormValue"; "ignoreSubmitUnlessValid": "cdkEditControlIgnoreSubmitUnlessValid"; }, { "preservedFormValueChange": "cdkEditControlPreservedFormValueChange"; }, never, never, false>;
 }
 /** Reverts the form to its initial or previously submitted state on click. */
 export declare class CdkEditRevert<FormValue> {
@@ -69,7 +69,7 @@ export declare class CdkEditRevert<FormValue> {
     constructor(editRef: EditRef<FormValue>);
     revertEdit(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditRevert<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditRevert<any>, "button[cdkEditRevert]", never, { "type": "type"; }, {}, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditRevert<any>, "button[cdkEditRevert]", never, { "type": "type"; }, {}, never, never, false>;
 }
 /** Closes the lens on click. */
 export declare class CdkEditClose<FormValue> {
@@ -78,5 +78,5 @@ export declare class CdkEditClose<FormValue> {
     constructor(elementRef: ElementRef<HTMLElement>, editRef: EditRef<FormValue>);
     closeEdit(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditClose<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditClose<any>, "[cdkEditClose]", never, {}, {}, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditClose<any>, "[cdkEditClose]", never, {}, {}, never, never, false>;
 }

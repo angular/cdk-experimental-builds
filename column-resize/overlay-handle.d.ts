@@ -39,5 +39,5 @@ export declare abstract class ResizeOverlayHandle implements AfterViewInit, OnDe
     private _isLtr;
     private _notifyResizeEnded;
     static ɵfac: i0.ɵɵFactoryDeclaration<ResizeOverlayHandle, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<ResizeOverlayHandle, never, never, {}, {}, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<ResizeOverlayHandle, never, never, {}, {}, never, never, false>;
 }

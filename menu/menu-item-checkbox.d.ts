@@ -14,5 +14,5 @@ export declare class CdkMenuItemCheckbox extends CdkMenuItemSelectable {
         keepOpen: boolean;
     }): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemCheckbox, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemCheckbox, "[cdkMenuItemCheckbox]", ["cdkMenuItemCheckbox"], {}, {}, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemCheckbox, "[cdkMenuItemCheckbox]", ["cdkMenuItemCheckbox"], {}, {}, never, never, false>;
 }

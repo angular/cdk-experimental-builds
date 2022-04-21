@@ -65,5 +65,5 @@ export declare abstract class Resizable<HandleComponent extends ResizeOverlayHan
     private _applyMaxWidthPx;
     private _appendInlineHandle;
     static ɵfac: i0.ɵɵFactoryDeclaration<Resizable<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<Resizable<any>, never, never, {}, {}, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<Resizable<any>, never, never, {}, {}, never, never, false>;
 }

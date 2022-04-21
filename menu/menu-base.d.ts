@@ -100,5 +100,5 @@ export declare abstract class CdkMenuBase extends CdkMenuGroup implements Menu, 
      */
     private _setUpPointerTracker;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuBase, [null, null, null, { optional: true; self: true; }, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuBase, never, never, { "id": "id"; }, {}, ["items"]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuBase, never, never, { "id": "id"; }, {}, ["items"], never, false>;
 }

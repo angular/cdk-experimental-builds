@@ -58,7 +58,7 @@ export declare class CdkSelection<T> implements OnInit, AfterContentChecked, Col
     private _updateSelectAllState;
     selectAllState: SelectAllState;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelection<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelection<any>, "[cdkSelection]", ["cdkSelection"], { "dataSource": "dataSource"; "trackByFn": "trackBy"; "multiple": "cdkSelectionMultiple"; }, { "change": "cdkSelectionChange"; }, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelection<any>, "[cdkSelection]", ["cdkSelection"], { "dataSource": "dataSource"; "trackByFn": "trackBy"; "multiple": "cdkSelectionMultiple"; }, { "change": "cdkSelectionChange"; }, never, never, false>;
 }
 declare type SelectAllState = 'all' | 'none' | 'partial';
 declare type TableDataSource<T> = DataSource<T> | Observable<readonly T[]> | readonly T[];

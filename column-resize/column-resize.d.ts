@@ -35,5 +35,5 @@ export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
     private _listenForResizeActivity;
     private _listenForHoverActivity;
     static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResize, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<ColumnResize, never, never, {}, {}, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<ColumnResize, never, never, {}, {}, never, never, false>;
 }

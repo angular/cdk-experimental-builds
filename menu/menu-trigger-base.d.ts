@@ -73,5 +73,5 @@ export declare abstract class CdkMenuTriggerBase implements OnDestroy {
     /** Gets the injector to use when creating a child menu. */
     private _getChildMenuInjector;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuTriggerBase, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuTriggerBase, never, never, {}, {}, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuTriggerBase, never, never, {}, {}, never, never, false>;
 }

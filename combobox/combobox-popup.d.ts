@@ -23,5 +23,5 @@ export declare class CdkComboboxPopup<T = unknown> implements OnInit {
     registerWithPanel(): void;
     focusFirstElement(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkComboboxPopup<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkComboboxPopup<any>, "[cdkComboboxPopup]", ["cdkComboboxPopup"], { "role": "role"; "firstFocus": "firstFocus"; "id": "id"; }, {}, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkComboboxPopup<any>, "[cdkComboboxPopup]", ["cdkComboboxPopup"], { "role": "role"; "firstFocus": "firstFocus"; "id": "id"; }, {}, never, never, false>;
 }

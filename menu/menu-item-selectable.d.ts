@@ -17,5 +17,5 @@ export declare abstract class CdkMenuItemSelectable extends CdkMenuItem {
     /** Whether the item should close the menu if triggered by the spacebar. */
     protected closeOnSpacebarTrigger: boolean;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkMenuItemSelectable, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemSelectable, never, never, { "checked": "cdkMenuItemChecked"; }, {}, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkMenuItemSelectable, never, never, { "checked": "cdkMenuItemChecked"; }, {}, never, never, false>;
 }

@@ -67,7 +67,7 @@ export declare class CdkOption<T = unknown> implements ListKeyManagerOption, Hig
     /** Sets the active property to false to disable the active css class. */
     setInactiveStyles(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkOption<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkOption<any>, "[cdkOption]", ["cdkOption"], { "id": "id"; "selected": "selected"; "disabled": "disabled"; "value": "value"; "typeahead": "typeahead"; }, { "selectionChange": "selectionChange"; }, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkOption<any>, "[cdkOption]", ["cdkOption"], { "id": "id"; "selected": "selected"; "disabled": "disabled"; "value": "value"; "typeahead": "typeahead"; }, { "selectionChange": "selectionChange"; }, never, never, false>;
 }
 export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnInit, ControlValueAccessor {
     private readonly _combobox;
@@ -154,7 +154,7 @@ export declare class CdkListbox<T> implements AfterContentInit, OnDestroy, OnIni
     /** Selects an option that has the corresponding given value. */
     private _setSelectionByValue;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkListbox<any>, [{ optional: true; }, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "id": "id"; "multiple": "multiple"; "disabled": "disabled"; "useActiveDescendant": "useActiveDescendant"; "autoFocus": "autoFocus"; "orientation": "listboxOrientation"; "compareWith": "compareWith"; }, { "selectionChange": "selectionChange"; }, ["_options"]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "id": "id"; "multiple": "multiple"; "disabled": "disabled"; "useActiveDescendant": "useActiveDescendant"; "autoFocus": "autoFocus"; "orientation": "listboxOrientation"; "compareWith": "compareWith"; }, { "selectionChange": "selectionChange"; }, ["_options"], never, false>;
 }
 /** Change event that is being fired whenever the selected state of an option changes. */
 export interface ListboxSelectionChangeEvent<T> {
