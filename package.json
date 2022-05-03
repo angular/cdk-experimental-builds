@@ -39,7 +39,7 @@
       "default": "./fesm2020/cdk-experimental.mjs"
     },
     "./column-resize": {
-      "types": "./column-resize/column-resize_public_index.d.ts",
+      "types": "./column-resize/index.d.ts",
       "esm2020": "./esm2020/column-resize/column-resize_public_index.mjs",
       "es2020": "./fesm2020/column-resize.mjs",
       "es2015": "./fesm2015/column-resize.mjs",
@@ -47,7 +47,7 @@
       "default": "./fesm2020/column-resize.mjs"
     },
     "./combobox": {
-      "types": "./combobox/combobox_public_index.d.ts",
+      "types": "./combobox/index.d.ts",
       "esm2020": "./esm2020/combobox/combobox_public_index.mjs",
       "es2020": "./fesm2020/combobox.mjs",
       "es2015": "./fesm2015/combobox.mjs",
@@ -55,7 +55,7 @@
       "default": "./fesm2020/combobox.mjs"
     },
     "./listbox": {
-      "types": "./listbox/listbox_public_index.d.ts",
+      "types": "./listbox/index.d.ts",
       "esm2020": "./esm2020/listbox/listbox_public_index.mjs",
       "es2020": "./fesm2020/listbox.mjs",
       "es2015": "./fesm2015/listbox.mjs",
@@ -63,7 +63,7 @@
       "default": "./fesm2020/listbox.mjs"
     },
     "./popover-edit": {
-      "types": "./popover-edit/popover-edit_public_index.d.ts",
+      "types": "./popover-edit/index.d.ts",
       "esm2020": "./esm2020/popover-edit/popover-edit_public_index.mjs",
       "es2020": "./fesm2020/popover-edit.mjs",
       "es2015": "./fesm2015/popover-edit.mjs",
@@ -71,7 +71,7 @@
       "default": "./fesm2020/popover-edit.mjs"
     },
     "./scrolling": {
-      "types": "./scrolling/scrolling_public_index.d.ts",
+      "types": "./scrolling/index.d.ts",
       "esm2020": "./esm2020/scrolling/scrolling_public_index.mjs",
       "es2020": "./fesm2020/scrolling.mjs",
       "es2015": "./fesm2015/scrolling.mjs",
@@ -79,7 +79,7 @@
       "default": "./fesm2020/scrolling.mjs"
     },
     "./selection": {
-      "types": "./selection/selection_public_index.d.ts",
+      "types": "./selection/index.d.ts",
       "esm2020": "./esm2020/selection/selection_public_index.mjs",
       "es2020": "./fesm2020/selection.mjs",
       "es2015": "./fesm2015/selection.mjs",
@@ -87,7 +87,7 @@
       "default": "./fesm2020/selection.mjs"
     },
     "./table-scroll-container": {
-      "types": "./table-scroll-container/table-scroll-container_public_index.d.ts",
+      "types": "./table-scroll-container/index.d.ts",
       "esm2020": "./esm2020/table-scroll-container/table-scroll-container_public_index.mjs",
       "es2020": "./fesm2020/table-scroll-container.mjs",
       "es2015": "./fesm2015/table-scroll-container.mjs",
