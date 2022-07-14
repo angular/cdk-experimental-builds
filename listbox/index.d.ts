@@ -1,7 +1,6 @@
 import { AbstractControl } from '@angular/forms';
 import { ActiveDescendantKeyManager } from '@angular/cdk/a11y';
 import { AfterContentInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { BooleanInput } from '@angular/cdk/coercion';
 import { ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
@@ -34,7 +33,6 @@ export declare class CdkListbox<T = unknown> implements AfterContentInit, OnDest
      */
     get multiple(): boolean;
     set multiple(value: BooleanInput);
-    private _multiple;
     /** Whether the listbox is disabled. */
     get disabled(): boolean;
     set disabled(value: BooleanInput);
@@ -44,17 +42,29 @@ export declare class CdkListbox<T = unknown> implements AfterContentInit, OnDest
     set useActiveDescendant(shouldUseActiveDescendant: BooleanInput);
     private _useActiveDescendant;
     /** The orientation of the listbox. Only affects keyboard interaction, not visual layout. */
-    orientation: 'horizontal' | 'vertical';
+    get orientation(): 'horizontal' | 'vertical';
+    set orientation(value: 'horizontal' | 'vertical');
+    private _orientation;
     /** The function used to compare option values. */
     get compareWith(): undefined | ((o1: T, o2: T) => boolean);
     set compareWith(fn: undefined | ((o1: T, o2: T) => boolean));
-    private _compareWith?;
+    /**
+     * Whether the keyboard navigation should wrap when the user presses arrow down on the last item
+     * or arrow up on the first item.
+     */
+    get keyboardNavigationWraps(): BooleanInput;
+    set keyboardNavigationWraps(wrap: BooleanInput);
+    private _keyboardNavigationWraps;
+    /** Whether keyboard navigation should skip over disabled items. */
+    get keyboardNavigationSkipsDisabled(): BooleanInput;
+    set keyboardNavigationSkipsDisabled(skip: BooleanInput);
+    private _keyboardNavigationSkipsDisabled;
     /** Emits when the selected value(s) in the listbox change. */
     readonly valueChange: Subject<ListboxValueChangeEvent<T>>;
     /** The child options in this listbox. */
     protected options: QueryList<CdkOption<T>>;
     /** The selection model used by the listbox. */
-    protected selectionModelSubject: BehaviorSubject<SelectionModel<T>>;
+    protected selectionModel: ListboxSelectionModel<T>;
     /** The key manager that manages keyboard navigation for this listbox. */
     protected listKeyManager: ActiveDescendantKeyManager<CdkOption<T>>;
     /** Emits when the listbox is destroyed. */
@@ -63,6 +73,10 @@ export declare class CdkListbox<T = unknown> implements AfterContentInit, OnDest
     protected readonly element: HTMLElement;
     /** The change detector for this listbox. */
     protected readonly changeDetectorRef: ChangeDetectorRef;
+    /** Whether the currently selected value in the selection model is invalid. */
+    private _invalid;
+    /** The last user-triggered option. */
+    private _lastTriggered;
     /** Callback called when the listbox has been touched */
     private _onTouched;
     /** Callback called when the listbox value changes */
@@ -73,20 +87,23 @@ export declare class CdkListbox<T = unknown> implements AfterContentInit, OnDest
     private _optionClicked;
     /** The directionality of the page. */
     private readonly _dir;
-    private readonly _combobox;
+    /** A predicate that skips disabled options. */
+    private readonly _skipDisabledPredicate;
+    /** A predicate that does not skip any options. */
+    private readonly _skipNonePredicate;
     /**
      * Validator that produces an error if multiple values are selected in a single selection
      * listbox.
      * @param control The control to validate
      * @return A validation error or null
      */
-    private _validateMultipleValues;
+    private _validateUnexpectedMultipleValues;
     /**
      * Validator that produces an error if any selected values are not valid options for this listbox.
      * @param control The control to validate
      * @return A validation error or null
      */
-    private _validateInvalidValues;
+    private _validateUnexpectedOptionValues;
     /** The combined set of validators for this listbox. */
     private _validators;
     constructor();
@@ -131,7 +148,12 @@ export declare class CdkListbox<T = unknown> implements AfterContentInit, OnDest
      * Get whether the given option is selected.
      * @param option The option to get the selected state of
      */
-    isSelected(option: CdkOption<T> | T): boolean;
+    isSelected(option: CdkOption<T>): boolean;
+    /**
+     * Get whether the given value is selected.
+     * @param value The value to get the selected state of
+     */
+    isValueSelected(value: T): boolean;
     /**
      * Registers a callback to be invoked when the listbox's value changes from user input.
      * @param fn The callback to register
@@ -169,8 +191,6 @@ export declare class CdkListbox<T = unknown> implements AfterContentInit, OnDest
     registerOnValidatorChange(fn: () => void): void;
     /** Focus the listbox's host element. */
     focus(): void;
-    /** The selection model used to track the listbox's value. */
-    protected selectionModel(): SelectionModel<T>;
     /**
      * Triggers the given option in response to user interaction.
      * - In single selection mode: selects the option and deselects any other selected option.
@@ -178,6 +198,15 @@ export declare class CdkListbox<T = unknown> implements AfterContentInit, OnDest
      * @param option The option to trigger
      */
     protected triggerOption(option: CdkOption<T> | null): void;
+    /**
+     * Trigger the given range of options in response to user interaction.
+     * Should only be called in multi-selection mode.
+     * @param trigger The option that was triggered
+     * @param from The start index of the options to toggle
+     * @param to The end index of the options to toggle
+     * @param on Whether to toggle the option range on
+     */
+    protected triggerRange(trigger: CdkOption<T> | null, from: number, to: number, on: boolean): void;
     /**
      * Sets the given option as active.
      * @param option The option to make active
@@ -198,9 +227,6 @@ export declare class CdkListbox<T = unknown> implements AfterContentInit, OnDest
     protected _getTabIndex(): number | null;
     /** Initialize the key manager. */
     private _initKeyManager;
-    private _updatePanelForSelection;
-    /** Update the selection mode when the 'multiple' property changes. */
-    private _updateSelectionModel;
     /** Focus the active option. */
     private _focusActiveOption;
     /**
@@ -231,14 +257,15 @@ export declare class CdkListbox<T = unknown> implements AfterContentInit, OnDest
      */
     private _coerceValue;
     /**
-     * Get the sublist of values with the given validity.
+     * Get the sublist of values that do not represent valid option values in this listbox.
      * @param values The list of values
-     * @param valid Whether to get valid values
-     * @return The sublist of values with the requested validity
+     * @return The sublist of values that are not valid option values
      */
-    private _getValuesWithValidity;
+    private _getInvalidOptionValues;
+    /** Get the index of the last triggered option. */
+    private _getLastTriggeredIndex;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkListbox<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "id": "id"; "enabledTabIndex": "tabindex"; "value": "cdkListboxValue"; "multiple": "cdkListboxMultiple"; "disabled": "cdkListboxDisabled"; "useActiveDescendant": "cdkListboxUseActiveDescendant"; "orientation": "cdkListboxOrientation"; "compareWith": "cdkListboxCompareWith"; }, { "valueChange": "cdkListboxValueChange"; }, ["options"], never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "id": "id"; "enabledTabIndex": "tabindex"; "value": "cdkListboxValue"; "multiple": "cdkListboxMultiple"; "disabled": "cdkListboxDisabled"; "useActiveDescendant": "cdkListboxUseActiveDescendant"; "orientation": "cdkListboxOrientation"; "compareWith": "cdkListboxCompareWith"; "keyboardNavigationWraps": "cdkListboxKeyboardNavigationWraps"; "keyboardNavigationSkipsDisabled": "cdkListboxKeyboardNavigationSkipsDisabled"; }, { "valueChange": "cdkListboxValueChange"; }, ["options"], never, false>;
 }
 
 export declare class CdkListboxModule {
@@ -276,7 +303,7 @@ export declare class CdkOption<T = unknown> implements ListKeyManagerOption, Hig
     /** Emits when the option is destroyed. */
     protected destroyed: Subject<void>;
     /** Emits when the option is clicked. */
-    readonly _clicked: Subject<void>;
+    readonly _clicked: Subject<MouseEvent>;
     /** Whether the option is currently active. */
     private _active;
     ngOnDestroy(): void;
@@ -320,6 +347,21 @@ declare namespace i1 {
     }
 }
 
+/**
+ * An implementation of SelectionModel that internally always represents the selection as a
+ * multi-selection. This is necessary so that we can recover the full selection if the user
+ * switches the listbox from single-selection to multi-selection after initialization.
+ *
+ * This selection model may report multiple selected values, even if it is in single-selection
+ * mode. It is up to the user (CdkListbox) to check for invalid selections.
+ */
+declare class ListboxSelectionModel<T> extends SelectionModel<T> {
+    multiple: boolean;
+    constructor(multiple?: boolean, initiallySelectedValues?: T[], emitChanges?: boolean, compareWith?: (o1: T, o2: T) => boolean);
+    isMultipleSelection(): boolean;
+    select(...values: T[]): boolean | void;
+}
+
 /** Change event that is fired whenever the value of the listbox changes. */
 export declare interface ListboxValueChangeEvent<T> {
     /** The new value of the listbox. */
@@ -327,7 +369,7 @@ export declare interface ListboxValueChangeEvent<T> {
     /** Reference to the listbox that emitted the event. */
     readonly listbox: CdkListbox<T>;
     /** Reference to the option that was triggered. */
-    readonly option: CdkOption<T>;
+    readonly option: CdkOption<T> | null;
 }
 
 export { }
