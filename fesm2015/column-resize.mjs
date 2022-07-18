@@ -250,7 +250,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.1", ngImpor
             type: Injectable
         }] });
 /**
- * The optimially performing resize strategy for &lt;table&gt; elements with table-layout: fixed.
+ * The optimally performing resize strategy for &lt;table&gt; elements with table-layout: fixed.
  * Tested against and outperformed:
  *   CSS selector
  *   CSS selector w/ CSS variable
