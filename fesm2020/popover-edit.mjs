@@ -151,7 +151,7 @@ class EditEventDispatcher {
     setActiveEditRef(ref) {
         this._editRef = ref;
     }
-    /** Unsets the currently active EditRef, if the specified editRef is active. */
+    /** Unset the currently active EditRef, if the specified editRef is active. */
     unsetActiveEditRef(ref) {
         if (this._editRef !== ref) {
             return;
@@ -833,7 +833,7 @@ class CdkEditable {
             fromEvent(element, 'keydown')
                 .pipe(filter(event => event.key === 'Enter'), toClosest(CELL_SELECTOR), takeUntil(this.destroyed))
                 .subscribe(this.editEventDispatcher.editing);
-            // Keydown must be used here or else key autorepeat does not work properly on some platforms.
+            // Keydown must be used here or else key auto-repeat does not work properly on some platforms.
             fromEvent(element, 'keydown')
                 .pipe(takeUntil(this.destroyed))
                 .subscribe(this.focusDispatcher.keyObserver);
