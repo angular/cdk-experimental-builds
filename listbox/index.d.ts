@@ -52,13 +52,13 @@ export declare class CdkListbox<T = unknown> implements AfterContentInit, OnDest
      * Whether the keyboard navigation should wrap when the user presses arrow down on the last item
      * or arrow up on the first item.
      */
-    get keyboardNavigationWraps(): BooleanInput;
-    set keyboardNavigationWraps(wrap: BooleanInput);
-    private _keyboardNavigationWraps;
+    get navigationWrapDisabled(): BooleanInput;
+    set navigationWrapDisabled(wrap: BooleanInput);
+    private _navigationWrapDisabled;
     /** Whether keyboard navigation should skip over disabled items. */
-    get keyboardNavigationSkipsDisabled(): BooleanInput;
-    set keyboardNavigationSkipsDisabled(skip: BooleanInput);
-    private _keyboardNavigationSkipsDisabled;
+    get navigateDisabledOptions(): BooleanInput;
+    set navigateDisabledOptions(skip: BooleanInput);
+    private _navigateDisabledOptions;
     /** Emits when the selected value(s) in the listbox change. */
     readonly valueChange: Subject<ListboxValueChangeEvent<T>>;
     /** The child options in this listbox. */
@@ -265,7 +265,7 @@ export declare class CdkListbox<T = unknown> implements AfterContentInit, OnDest
     /** Get the index of the last triggered option. */
     private _getLastTriggeredIndex;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkListbox<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "id": "id"; "enabledTabIndex": "tabindex"; "value": "cdkListboxValue"; "multiple": "cdkListboxMultiple"; "disabled": "cdkListboxDisabled"; "useActiveDescendant": "cdkListboxUseActiveDescendant"; "orientation": "cdkListboxOrientation"; "compareWith": "cdkListboxCompareWith"; "keyboardNavigationWraps": "cdkListboxKeyboardNavigationWraps"; "keyboardNavigationSkipsDisabled": "cdkListboxKeyboardNavigationSkipsDisabled"; }, { "valueChange": "cdkListboxValueChange"; }, ["options"], never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "id": "id"; "enabledTabIndex": "tabindex"; "value": "cdkListboxValue"; "multiple": "cdkListboxMultiple"; "disabled": "cdkListboxDisabled"; "useActiveDescendant": "cdkListboxUseActiveDescendant"; "orientation": "cdkListboxOrientation"; "compareWith": "cdkListboxCompareWith"; "navigationWrapDisabled": "cdkListboxNavigationWrapDisabled"; "navigateDisabledOptions": "cdkListboxNavigatesDisabledOptions"; }, { "valueChange": "cdkListboxValueChange"; }, ["options"], never, false>;
 }
 
 export declare class CdkListboxModule {
