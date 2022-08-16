@@ -54,14 +54,6 @@
       "node": "./fesm2015/combobox.mjs",
       "default": "./fesm2020/combobox.mjs"
     },
-    "./listbox": {
-      "types": "./listbox/index.d.ts",
-      "esm2020": "./esm2020/listbox/listbox_public_index.mjs",
-      "es2020": "./fesm2020/listbox.mjs",
-      "es2015": "./fesm2015/listbox.mjs",
-      "node": "./fesm2015/listbox.mjs",
-      "default": "./fesm2020/listbox.mjs"
-    },
     "./popover-edit": {
       "types": "./popover-edit/index.d.ts",
       "esm2020": "./esm2020/popover-edit/popover-edit_public_index.mjs",
