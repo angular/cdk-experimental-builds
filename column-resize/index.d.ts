@@ -30,7 +30,7 @@ export declare class CdkColumnResize extends ColumnResize {
     protected readonly table: CdkTable<unknown>;
     constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkColumnResize, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkColumnResize, "table[cdk-table][columnResize]", never, {}, {}, never, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkColumnResize, "table[cdk-table][columnResize]", never, {}, {}, never, never, false, never>;
 }
 
 /**
@@ -56,7 +56,7 @@ export declare class CdkColumnResizeFlex extends ColumnResize {
     protected readonly table: CdkTable<unknown>;
     constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkColumnResizeFlex, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkColumnResizeFlex, "cdk-table[columnResize]", never, {}, {}, never, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkColumnResizeFlex, "cdk-table[columnResize]", never, {}, {}, never, never, false, never>;
 }
 
 /**
@@ -82,7 +82,7 @@ export declare class CdkDefaultEnabledColumnResize extends ColumnResize {
     protected readonly table: CdkTable<unknown>;
     constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkDefaultEnabledColumnResize, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResize, "table[cdk-table]", never, {}, {}, never, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResize, "table[cdk-table]", never, {}, {}, never, never, false, never>;
 }
 
 /**
@@ -98,7 +98,7 @@ export declare class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
     protected readonly table: CdkTable<unknown>;
     constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkDefaultEnabledColumnResizeFlex, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResizeFlex, "cdk-table", never, {}, {}, never, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResizeFlex, "cdk-table", never, {}, {}, never, never, false, never>;
 }
 
 /**
@@ -159,7 +159,7 @@ export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
     private _listenForResizeActivity;
     private _listenForHoverActivity;
     static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResize, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<ColumnResize, never, never, {}, {}, never, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<ColumnResize, never, never, {}, {}, never, never, false, never>;
 }
 
 /** Service for triggering column resizes imperatively or being notified of them. */
@@ -335,7 +335,7 @@ export declare abstract class Resizable<HandleComponent extends ResizeOverlayHan
     private _applyMaxWidthPx;
     private _appendInlineHandle;
     static ɵfac: i0.ɵɵFactoryDeclaration<Resizable<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<Resizable<any>, never, never, {}, {}, never, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<Resizable<any>, never, never, {}, {}, never, never, false, never>;
 }
 
 /**
@@ -364,7 +364,7 @@ export declare abstract class ResizeOverlayHandle implements AfterViewInit, OnDe
     private _isLtr;
     private _notifyResizeEnded;
     static ɵfac: i0.ɵɵFactoryDeclaration<ResizeOverlayHandle, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<ResizeOverlayHandle, never, never, {}, {}, never, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<ResizeOverlayHandle, never, never, {}, {}, never, never, false, never>;
 }
 
 /** Tracks state of resize events in progress. */

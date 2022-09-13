@@ -73,7 +73,7 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy {
     /** Registers the content's id and the content type with the panel. */
     _registerContent(contentId: string, contentType: AriaHasPopupValue): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkCombobox<any>, [null, null, null, null, null, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkCombobox<any>, "[cdkCombobox]", ["cdkCombobox"], { "_panelTemplateRef": "cdkComboboxTriggerFor"; "value": "value"; "disabled": "disabled"; "openActions": "openActions"; "autoSetText": "autoSetText"; }, { "opened": "comboboxPanelOpened"; "closed": "comboboxPanelClosed"; "panelValueChanged": "panelValueChanged"; }, never, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkCombobox<any>, "[cdkCombobox]", ["cdkCombobox"], { "_panelTemplateRef": "cdkComboboxTriggerFor"; "value": "value"; "disabled": "disabled"; "openActions": "openActions"; "autoSetText": "autoSetText"; }, { "opened": "comboboxPanelOpened"; "closed": "comboboxPanelClosed"; "panelValueChanged": "panelValueChanged"; }, never, never, false, never>;
 }
 
 export declare class CdkComboboxModule {
@@ -97,7 +97,7 @@ export declare class CdkComboboxPopup<T = unknown> implements OnInit {
     registerWithPanel(): void;
     focusFirstElement(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkComboboxPopup<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkComboboxPopup<any>, "[cdkComboboxPopup]", ["cdkComboboxPopup"], { "role": "role"; "firstFocus": "firstFocus"; "id": "id"; }, {}, never, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkComboboxPopup<any>, "[cdkComboboxPopup]", ["cdkComboboxPopup"], { "role": "role"; "firstFocus": "firstFocus"; "id": "id"; }, {}, never, never, false, never>;
 }
 
 declare namespace i1 {
