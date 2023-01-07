@@ -19,21 +19,6 @@ import { DOWN_ARROW, ENTER, ESCAPE, TAB } from '@angular/cdk/keycodes';
 const allowedOpenActions = ['focus', 'click', 'downKey', 'toggle'];
 const CDK_COMBOBOX = new InjectionToken('CDK_COMBOBOX');
 class CdkCombobox {
-    constructor(_elementRef, _overlay, _viewContainerRef, _injector, _doc, _directionality) {
-        this._elementRef = _elementRef;
-        this._overlay = _overlay;
-        this._viewContainerRef = _viewContainerRef;
-        this._injector = _injector;
-        this._doc = _doc;
-        this._directionality = _directionality;
-        this._disabled = false;
-        this._openActions = ['click'];
-        this._autoSetText = true;
-        this.opened = new EventEmitter();
-        this.closed = new EventEmitter();
-        this.panelValueChanged = new EventEmitter();
-        this.contentId = '';
-    }
     get disabled() {
         return this._disabled;
     }
@@ -52,6 +37,21 @@ class CdkCombobox {
     }
     set autoSetText(value) {
         this._autoSetText = coerceBooleanProperty(value);
+    }
+    constructor(_elementRef, _overlay, _viewContainerRef, _injector, _doc, _directionality) {
+        this._elementRef = _elementRef;
+        this._overlay = _overlay;
+        this._viewContainerRef = _viewContainerRef;
+        this._injector = _injector;
+        this._doc = _doc;
+        this._directionality = _directionality;
+        this._disabled = false;
+        this._openActions = ['click'];
+        this._autoSetText = true;
+        this.opened = new EventEmitter();
+        this.closed = new EventEmitter();
+        this.panelValueChanged = new EventEmitter();
+        this.contentId = '';
     }
     ngOnDestroy() {
         if (this._overlayRef) {
@@ -226,9 +226,9 @@ class CdkCombobox {
         this.contentType = contentType;
     }
 }
-CdkCombobox.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.0.0", ngImport: i0, type: CdkCombobox, deps: [{ token: i0.ElementRef }, { token: i1.Overlay }, { token: i0.ViewContainerRef }, { token: i0.Injector }, { token: DOCUMENT }, { token: i2.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkCombobox.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "15.0.0", type: CdkCombobox, selector: "[cdkCombobox]", inputs: { _panelTemplateRef: ["cdkComboboxTriggerFor", "_panelTemplateRef"], value: "value", disabled: "disabled", openActions: "openActions", autoSetText: "autoSetText" }, outputs: { opened: "comboboxPanelOpened", closed: "comboboxPanelClosed", panelValueChanged: "panelValueChanged" }, host: { attributes: { "role": "combobox" }, listeners: { "click": "_handleInteractions(\"click\")", "focus": "_handleInteractions(\"focus\")", "keydown": "_keydown($event)", "document:click": "_attemptClose($event)" }, properties: { "attr.aria-disabled": "disabled", "attr.aria-owns": "contentId", "attr.aria-haspopup": "contentType", "attr.aria-expanded": "isOpen()", "attr.tabindex": "_getTabIndex()" }, classAttribute: "cdk-combobox" }, providers: [{ provide: CDK_COMBOBOX, useExisting: CdkCombobox }], exportAs: ["cdkCombobox"], ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.0.0", ngImport: i0, type: CdkCombobox, decorators: [{
+CdkCombobox.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkCombobox, deps: [{ token: i0.ElementRef }, { token: i1.Overlay }, { token: i0.ViewContainerRef }, { token: i0.Injector }, { token: DOCUMENT }, { token: i2.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive });
+CdkCombobox.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "15.1.0-rc.0", type: CdkCombobox, selector: "[cdkCombobox]", inputs: { _panelTemplateRef: ["cdkComboboxTriggerFor", "_panelTemplateRef"], value: "value", disabled: "disabled", openActions: "openActions", autoSetText: "autoSetText" }, outputs: { opened: "comboboxPanelOpened", closed: "comboboxPanelClosed", panelValueChanged: "panelValueChanged" }, host: { attributes: { "role": "combobox" }, listeners: { "click": "_handleInteractions(\"click\")", "focus": "_handleInteractions(\"focus\")", "keydown": "_keydown($event)", "document:click": "_attemptClose($event)" }, properties: { "attr.aria-disabled": "disabled", "attr.aria-owns": "contentId", "attr.aria-haspopup": "contentType", "attr.aria-expanded": "isOpen()", "attr.tabindex": "_getTabIndex()" }, classAttribute: "cdk-combobox" }, providers: [{ provide: CDK_COMBOBOX, useExisting: CdkCombobox }], exportAs: ["cdkCombobox"], ngImport: i0 });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkCombobox, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkCombobox]',
@@ -284,12 +284,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.0.0", ngImpor
  */
 let nextId = 0;
 class CdkComboboxPopup {
-    constructor(_elementRef, _combobox) {
-        this._elementRef = _elementRef;
-        this._combobox = _combobox;
-        this._role = 'dialog';
-        this.id = `cdk-combobox-popup-${nextId++}`;
-    }
     get role() {
         return this._role;
     }
@@ -301,6 +295,12 @@ class CdkComboboxPopup {
     }
     set firstFocus(id) {
         this._firstFocusElement = id;
+    }
+    constructor(_elementRef, _combobox) {
+        this._elementRef = _elementRef;
+        this._combobox = _combobox;
+        this._role = 'dialog';
+        this.id = `cdk-combobox-popup-${nextId++}`;
     }
     ngOnInit() {
         this.registerWithPanel();
@@ -317,9 +317,9 @@ class CdkComboboxPopup {
         }
     }
 }
-CdkComboboxPopup.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.0.0", ngImport: i0, type: CdkComboboxPopup, deps: [{ token: i0.ElementRef }, { token: CDK_COMBOBOX }], target: i0.ɵɵFactoryTarget.Directive });
-CdkComboboxPopup.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "15.0.0", type: CdkComboboxPopup, selector: "[cdkComboboxPopup]", inputs: { role: "role", firstFocus: "firstFocus", id: "id" }, host: { attributes: { "tabindex": "-1" }, listeners: { "focus": "focusFirstElement()" }, properties: { "attr.role": "role", "id": "id" }, classAttribute: "cdk-combobox-popup" }, exportAs: ["cdkComboboxPopup"], ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.0.0", ngImport: i0, type: CdkComboboxPopup, decorators: [{
+CdkComboboxPopup.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkComboboxPopup, deps: [{ token: i0.ElementRef }, { token: CDK_COMBOBOX }], target: i0.ɵɵFactoryTarget.Directive });
+CdkComboboxPopup.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "15.1.0-rc.0", type: CdkComboboxPopup, selector: "[cdkComboboxPopup]", inputs: { role: "role", firstFocus: "firstFocus", id: "id" }, host: { attributes: { "tabindex": "-1" }, listeners: { "focus": "focusFirstElement()" }, properties: { "attr.role": "role", "id": "id" }, classAttribute: "cdk-combobox-popup" }, exportAs: ["cdkComboboxPopup"], ngImport: i0 });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkComboboxPopup, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkComboboxPopup]',
@@ -353,10 +353,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.0.0", ngImpor
 const EXPORTED_DECLARATIONS = [CdkCombobox, CdkComboboxPopup];
 class CdkComboboxModule {
 }
-CdkComboboxModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.0.0", ngImport: i0, type: CdkComboboxModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
-CdkComboboxModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "15.0.0", ngImport: i0, type: CdkComboboxModule, declarations: [CdkCombobox, CdkComboboxPopup], imports: [OverlayModule], exports: [CdkCombobox, CdkComboboxPopup] });
-CdkComboboxModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "15.0.0", ngImport: i0, type: CdkComboboxModule, imports: [OverlayModule] });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.0.0", ngImport: i0, type: CdkComboboxModule, decorators: [{
+CdkComboboxModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkComboboxModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+CdkComboboxModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkComboboxModule, declarations: [CdkCombobox, CdkComboboxPopup], imports: [OverlayModule], exports: [CdkCombobox, CdkComboboxPopup] });
+CdkComboboxModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkComboboxModule, imports: [OverlayModule] });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkComboboxModule, decorators: [{
             type: NgModule,
             args: [{
                     imports: [OverlayModule],
