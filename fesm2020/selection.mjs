@@ -247,9 +247,9 @@ class CdkSelection {
         }
     }
 }
-CdkSelection.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkSelection, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-CdkSelection.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "15.1.0-next.3", type: CdkSelection, selector: "[cdkSelection]", inputs: { dataSource: "dataSource", trackByFn: ["trackBy", "trackByFn"], multiple: ["cdkSelectionMultiple", "multiple"] }, outputs: { change: "cdkSelectionChange" }, exportAs: ["cdkSelection"], ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkSelection, decorators: [{
+CdkSelection.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkSelection, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+CdkSelection.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "15.1.0-rc.0", type: CdkSelection, selector: "[cdkSelection]", inputs: { dataSource: "dataSource", trackByFn: ["trackBy", "trackByFn"], multiple: ["cdkSelectionMultiple", "multiple"] }, outputs: { change: "cdkSelectionChange" }, exportAs: ["cdkSelection"], ngImport: i0 });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkSelection, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkSelection]',
@@ -286,22 +286,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-next.3", 
  * and `toggle()` to change the selection state.
  */
 class CdkSelectAll {
-    constructor(_selection, _controlValueAccessor) {
-        this._selection = _selection;
-        this._controlValueAccessor = _controlValueAccessor;
-        /**
-         * The checked state of the toggle.
-         * Resolves to `true` if all the values are selected, `false` if no value is selected.
-         */
-        this.checked = this._selection.change.pipe(switchMap(() => of(this._selection.isAllSelected())));
-        /**
-         * The indeterminate state of the toggle.
-         * Resolves to `true` if part (not all) of the values are selected, `false` if all values or no
-         * value at all are selected.
-         */
-        this.indeterminate = this._selection.change.pipe(switchMap(() => of(this._selection.isPartialSelected())));
-        this._destroyed = new Subject();
-    }
     /**
      * Toggles the select-all state.
      * @param event The click event if the toggle is triggered by a (mouse or keyboard) click. If
@@ -318,6 +302,22 @@ class CdkSelectAll {
         setTimeout(() => {
             this._selection.toggleSelectAll();
         });
+    }
+    constructor(_selection, _controlValueAccessor) {
+        this._selection = _selection;
+        this._controlValueAccessor = _controlValueAccessor;
+        /**
+         * The checked state of the toggle.
+         * Resolves to `true` if all the values are selected, `false` if no value is selected.
+         */
+        this.checked = this._selection.change.pipe(switchMap(() => of(this._selection.isAllSelected())));
+        /**
+         * The indeterminate state of the toggle.
+         * Resolves to `true` if part (not all) of the values are selected, `false` if all values or no
+         * value at all are selected.
+         */
+        this.indeterminate = this._selection.change.pipe(switchMap(() => of(this._selection.isPartialSelected())));
+        this._destroyed = new Subject();
     }
     ngOnInit() {
         this._assertValidParentSelection();
@@ -348,9 +348,9 @@ class CdkSelectAll {
         this._destroyed.complete();
     }
 }
-CdkSelectAll.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkSelectAll, deps: [{ token: CdkSelection, optional: true }, { token: NG_VALUE_ACCESSOR, optional: true, self: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkSelectAll.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "15.1.0-next.3", type: CdkSelectAll, selector: "[cdkSelectAll]", exportAs: ["cdkSelectAll"], ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkSelectAll, decorators: [{
+CdkSelectAll.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkSelectAll, deps: [{ token: CdkSelection, optional: true }, { token: NG_VALUE_ACCESSOR, optional: true, self: true }], target: i0.ɵɵFactoryTarget.Directive });
+CdkSelectAll.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "15.1.0-rc.0", type: CdkSelectAll, selector: "[cdkSelectAll]", exportAs: ["cdkSelectAll"], ngImport: i0 });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkSelectAll, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkSelectAll]',
@@ -388,13 +388,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-next.3", 
  * state.
  */
 class CdkSelectionToggle {
-    constructor(_selection, _controlValueAccessors) {
-        this._selection = _selection;
-        this._controlValueAccessors = _controlValueAccessors;
-        /** The checked state of the selection toggle */
-        this.checked = this._selection.change.pipe(switchMap(() => of(this._isSelected())), distinctUntilChanged());
-        this._destroyed = new Subject();
-    }
     /** The index of the value in the list. Required when used with `trackBy` */
     get index() {
         return this._index;
@@ -405,6 +398,13 @@ class CdkSelectionToggle {
     /** Toggles the selection */
     toggle() {
         this._selection.toggleSelection(this.value, this.index);
+    }
+    constructor(_selection, _controlValueAccessors) {
+        this._selection = _selection;
+        this._controlValueAccessors = _controlValueAccessors;
+        /** The checked state of the selection toggle */
+        this.checked = this._selection.change.pipe(switchMap(() => of(this._isSelected())), distinctUntilChanged());
+        this._destroyed = new Subject();
     }
     ngOnInit() {
         this._assertValidParentSelection();
@@ -435,9 +435,9 @@ class CdkSelectionToggle {
         return this._selection.isSelected(this.value, this.index);
     }
 }
-CdkSelectionToggle.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkSelectionToggle, deps: [{ token: CdkSelection, optional: true }, { token: NG_VALUE_ACCESSOR, optional: true, self: true }], target: i0.ɵɵFactoryTarget.Directive });
-CdkSelectionToggle.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "15.1.0-next.3", type: CdkSelectionToggle, selector: "[cdkSelectionToggle]", inputs: { value: ["cdkSelectionToggleValue", "value"], index: ["cdkSelectionToggleIndex", "index"] }, exportAs: ["cdkSelectionToggle"], ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkSelectionToggle, decorators: [{
+CdkSelectionToggle.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkSelectionToggle, deps: [{ token: CdkSelection, optional: true }, { token: NG_VALUE_ACCESSOR, optional: true, self: true }], target: i0.ɵɵFactoryTarget.Directive });
+CdkSelectionToggle.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "15.1.0-rc.0", type: CdkSelectionToggle, selector: "[cdkSelectionToggle]", inputs: { value: ["cdkSelectionToggleValue", "value"], index: ["cdkSelectionToggleIndex", "index"] }, exportAs: ["cdkSelectionToggle"], ngImport: i0 });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkSelectionToggle, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkSelectionToggle]',
@@ -477,10 +477,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-next.3", 
  * Must be used within a parent `CdkSelection` directive.
  */
 class CdkSelectionColumn {
-    constructor(_table, selection) {
-        this._table = _table;
-        this.selection = selection;
-    }
     /** Column name that should be used to reference this column. */
     get name() {
         return this._name;
@@ -488,6 +484,10 @@ class CdkSelectionColumn {
     set name(name) {
         this._name = name;
         this._syncColumnDefName();
+    }
+    constructor(_table, selection) {
+        this._table = _table;
+        this.selection = selection;
     }
     ngOnInit() {
         if (!this.selection && (typeof ngDevMode === 'undefined' || ngDevMode)) {
@@ -514,8 +514,8 @@ class CdkSelectionColumn {
         }
     }
 }
-CdkSelectionColumn.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkSelectionColumn, deps: [{ token: CdkTable, optional: true }, { token: CdkSelection, optional: true }], target: i0.ɵɵFactoryTarget.Component });
-CdkSelectionColumn.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "15.1.0-next.3", type: CdkSelectionColumn, selector: "cdk-selection-column", inputs: { name: ["cdkSelectionColumnName", "name"] }, viewQueries: [{ propertyName: "_columnDef", first: true, predicate: CdkColumnDef, descendants: true, static: true }, { propertyName: "_cell", first: true, predicate: CdkCellDef, descendants: true, static: true }, { propertyName: "_headerCell", first: true, predicate: CdkHeaderCellDef, descendants: true, static: true }], ngImport: i0, template: `
+CdkSelectionColumn.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkSelectionColumn, deps: [{ token: CdkTable, optional: true }, { token: CdkSelection, optional: true }], target: i0.ɵɵFactoryTarget.Component });
+CdkSelectionColumn.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "15.1.0-rc.0", type: CdkSelectionColumn, selector: "cdk-selection-column", inputs: { name: ["cdkSelectionColumnName", "name"] }, viewQueries: [{ propertyName: "_columnDef", first: true, predicate: CdkColumnDef, descendants: true, static: true }, { propertyName: "_cell", first: true, predicate: CdkCellDef, descendants: true, static: true }, { propertyName: "_headerCell", first: true, predicate: CdkHeaderCellDef, descendants: true, static: true }], ngImport: i0, template: `
     <ng-container cdkColumnDef>
       <th cdkHeaderCell *cdkHeaderCellDef>
         <input type="checkbox" *ngIf="selection.multiple"
@@ -536,7 +536,7 @@ CdkSelectionColumn.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", ver
       </td>
     </ng-container>
   `, isInline: true, dependencies: [{ kind: "directive", type: i1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "directive", type: i2.CdkCellDef, selector: "[cdkCellDef]" }, { kind: "directive", type: i2.CdkHeaderCellDef, selector: "[cdkHeaderCellDef]" }, { kind: "directive", type: i2.CdkColumnDef, selector: "[cdkColumnDef]", inputs: ["sticky", "cdkColumnDef", "stickyEnd"] }, { kind: "directive", type: CdkSelectionToggle, selector: "[cdkSelectionToggle]", inputs: ["cdkSelectionToggleValue", "cdkSelectionToggleIndex"], exportAs: ["cdkSelectionToggle"] }, { kind: "directive", type: CdkSelectAll, selector: "[cdkSelectAll]", exportAs: ["cdkSelectAll"] }, { kind: "pipe", type: i1.AsyncPipe, name: "async" }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkSelectionColumn, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkSelectionColumn, decorators: [{
             type: Component,
             args: [{
                     selector: 'cdk-selection-column',
@@ -603,19 +603,19 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-next.3", 
  * directive.
  */
 class CdkRowSelection {
-    constructor(_selection) {
-        this._selection = _selection;
-    }
     get index() {
         return this._index;
     }
     set index(index) {
         this._index = coerceNumberProperty(index);
     }
+    constructor(_selection) {
+        this._selection = _selection;
+    }
 }
-CdkRowSelection.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkRowSelection, deps: [{ token: CdkSelection }], target: i0.ɵɵFactoryTarget.Directive });
-CdkRowSelection.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "15.1.0-next.3", type: CdkRowSelection, selector: "[cdkRowSelection]", inputs: { value: ["cdkRowSelectionValue", "value"], index: ["cdkRowSelectionIndex", "index"] }, host: { properties: { "class.cdk-selected": "_selection.isSelected(this.value, this.index)", "attr.aria-selected": "_selection.isSelected(this.value, this.index)" } }, ngImport: i0 });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkRowSelection, decorators: [{
+CdkRowSelection.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkRowSelection, deps: [{ token: CdkSelection }], target: i0.ɵɵFactoryTarget.Directive });
+CdkRowSelection.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "15.1.0-rc.0", type: CdkRowSelection, selector: "[cdkRowSelection]", inputs: { value: ["cdkRowSelectionValue", "value"], index: ["cdkRowSelectionIndex", "index"] }, host: { properties: { "class.cdk-selected": "_selection.isSelected(this.value, this.index)", "attr.aria-selected": "_selection.isSelected(this.value, this.index)" } }, ngImport: i0 });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkRowSelection, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkRowSelection]',
@@ -641,14 +641,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-next.3", 
  */
 class CdkSelectionModule {
 }
-CdkSelectionModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkSelectionModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
-CdkSelectionModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkSelectionModule, declarations: [CdkSelection,
+CdkSelectionModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkSelectionModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+CdkSelectionModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkSelectionModule, declarations: [CdkSelection,
         CdkSelectionToggle,
         CdkSelectAll,
         CdkSelectionColumn,
         CdkRowSelection], imports: [CommonModule, CdkTableModule], exports: [CdkSelection, CdkSelectionToggle, CdkSelectAll, CdkSelectionColumn, CdkRowSelection] });
-CdkSelectionModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkSelectionModule, imports: [CommonModule, CdkTableModule] });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-next.3", ngImport: i0, type: CdkSelectionModule, decorators: [{
+CdkSelectionModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkSelectionModule, imports: [CommonModule, CdkTableModule] });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.0-rc.0", ngImport: i0, type: CdkSelectionModule, decorators: [{
             type: NgModule,
             args: [{
                     imports: [CommonModule, CdkTableModule],
