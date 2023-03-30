@@ -73,10 +73,10 @@ class FocusDispatcher {
         event.preventDefault();
     }
 }
-FocusDispatcher.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.2", ngImport: i0, type: FocusDispatcher, deps: [{ token: i1.Directionality }], target: i0.ɵɵFactoryTarget.Injectable });
-FocusDispatcher.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.0.0-next.2", ngImport: i0, type: FocusDispatcher, providedIn: 'root' });
+FocusDispatcher.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: FocusDispatcher, deps: [{ token: i1.Directionality }], target: i0.ɵɵFactoryTarget.Injectable });
+FocusDispatcher.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: FocusDispatcher, providedIn: 'root' });
 export { FocusDispatcher };
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.2", ngImport: i0, type: FocusDispatcher, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: FocusDispatcher, decorators: [{
             type: Injectable,
             args: [{ providedIn: 'root' }]
         }], ctorParameters: function () { return [{ type: i1.Directionality }]; } });

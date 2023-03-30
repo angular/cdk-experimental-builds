@@ -101,7 +101,7 @@ export declare class CdkEditControl<FormValue> implements OnDestroy, OnInit {
     private _handleBlur;
     private _triggerFormSubmit;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditControl<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditControl<any>, "form[cdkEditControl]", never, { "clickOutBehavior": "cdkEditControlClickOutBehavior"; "preservedFormValue": "cdkEditControlPreservedFormValue"; "ignoreSubmitUnlessValid": "cdkEditControlIgnoreSubmitUnlessValid"; }, { "preservedFormValueChange": "cdkEditControlPreservedFormValueChange"; }, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditControl<any>, "form[cdkEditControl]", never, { "clickOutBehavior": { "alias": "cdkEditControlClickOutBehavior"; "required": false; }; "preservedFormValue": { "alias": "cdkEditControlPreservedFormValue"; "required": false; }; "ignoreSubmitUnlessValid": { "alias": "cdkEditControlIgnoreSubmitUnlessValid"; "required": false; }; }, { "preservedFormValueChange": "cdkEditControlPreservedFormValueChange"; }, never, never, false, never>;
 }
 
 /**
@@ -125,7 +125,7 @@ export declare class CdkEditRevert<FormValue> {
     constructor(editRef: EditRef<FormValue>);
     revertEdit(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditRevert<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditRevert<any>, "button[cdkEditRevert]", never, { "type": "type"; }, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditRevert<any>, "button[cdkEditRevert]", never, { "type": { "alias": "type"; "required": false; }; }, {}, never, never, false, never>;
 }
 
 /**
@@ -172,7 +172,7 @@ export declare class CdkPopoverEdit<C> implements AfterViewInit, OnDestroy {
     private _updateOverlaySize;
     private _maybeReturnFocusToCell;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEdit<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEdit<any>, "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", never, { "template": "cdkPopoverEdit"; "context": "cdkPopoverEditContext"; "colspan": "cdkPopoverEditColspan"; "disabled": "cdkPopoverEditDisabled"; }, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEdit<any>, "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; }, {}, never, never, false, never>;
 }
 
 /**
@@ -202,7 +202,7 @@ export declare class CdkPopoverEditTabOut<C> extends CdkPopoverEdit<C> {
     constructor(elementRef: ElementRef, viewContainerRef: ViewContainerRef, services: EditServices, focusEscapeNotifierFactory: FocusEscapeNotifierFactory);
     protected initFocusTrap(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEditTabOut<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEditTabOut<any>, "[cdkPopoverEdit][cdkPopoverEditTabOut]", never, { "template": "cdkPopoverEdit"; "context": "cdkPopoverEditContext"; "colspan": "cdkPopoverEditColspan"; "disabled": "cdkPopoverEditDisabled"; }, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEditTabOut<any>, "[cdkPopoverEdit][cdkPopoverEditTabOut]", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; }, {}, never, never, false, never>;
 }
 
 /**
