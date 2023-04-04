@@ -13,13 +13,6 @@ import { FocusTrap } from '@angular/cdk/a11y';
 import * as i7 from '@angular/cdk/scrolling';
 import { DOCUMENT } from '@angular/common';
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 /** Selector for finding table cells. */
 const CELL_SELECTOR = '.cdk-cell, .mat-cell, td';
 /** Selector for finding editable table cells. */
@@ -33,13 +26,6 @@ const EDIT_PANE_CLASS = 'cdk-edit-pane';
 /** Selector for finding the edit lens pane. */
 const EDIT_PANE_SELECTOR = `.${EDIT_PANE_CLASS}, .mat-edit-pane`;
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 /** closest implementation that is able to start from non-Element Nodes. */
 function closest(element, selector) {
     var _a;
@@ -53,13 +39,6 @@ function closest(element, selector) {
     return (_a = curr === null || curr === void 0 ? void 0 : curr.closest(selector)) !== null && _a !== void 0 ? _a : null;
 }
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 /** The delay applied to mouse events before hiding or showing hover content. */
 const MOUSE_EVENT_DELAY_MS = 40;
 /** The delay for reacting to focus/blur changes. */
@@ -263,13 +242,6 @@ function areMapEntriesEqual(a, b) {
 }
 
 /**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-/**
  * Used for communication between the form within the edit lens and the
  * table that launched it. Provided by CdkEditControl within the lens.
  */
@@ -409,13 +381,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
         }], ctorParameters: function () { return [{ type: i1$1.Directionality }]; } });
 
 /**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-/**
  * A convenience class for preserving unsaved form state while an edit lens is closed.
  *
  * Example usage:
@@ -441,13 +406,6 @@ class FormValueContainer {
     }
 }
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 /**
  * A directive that attaches to a form within the edit lens.
  * It coordinates the form state with the table-wide edit system and handles
@@ -679,13 +637,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
         }], ctorParameters: function () { return [{ type: i1$1.Directionality }, { type: i2.Overlay }]; } });
 
 /**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-/**
  * Optimization
  * Collects multiple Injectables into a singleton shared across the table. By reducing the
  * number of services injected into each CdkPopoverEdit, this saves about 0.023ms of cpu time
@@ -710,13 +661,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
             type: Injectable
         }], ctorParameters: function () { return [{ type: i1$1.Directionality }, { type: EditEventDispatcher }, { type: FocusDispatcher }, { type: i4.FocusTrapFactory }, { type: i0.NgZone }, { type: i2.Overlay }, { type: PopoverEditPositionStrategyFactory }, { type: i7.ScrollDispatcher }, { type: i7.ViewportRuler }]; } });
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 /**
  * Like FocusTrap, but rather than trapping focus within a dom region, notifies subscribers when
  * focus leaves the region.
@@ -1150,13 +1094,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
                 }]
         }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: EditEventDispatcher }]; } });
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 const EXPORTED_DECLARATIONS = [
     CdkPopoverEdit,
     CdkPopoverEditTabOut,
@@ -1205,22 +1142,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
                     ],
                 }]
         }] });
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 
 /**
  * Generated bundle index. Do not edit.

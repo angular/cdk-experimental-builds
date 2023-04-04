@@ -10,26 +10,12 @@ import { _COALESCED_STYLE_SCHEDULER } from '@angular/cdk/table';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { ESCAPE } from '@angular/cdk/keycodes';
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 // TODO: Figure out how to remove `mat-` classes from the CDK part of the
 // column resize implementation.
 const HEADER_CELL_SELECTOR = '.cdk-header-cell, .mat-header-cell';
 const HEADER_ROW_SELECTOR = '.cdk-header-row, .mat-header-row';
 const RESIZE_OVERLAY_SELECTOR = '.mat-column-resize-overlay-thumb';
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 const HOVER_OR_ACTIVE_CLASS = 'cdk-column-resize-hover-or-active';
 const WITH_RESIZED_COLUMN_CLASS = 'cdk-column-resize-with-resized-column';
 let nextId = 0;
@@ -100,13 +86,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
         }] });
 
 /**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-/**
  * Originating source of column resize events within a table.
  * @docs-private
  */
@@ -148,13 +127,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
             type: Injectable
         }], ctorParameters: function () { return [{ type: ColumnResizeNotifierSource }]; } });
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 /** Coordinates events between the column resize directives. */
 class HeaderRowEventDispatcher {
     constructor(_ngZone) {
@@ -212,13 +184,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
             type: Injectable
         }], ctorParameters: function () { return [{ type: i0.NgZone }]; } });
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 /**
  * Provides an implementation for resizing a column.
  * The details of how resizing works for tables for flex mat-tables are quite different.
@@ -441,13 +406,6 @@ const FLEX_RESIZE_STRATEGY_PROVIDER = {
     useClass: CdkFlexTableResizeStrategy,
 };
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 const PROVIDERS = [
     ColumnResizeNotifier,
     HeaderRowEventDispatcher,
@@ -459,13 +417,6 @@ const TABLE_PROVIDERS = [
 ];
 const FLEX_PROVIDERS = [...PROVIDERS, FLEX_RESIZE_STRATEGY_PROVIDER];
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 /**
  * Explicitly enables column resizing for a table-based cdk-table.
  * Individual columns must be annotated specifically.
@@ -492,13 +443,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
         }], ctorParameters: function () { return [{ type: ColumnResizeNotifier }, { type: i0.ElementRef }, { type: HeaderRowEventDispatcher }, { type: i0.NgZone }, { type: ColumnResizeNotifierSource }, { type: i3.CdkTable }]; } });
 
 /**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-/**
  * Explicitly enables column resizing for a flexbox-based cdk-table.
  * Individual columns must be annotated specifically.
  */
@@ -523,13 +467,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
                 }]
         }], ctorParameters: function () { return [{ type: ColumnResizeNotifier }, { type: i0.ElementRef }, { type: HeaderRowEventDispatcher }, { type: i0.NgZone }, { type: ColumnResizeNotifierSource }, { type: i3.CdkTable }]; } });
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 /**
  * Implicitly enables column resizing for a table-based cdk-table.
  * Individual columns will be resizable unless opted out.
@@ -562,13 +499,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
         }], ctorParameters: function () { return [{ type: ColumnResizeNotifier }, { type: i0.ElementRef }, { type: HeaderRowEventDispatcher }, { type: i0.NgZone }, { type: ColumnResizeNotifierSource }, { type: i3.CdkTable }]; } });
 
 /**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-/**
  * Implicitly enables column resizing for a flex cdk-table.
  * Individual columns will be resizable unless opted out.
  */
@@ -599,13 +529,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
                 }]
         }], ctorParameters: function () { return [{ type: ColumnResizeNotifier }, { type: i0.ElementRef }, { type: HeaderRowEventDispatcher }, { type: i0.NgZone }, { type: ColumnResizeNotifierSource }, { type: i3.CdkTable }]; } });
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 /**
  * One of two NgModules for use with CdkColumnResize.
  * When using this module, columns are resizable by default.
@@ -640,13 +563,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
         }] });
 
 /**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-/**
  * Can be provided by the host application to enable persistence of column resize state.
  */
 class ColumnSizeStore {
@@ -657,13 +573,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
             type: Injectable
         }] });
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 /** Tracks state of resize events in progress. */
 class ResizeRef {
     constructor(origin, overlayRef, minWidthPx, maxWidthPx) {
@@ -674,13 +583,6 @@ class ResizeRef {
     }
 }
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 const OVERLAY_ACTIVE_CLASS = 'cdk-resizable-overlay-thumb-active';
 /**
  * Base class for Resizable directives which are applied to column headers to make those columns
@@ -866,13 +768,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", 
             type: Directive
         }] });
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 // TODO: Take another look at using cdk drag drop. IIRC I ran into a couple
 // good reasons for not using it but I don't remember what they were at this point.
 /**
@@ -1003,22 +898,6 @@ ResizeOverlayHandle.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", ve
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: ResizeOverlayHandle, decorators: [{
             type: Directive
         }] });
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 
 /**
  * Generated bundle index. Do not edit.
