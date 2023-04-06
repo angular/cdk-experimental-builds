@@ -23,8 +23,8 @@ const EXPORTED_DECLARATIONS = [
 ];
 class CdkPopoverEditModule {
 }
-CdkPopoverEditModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkPopoverEditModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
-CdkPopoverEditModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkPopoverEditModule, declarations: [CdkPopoverEdit,
+CdkPopoverEditModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkPopoverEditModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+CdkPopoverEditModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkPopoverEditModule, declarations: [CdkPopoverEdit,
         CdkPopoverEditTabOut,
         CdkRowHoverContent,
         CdkEditControl,
@@ -39,14 +39,14 @@ CdkPopoverEditModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", ve
         CdkEditClose,
         CdkEditable,
         CdkEditOpen] });
-CdkPopoverEditModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkPopoverEditModule, providers: [
+CdkPopoverEditModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkPopoverEditModule, providers: [
         {
             provide: PopoverEditPositionStrategyFactory,
             useClass: DefaultPopoverEditPositionStrategyFactory,
         },
     ], imports: [OverlayModule] });
 export { CdkPopoverEditModule };
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkPopoverEditModule, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkPopoverEditModule, decorators: [{
             type: NgModule,
             args: [{
                     imports: [OverlayModule],

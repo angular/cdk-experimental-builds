@@ -75,10 +75,10 @@ class CdkEditable {
         });
     }
 }
-CdkEditable.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkEditable, deps: [{ token: i0.ElementRef }, { token: i1.EditEventDispatcher }, { token: i2.FocusDispatcher }, { token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Directive });
-CdkEditable.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.5", type: CdkEditable, selector: "table[editable], cdk-table[editable], mat-table[editable]", providers: [EditEventDispatcher, EditServices], ngImport: i0 });
+CdkEditable.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkEditable, deps: [{ token: i0.ElementRef }, { token: i1.EditEventDispatcher }, { token: i2.FocusDispatcher }, { token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Directive });
+CdkEditable.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.7", type: CdkEditable, selector: "table[editable], cdk-table[editable], mat-table[editable]", providers: [EditEventDispatcher, EditServices], ngImport: i0 });
 export { CdkEditable };
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkEditable, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkEditable, decorators: [{
             type: Directive,
             args: [{
                     selector: 'table[editable], cdk-table[editable], mat-table[editable]',
@@ -234,10 +234,10 @@ class CdkPopoverEdit {
         }
     }
 }
-CdkPopoverEdit.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkPopoverEdit, deps: [{ token: i3.EditServices }, { token: i0.ElementRef }, { token: i0.ViewContainerRef }], target: i0.ɵɵFactoryTarget.Directive });
-CdkPopoverEdit.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.5", type: CdkPopoverEdit, selector: "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, ngImport: i0 });
+CdkPopoverEdit.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkPopoverEdit, deps: [{ token: i3.EditServices }, { token: i0.ElementRef }, { token: i0.ViewContainerRef }], target: i0.ɵɵFactoryTarget.Directive });
+CdkPopoverEdit.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.7", type: CdkPopoverEdit, selector: "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, ngImport: i0 });
 export { CdkPopoverEdit };
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkPopoverEdit, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkPopoverEdit, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkPopoverEdit]:not([cdkPopoverEditTabOut])',
@@ -268,10 +268,10 @@ class CdkPopoverEditTabOut extends CdkPopoverEdit {
         });
     }
 }
-CdkPopoverEditTabOut.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkPopoverEditTabOut, deps: [{ token: i0.ElementRef }, { token: i0.ViewContainerRef }, { token: i3.EditServices }, { token: i4.FocusEscapeNotifierFactory }], target: i0.ɵɵFactoryTarget.Directive });
-CdkPopoverEditTabOut.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.5", type: CdkPopoverEditTabOut, selector: "[cdkPopoverEdit][cdkPopoverEditTabOut]", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, usesInheritance: true, ngImport: i0 });
+CdkPopoverEditTabOut.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkPopoverEditTabOut, deps: [{ token: i0.ElementRef }, { token: i0.ViewContainerRef }, { token: i3.EditServices }, { token: i4.FocusEscapeNotifierFactory }], target: i0.ɵɵFactoryTarget.Directive });
+CdkPopoverEditTabOut.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.7", type: CdkPopoverEditTabOut, selector: "[cdkPopoverEdit][cdkPopoverEditTabOut]", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, usesInheritance: true, ngImport: i0 });
 export { CdkPopoverEditTabOut };
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkPopoverEditTabOut, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkPopoverEditTabOut, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkPopoverEdit][cdkPopoverEditTabOut]',
@@ -357,10 +357,10 @@ class CdkRowHoverContent {
         });
     }
 }
-CdkRowHoverContent.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkRowHoverContent, deps: [{ token: i3.EditServices }, { token: i0.ElementRef }, { token: i0.TemplateRef }, { token: i0.ViewContainerRef }], target: i0.ɵɵFactoryTarget.Directive });
-CdkRowHoverContent.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.5", type: CdkRowHoverContent, selector: "[cdkRowHoverContent]", ngImport: i0 });
+CdkRowHoverContent.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkRowHoverContent, deps: [{ token: i3.EditServices }, { token: i0.ElementRef }, { token: i0.TemplateRef }, { token: i0.ViewContainerRef }], target: i0.ɵɵFactoryTarget.Directive });
+CdkRowHoverContent.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.7", type: CdkRowHoverContent, selector: "[cdkRowHoverContent]", ngImport: i0 });
 export { CdkRowHoverContent };
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkRowHoverContent, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkRowHoverContent, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkRowHoverContent]',
@@ -385,10 +385,10 @@ class CdkEditOpen {
         evt.stopPropagation();
     }
 }
-CdkEditOpen.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkEditOpen, deps: [{ token: i0.ElementRef }, { token: i1.EditEventDispatcher }], target: i0.ɵɵFactoryTarget.Directive });
-CdkEditOpen.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.5", type: CdkEditOpen, selector: "[cdkEditOpen]", host: { listeners: { "click": "openEdit($event)" } }, ngImport: i0 });
+CdkEditOpen.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkEditOpen, deps: [{ token: i0.ElementRef }, { token: i1.EditEventDispatcher }], target: i0.ɵɵFactoryTarget.Directive });
+CdkEditOpen.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.7", type: CdkEditOpen, selector: "[cdkEditOpen]", host: { listeners: { "click": "openEdit($event)" } }, ngImport: i0 });
 export { CdkEditOpen };
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkEditOpen, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkEditOpen, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkEditOpen]',

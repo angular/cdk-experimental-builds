@@ -30,10 +30,10 @@ class CdkColumnResize extends ColumnResize {
         this.table = table;
     }
 }
-CdkColumnResize.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkColumnResize, deps: [{ token: i1.ColumnResizeNotifier }, { token: i0.ElementRef }, { token: i2.HeaderRowEventDispatcher }, { token: i0.NgZone }, { token: i1.ColumnResizeNotifierSource }, { token: i3.CdkTable }], target: i0.ɵɵFactoryTarget.Directive });
-CdkColumnResize.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.5", type: CdkColumnResize, selector: "table[cdk-table][columnResize]", providers: [...TABLE_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResize }], usesInheritance: true, ngImport: i0 });
+CdkColumnResize.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkColumnResize, deps: [{ token: i1.ColumnResizeNotifier }, { token: i0.ElementRef }, { token: i2.HeaderRowEventDispatcher }, { token: i0.NgZone }, { token: i1.ColumnResizeNotifierSource }, { token: i3.CdkTable }], target: i0.ɵɵFactoryTarget.Directive });
+CdkColumnResize.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.7", type: CdkColumnResize, selector: "table[cdk-table][columnResize]", providers: [...TABLE_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResize }], usesInheritance: true, ngImport: i0 });
 export { CdkColumnResize };
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkColumnResize, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkColumnResize, decorators: [{
             type: Directive,
             args: [{
                     selector: 'table[cdk-table][columnResize]',

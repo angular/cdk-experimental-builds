@@ -174,10 +174,10 @@ class EditEventDispatcher {
         return this.allRows.pipe(map(mapper), this._startWithNullDistinct);
     }
 }
-EditEventDispatcher.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: EditEventDispatcher, deps: [{ token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Injectable });
-EditEventDispatcher.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: EditEventDispatcher });
+EditEventDispatcher.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: EditEventDispatcher, deps: [{ token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Injectable });
+EditEventDispatcher.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: EditEventDispatcher });
 export { EditEventDispatcher };
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: EditEventDispatcher, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: EditEventDispatcher, decorators: [{
             type: Injectable
         }], ctorParameters: function () { return [{ type: i0.NgZone }]; } });
 function computeHoverContentState([firstRow, lastRow, activeRow, hoverRow,]) {

@@ -74,10 +74,10 @@ class EditRef {
         this._form.reset(value || this._revertFormValue);
     }
 }
-EditRef.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: EditRef, deps: [{ token: i1.ControlContainer, self: true }, { token: i2.EditEventDispatcher }, { token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Injectable });
-EditRef.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: EditRef });
+EditRef.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: EditRef, deps: [{ token: i1.ControlContainer, self: true }, { token: i2.EditEventDispatcher }, { token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Injectable });
+EditRef.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: EditRef });
 export { EditRef };
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: EditRef, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: EditRef, decorators: [{
             type: Injectable
         }], ctorParameters: function () { return [{ type: i1.ControlContainer, decorators: [{
                     type: Self

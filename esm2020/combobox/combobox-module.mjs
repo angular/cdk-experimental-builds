@@ -13,11 +13,11 @@ import * as i0 from "@angular/core";
 const EXPORTED_DECLARATIONS = [CdkCombobox, CdkComboboxPopup];
 class CdkComboboxModule {
 }
-CdkComboboxModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkComboboxModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
-CdkComboboxModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkComboboxModule, declarations: [CdkCombobox, CdkComboboxPopup], imports: [OverlayModule], exports: [CdkCombobox, CdkComboboxPopup] });
-CdkComboboxModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkComboboxModule, imports: [OverlayModule] });
+CdkComboboxModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkComboboxModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+CdkComboboxModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkComboboxModule, declarations: [CdkCombobox, CdkComboboxPopup], imports: [OverlayModule], exports: [CdkCombobox, CdkComboboxPopup] });
+CdkComboboxModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkComboboxModule, imports: [OverlayModule] });
 export { CdkComboboxModule };
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.5", ngImport: i0, type: CdkComboboxModule, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkComboboxModule, decorators: [{
             type: NgModule,
             args: [{
                     imports: [OverlayModule],
