@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Directive, Injectable, Inject, NgModule, Injector } from '@angular/core';
+import { Directive, Injectable, Inject, CSP_NONCE, Optional, NgModule, Injector } from '@angular/core';
 import { Subject, fromEvent, merge, combineLatest, Observable } from 'rxjs';
 import { map, takeUntil, filter, mapTo, take, startWith, pairwise, distinctUntilChanged, share, skip } from 'rxjs/operators';
 import { _closest } from '@angular/cdk-experimental/popover-edit';
@@ -266,11 +266,12 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", 
  *   Updating all mat-cell nodes
  */
 class CdkFlexTableResizeStrategy extends ResizeStrategy {
-    constructor(columnResize, styleScheduler, table, document) {
+    constructor(columnResize, styleScheduler, table, document, _nonce) {
         super();
         this.columnResize = columnResize;
         this.styleScheduler = styleScheduler;
         this.table = table;
+        this._nonce = _nonce;
         this._columnIndexes = new Map();
         this._columnProperties = new Map();
         this._indexSequence = 0;
@@ -330,6 +331,9 @@ class CdkFlexTableResizeStrategy extends ResizeStrategy {
     _getStyleSheet() {
         if (!this._styleElement) {
             this._styleElement = this._document.createElement('style');
+            if (this._nonce) {
+                this._styleElement.nonce = this._nonce;
+            }
             this._styleElement.appendChild(this._document.createTextNode(''));
             this._document.head.appendChild(this._styleElement);
         }
@@ -365,7 +369,7 @@ class CdkFlexTableResizeStrategy extends ResizeStrategy {
         this._getStyleSheet().insertRule(`${selector} {${body}}`, index);
     }
 }
-CdkFlexTableResizeStrategy.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkFlexTableResizeStrategy, deps: [{ token: ColumnResize }, { token: _COALESCED_STYLE_SCHEDULER }, { token: i3.CdkTable }, { token: DOCUMENT }], target: i0.ɵɵFactoryTarget.Injectable });
+CdkFlexTableResizeStrategy.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkFlexTableResizeStrategy, deps: [{ token: ColumnResize }, { token: _COALESCED_STYLE_SCHEDULER }, { token: i3.CdkTable }, { token: DOCUMENT }, { token: CSP_NONCE, optional: true }], target: i0.ɵɵFactoryTarget.Injectable });
 CdkFlexTableResizeStrategy.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkFlexTableResizeStrategy });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkFlexTableResizeStrategy, decorators: [{
             type: Injectable
@@ -376,6 +380,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", 
                     }] }, { type: i3.CdkTable }, { type: undefined, decorators: [{
                         type: Inject,
                         args: [DOCUMENT]
+                    }] }, { type: undefined, decorators: [{
+                        type: Inject,
+                        args: [CSP_NONCE]
+                    }, {
+                        type: Optional
                     }] }];
     } });
 /** Converts CSS pixel values to numbers, eg "123px" to 123. Returns NaN for non pixel values. */
