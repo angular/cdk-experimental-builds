@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Directive, Inject, Optional, NgModule } from '@angular/core';
+import { CSP_NONCE, Directive, Inject, Optional, NgModule } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import * as i1 from '@angular/cdk/bidi';
 import { _getShadowRoot } from '@angular/cdk/platform';
@@ -18,10 +18,11 @@ let nextId = 0;
  * and height for the scrollbar and thumb.
  */
 class CdkTableScrollContainer {
-    constructor(_elementRef, _document, _directionality) {
+    constructor(_elementRef, _document, _directionality, _nonce) {
         this._elementRef = _elementRef;
         this._document = _document;
         this._directionality = _directionality;
+        this._nonce = _nonce;
         /** The most recent sticky column size values from the CdkTable. */
         this._startSizes = [];
         this._endSizes = [];
@@ -77,6 +78,9 @@ class CdkTableScrollContainer {
     _getStyleSheet() {
         if (!this._styleElement) {
             this._styleElement = this._document.createElement('style');
+            if (this._nonce) {
+                this._styleElement.nonce = this._nonce;
+            }
             this._styleRoot.appendChild(this._styleElement);
         }
         return this._styleElement.sheet;
@@ -93,7 +97,7 @@ class CdkTableScrollContainer {
             styleSheet.deleteRule(0);
         }
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkTableScrollContainer, deps: [{ token: i0.ElementRef }, { token: DOCUMENT }, { token: i1.Directionality, optional: true }], target: i0.ɵɵFactoryTarget.Directive }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkTableScrollContainer, deps: [{ token: i0.ElementRef }, { token: DOCUMENT }, { token: i1.Directionality, optional: true }, { token: CSP_NONCE, optional: true }], target: i0.ɵɵFactoryTarget.Directive }); }
     static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.0.0-next.7", type: CdkTableScrollContainer, selector: "[cdkTableScrollContainer]", host: { classAttribute: "cdk-table-scroll-container" }, providers: [{ provide: STICKY_POSITIONING_LISTENER, useExisting: CdkTableScrollContainer }], ngImport: i0 }); }
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", ngImport: i0, type: CdkTableScrollContainer, decorators: [{
@@ -110,6 +114,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0-next.7", 
                     args: [DOCUMENT]
                 }] }, { type: i1.Directionality, decorators: [{
                     type: Optional
+                }] }, { type: undefined, decorators: [{
+                    type: Optional
+                }, {
+                    type: Inject,
+                    args: [CSP_NONCE]
                 }] }]; } });
 function computeMargin(sizes) {
     let margin = 0;
