@@ -40,7 +40,7 @@ export declare class CdkEditable implements AfterViewInit, OnDestroy {
     ngOnDestroy(): void;
     private _listenForTableEvents;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditable, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditable, "table[editable], cdk-table[editable], mat-table[editable]", never, {}, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditable, "table[editable], cdk-table[editable], mat-table[editable]", never, {}, {}, never, never, false, never, false>;
 }
 
 /** Closes the lens on click. */
@@ -50,7 +50,7 @@ export declare class CdkEditClose<FormValue> {
     constructor(elementRef: ElementRef<HTMLElement>, editRef: EditRef<FormValue>);
     closeEdit(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditClose<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditClose<any>, "[cdkEditClose]", never, {}, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditClose<any>, "[cdkEditClose]", never, {}, {}, never, never, false, never, false>;
 }
 
 /**
@@ -101,7 +101,7 @@ export declare class CdkEditControl<FormValue> implements OnDestroy, OnInit {
     private _handleBlur;
     private _triggerFormSubmit;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditControl<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditControl<any>, "form[cdkEditControl]", never, { "clickOutBehavior": { "alias": "cdkEditControlClickOutBehavior"; "required": false; }; "preservedFormValue": { "alias": "cdkEditControlPreservedFormValue"; "required": false; }; "ignoreSubmitUnlessValid": { "alias": "cdkEditControlIgnoreSubmitUnlessValid"; "required": false; }; }, { "preservedFormValueChange": "cdkEditControlPreservedFormValueChange"; }, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditControl<any>, "form[cdkEditControl]", never, { "clickOutBehavior": { "alias": "cdkEditControlClickOutBehavior"; "required": false; }; "preservedFormValue": { "alias": "cdkEditControlPreservedFormValue"; "required": false; }; "ignoreSubmitUnlessValid": { "alias": "cdkEditControlIgnoreSubmitUnlessValid"; "required": false; }; }, { "preservedFormValueChange": "cdkEditControlPreservedFormValueChange"; }, never, never, false, never, false>;
 }
 
 /**
@@ -114,7 +114,7 @@ export declare class CdkEditOpen {
     constructor(elementRef: ElementRef<HTMLElement>, editEventDispatcher: EditEventDispatcher<EditRef<unknown>>);
     openEdit(evt: Event): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditOpen, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditOpen, "[cdkEditOpen]", never, {}, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditOpen, "[cdkEditOpen]", never, {}, {}, never, never, false, never, false>;
 }
 
 /** Reverts the form to its initial or previously submitted state on click. */
@@ -125,7 +125,7 @@ export declare class CdkEditRevert<FormValue> {
     constructor(editRef: EditRef<FormValue>);
     revertEdit(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditRevert<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditRevert<any>, "button[cdkEditRevert]", never, { "type": { "alias": "type"; "required": false; }; }, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditRevert<any>, "button[cdkEditRevert]", never, { "type": { "alias": "type"; "required": false; }; }, {}, never, never, false, never, false>;
 }
 
 /**
@@ -172,7 +172,7 @@ export declare class CdkPopoverEdit<C> implements AfterViewInit, OnDestroy {
     private _updateOverlaySize;
     private _maybeReturnFocusToCell;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEdit<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEdit<any>, "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; }, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEdit<any>, "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; }, {}, never, never, false, never, false>;
 }
 
 /**
@@ -202,7 +202,7 @@ export declare class CdkPopoverEditTabOut<C> extends CdkPopoverEdit<C> {
     constructor(elementRef: ElementRef, viewContainerRef: ViewContainerRef, services: EditServices, focusEscapeNotifierFactory: FocusEscapeNotifierFactory);
     protected initFocusTrap(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEditTabOut<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEditTabOut<any>, "[cdkPopoverEdit][cdkPopoverEditTabOut]", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; }, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEditTabOut<any>, "[cdkPopoverEdit][cdkPopoverEditTabOut]", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; }, {}, never, never, false, never, false>;
 }
 
 /**
@@ -238,7 +238,7 @@ export declare class CdkRowHoverContent implements AfterViewInit, OnDestroy {
     protected makeElementVisible(element: HTMLElement): void;
     private _listenForHoverAndFocusEvents;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkRowHoverContent, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowHoverContent, "[cdkRowHoverContent]", never, {}, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowHoverContent, "[cdkRowHoverContent]", never, {}, {}, never, never, false, never, false>;
 }
 
 /** Selector for finding table cells. */
