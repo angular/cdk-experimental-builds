@@ -31,7 +31,7 @@ export declare class CdkRowSelection<T> {
     protected _index?: number;
     constructor(_selection: CdkSelection<T>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkRowSelection<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowSelection<any>, "[cdkRowSelection]", never, { "value": { "alias": "cdkRowSelectionValue"; "required": false; }; "index": { "alias": "cdkRowSelectionIndex"; "required": false; }; }, {}, never, never, false, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowSelection<any>, "[cdkRowSelection]", never, { "value": { "alias": "cdkRowSelectionValue"; "required": false; }; "index": { "alias": "cdkRowSelectionIndex"; "required": false; }; }, {}, never, never, false, never>;
 }
 
 /**
@@ -72,7 +72,7 @@ export declare class CdkSelectAll<T> implements OnDestroy, OnInit {
     private _assertValidParentSelection;
     ngOnDestroy(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectAll<any>, [{ optional: true; }, { optional: true; self: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectAll<any>, "[cdkSelectAll]", ["cdkSelectAll"], {}, {}, never, never, false, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectAll<any>, "[cdkSelectAll]", ["cdkSelectAll"], {}, {}, never, never, false, never>;
 }
 
 /**
@@ -122,7 +122,7 @@ export declare class CdkSelection<T> implements OnInit, AfterContentChecked, Col
     private _updateSelectAllState;
     selectAllState: SelectAllState;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelection<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelection<any>, "[cdkSelection]", ["cdkSelection"], { "dataSource": { "alias": "dataSource"; "required": false; }; "trackByFn": { "alias": "trackBy"; "required": false; }; "multiple": { "alias": "cdkSelectionMultiple"; "required": false; }; }, { "change": "cdkSelectionChange"; }, never, never, false, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelection<any>, "[cdkSelection]", ["cdkSelection"], { "dataSource": { "alias": "dataSource"; "required": false; }; "trackByFn": { "alias": "trackBy"; "required": false; }; "multiple": { "alias": "cdkSelectionMultiple"; "required": false; }; }, { "change": "cdkSelectionChange"; }, never, never, false, never>;
 }
 
 /**
@@ -146,7 +146,7 @@ export declare class CdkSelectionColumn<T> implements OnInit, OnDestroy {
     ngOnDestroy(): void;
     private _syncColumnDefName;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionColumn<any>, [{ optional: true; }, { optional: true; }]>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CdkSelectionColumn<any>, "cdk-selection-column", never, { "name": { "alias": "cdkSelectionColumnName"; "required": false; }; }, {}, never, never, false, never, false>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CdkSelectionColumn<any>, "cdk-selection-column", never, { "name": { "alias": "cdkSelectionColumnName"; "required": false; }; }, {}, never, never, false, never>;
 }
 
 export declare class CdkSelectionModule {
@@ -186,7 +186,7 @@ export declare class CdkSelectionToggle<T> implements OnDestroy, OnInit {
     private _configureControlValueAccessor;
     private _isSelected;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionToggle<any>, [{ optional: true; }, { optional: true; self: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectionToggle<any>, "[cdkSelectionToggle]", ["cdkSelectionToggle"], { "value": { "alias": "cdkSelectionToggleValue"; "required": false; }; "index": { "alias": "cdkSelectionToggleIndex"; "required": false; }; }, {}, never, never, false, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectionToggle<any>, "[cdkSelectionToggle]", ["cdkSelectionToggle"], { "value": { "alias": "cdkSelectionToggleValue"; "required": false; }; "index": { "alias": "cdkSelectionToggleIndex"; "required": false; }; }, {}, never, never, false, never>;
 }
 
 declare namespace i1 {
