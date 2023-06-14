@@ -129,7 +129,7 @@ export declare class CdkAutoSizeVirtualScroll implements OnChanges {
     _scrollStrategy: AutoSizeVirtualScrollStrategy;
     ngOnChanges(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkAutoSizeVirtualScroll, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkAutoSizeVirtualScroll, "cdk-virtual-scroll-viewport[autosize]", never, { "minBufferPx": { "alias": "minBufferPx"; "required": false; }; "maxBufferPx": { "alias": "maxBufferPx"; "required": false; }; }, {}, never, never, false, never, false>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkAutoSizeVirtualScroll, "cdk-virtual-scroll-viewport[autosize]", never, { "minBufferPx": { "alias": "minBufferPx"; "required": false; }; "maxBufferPx": { "alias": "maxBufferPx"; "required": false; }; }, {}, never, never, false, never>;
 }
 
 declare namespace i1 {
