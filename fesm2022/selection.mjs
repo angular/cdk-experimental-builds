@@ -5,9 +5,9 @@ import { EventEmitter, Directive, Input, Output, Optional, Inject, Self, Compone
 import { Subject, Observable, of } from 'rxjs';
 import { takeUntil, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import * as i2 from '@angular/cdk/table';
+import * as i1 from '@angular/cdk/table';
 import { CdkTable, CdkColumnDef, CdkCellDef, CdkHeaderCellDef, CdkTableModule } from '@angular/cdk/table';
-import * as i1 from '@angular/common';
+import * as i4 from '@angular/common';
 import { CommonModule } from '@angular/common';
 
 /**
@@ -469,15 +469,17 @@ class CdkSelectionColumn {
         }
     }
     static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0-rc.0", ngImport: i0, type: CdkSelectionColumn, deps: [{ token: CdkTable, optional: true }, { token: CdkSelection, optional: true }], target: i0.ɵɵFactoryTarget.Component }); }
-    static { this.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "17.0.0-rc.0", type: CdkSelectionColumn, selector: "cdk-selection-column", inputs: { name: ["cdkSelectionColumnName", "name"] }, viewQueries: [{ propertyName: "_columnDef", first: true, predicate: CdkColumnDef, descendants: true, static: true }, { propertyName: "_cell", first: true, predicate: CdkCellDef, descendants: true, static: true }, { propertyName: "_headerCell", first: true, predicate: CdkHeaderCellDef, descendants: true, static: true }], ngImport: i0, template: `
+    static { this.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "17.0.0-rc.0", type: CdkSelectionColumn, selector: "cdk-selection-column", inputs: { name: ["cdkSelectionColumnName", "name"] }, viewQueries: [{ propertyName: "_columnDef", first: true, predicate: CdkColumnDef, descendants: true, static: true }, { propertyName: "_cell", first: true, predicate: CdkCellDef, descendants: true, static: true }, { propertyName: "_headerCell", first: true, predicate: CdkHeaderCellDef, descendants: true, static: true }], ngImport: i0, template: `
     <ng-container cdkColumnDef>
       <th cdkHeaderCell *cdkHeaderCellDef>
-        <input type="checkbox" *ngIf="selection.multiple"
-            cdkSelectAll
-            #allToggler="cdkSelectAll"
-            [checked]="allToggler.checked | async"
-            [indeterminate]="allToggler.indeterminate | async"
-            (click)="allToggler.toggle($event)">
+        @if (selection.multiple) {
+          <input type="checkbox"
+              cdkSelectAll
+              #allToggler="cdkSelectAll"
+              [checked]="allToggler.checked | async"
+              [indeterminate]="allToggler.indeterminate | async"
+              (click)="allToggler.toggle($event)">
+        }
       </th>
       <td cdkCell *cdkCellDef="let row; let i = $index">
         <input type="checkbox"
@@ -489,7 +491,7 @@ class CdkSelectionColumn {
             [checked]="toggler.checked | async">
       </td>
     </ng-container>
-  `, isInline: true, dependencies: [{ kind: "directive", type: i1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "directive", type: i2.CdkCellDef, selector: "[cdkCellDef]" }, { kind: "directive", type: i2.CdkHeaderCellDef, selector: "[cdkHeaderCellDef]" }, { kind: "directive", type: i2.CdkColumnDef, selector: "[cdkColumnDef]", inputs: ["sticky", "cdkColumnDef", "stickyEnd"] }, { kind: "directive", type: CdkSelectionToggle, selector: "[cdkSelectionToggle]", inputs: ["cdkSelectionToggleValue", "cdkSelectionToggleIndex"], exportAs: ["cdkSelectionToggle"] }, { kind: "directive", type: CdkSelectAll, selector: "[cdkSelectAll]", exportAs: ["cdkSelectAll"] }, { kind: "pipe", type: i1.AsyncPipe, name: "async" }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None }); }
+  `, isInline: true, dependencies: [{ kind: "directive", type: i1.CdkCellDef, selector: "[cdkCellDef]" }, { kind: "directive", type: i1.CdkHeaderCellDef, selector: "[cdkHeaderCellDef]" }, { kind: "directive", type: i1.CdkColumnDef, selector: "[cdkColumnDef]", inputs: ["sticky", "cdkColumnDef", "stickyEnd"] }, { kind: "directive", type: CdkSelectionToggle, selector: "[cdkSelectionToggle]", inputs: ["cdkSelectionToggleValue", "cdkSelectionToggleIndex"], exportAs: ["cdkSelectionToggle"] }, { kind: "directive", type: CdkSelectAll, selector: "[cdkSelectAll]", exportAs: ["cdkSelectAll"] }, { kind: "pipe", type: i4.AsyncPipe, name: "async" }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None }); }
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0-rc.0", ngImport: i0, type: CdkSelectionColumn, decorators: [{
             type: Component,
@@ -498,12 +500,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0-rc.0", ng
                     template: `
     <ng-container cdkColumnDef>
       <th cdkHeaderCell *cdkHeaderCellDef>
-        <input type="checkbox" *ngIf="selection.multiple"
-            cdkSelectAll
-            #allToggler="cdkSelectAll"
-            [checked]="allToggler.checked | async"
-            [indeterminate]="allToggler.indeterminate | async"
-            (click)="allToggler.toggle($event)">
+        @if (selection.multiple) {
+          <input type="checkbox"
+              cdkSelectAll
+              #allToggler="cdkSelectAll"
+              [checked]="allToggler.checked | async"
+              [indeterminate]="allToggler.indeterminate | async"
+              (click)="allToggler.toggle($event)">
+        }
       </th>
       <td cdkCell *cdkCellDef="let row; let i = $index">
         <input type="checkbox"
@@ -519,7 +523,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0-rc.0", ng
                     changeDetection: ChangeDetectionStrategy.OnPush,
                     encapsulation: ViewEncapsulation.None,
                 }]
-        }], ctorParameters: () => [{ type: i2.CdkTable, decorators: [{
+        }], ctorParameters: () => [{ type: i1.CdkTable, decorators: [{
                     type: Optional
                 }, {
                     type: Inject,
