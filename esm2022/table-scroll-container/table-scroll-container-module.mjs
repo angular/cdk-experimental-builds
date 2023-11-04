@@ -9,11 +9,11 @@ import { NgModule } from '@angular/core';
 import { CdkTableScrollContainer } from './table-scroll-container';
 import * as i0 from "@angular/core";
 export class CdkTableScrollContainerModule {
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0-rc.0", ngImport: i0, type: CdkTableScrollContainerModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule }); }
-    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "17.0.0-rc.0", ngImport: i0, type: CdkTableScrollContainerModule, declarations: [CdkTableScrollContainer], exports: [CdkTableScrollContainer] }); }
-    static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "17.0.0-rc.0", ngImport: i0, type: CdkTableScrollContainerModule }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0-rc.2", ngImport: i0, type: CdkTableScrollContainerModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule }); }
+    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "17.0.0-rc.2", ngImport: i0, type: CdkTableScrollContainerModule, declarations: [CdkTableScrollContainer], exports: [CdkTableScrollContainer] }); }
+    static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "17.0.0-rc.2", ngImport: i0, type: CdkTableScrollContainerModule }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0-rc.0", ngImport: i0, type: CdkTableScrollContainerModule, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0-rc.2", ngImport: i0, type: CdkTableScrollContainerModule, decorators: [{
             type: NgModule,
             args: [{
                     declarations: [CdkTableScrollContainer],
