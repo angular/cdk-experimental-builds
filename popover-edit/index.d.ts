@@ -442,7 +442,7 @@ declare class FocusEscapeNotifier extends FocusTrap {
 }
 
 /** Value indicating whether focus left the target area before or after the enclosed elements. */
-declare enum FocusEscapeNotifierDirection {
+declare const enum FocusEscapeNotifierDirection {
     START = 0,
     END = 1
 }
@@ -484,7 +484,7 @@ export declare class FormValueContainer<Key extends object, FormValue> {
  * FOCUSABLE - Rendered in the dom and styled for its contents to be focusable but invisible.
  * ON - Rendered and fully visible.
  */
-export declare enum HoverContentState {
+export declare const enum HoverContentState {
     OFF = 0,
     FOCUSABLE = 1,
     ON = 2
