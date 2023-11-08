@@ -42,6 +42,18 @@ function closest(element, selector) {
 const MOUSE_EVENT_DELAY_MS = 40;
 /** The delay for reacting to focus/blur changes. */
 const FOCUS_DELAY = 0;
+/**
+ * The possible states for hover content:
+ * OFF - Not rendered.
+ * FOCUSABLE - Rendered in the dom and styled for its contents to be focusable but invisible.
+ * ON - Rendered and fully visible.
+ */
+var HoverContentState;
+(function (HoverContentState) {
+    HoverContentState[HoverContentState["OFF"] = 0] = "OFF";
+    HoverContentState[HoverContentState["FOCUSABLE"] = 1] = "FOCUSABLE";
+    HoverContentState[HoverContentState["ON"] = 2] = "ON";
+})(HoverContentState || (HoverContentState = {}));
 // Note: this class is generic, rather than referencing EditRef directly, in order to avoid
 // circular imports. If we were to reference it here, importing the registry into the
 // class that is registering itself will introduce a circular import.
@@ -162,7 +174,7 @@ class EditEventDispatcher {
     hoverOrFocusOnRow(row) {
         if (row !== this._lastSeenRow) {
             this._lastSeenRow = row;
-            this._lastSeenRowHoverOrFocus = this._hoveredContentStateDistinct.pipe(map(state => state.get(row) || 0 /* HoverContentState.OFF */), this._distinctShare);
+            this._lastSeenRowHoverOrFocus = this._hoveredContentStateDistinct.pipe(map(state => state.get(row) || HoverContentState.OFF), this._distinctShare);
         }
         return this._lastSeenRowHoverOrFocus;
     }
@@ -200,12 +212,12 @@ class EditEventDispatcher {
     _mapAllRowsToSingleRow(mapper) {
         return this.allRows.pipe(map(mapper), this._startWithNullDistinct);
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: EditEventDispatcher, deps: [{ token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: EditEventDispatcher }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: EditEventDispatcher, deps: [{ token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Injectable }); }
+    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: EditEventDispatcher }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: EditEventDispatcher, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: EditEventDispatcher, decorators: [{
             type: Injectable
-        }], ctorParameters: function () { return [{ type: i0.NgZone }]; } });
+        }], ctorParameters: () => [{ type: i0.NgZone }] });
 function computeHoverContentState([firstRow, lastRow, activeRow, hoverRow,]) {
     const hoverContentState = new Map();
     // Add focusable rows.
@@ -216,13 +228,13 @@ function computeHoverContentState([firstRow, lastRow, activeRow, hoverRow,]) {
         activeRow && activeRow.nextElementSibling,
     ]) {
         if (focussableRow) {
-            hoverContentState.set(focussableRow, 1 /* HoverContentState.FOCUSABLE */);
+            hoverContentState.set(focussableRow, HoverContentState.FOCUSABLE);
         }
     }
     // Add/overwrite with fully visible rows.
     for (const onRow of [activeRow, hoverRow]) {
         if (onRow) {
-            hoverContentState.set(onRow, 2 /* HoverContentState.ON */);
+            hoverContentState.set(onRow, HoverContentState.ON);
         }
     }
     return hoverContentState;
@@ -300,14 +312,14 @@ class EditRef {
     reset(value) {
         this._form.reset(value || this._revertFormValue);
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: EditRef, deps: [{ token: i1.ControlContainer, self: true }, { token: EditEventDispatcher }, { token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: EditRef }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: EditRef, deps: [{ token: i1.ControlContainer, self: true }, { token: EditEventDispatcher }, { token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Injectable }); }
+    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: EditRef }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: EditRef, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: EditRef, decorators: [{
             type: Injectable
-        }], ctorParameters: function () { return [{ type: i1.ControlContainer, decorators: [{
+        }], ctorParameters: () => [{ type: i1.ControlContainer, decorators: [{
                     type: Self
-                }] }, { type: EditEventDispatcher }, { type: i0.NgZone }]; } });
+                }] }, { type: EditEventDispatcher }, { type: i0.NgZone }] });
 
 /**
  * Service responsible for moving cell focus around in response to keyboard events.
@@ -369,13 +381,13 @@ class FocusDispatcher {
         }
         event.preventDefault();
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: FocusDispatcher, deps: [{ token: i1$1.Directionality }], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: FocusDispatcher, providedIn: 'root' }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: FocusDispatcher, deps: [{ token: i1$1.Directionality }], target: i0.ɵɵFactoryTarget.Injectable }); }
+    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: FocusDispatcher, providedIn: 'root' }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: FocusDispatcher, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: FocusDispatcher, decorators: [{
             type: Injectable,
             args: [{ providedIn: 'root' }]
-        }], ctorParameters: function () { return [{ type: i1$1.Directionality }]; } });
+        }], ctorParameters: () => [{ type: i1$1.Directionality }] });
 
 /**
  * A convenience class for preserving unsaved form state while an edit lens is closed.
@@ -490,10 +502,10 @@ class CdkEditControl {
     _triggerFormSubmit() {
         this.elementRef.nativeElement.dispatchEvent(new Event('submit'));
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkEditControl, deps: [{ token: i0.ElementRef }, { token: EditRef }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.1.1", type: CdkEditControl, selector: "form[cdkEditControl]", inputs: { clickOutBehavior: ["cdkEditControlClickOutBehavior", "clickOutBehavior"], preservedFormValue: ["cdkEditControlPreservedFormValue", "preservedFormValue"], ignoreSubmitUnlessValid: ["cdkEditControlIgnoreSubmitUnlessValid", "ignoreSubmitUnlessValid"] }, outputs: { preservedFormValueChange: "cdkEditControlPreservedFormValueChange" }, host: { listeners: { "ngSubmit": "handleFormSubmit()", "document:click": "handlePossibleClickOut($event)", "keydown": "_handleKeydown($event)" } }, providers: [EditRef], ngImport: i0 }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkEditControl, deps: [{ token: i0.ElementRef }, { token: EditRef }], target: i0.ɵɵFactoryTarget.Directive }); }
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkEditControl, selector: "form[cdkEditControl]", inputs: { clickOutBehavior: ["cdkEditControlClickOutBehavior", "clickOutBehavior"], preservedFormValue: ["cdkEditControlPreservedFormValue", "preservedFormValue"], ignoreSubmitUnlessValid: ["cdkEditControlIgnoreSubmitUnlessValid", "ignoreSubmitUnlessValid"] }, outputs: { preservedFormValueChange: "cdkEditControlPreservedFormValueChange" }, host: { listeners: { "ngSubmit": "handleFormSubmit()", "document:click": "handlePossibleClickOut($event)", "keydown": "_handleKeydown($event)" } }, providers: [EditRef], ngImport: i0 }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkEditControl, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkEditControl, decorators: [{
             type: Directive,
             args: [{
                     selector: 'form[cdkEditControl]',
@@ -510,7 +522,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImpor
                         '(keydown)': '_handleKeydown($event)',
                     },
                 }]
-        }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: EditRef }]; } });
+        }], ctorParameters: () => [{ type: i0.ElementRef }, { type: EditRef }] });
 /** Reverts the form to its initial or previously submitted state on click. */
 class CdkEditRevert {
     constructor(editRef) {
@@ -521,10 +533,10 @@ class CdkEditRevert {
     revertEdit() {
         this.editRef.reset();
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkEditRevert, deps: [{ token: EditRef }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.1.1", type: CdkEditRevert, selector: "button[cdkEditRevert]", inputs: { type: "type" }, host: { attributes: { "type": "button" }, listeners: { "click": "revertEdit()" } }, ngImport: i0 }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkEditRevert, deps: [{ token: EditRef }], target: i0.ɵɵFactoryTarget.Directive }); }
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkEditRevert, selector: "button[cdkEditRevert]", inputs: { type: "type" }, host: { attributes: { "type": "button" }, listeners: { "click": "revertEdit()" } }, ngImport: i0 }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkEditRevert, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkEditRevert, decorators: [{
             type: Directive,
             args: [{
                     selector: 'button[cdkEditRevert]',
@@ -533,7 +545,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImpor
                         '(click)': 'revertEdit()',
                     },
                 }]
-        }], ctorParameters: function () { return [{ type: EditRef }]; }, propDecorators: { type: [{
+        }], ctorParameters: () => [{ type: EditRef }], propDecorators: { type: [{
                 type: Input
             }] } });
 /** Closes the lens on click. */
@@ -555,10 +567,10 @@ class CdkEditClose {
         // the same event sequence if focus was moved quickly.
         this.editRef.close();
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkEditClose, deps: [{ token: i0.ElementRef }, { token: EditRef }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.1.1", type: CdkEditClose, selector: "[cdkEditClose]", host: { listeners: { "click": "closeEdit()", "keydown.enter": "closeEdit()", "keydown.space": "closeEdit()" } }, ngImport: i0 }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkEditClose, deps: [{ token: i0.ElementRef }, { token: EditRef }], target: i0.ɵɵFactoryTarget.Directive }); }
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkEditClose, selector: "[cdkEditClose]", host: { listeners: { "click": "closeEdit()", "keydown.enter": "closeEdit()", "keydown.space": "closeEdit()" } }, ngImport: i0 }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkEditClose, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkEditClose, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkEditClose]',
@@ -568,17 +580,17 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImpor
                         '(keydown.space)': 'closeEdit()',
                     },
                 }]
-        }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: EditRef }]; } });
+        }], ctorParameters: () => [{ type: i0.ElementRef }, { type: EditRef }] });
 
 /**
  * Overridable factory responsible for configuring how cdkPopoverEdit popovers are positioned
  * and sized.
  */
 class PopoverEditPositionStrategyFactory {
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: PopoverEditPositionStrategyFactory, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: PopoverEditPositionStrategyFactory }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: PopoverEditPositionStrategyFactory, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
+    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: PopoverEditPositionStrategyFactory }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: PopoverEditPositionStrategyFactory, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: PopoverEditPositionStrategyFactory, decorators: [{
             type: Injectable
         }] });
 /**
@@ -626,12 +638,12 @@ class DefaultPopoverEditPositionStrategyFactory extends PopoverEditPositionStrat
         }
         return { width: lastCell.getBoundingClientRect().right - firstCell.getBoundingClientRect().left };
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: DefaultPopoverEditPositionStrategyFactory, deps: [{ token: i1$1.Directionality }, { token: i2.Overlay }], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: DefaultPopoverEditPositionStrategyFactory }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: DefaultPopoverEditPositionStrategyFactory, deps: [{ token: i1$1.Directionality }, { token: i2.Overlay }], target: i0.ɵɵFactoryTarget.Injectable }); }
+    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: DefaultPopoverEditPositionStrategyFactory }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: DefaultPopoverEditPositionStrategyFactory, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: DefaultPopoverEditPositionStrategyFactory, decorators: [{
             type: Injectable
-        }], ctorParameters: function () { return [{ type: i1$1.Directionality }, { type: i2.Overlay }]; } });
+        }], ctorParameters: () => [{ type: i1$1.Directionality }, { type: i2.Overlay }] });
 
 /**
  * Optimization
@@ -651,13 +663,19 @@ class EditServices {
         this.scrollDispatcher = scrollDispatcher;
         this.viewportRuler = viewportRuler;
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: EditServices, deps: [{ token: i1$1.Directionality }, { token: EditEventDispatcher }, { token: FocusDispatcher }, { token: i4.FocusTrapFactory }, { token: i0.NgZone }, { token: i2.Overlay }, { token: PopoverEditPositionStrategyFactory }, { token: i7.ScrollDispatcher }, { token: i7.ViewportRuler }], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: EditServices }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: EditServices, deps: [{ token: i1$1.Directionality }, { token: EditEventDispatcher }, { token: FocusDispatcher }, { token: i4.FocusTrapFactory }, { token: i0.NgZone }, { token: i2.Overlay }, { token: PopoverEditPositionStrategyFactory }, { token: i7.ScrollDispatcher }, { token: i7.ViewportRuler }], target: i0.ɵɵFactoryTarget.Injectable }); }
+    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: EditServices }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: EditServices, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: EditServices, decorators: [{
             type: Injectable
-        }], ctorParameters: function () { return [{ type: i1$1.Directionality }, { type: EditEventDispatcher }, { type: FocusDispatcher }, { type: i4.FocusTrapFactory }, { type: i0.NgZone }, { type: i2.Overlay }, { type: PopoverEditPositionStrategyFactory }, { type: i7.ScrollDispatcher }, { type: i7.ViewportRuler }]; } });
+        }], ctorParameters: () => [{ type: i1$1.Directionality }, { type: EditEventDispatcher }, { type: FocusDispatcher }, { type: i4.FocusTrapFactory }, { type: i0.NgZone }, { type: i2.Overlay }, { type: PopoverEditPositionStrategyFactory }, { type: i7.ScrollDispatcher }, { type: i7.ViewportRuler }] });
 
+/** Value indicating whether focus left the target area before or after the enclosed elements. */
+var FocusEscapeNotifierDirection;
+(function (FocusEscapeNotifierDirection) {
+    FocusEscapeNotifierDirection[FocusEscapeNotifierDirection["START"] = 0] = "START";
+    FocusEscapeNotifierDirection[FocusEscapeNotifierDirection["END"] = 1] = "END";
+})(FocusEscapeNotifierDirection || (FocusEscapeNotifierDirection = {}));
 /**
  * Like FocusTrap, but rather than trapping focus within a dom region, notifies subscribers when
  * focus leaves the region.
@@ -669,11 +687,11 @@ class FocusEscapeNotifier extends FocusTrap {
         // The focus trap adds "anchors" at the beginning and end of a trapped region that redirect
         // focus. We override that redirect behavior here with simply emitting on a stream.
         this.startAnchorListener = () => {
-            this._escapeSubject.next(0 /* FocusEscapeNotifierDirection.START */);
+            this._escapeSubject.next(FocusEscapeNotifierDirection.START);
             return true;
         };
         this.endAnchorListener = () => {
-            this._escapeSubject.next(1 /* FocusEscapeNotifierDirection.END */);
+            this._escapeSubject.next(FocusEscapeNotifierDirection.END);
             return true;
         };
         this.attachAnchors();
@@ -697,16 +715,16 @@ class FocusEscapeNotifierFactory {
     create(element) {
         return new FocusEscapeNotifier(element, this._checker, this._ngZone, this._document);
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: FocusEscapeNotifierFactory, deps: [{ token: i4.InteractivityChecker }, { token: i0.NgZone }, { token: DOCUMENT }], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: FocusEscapeNotifierFactory, providedIn: 'root' }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: FocusEscapeNotifierFactory, deps: [{ token: i4.InteractivityChecker }, { token: i0.NgZone }, { token: DOCUMENT }], target: i0.ɵɵFactoryTarget.Injectable }); }
+    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: FocusEscapeNotifierFactory, providedIn: 'root' }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: FocusEscapeNotifierFactory, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: FocusEscapeNotifierFactory, decorators: [{
             type: Injectable,
             args: [{ providedIn: 'root' }]
-        }], ctorParameters: function () { return [{ type: i4.InteractivityChecker }, { type: i0.NgZone }, { type: undefined, decorators: [{
+        }], ctorParameters: () => [{ type: i4.InteractivityChecker }, { type: i0.NgZone }, { type: undefined, decorators: [{
                     type: Inject,
                     args: [DOCUMENT]
-                }] }]; } });
+                }] }] });
 
 /** Used for rate-limiting mousemove events. */
 const MOUSE_MOVE_THROTTLE_TIME_MS = 10;
@@ -769,16 +787,16 @@ class CdkEditable {
                 .subscribe(this.focusDispatcher.keyObserver);
         });
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkEditable, deps: [{ token: i0.ElementRef }, { token: EditEventDispatcher }, { token: FocusDispatcher }, { token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.1.1", type: CdkEditable, selector: "table[editable], cdk-table[editable], mat-table[editable]", providers: [EditEventDispatcher, EditServices], ngImport: i0 }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkEditable, deps: [{ token: i0.ElementRef }, { token: EditEventDispatcher }, { token: FocusDispatcher }, { token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Directive }); }
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkEditable, selector: "table[editable], cdk-table[editable], mat-table[editable]", providers: [EditEventDispatcher, EditServices], ngImport: i0 }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkEditable, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkEditable, decorators: [{
             type: Directive,
             args: [{
                     selector: 'table[editable], cdk-table[editable], mat-table[editable]',
                     providers: [EditEventDispatcher, EditServices],
                 }]
-        }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: EditEventDispatcher }, { type: FocusDispatcher }, { type: i0.NgZone }]; } });
+        }], ctorParameters: () => [{ type: i0.ElementRef }, { type: EditEventDispatcher }, { type: FocusDispatcher }, { type: i0.NgZone }] });
 const POPOVER_EDIT_HOST_BINDINGS = {
     '[attr.tabindex]': 'disabled ? null : 0',
     'class': 'cdk-popover-edit-cell',
@@ -927,17 +945,17 @@ class CdkPopoverEdit {
             this.elementRef.nativeElement.focus();
         }
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkPopoverEdit, deps: [{ token: EditServices }, { token: i0.ElementRef }, { token: i0.ViewContainerRef }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.1.1", type: CdkPopoverEdit, selector: "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, ngImport: i0 }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkPopoverEdit, deps: [{ token: EditServices }, { token: i0.ElementRef }, { token: i0.ViewContainerRef }], target: i0.ɵɵFactoryTarget.Directive }); }
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkPopoverEdit, selector: "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, ngImport: i0 }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkPopoverEdit, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkPopoverEdit, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkPopoverEdit]:not([cdkPopoverEditTabOut])',
                     host: POPOVER_EDIT_HOST_BINDINGS,
                     inputs: POPOVER_EDIT_INPUTS,
                 }]
-        }], ctorParameters: function () { return [{ type: EditServices }, { type: i0.ElementRef }, { type: i0.ViewContainerRef }]; } });
+        }], ctorParameters: () => [{ type: EditServices }, { type: i0.ElementRef }, { type: i0.ViewContainerRef }] });
 /**
  * Attaches an ng-template to a cell and shows it when instructed to by the
  * EditEventDispatcher service.
@@ -956,21 +974,21 @@ class CdkPopoverEditTabOut extends CdkPopoverEdit {
             .pipe(takeUntil(this.destroyed))
             .subscribe(direction => {
             this.services.editEventDispatcher.editRef?.blur();
-            this.services.focusDispatcher.moveFocusHorizontally(closest(this.elementRef.nativeElement, CELL_SELECTOR), direction === 0 /* FocusEscapeNotifierDirection.START */ ? -1 : 1);
+            this.services.focusDispatcher.moveFocusHorizontally(closest(this.elementRef.nativeElement, CELL_SELECTOR), direction === FocusEscapeNotifierDirection.START ? -1 : 1);
             this.closeEditOverlay();
         });
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkPopoverEditTabOut, deps: [{ token: i0.ElementRef }, { token: i0.ViewContainerRef }, { token: EditServices }, { token: FocusEscapeNotifierFactory }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.1.1", type: CdkPopoverEditTabOut, selector: "[cdkPopoverEdit][cdkPopoverEditTabOut]", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, usesInheritance: true, ngImport: i0 }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkPopoverEditTabOut, deps: [{ token: i0.ElementRef }, { token: i0.ViewContainerRef }, { token: EditServices }, { token: FocusEscapeNotifierFactory }], target: i0.ɵɵFactoryTarget.Directive }); }
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkPopoverEditTabOut, selector: "[cdkPopoverEdit][cdkPopoverEditTabOut]", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, usesInheritance: true, ngImport: i0 }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkPopoverEditTabOut, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkPopoverEditTabOut, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkPopoverEdit][cdkPopoverEditTabOut]',
                     host: POPOVER_EDIT_HOST_BINDINGS,
                     inputs: POPOVER_EDIT_INPUTS,
                 }]
-        }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: i0.ViewContainerRef }, { type: EditServices }, { type: FocusEscapeNotifierFactory }]; } });
+        }], ctorParameters: () => [{ type: i0.ElementRef }, { type: i0.ViewContainerRef }, { type: EditServices }, { type: FocusEscapeNotifierFactory }] });
 /**
  * A structural directive that shows its contents when the table row containing
  * it is hovered or when an element in the row has focus.
@@ -1026,7 +1044,7 @@ class CdkRowHoverContent {
             .subscribe(eventState => {
             // When in FOCUSABLE state, add the hover content to the dom but make it transparent so
             // that it is in the tab order relative to the currently focused row.
-            if (eventState === 2 /* HoverContentState.ON */ || eventState === 1 /* HoverContentState.FOCUSABLE */) {
+            if (eventState === HoverContentState.ON || eventState === HoverContentState.FOCUSABLE) {
                 if (!this.viewRef) {
                     this.viewRef = this.viewContainerRef.createEmbeddedView(this.templateRef, {});
                     this.initElement(this.viewRef.rootNodes[0]);
@@ -1036,7 +1054,7 @@ class CdkRowHoverContent {
                     this.viewContainerRef.insert(this.viewRef);
                     this.viewRef.markForCheck();
                 }
-                if (eventState === 2 /* HoverContentState.ON */) {
+                if (eventState === HoverContentState.ON) {
                     this.makeElementVisible(this.viewRef.rootNodes[0]);
                 }
                 else {
@@ -1048,15 +1066,15 @@ class CdkRowHoverContent {
             }
         });
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkRowHoverContent, deps: [{ token: EditServices }, { token: i0.ElementRef }, { token: i0.TemplateRef }, { token: i0.ViewContainerRef }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.1.1", type: CdkRowHoverContent, selector: "[cdkRowHoverContent]", ngImport: i0 }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkRowHoverContent, deps: [{ token: EditServices }, { token: i0.ElementRef }, { token: i0.TemplateRef }, { token: i0.ViewContainerRef }], target: i0.ɵɵFactoryTarget.Directive }); }
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkRowHoverContent, selector: "[cdkRowHoverContent]", ngImport: i0 }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkRowHoverContent, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkRowHoverContent, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkRowHoverContent]',
                 }]
-        }], ctorParameters: function () { return [{ type: EditServices }, { type: i0.ElementRef }, { type: i0.TemplateRef }, { type: i0.ViewContainerRef }]; } });
+        }], ctorParameters: () => [{ type: EditServices }, { type: i0.ElementRef }, { type: i0.TemplateRef }, { type: i0.ViewContainerRef }] });
 /**
  * Opens the closest edit popover to this element, whether it's associated with this exact
  * element or an ancestor element.
@@ -1075,10 +1093,10 @@ class CdkEditOpen {
         this.editEventDispatcher.editing.next(closest(this.elementRef.nativeElement, CELL_SELECTOR));
         evt.stopPropagation();
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkEditOpen, deps: [{ token: i0.ElementRef }, { token: EditEventDispatcher }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "16.1.1", type: CdkEditOpen, selector: "[cdkEditOpen]", host: { listeners: { "click": "openEdit($event)" } }, ngImport: i0 }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkEditOpen, deps: [{ token: i0.ElementRef }, { token: EditEventDispatcher }], target: i0.ɵɵFactoryTarget.Directive }); }
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkEditOpen, selector: "[cdkEditOpen]", host: { listeners: { "click": "openEdit($event)" } }, ngImport: i0 }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkEditOpen, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkEditOpen, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkEditOpen]',
@@ -1086,7 +1104,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImpor
                         '(click)': 'openEdit($event)',
                     },
                 }]
-        }], ctorParameters: function () { return [{ type: i0.ElementRef }, { type: EditEventDispatcher }]; } });
+        }], ctorParameters: () => [{ type: i0.ElementRef }, { type: EditEventDispatcher }] });
 
 const EXPORTED_DECLARATIONS = [
     CdkPopoverEdit,
@@ -1099,8 +1117,8 @@ const EXPORTED_DECLARATIONS = [
     CdkEditOpen,
 ];
 class CdkPopoverEditModule {
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkPopoverEditModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule }); }
-    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "16.1.1", ngImport: i0, type: CdkPopoverEditModule, declarations: [CdkPopoverEdit,
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkPopoverEditModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule }); }
+    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "17.0.0", ngImport: i0, type: CdkPopoverEditModule, declarations: [CdkPopoverEdit,
             CdkPopoverEditTabOut,
             CdkRowHoverContent,
             CdkEditControl,
@@ -1115,14 +1133,14 @@ class CdkPopoverEditModule {
             CdkEditClose,
             CdkEditable,
             CdkEditOpen] }); }
-    static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkPopoverEditModule, providers: [
+    static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkPopoverEditModule, providers: [
             {
                 provide: PopoverEditPositionStrategyFactory,
                 useClass: DefaultPopoverEditPositionStrategyFactory,
             },
         ], imports: [OverlayModule] }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImport: i0, type: CdkPopoverEditModule, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkPopoverEditModule, decorators: [{
             type: NgModule,
             args: [{
                     imports: [OverlayModule],
@@ -1141,5 +1159,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.1.1", ngImpor
  * Generated bundle index. Do not edit.
  */
 
-export { CdkEditClose, CdkEditControl, CdkEditOpen, CdkEditRevert, CdkEditable, CdkPopoverEdit, CdkPopoverEditModule, CdkPopoverEditTabOut, CdkRowHoverContent, DefaultPopoverEditPositionStrategyFactory, EditEventDispatcher, EditRef, FocusDispatcher, FormValueContainer, PopoverEditPositionStrategyFactory, CELL_SELECTOR as _CELL_SELECTOR, closest as _closest };
+export { CdkEditClose, CdkEditControl, CdkEditOpen, CdkEditRevert, CdkEditable, CdkPopoverEdit, CdkPopoverEditModule, CdkPopoverEditTabOut, CdkRowHoverContent, DefaultPopoverEditPositionStrategyFactory, EditEventDispatcher, EditRef, FocusDispatcher, FormValueContainer, HoverContentState, PopoverEditPositionStrategyFactory, CELL_SELECTOR as _CELL_SELECTOR, closest as _closest };
 //# sourceMappingURL=popover-edit.mjs.map
