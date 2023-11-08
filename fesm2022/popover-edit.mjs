@@ -42,18 +42,6 @@ function closest(element, selector) {
 const MOUSE_EVENT_DELAY_MS = 40;
 /** The delay for reacting to focus/blur changes. */
 const FOCUS_DELAY = 0;
-/**
- * The possible states for hover content:
- * OFF - Not rendered.
- * FOCUSABLE - Rendered in the dom and styled for its contents to be focusable but invisible.
- * ON - Rendered and fully visible.
- */
-var HoverContentState;
-(function (HoverContentState) {
-    HoverContentState[HoverContentState["OFF"] = 0] = "OFF";
-    HoverContentState[HoverContentState["FOCUSABLE"] = 1] = "FOCUSABLE";
-    HoverContentState[HoverContentState["ON"] = 2] = "ON";
-})(HoverContentState || (HoverContentState = {}));
 // Note: this class is generic, rather than referencing EditRef directly, in order to avoid
 // circular imports. If we were to reference it here, importing the registry into the
 // class that is registering itself will introduce a circular import.
@@ -174,7 +162,7 @@ class EditEventDispatcher {
     hoverOrFocusOnRow(row) {
         if (row !== this._lastSeenRow) {
             this._lastSeenRow = row;
-            this._lastSeenRowHoverOrFocus = this._hoveredContentStateDistinct.pipe(map(state => state.get(row) || HoverContentState.OFF), this._distinctShare);
+            this._lastSeenRowHoverOrFocus = this._hoveredContentStateDistinct.pipe(map(state => state.get(row) || 0 /* HoverContentState.OFF */), this._distinctShare);
         }
         return this._lastSeenRowHoverOrFocus;
     }
@@ -228,13 +216,13 @@ function computeHoverContentState([firstRow, lastRow, activeRow, hoverRow,]) {
         activeRow && activeRow.nextElementSibling,
     ]) {
         if (focussableRow) {
-            hoverContentState.set(focussableRow, HoverContentState.FOCUSABLE);
+            hoverContentState.set(focussableRow, 1 /* HoverContentState.FOCUSABLE */);
         }
     }
     // Add/overwrite with fully visible rows.
     for (const onRow of [activeRow, hoverRow]) {
         if (onRow) {
-            hoverContentState.set(onRow, HoverContentState.ON);
+            hoverContentState.set(onRow, 2 /* HoverContentState.ON */);
         }
     }
     return hoverContentState;
@@ -670,12 +658,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImpor
             type: Injectable
         }], ctorParameters: () => [{ type: i1$1.Directionality }, { type: EditEventDispatcher }, { type: FocusDispatcher }, { type: i4.FocusTrapFactory }, { type: i0.NgZone }, { type: i2.Overlay }, { type: PopoverEditPositionStrategyFactory }, { type: i7.ScrollDispatcher }, { type: i7.ViewportRuler }] });
 
-/** Value indicating whether focus left the target area before or after the enclosed elements. */
-var FocusEscapeNotifierDirection;
-(function (FocusEscapeNotifierDirection) {
-    FocusEscapeNotifierDirection[FocusEscapeNotifierDirection["START"] = 0] = "START";
-    FocusEscapeNotifierDirection[FocusEscapeNotifierDirection["END"] = 1] = "END";
-})(FocusEscapeNotifierDirection || (FocusEscapeNotifierDirection = {}));
 /**
  * Like FocusTrap, but rather than trapping focus within a dom region, notifies subscribers when
  * focus leaves the region.
@@ -687,11 +669,11 @@ class FocusEscapeNotifier extends FocusTrap {
         // The focus trap adds "anchors" at the beginning and end of a trapped region that redirect
         // focus. We override that redirect behavior here with simply emitting on a stream.
         this.startAnchorListener = () => {
-            this._escapeSubject.next(FocusEscapeNotifierDirection.START);
+            this._escapeSubject.next(0 /* FocusEscapeNotifierDirection.START */);
             return true;
         };
         this.endAnchorListener = () => {
-            this._escapeSubject.next(FocusEscapeNotifierDirection.END);
+            this._escapeSubject.next(1 /* FocusEscapeNotifierDirection.END */);
             return true;
         };
         this.attachAnchors();
@@ -974,7 +956,7 @@ class CdkPopoverEditTabOut extends CdkPopoverEdit {
             .pipe(takeUntil(this.destroyed))
             .subscribe(direction => {
             this.services.editEventDispatcher.editRef?.blur();
-            this.services.focusDispatcher.moveFocusHorizontally(closest(this.elementRef.nativeElement, CELL_SELECTOR), direction === FocusEscapeNotifierDirection.START ? -1 : 1);
+            this.services.focusDispatcher.moveFocusHorizontally(closest(this.elementRef.nativeElement, CELL_SELECTOR), direction === 0 /* FocusEscapeNotifierDirection.START */ ? -1 : 1);
             this.closeEditOverlay();
         });
     }
@@ -1044,7 +1026,7 @@ class CdkRowHoverContent {
             .subscribe(eventState => {
             // When in FOCUSABLE state, add the hover content to the dom but make it transparent so
             // that it is in the tab order relative to the currently focused row.
-            if (eventState === HoverContentState.ON || eventState === HoverContentState.FOCUSABLE) {
+            if (eventState === 2 /* HoverContentState.ON */ || eventState === 1 /* HoverContentState.FOCUSABLE */) {
                 if (!this.viewRef) {
                     this.viewRef = this.viewContainerRef.createEmbeddedView(this.templateRef, {});
                     this.initElement(this.viewRef.rootNodes[0]);
@@ -1054,7 +1036,7 @@ class CdkRowHoverContent {
                     this.viewContainerRef.insert(this.viewRef);
                     this.viewRef.markForCheck();
                 }
-                if (eventState === HoverContentState.ON) {
+                if (eventState === 2 /* HoverContentState.ON */) {
                     this.makeElementVisible(this.viewRef.rootNodes[0]);
                 }
                 else {
@@ -1159,5 +1141,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImpor
  * Generated bundle index. Do not edit.
  */
 
-export { CdkEditClose, CdkEditControl, CdkEditOpen, CdkEditRevert, CdkEditable, CdkPopoverEdit, CdkPopoverEditModule, CdkPopoverEditTabOut, CdkRowHoverContent, DefaultPopoverEditPositionStrategyFactory, EditEventDispatcher, EditRef, FocusDispatcher, FormValueContainer, HoverContentState, PopoverEditPositionStrategyFactory, CELL_SELECTOR as _CELL_SELECTOR, closest as _closest };
+export { CdkEditClose, CdkEditControl, CdkEditOpen, CdkEditRevert, CdkEditable, CdkPopoverEdit, CdkPopoverEditModule, CdkPopoverEditTabOut, CdkRowHoverContent, DefaultPopoverEditPositionStrategyFactory, EditEventDispatcher, EditRef, FocusDispatcher, FormValueContainer, PopoverEditPositionStrategyFactory, CELL_SELECTOR as _CELL_SELECTOR, closest as _closest };
 //# sourceMappingURL=popover-edit.mjs.map
