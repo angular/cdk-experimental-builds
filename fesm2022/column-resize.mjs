@@ -434,13 +434,14 @@ class CdkColumnResize extends ColumnResize {
         this.table = table;
     }
     static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResize, deps: [{ token: ColumnResizeNotifier }, { token: i0.ElementRef }, { token: HeaderRowEventDispatcher }, { token: i0.NgZone }, { token: ColumnResizeNotifierSource }, { token: i3.CdkTable }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkColumnResize, selector: "table[cdk-table][columnResize]", providers: [...TABLE_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResize }], usesInheritance: true, ngImport: i0 }); }
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkColumnResize, isStandalone: true, selector: "table[cdk-table][columnResize]", providers: [...TABLE_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResize }], usesInheritance: true, ngImport: i0 }); }
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResize, decorators: [{
             type: Directive,
             args: [{
                     selector: 'table[cdk-table][columnResize]',
                     providers: [...TABLE_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResize }],
+                    standalone: true,
                 }]
         }], ctorParameters: () => [{ type: ColumnResizeNotifier }, { type: i0.ElementRef }, { type: HeaderRowEventDispatcher }, { type: i0.NgZone }, { type: ColumnResizeNotifierSource }, { type: i3.CdkTable }] });
 
@@ -459,13 +460,14 @@ class CdkColumnResizeFlex extends ColumnResize {
         this.table = table;
     }
     static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResizeFlex, deps: [{ token: ColumnResizeNotifier }, { token: i0.ElementRef }, { token: HeaderRowEventDispatcher }, { token: i0.NgZone }, { token: ColumnResizeNotifierSource }, { token: i3.CdkTable }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkColumnResizeFlex, selector: "cdk-table[columnResize]", providers: [...FLEX_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResizeFlex }], usesInheritance: true, ngImport: i0 }); }
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkColumnResizeFlex, isStandalone: true, selector: "cdk-table[columnResize]", providers: [...FLEX_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResizeFlex }], usesInheritance: true, ngImport: i0 }); }
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResizeFlex, decorators: [{
             type: Directive,
             args: [{
                     selector: 'cdk-table[columnResize]',
                     providers: [...FLEX_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResizeFlex }],
+                    standalone: true,
                 }]
         }], ctorParameters: () => [{ type: ColumnResizeNotifier }, { type: i0.ElementRef }, { type: HeaderRowEventDispatcher }, { type: i0.NgZone }, { type: ColumnResizeNotifierSource }, { type: i3.CdkTable }] });
 
@@ -484,7 +486,7 @@ class CdkDefaultEnabledColumnResize extends ColumnResize {
         this.table = table;
     }
     static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkDefaultEnabledColumnResize, deps: [{ token: ColumnResizeNotifier }, { token: i0.ElementRef }, { token: HeaderRowEventDispatcher }, { token: i0.NgZone }, { token: ColumnResizeNotifierSource }, { token: i3.CdkTable }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkDefaultEnabledColumnResize, selector: "table[cdk-table]", providers: [
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkDefaultEnabledColumnResize, isStandalone: true, selector: "table[cdk-table]", providers: [
             ...TABLE_PROVIDERS,
             { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResize },
         ], usesInheritance: true, ngImport: i0 }); }
@@ -497,6 +499,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImpor
                         ...TABLE_PROVIDERS,
                         { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResize },
                     ],
+                    standalone: true,
                 }]
         }], ctorParameters: () => [{ type: ColumnResizeNotifier }, { type: i0.ElementRef }, { type: HeaderRowEventDispatcher }, { type: i0.NgZone }, { type: ColumnResizeNotifierSource }, { type: i3.CdkTable }] });
 
@@ -515,7 +518,7 @@ class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
         this.table = table;
     }
     static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkDefaultEnabledColumnResizeFlex, deps: [{ token: ColumnResizeNotifier }, { token: i0.ElementRef }, { token: HeaderRowEventDispatcher }, { token: i0.NgZone }, { token: ColumnResizeNotifierSource }, { token: i3.CdkTable }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkDefaultEnabledColumnResizeFlex, selector: "cdk-table", providers: [
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "17.0.0", type: CdkDefaultEnabledColumnResizeFlex, isStandalone: true, selector: "cdk-table", providers: [
             ...FLEX_PROVIDERS,
             { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResizeFlex },
         ], usesInheritance: true, ngImport: i0 }); }
@@ -528,6 +531,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImpor
                         ...FLEX_PROVIDERS,
                         { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResizeFlex },
                     ],
+                    standalone: true,
                 }]
         }], ctorParameters: () => [{ type: ColumnResizeNotifier }, { type: i0.ElementRef }, { type: HeaderRowEventDispatcher }, { type: i0.NgZone }, { type: ColumnResizeNotifierSource }, { type: i3.CdkTable }] });
 
@@ -537,13 +541,13 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImpor
  */
 class CdkColumnResizeDefaultEnabledModule {
     static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResizeDefaultEnabledModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule }); }
-    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResizeDefaultEnabledModule, declarations: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex], exports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex] }); }
+    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResizeDefaultEnabledModule, imports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex], exports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex] }); }
     static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResizeDefaultEnabledModule }); }
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResizeDefaultEnabledModule, decorators: [{
             type: NgModule,
             args: [{
-                    declarations: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
+                    imports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
                     exports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
                 }]
         }] });
@@ -553,13 +557,13 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImpor
  */
 class CdkColumnResizeModule {
     static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResizeModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule }); }
-    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResizeModule, declarations: [CdkColumnResize, CdkColumnResizeFlex], exports: [CdkColumnResize, CdkColumnResizeFlex] }); }
+    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResizeModule, imports: [CdkColumnResize, CdkColumnResizeFlex], exports: [CdkColumnResize, CdkColumnResizeFlex] }); }
     static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResizeModule }); }
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: CdkColumnResizeModule, decorators: [{
             type: NgModule,
             args: [{
-                    declarations: [CdkColumnResize, CdkColumnResizeFlex],
+                    imports: [CdkColumnResize, CdkColumnResizeFlex],
                     exports: [CdkColumnResize, CdkColumnResizeFlex],
                 }]
         }] });
