@@ -129,7 +129,7 @@ export declare class CdkAutoSizeVirtualScroll implements OnChanges {
     _scrollStrategy: AutoSizeVirtualScrollStrategy;
     ngOnChanges(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkAutoSizeVirtualScroll, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkAutoSizeVirtualScroll, "cdk-virtual-scroll-viewport[autosize]", never, { "minBufferPx": { "alias": "minBufferPx"; "required": false; }; "maxBufferPx": { "alias": "maxBufferPx"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkAutoSizeVirtualScroll, "cdk-virtual-scroll-viewport[autosize]", never, { "minBufferPx": { "alias": "minBufferPx"; "required": false; }; "maxBufferPx": { "alias": "maxBufferPx"; "required": false; }; }, {}, never, never, false, never>;
 }
 
 declare namespace i1 {
@@ -168,7 +168,7 @@ export declare class ItemSizeAverager {
 
 export declare class ScrollingModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<ScrollingModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<ScrollingModule, never, [typeof i1.CdkAutoSizeVirtualScroll], [typeof i1.CdkAutoSizeVirtualScroll]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ScrollingModule, [typeof i1.CdkAutoSizeVirtualScroll], never, [typeof i1.CdkAutoSizeVirtualScroll]>;
     static ɵinj: i0.ɵɵInjectorDeclaration<ScrollingModule>;
 }
 
