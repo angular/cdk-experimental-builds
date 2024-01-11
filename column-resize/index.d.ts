@@ -30,7 +30,7 @@ export declare class CdkColumnResize extends ColumnResize {
     protected readonly table: CdkTable<unknown>;
     constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkColumnResize, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkColumnResize, "table[cdk-table][columnResize]", never, {}, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkColumnResize, "table[cdk-table][columnResize]", never, {}, {}, never, never, true, never>;
 }
 
 /**
@@ -39,7 +39,7 @@ export declare class CdkColumnResize extends ColumnResize {
  */
 export declare class CdkColumnResizeDefaultEnabledModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkColumnResizeDefaultEnabledModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkColumnResizeDefaultEnabledModule, [typeof i1.CdkDefaultEnabledColumnResize, typeof i2.CdkDefaultEnabledColumnResizeFlex], never, [typeof i1.CdkDefaultEnabledColumnResize, typeof i2.CdkDefaultEnabledColumnResizeFlex]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkColumnResizeDefaultEnabledModule, never, [typeof i1.CdkDefaultEnabledColumnResize, typeof i2.CdkDefaultEnabledColumnResizeFlex], [typeof i1.CdkDefaultEnabledColumnResize, typeof i2.CdkDefaultEnabledColumnResizeFlex]>;
     static ɵinj: i0.ɵɵInjectorDeclaration<CdkColumnResizeDefaultEnabledModule>;
 }
 
@@ -56,7 +56,7 @@ export declare class CdkColumnResizeFlex extends ColumnResize {
     protected readonly table: CdkTable<unknown>;
     constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkColumnResizeFlex, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkColumnResizeFlex, "cdk-table[columnResize]", never, {}, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkColumnResizeFlex, "cdk-table[columnResize]", never, {}, {}, never, never, true, never>;
 }
 
 /**
@@ -65,7 +65,7 @@ export declare class CdkColumnResizeFlex extends ColumnResize {
  */
 export declare class CdkColumnResizeModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkColumnResizeModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkColumnResizeModule, [typeof i3.CdkColumnResize, typeof i4.CdkColumnResizeFlex], never, [typeof i3.CdkColumnResize, typeof i4.CdkColumnResizeFlex]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkColumnResizeModule, never, [typeof i3.CdkColumnResize, typeof i4.CdkColumnResizeFlex], [typeof i3.CdkColumnResize, typeof i4.CdkColumnResizeFlex]>;
     static ɵinj: i0.ɵɵInjectorDeclaration<CdkColumnResizeModule>;
 }
 
@@ -82,7 +82,7 @@ export declare class CdkDefaultEnabledColumnResize extends ColumnResize {
     protected readonly table: CdkTable<unknown>;
     constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkDefaultEnabledColumnResize, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResize, "table[cdk-table]", never, {}, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResize, "table[cdk-table]", never, {}, {}, never, never, true, never>;
 }
 
 /**
@@ -98,7 +98,7 @@ export declare class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
     protected readonly table: CdkTable<unknown>;
     constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkDefaultEnabledColumnResizeFlex, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResizeFlex, "cdk-table", never, {}, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResizeFlex, "cdk-table", never, {}, {}, never, never, true, never>;
 }
 
 /**
