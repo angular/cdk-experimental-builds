@@ -203,7 +203,6 @@ class ResizeStrategy {
             });
             this.styleScheduler.scheduleEnd(() => {
                 this.table.updateStickyColumnStyles();
-                this.styleScheduler.flushAfterRender();
             });
         }
         this._pendingResizeDelta = (this._pendingResizeDelta ?? 0) + delta;
