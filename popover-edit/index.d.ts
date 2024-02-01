@@ -7,7 +7,7 @@ import { EventEmitter } from '@angular/core';
 import { FocusTrap } from '@angular/cdk/a11y';
 import { FocusTrapFactory } from '@angular/cdk/a11y';
 import * as i0 from '@angular/core';
-import * as i1 from '@angular/cdk/overlay';
+import * as i3 from '@angular/cdk/overlay';
 import { InteractivityChecker } from '@angular/cdk/a11y';
 import { NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -15,7 +15,9 @@ import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { Overlay } from '@angular/cdk/overlay';
 import { OverlayRef } from '@angular/cdk/overlay';
+import { OverlaySizeConfig } from '@angular/cdk/overlay';
 import { PartialObserver } from 'rxjs';
+import { PositionStrategy } from '@angular/cdk/overlay';
 import { ScrollDispatcher } from '@angular/cdk/scrolling';
 import { Subject } from 'rxjs';
 import { TemplateRef } from '@angular/core';
@@ -38,7 +40,7 @@ export declare class CdkEditable implements AfterViewInit, OnDestroy {
     ngOnDestroy(): void;
     private _listenForTableEvents;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditable, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditable, "table[editable], cdk-table[editable], mat-table[editable]", never, {}, {}, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditable, "table[editable], cdk-table[editable], mat-table[editable]", never, {}, {}, never, never, false, never>;
 }
 
 /** Closes the lens on click. */
@@ -48,7 +50,7 @@ export declare class CdkEditClose<FormValue> {
     constructor(elementRef: ElementRef<HTMLElement>, editRef: EditRef<FormValue>);
     closeEdit(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditClose<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditClose<any>, "[cdkEditClose]", never, {}, {}, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditClose<any>, "[cdkEditClose]", never, {}, {}, never, never, false, never>;
 }
 
 /**
@@ -99,7 +101,7 @@ export declare class CdkEditControl<FormValue> implements OnDestroy, OnInit {
     private _handleBlur;
     private _triggerFormSubmit;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditControl<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditControl<any>, "form[cdkEditControl]", never, { "clickOutBehavior": { "alias": "cdkEditControlClickOutBehavior"; "required": false; }; "preservedFormValue": { "alias": "cdkEditControlPreservedFormValue"; "required": false; }; "ignoreSubmitUnlessValid": { "alias": "cdkEditControlIgnoreSubmitUnlessValid"; "required": false; }; }, { "preservedFormValueChange": "cdkEditControlPreservedFormValueChange"; }, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditControl<any>, "form[cdkEditControl]", never, { "clickOutBehavior": { "alias": "cdkEditControlClickOutBehavior"; "required": false; }; "preservedFormValue": { "alias": "cdkEditControlPreservedFormValue"; "required": false; }; "ignoreSubmitUnlessValid": { "alias": "cdkEditControlIgnoreSubmitUnlessValid"; "required": false; }; }, { "preservedFormValueChange": "cdkEditControlPreservedFormValueChange"; }, never, never, false, never>;
 }
 
 /**
@@ -112,7 +114,7 @@ export declare class CdkEditOpen {
     constructor(elementRef: ElementRef<HTMLElement>, editEventDispatcher: EditEventDispatcher<EditRef<unknown>>);
     openEdit(evt: Event): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditOpen, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditOpen, "[cdkEditOpen]", never, {}, {}, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditOpen, "[cdkEditOpen]", never, {}, {}, never, never, false, never>;
 }
 
 /** Reverts the form to its initial or previously submitted state on click. */
@@ -123,7 +125,7 @@ export declare class CdkEditRevert<FormValue> {
     constructor(editRef: EditRef<FormValue>);
     revertEdit(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditRevert<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditRevert<any>, "button[cdkEditRevert]", never, { "type": { "alias": "type"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditRevert<any>, "button[cdkEditRevert]", never, { "type": { "alias": "type"; "required": false; }; }, {}, never, never, false, never>;
 }
 
 /**
@@ -169,9 +171,8 @@ export declare class CdkPopoverEdit<C> implements AfterViewInit, OnDestroy {
     private _getPositionStrategy;
     private _updateOverlaySize;
     private _maybeReturnFocusToCell;
-    private _sizeConfigForCells;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEdit<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEdit<any>, "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEdit<any>, "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; }, {}, never, never, false, never>;
 }
 
 /**
@@ -186,7 +187,7 @@ export declare interface CdkPopoverEditColspan {
 
 export declare class CdkPopoverEditModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEditModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkPopoverEditModule, never, [typeof i1.OverlayModule, typeof i2.CdkPopoverEdit, typeof i2.CdkPopoverEditTabOut, typeof i2.CdkRowHoverContent, typeof i3.CdkEditControl, typeof i3.CdkEditRevert, typeof i3.CdkEditClose, typeof i2.CdkEditable, typeof i2.CdkEditOpen], [typeof i2.CdkPopoverEdit, typeof i2.CdkPopoverEditTabOut, typeof i2.CdkRowHoverContent, typeof i3.CdkEditControl, typeof i3.CdkEditRevert, typeof i3.CdkEditClose, typeof i2.CdkEditable, typeof i2.CdkEditOpen]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkPopoverEditModule, [typeof i1.CdkPopoverEdit, typeof i1.CdkPopoverEditTabOut, typeof i1.CdkRowHoverContent, typeof i2.CdkEditControl, typeof i2.CdkEditRevert, typeof i2.CdkEditClose, typeof i1.CdkEditable, typeof i1.CdkEditOpen], [typeof i3.OverlayModule], [typeof i1.CdkPopoverEdit, typeof i1.CdkPopoverEditTabOut, typeof i1.CdkRowHoverContent, typeof i2.CdkEditControl, typeof i2.CdkEditRevert, typeof i2.CdkEditClose, typeof i1.CdkEditable, typeof i1.CdkEditOpen]>;
     static ɵinj: i0.ɵɵInjectorDeclaration<CdkPopoverEditModule>;
 }
 
@@ -201,7 +202,7 @@ export declare class CdkPopoverEditTabOut<C> extends CdkPopoverEdit<C> {
     constructor(elementRef: ElementRef, viewContainerRef: ViewContainerRef, services: EditServices, focusEscapeNotifierFactory: FocusEscapeNotifierFactory);
     protected initFocusTrap(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEditTabOut<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEditTabOut<any>, "[cdkPopoverEdit][cdkPopoverEditTabOut]", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEditTabOut<any>, "[cdkPopoverEdit][cdkPopoverEditTabOut]", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; }, {}, never, never, false, never>;
 }
 
 /**
@@ -237,7 +238,7 @@ export declare class CdkRowHoverContent implements AfterViewInit, OnDestroy {
     protected makeElementVisible(element: HTMLElement): void;
     private _listenForHoverAndFocusEvents;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkRowHoverContent, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowHoverContent, "[cdkRowHoverContent]", never, {}, {}, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowHoverContent, "[cdkRowHoverContent]", never, {}, {}, never, never, false, never>;
 }
 
 /** Selector for finding table cells. */
@@ -246,6 +247,21 @@ export declare const _CELL_SELECTOR = ".cdk-cell, .mat-cell, td";
 
 /** closest implementation that is able to start from non-Element Nodes. */
 export declare function _closest(element: EventTarget | Element | null | undefined, selector: string): Element | null;
+
+/**
+ * Default implementation of PopoverEditPositionStrategyFactory.
+ * Uses a FlexibleConnectedPositionStrategy anchored to the start + top of the cell.
+ * Note: This will change to CoverPositionStrategy once it implemented.
+ */
+export declare class DefaultPopoverEditPositionStrategyFactory extends PopoverEditPositionStrategyFactory {
+    protected readonly direction: Directionality;
+    protected readonly overlay: Overlay;
+    constructor(direction: Directionality, overlay: Overlay);
+    positionStrategyForCells(cells: HTMLElement[]): PositionStrategy;
+    sizeConfigForCells(cells: HTMLElement[]): OverlaySizeConfig;
+    static ɵfac: i0.ɵɵFactoryDeclaration<DefaultPopoverEditPositionStrategyFactory, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<DefaultPopoverEditPositionStrategyFactory>;
+}
 
 /**
  * Service for sharing delegated events and state for triggering table edits.
@@ -380,9 +396,10 @@ declare class EditServices {
     readonly focusTrapFactory: FocusTrapFactory;
     readonly ngZone: NgZone;
     readonly overlay: Overlay;
+    readonly positionFactory: PopoverEditPositionStrategyFactory;
     readonly scrollDispatcher: ScrollDispatcher;
     readonly viewportRuler: ViewportRuler;
-    constructor(directionality: Directionality, editEventDispatcher: EditEventDispatcher<EditRef<unknown>>, focusDispatcher: FocusDispatcher, focusTrapFactory: FocusTrapFactory, ngZone: NgZone, overlay: Overlay, scrollDispatcher: ScrollDispatcher, viewportRuler: ViewportRuler);
+    constructor(directionality: Directionality, editEventDispatcher: EditEventDispatcher<EditRef<unknown>>, focusDispatcher: FocusDispatcher, focusTrapFactory: FocusTrapFactory, ngZone: NgZone, overlay: Overlay, positionFactory: PopoverEditPositionStrategyFactory, scrollDispatcher: ScrollDispatcher, viewportRuler: ViewportRuler);
     static ɵfac: i0.ɵɵFactoryDeclaration<EditServices, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<EditServices>;
 }
@@ -425,7 +442,7 @@ declare class FocusEscapeNotifier extends FocusTrap {
 }
 
 /** Value indicating whether focus left the target area before or after the enclosed elements. */
-declare enum FocusEscapeNotifierDirection {
+declare const enum FocusEscapeNotifierDirection {
     START = 0,
     END = 1
 }
@@ -467,13 +484,13 @@ export declare class FormValueContainer<Key extends object, FormValue> {
  * FOCUSABLE - Rendered in the dom and styled for its contents to be focusable but invisible.
  * ON - Rendered and fully visible.
  */
-export declare enum HoverContentState {
+export declare const enum HoverContentState {
     OFF = 0,
     FOCUSABLE = 1,
     ON = 2
 }
 
-declare namespace i2 {
+declare namespace i1 {
     export {
         CdkPopoverEditColspan,
         CdkEditable,
@@ -484,7 +501,7 @@ declare namespace i2 {
     }
 }
 
-declare namespace i3 {
+declare namespace i2 {
     export {
         PopoverEditClickOutBehavior,
         CdkEditControl,
@@ -495,5 +512,24 @@ declare namespace i3 {
 
 /** Options for what do to when the user clicks outside of an edit lens. */
 export declare type PopoverEditClickOutBehavior = 'close' | 'submit' | 'noop';
+
+/**
+ * Overridable factory responsible for configuring how cdkPopoverEdit popovers are positioned
+ * and sized.
+ */
+export declare abstract class PopoverEditPositionStrategyFactory {
+    /**
+     * Creates a PositionStrategy based on the specified table cells.
+     * The cells will be provided in DOM order.
+     */
+    abstract positionStrategyForCells(cells: HTMLElement[]): PositionStrategy;
+    /**
+     * Creates an OverlaySizeConfig based on the specified table cells.
+     * The cells will be provided in DOM order.
+     */
+    abstract sizeConfigForCells(cells: HTMLElement[]): OverlaySizeConfig;
+    static ɵfac: i0.ɵɵFactoryDeclaration<PopoverEditPositionStrategyFactory, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<PopoverEditPositionStrategyFactory>;
+}
 
 export { }
