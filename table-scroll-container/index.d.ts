@@ -47,12 +47,12 @@ export declare class CdkTableScrollContainer implements StickyPositioningListene
     private _applyCss;
     private _clearCss;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkTableScrollContainer, [null, null, { optional: true; }, { optional: true; }]>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkTableScrollContainer, "[cdkTableScrollContainer]", never, {}, {}, never, never, false, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkTableScrollContainer, "[cdkTableScrollContainer]", never, {}, {}, never, never, true, never>;
 }
 
 export declare class CdkTableScrollContainerModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkTableScrollContainerModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkTableScrollContainerModule, [typeof i1.CdkTableScrollContainer], never, [typeof i1.CdkTableScrollContainer]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkTableScrollContainerModule, never, [typeof i1.CdkTableScrollContainer], [typeof i1.CdkTableScrollContainer]>;
     static ɵinj: i0.ɵɵInjectorDeclaration<CdkTableScrollContainerModule>;
 }
 
