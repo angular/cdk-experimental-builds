@@ -1,7 +1,7 @@
 import { Version } from '@angular/core';
 
 /** Current version of the CDK Experimental package. */
-const VERSION = new Version('17.2.0-next.1');
+const VERSION = new Version('17.2.0-rc.0');
 
 export { VERSION };
 //# sourceMappingURL=cdk-experimental.mjs.map
