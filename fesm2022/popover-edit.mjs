@@ -510,9 +510,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.2.0", ngImpor
             args: [{
                     selector: 'form[cdkEditControl]',
                     inputs: [
-                        'clickOutBehavior: cdkEditControlClickOutBehavior',
-                        'preservedFormValue: cdkEditControlPreservedFormValue',
-                        'ignoreSubmitUnlessValid: cdkEditControlIgnoreSubmitUnlessValid',
+                        { name: 'clickOutBehavior', alias: 'cdkEditControlClickOutBehavior' },
+                        { name: 'preservedFormValue', alias: 'cdkEditControlPreservedFormValue' },
+                        { name: 'ignoreSubmitUnlessValid', alias: 'cdkEditControlIgnoreSubmitUnlessValid' },
                     ],
                     outputs: ['preservedFormValueChange: cdkEditControlPreservedFormValueChange'],
                     providers: [EditRef],
@@ -743,10 +743,10 @@ const POPOVER_EDIT_HOST_BINDINGS = {
     '[attr.aria-haspopup]': '!disabled',
 };
 const POPOVER_EDIT_INPUTS = [
-    'template: cdkPopoverEdit',
-    'context: cdkPopoverEditContext',
-    'colspan: cdkPopoverEditColspan',
-    'disabled: cdkPopoverEditDisabled',
+    { name: 'template', alias: 'cdkPopoverEdit' },
+    { name: 'context', alias: 'cdkPopoverEditContext' },
+    { name: 'colspan', alias: 'cdkPopoverEditColspan' },
+    { name: 'disabled', alias: 'cdkPopoverEditDisabled' },
 ];
 /**
  * Attaches an ng-template to a cell and shows it when instructed to by the
