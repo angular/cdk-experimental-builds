@@ -33,6 +33,7 @@ export declare class CdkEditable implements AfterViewInit, OnDestroy {
     protected readonly focusDispatcher: FocusDispatcher;
     protected readonly ngZone: NgZone;
     protected readonly destroyed: Subject<void>;
+    private _rendered;
     constructor(elementRef: ElementRef, editEventDispatcher: EditEventDispatcher<EditRef<unknown>>, focusDispatcher: FocusDispatcher, ngZone: NgZone);
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
@@ -333,7 +334,6 @@ export declare class EditEventDispatcher<R> {
 export declare class EditRef<FormValue> implements OnDestroy {
     private readonly _form;
     private readonly _editEventDispatcher;
-    private readonly _ngZone;
     /** Emits the final value of this edit instance before closing. */
     private readonly _finalValueSubject;
     readonly finalValue: Observable<FormValue>;
@@ -342,7 +342,8 @@ export declare class EditRef<FormValue> implements OnDestroy {
     readonly blurred: Observable<void>;
     /** The value to set the form back to on revert. */
     private _revertFormValue;
-    constructor(_form: ControlContainer, _editEventDispatcher: EditEventDispatcher<EditRef<FormValue>>, _ngZone: NgZone);
+    private _injector;
+    constructor(_form: ControlContainer, _editEventDispatcher: EditEventDispatcher<EditRef<FormValue>>);
     /**
      * Called by the host directive's OnInit hook. Reads the initial state of the
      * form and overrides it with persisted state from previous openings, if
@@ -363,7 +364,7 @@ export declare class EditRef<FormValue> implements OnDestroy {
      * revert value.
      */
     reset(value?: FormValue): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<EditRef<any>, [{ self: true; }, null, null]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<EditRef<any>, [{ self: true; }, null]>;
     static ɵprov: i0.ɵɵInjectableDeclaration<EditRef<any>>;
 }
 

@@ -1,7 +1,7 @@
 import * as i0 from '@angular/core';
-import { Injectable, Self, EventEmitter, Directive, Input, Inject, NgModule } from '@angular/core';
+import { Injectable, inject, Injector, afterNextRender, Self, EventEmitter, Directive, Input, Inject, afterRender, NgModule } from '@angular/core';
 import { Subject, pipe, combineLatest, Observable, fromEvent, fromEventPattern, merge } from 'rxjs';
-import { distinctUntilChanged, startWith, shareReplay, filter, map, auditTime, audit, debounceTime, skip, take, takeUntil, mapTo, throttleTime, share, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, startWith, shareReplay, filter, map, auditTime, audit, debounceTime, skip, takeUntil, mapTo, throttleTime, share, withLatestFrom } from 'rxjs/operators';
 import * as i1 from '@angular/forms';
 import * as i1$1 from '@angular/cdk/bidi';
 import { RIGHT_ARROW, LEFT_ARROW, DOWN_ARROW, UP_ARROW, hasModifierKey } from '@angular/cdk/keycodes';
@@ -257,16 +257,16 @@ function areMapEntriesEqual(a, b) {
  * table that launched it. Provided by CdkEditControl within the lens.
  */
 class EditRef {
-    constructor(_form, _editEventDispatcher, _ngZone) {
+    constructor(_form, _editEventDispatcher) {
         this._form = _form;
         this._editEventDispatcher = _editEventDispatcher;
-        this._ngZone = _ngZone;
         /** Emits the final value of this edit instance before closing. */
         this._finalValueSubject = new Subject();
         this.finalValue = this._finalValueSubject;
         /** Emits when the user tabs out of this edit lens before closing. */
         this._blurredSubject = new Subject();
         this.blurred = this._blurredSubject;
+        this._injector = inject(Injector);
         this._editEventDispatcher.setActiveEditRef(this);
     }
     /**
@@ -275,14 +275,14 @@ class EditRef {
      * applicable.
      */
     init(previousFormValue) {
-        // Wait for the zone to stabilize before caching the initial value.
+        // Wait for the next render before caching the initial value.
         // This ensures that all form controls have been initialized.
-        this._ngZone.onStable.pipe(take(1)).subscribe(() => {
+        afterNextRender(() => {
             this.updateRevertValue();
             if (previousFormValue) {
                 this.reset(previousFormValue);
             }
-        });
+        }, { injector: this._injector });
     }
     ngOnDestroy() {
         this._editEventDispatcher.unsetActiveEditRef(this);
@@ -312,14 +312,14 @@ class EditRef {
     reset(value) {
         this._form.reset(value || this._revertFormValue);
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "18.0.0-next.0+sha-37d1f71", ngImport: i0, type: EditRef, deps: [{ token: i1.ControlContainer, self: true }, { token: EditEventDispatcher }, { token: i0.NgZone }], target: i0.ɵɵFactoryTarget.Injectable }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "18.0.0-next.0+sha-37d1f71", ngImport: i0, type: EditRef, deps: [{ token: i1.ControlContainer, self: true }, { token: EditEventDispatcher }], target: i0.ɵɵFactoryTarget.Injectable }); }
     static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "18.0.0-next.0+sha-37d1f71", ngImport: i0, type: EditRef }); }
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.0.0-next.0+sha-37d1f71", ngImport: i0, type: EditRef, decorators: [{
             type: Injectable
         }], ctorParameters: () => [{ type: i1.ControlContainer, decorators: [{
                     type: Self
-                }] }, { type: EditEventDispatcher }, { type: i0.NgZone }] });
+                }] }, { type: EditEventDispatcher }] });
 
 /**
  * Service responsible for moving cell focus around in response to keyboard events.
@@ -679,6 +679,10 @@ class CdkEditable {
         this.focusDispatcher = focusDispatcher;
         this.ngZone = ngZone;
         this.destroyed = new Subject();
+        this._rendered = new Subject();
+        afterRender(() => {
+            this._rendered.next();
+        });
     }
     ngAfterViewInit() {
         this._listenForTableEvents();
@@ -686,6 +690,7 @@ class CdkEditable {
     ngOnDestroy() {
         this.destroyed.next();
         this.destroyed.complete();
+        this._rendered.complete();
     }
     _listenForTableEvents() {
         const element = this.elementRef.nativeElement;
@@ -711,7 +716,7 @@ class CdkEditable {
             // Keep track of rows within the table. This is used to know which rows with hover content
             // are first or last in the table. They are kept focusable in case focus enters from above
             // or below the table.
-            this.ngZone.onStable
+            this._rendered
                 .pipe(
             // Optimization: ignore dom changes while focus is within the table as we already
             // ensure that rows above and below the focused/active row are tabbable.
