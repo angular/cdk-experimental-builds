@@ -329,7 +329,7 @@ class CdkFlexTableResizeStrategy extends ResizeStrategy {
         if (!this._styleElement) {
             this._styleElement = this._document.createElement('style');
             if (this._nonce) {
-                this._styleElement.nonce = this._nonce;
+                this._styleElement.setAttribute('nonce', this._nonce);
             }
             this._styleElement.appendChild(this._document.createTextNode(''));
             this._document.head.appendChild(this._styleElement);
