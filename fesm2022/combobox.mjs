@@ -1,13 +1,13 @@
 import * as i0 from '@angular/core';
-import { InjectionToken, EventEmitter, Directive, Inject, Optional, Input, Output, NgModule } from '@angular/core';
+import { InjectionToken, EventEmitter, inject, ChangeDetectorRef, Directive, Inject, Optional, Input, Output, NgModule } from '@angular/core';
 import * as i1 from '@angular/cdk/overlay';
 import { OverlayConfig, OverlayModule } from '@angular/cdk/overlay';
-import { DOCUMENT } from '@angular/common';
-import { TemplatePortal } from '@angular/cdk/portal';
 import * as i2 from '@angular/cdk/bidi';
 import { coerceBooleanProperty, coerceArray } from '@angular/cdk/coercion';
-import { _getEventTarget } from '@angular/cdk/platform';
 import { DOWN_ARROW, ENTER, ESCAPE, TAB } from '@angular/cdk/keycodes';
+import { _getEventTarget } from '@angular/cdk/platform';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { DOCUMENT } from '@angular/common';
 
 const allowedOpenActions = ['focus', 'click', 'downKey', 'toggle'];
 const CDK_COMBOBOX = new InjectionToken('CDK_COMBOBOX');
@@ -45,6 +45,7 @@ class CdkCombobox {
         this.closed = new EventEmitter();
         this.panelValueChanged = new EventEmitter();
         this.contentId = '';
+        this._changeDetectorRef = inject(ChangeDetectorRef);
     }
     ngOnDestroy() {
         if (this._overlayRef) {
@@ -122,6 +123,7 @@ class CdkCombobox {
             this.opened.next();
             this._overlayRef = this._overlayRef || this._overlay.create(this._getOverlayConfig());
             this._overlayRef.attach(this._getPanelContent());
+            this._changeDetectorRef.markForCheck();
             if (!this._isTextTrigger()) {
                 // TODO: instead of using a focus function, potentially use cdk/a11y focus trapping
                 this._doc.getElementById(this.contentId)?.focus();
@@ -133,6 +135,7 @@ class CdkCombobox {
         if (this.isOpen() && !this.disabled) {
             this.closed.next();
             this._overlayRef.detach();
+            this._changeDetectorRef.markForCheck();
         }
     }
     /** Returns true if panel is currently opened. */

@@ -42,6 +42,7 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy {
     private _panelPortal;
     contentId: string;
     contentType: AriaHasPopupValue;
+    private _changeDetectorRef;
     constructor(_elementRef: ElementRef<HTMLElement>, _overlay: Overlay, _viewContainerRef: ViewContainerRef, _injector: Injector, _doc: any, _directionality?: Directionality | undefined);
     ngOnDestroy(): void;
     _keydown(event: KeyboardEvent): void;
