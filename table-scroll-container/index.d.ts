@@ -30,7 +30,7 @@ export declare class CdkTableScrollContainer implements StickyPositioningListene
     private _endSizes;
     private _headerSizes;
     private _footerSizes;
-    constructor(_elementRef: ElementRef<HTMLElement>, _document: Document, _directionality?: Directionality | undefined, _nonce?: string | null | undefined);
+    constructor(_elementRef: ElementRef<HTMLElement>, _document: Document, _directionality?: Directionality | undefined, _nonce?: (string | null) | undefined);
     ngOnInit(): void;
     ngOnDestroy(): void;
     stickyColumnsUpdated({ sizes }: StickyUpdate): void;

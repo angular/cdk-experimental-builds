@@ -119,7 +119,7 @@ export declare class CdkFlexTableResizeStrategy extends ResizeStrategy implement
     private _indexSequence;
     protected readonly defaultMinSize = 0;
     protected readonly defaultMaxSize: number;
-    constructor(columnResize: ColumnResize, styleScheduler: _CoalescedStyleScheduler, table: CdkTable<unknown>, document: any, _nonce?: string | null | undefined);
+    constructor(columnResize: ColumnResize, styleScheduler: _CoalescedStyleScheduler, table: CdkTable<unknown>, document: any, _nonce?: (string | null) | undefined);
     applyColumnSize(cssFriendlyColumnName: string, columnHeader: HTMLElement, sizeInPx: number, previousSizeInPx?: number): void;
     applyMinColumnSize(cssFriendlyColumnName: string, _: HTMLElement, sizeInPx: number): void;
     applyMaxColumnSize(cssFriendlyColumnName: string, _: HTMLElement, sizeInPx: number): void;
