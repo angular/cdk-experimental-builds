@@ -752,6 +752,7 @@ const POPOVER_EDIT_INPUTS = [
     { name: 'context', alias: 'cdkPopoverEditContext' },
     { name: 'colspan', alias: 'cdkPopoverEditColspan' },
     { name: 'disabled', alias: 'cdkPopoverEditDisabled' },
+    { name: 'ariaLabel', alias: 'cdkPopoverEditAriaLabel' },
 ];
 /**
  * Attaches an ng-template to a cell and shows it when instructed to by the
@@ -849,7 +850,10 @@ class CdkPopoverEdit {
             direction: this.services.directionality,
         });
         this.initFocusTrap();
-        this.overlayRef.overlayElement.setAttribute('aria-role', 'dialog');
+        this.overlayRef.overlayElement.setAttribute('role', 'dialog');
+        if (this.ariaLabel) {
+            this.overlayRef.overlayElement.setAttribute('aria-label', this.ariaLabel);
+        }
         this.overlayRef.detachments().subscribe(() => this.closeEditOverlay());
     }
     _showEditOverlay() {
@@ -923,7 +927,7 @@ class CdkPopoverEdit {
         return { width: lastCell.getBoundingClientRect().right - firstCell.getBoundingClientRect().left };
     }
     static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "18.0.0", ngImport: i0, type: CdkPopoverEdit, deps: [{ token: EditServices }, { token: i0.ElementRef }, { token: i0.ViewContainerRef }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "18.0.0", type: CdkPopoverEdit, isStandalone: true, selector: "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, ngImport: i0 }); }
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "18.0.0", type: CdkPopoverEdit, isStandalone: true, selector: "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"], ariaLabel: ["cdkPopoverEditAriaLabel", "ariaLabel"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, ngImport: i0 }); }
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.0.0", ngImport: i0, type: CdkPopoverEdit, decorators: [{
             type: Directive,
@@ -957,7 +961,7 @@ class CdkPopoverEditTabOut extends CdkPopoverEdit {
         });
     }
     static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "18.0.0", ngImport: i0, type: CdkPopoverEditTabOut, deps: [{ token: i0.ElementRef }, { token: i0.ViewContainerRef }, { token: EditServices }, { token: FocusEscapeNotifierFactory }], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "18.0.0", type: CdkPopoverEditTabOut, isStandalone: true, selector: "[cdkPopoverEdit][cdkPopoverEditTabOut]", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, usesInheritance: true, ngImport: i0 }); }
+    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "18.0.0", type: CdkPopoverEditTabOut, isStandalone: true, selector: "[cdkPopoverEdit][cdkPopoverEditTabOut]", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"], ariaLabel: ["cdkPopoverEditAriaLabel", "ariaLabel"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, usesInheritance: true, ngImport: i0 }); }
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.0.0", ngImport: i0, type: CdkPopoverEditTabOut, decorators: [{
             type: Directive,
