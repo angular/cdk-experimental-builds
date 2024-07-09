@@ -143,6 +143,8 @@ export declare class CdkPopoverEdit<C> implements AfterViewInit, OnDestroy {
      * is defined within the cell.
      */
     context?: C;
+    /** Aria label to set on the popover dialog element. */
+    ariaLabel?: string;
     /**
      * Specifies that the popup should cover additional table cells before and/or after
      * this one.
@@ -172,7 +174,7 @@ export declare class CdkPopoverEdit<C> implements AfterViewInit, OnDestroy {
     private _maybeReturnFocusToCell;
     private _sizeConfigForCells;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEdit<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEdit<any>, "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEdit<any>, "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; "ariaLabel": { "alias": "cdkPopoverEditAriaLabel"; "required": false; }; }, {}, never, never, true, never>;
 }
 
 /**
@@ -202,7 +204,7 @@ export declare class CdkPopoverEditTabOut<C> extends CdkPopoverEdit<C> {
     constructor(elementRef: ElementRef, viewContainerRef: ViewContainerRef, services: EditServices, focusEscapeNotifierFactory: FocusEscapeNotifierFactory);
     protected initFocusTrap(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEditTabOut<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEditTabOut<any>, "[cdkPopoverEdit][cdkPopoverEditTabOut]", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEditTabOut<any>, "[cdkPopoverEdit][cdkPopoverEditTabOut]", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; "ariaLabel": { "alias": "cdkPopoverEditAriaLabel"; "required": false; }; }, {}, never, never, true, never>;
 }
 
 /**
