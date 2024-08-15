@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Directive, Injectable, Inject, CSP_NONCE, Optional, NgModule, Injector } from '@angular/core';
+import { Directive, Injectable, inject, Inject, CSP_NONCE, Optional, NgModule, Injector } from '@angular/core';
 import { Subject, fromEvent, merge, combineLatest, Observable } from 'rxjs';
 import { map, takeUntil, filter, mapTo, take, startWith, pairwise, distinctUntilChanged, share, skip } from 'rxjs/operators';
 import { _closest } from '@angular/cdk-experimental/popover-edit';
@@ -106,8 +106,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.2.0-next.2", 
         }] });
 /** Service for triggering column resizes imperatively or being notified of them. */
 class ColumnResizeNotifier {
-    constructor(_source) {
-        this._source = _source;
+    constructor() {
+        this._source = inject(ColumnResizeNotifierSource);
         /** Emits whenever a column is resized. */
         this.resizeCompleted = this._source.resizeCompleted;
     }
@@ -120,12 +120,12 @@ class ColumnResizeNotifier {
             isStickyColumn: true,
         });
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "18.2.0-next.2", ngImport: i0, type: ColumnResizeNotifier, deps: [{ token: ColumnResizeNotifierSource }], target: i0.ɵɵFactoryTarget.Injectable }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "18.2.0-next.2", ngImport: i0, type: ColumnResizeNotifier, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
     static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "18.2.0-next.2", ngImport: i0, type: ColumnResizeNotifier }); }
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.2.0-next.2", ngImport: i0, type: ColumnResizeNotifier, decorators: [{
             type: Injectable
-        }], ctorParameters: () => [{ type: ColumnResizeNotifierSource }] });
+        }] });
 
 /** Coordinates events between the column resize directives. */
 class HeaderRowEventDispatcher {

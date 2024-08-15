@@ -168,7 +168,6 @@ export declare class ColumnResizeNotifier {
     private readonly _source;
     /** Emits whenever a column is resized. */
     readonly resizeCompleted: Observable<ColumnSize>;
-    constructor(_source: ColumnResizeNotifierSource);
     /** Instantly resizes the specified column. */
     resize(columnId: string, size: number): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResizeNotifier, never>;
