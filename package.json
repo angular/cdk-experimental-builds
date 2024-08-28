@@ -28,44 +28,30 @@
     },
     ".": {
       "types": "./index.d.ts",
-      "esm2022": "./esm2022/index.mjs",
-      "esm": "./esm2022/index.mjs",
       "default": "./fesm2022/cdk-experimental.mjs"
     },
     "./column-resize": {
       "types": "./column-resize/index.d.ts",
-      "esm2022": "./esm2022/column-resize/column-resize_public_index.mjs",
-      "esm": "./esm2022/column-resize/column-resize_public_index.mjs",
       "default": "./fesm2022/column-resize.mjs"
     },
     "./combobox": {
       "types": "./combobox/index.d.ts",
-      "esm2022": "./esm2022/combobox/combobox_public_index.mjs",
-      "esm": "./esm2022/combobox/combobox_public_index.mjs",
       "default": "./fesm2022/combobox.mjs"
     },
     "./popover-edit": {
       "types": "./popover-edit/index.d.ts",
-      "esm2022": "./esm2022/popover-edit/popover-edit_public_index.mjs",
-      "esm": "./esm2022/popover-edit/popover-edit_public_index.mjs",
       "default": "./fesm2022/popover-edit.mjs"
     },
     "./scrolling": {
       "types": "./scrolling/index.d.ts",
-      "esm2022": "./esm2022/scrolling/scrolling_public_index.mjs",
-      "esm": "./esm2022/scrolling/scrolling_public_index.mjs",
       "default": "./fesm2022/scrolling.mjs"
     },
     "./selection": {
       "types": "./selection/index.d.ts",
-      "esm2022": "./esm2022/selection/selection_public_index.mjs",
-      "esm": "./esm2022/selection/selection_public_index.mjs",
       "default": "./fesm2022/selection.mjs"
     },
     "./table-scroll-container": {
       "types": "./table-scroll-container/index.d.ts",
-      "esm2022": "./esm2022/table-scroll-container/table-scroll-container_public_index.mjs",
-      "esm": "./esm2022/table-scroll-container/table-scroll-container_public_index.mjs",
       "default": "./fesm2022/table-scroll-container.mjs"
     }
   }
