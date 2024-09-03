@@ -1,8 +1,6 @@
 import { AfterContentChecked } from '@angular/core';
 import { BooleanInput } from '@angular/cdk/coercion';
-import { CdkTable } from '@angular/cdk/table';
 import { CollectionViewer } from '@angular/cdk/collections';
-import { ControlValueAccessor } from '@angular/forms';
 import { DataSource } from '@angular/cdk/collections';
 import { EventEmitter } from '@angular/core';
 import * as i0 from '@angular/core';
@@ -29,7 +27,6 @@ export declare class CdkRowSelection<T> {
     get index(): number | undefined;
     set index(index: NumberInput);
     protected _index?: number;
-    constructor(_selection: CdkSelection<T>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkRowSelection<any>, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowSelection<any>, "[cdkRowSelection]", never, { "value": { "alias": "cdkRowSelectionValue"; "required": false; }; "index": { "alias": "cdkRowSelectionIndex"; "required": false; }; }, {}, never, never, true, never>;
 }
@@ -66,12 +63,12 @@ export declare class CdkSelectAll<T> implements OnDestroy, OnInit {
      */
     toggle(event?: MouseEvent): void;
     private readonly _destroyed;
-    constructor(_selection: CdkSelection<T>, _controlValueAccessor: ControlValueAccessor[]);
+    constructor();
     ngOnInit(): void;
     private _configureControlValueAccessor;
     private _assertValidParentSelection;
     ngOnDestroy(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectAll<any>, [{ optional: true; }, { optional: true; self: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectAll<any>, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectAll<any>, "[cdkSelectAll]", ["cdkSelectAll"], {}, {}, never, never, true, never>;
 }
 
@@ -133,7 +130,7 @@ export declare class CdkSelection<T> implements OnInit, AfterContentChecked, Col
  */
 export declare class CdkSelectionColumn<T> implements OnInit, OnDestroy {
     private _table;
-    readonly selection: CdkSelection<T>;
+    readonly selection: CdkSelection<T> | null;
     /** Column name that should be used to reference this column. */
     get name(): string;
     set name(name: string);
@@ -141,11 +138,10 @@ export declare class CdkSelectionColumn<T> implements OnInit, OnDestroy {
     private readonly _columnDef;
     private readonly _cell;
     private readonly _headerCell;
-    constructor(_table: CdkTable<T>, selection: CdkSelection<T>);
     ngOnInit(): void;
     ngOnDestroy(): void;
     private _syncColumnDefName;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionColumn<any>, [{ optional: true; }, { optional: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionColumn<any>, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CdkSelectionColumn<any>, "cdk-selection-column", never, { "name": { "alias": "cdkSelectionColumnName"; "required": false; }; }, {}, never, never, true, never>;
 }
 
@@ -179,13 +175,13 @@ export declare class CdkSelectionToggle<T> implements OnDestroy, OnInit {
     /** Toggles the selection */
     toggle(): void;
     private _destroyed;
-    constructor(_selection: CdkSelection<T>, _controlValueAccessors: ControlValueAccessor[]);
+    constructor();
     ngOnInit(): void;
     ngOnDestroy(): void;
     private _assertValidParentSelection;
     private _configureControlValueAccessor;
     private _isSelected;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionToggle<any>, [{ optional: true; }, { optional: true; self: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionToggle<any>, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectionToggle<any>, "[cdkSelectionToggle]", ["cdkSelectionToggle"], { "value": { "alias": "cdkSelectionToggleValue"; "required": false; }; "index": { "alias": "cdkSelectionToggleIndex"; "required": false; }; }, {}, never, never, true, never>;
 }
 

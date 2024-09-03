@@ -1,14 +1,10 @@
 import { BooleanInput } from '@angular/cdk/coercion';
-import { Directionality } from '@angular/cdk/bidi';
-import { ElementRef } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import * as i0 from '@angular/core';
 import * as i1 from '@angular/cdk/overlay';
 import { InjectionToken } from '@angular/core';
-import { Injector } from '@angular/core';
 import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
-import { Overlay } from '@angular/cdk/overlay';
 import { TemplateRef } from '@angular/core';
 import { ViewContainerRef } from '@angular/core';
 
@@ -22,7 +18,10 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy {
     protected readonly _viewContainerRef: ViewContainerRef;
     private readonly _injector;
     private readonly _doc;
-    private readonly _directionality?;
+    private readonly _directionality;
+    private _changeDetectorRef;
+    private _overlayRef;
+    private _panelPortal;
     _panelTemplateRef: TemplateRef<unknown>;
     value: T | T[];
     get disabled(): boolean;
@@ -38,12 +37,8 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy {
     readonly opened: EventEmitter<void>;
     readonly closed: EventEmitter<void>;
     readonly panelValueChanged: EventEmitter<T[]>;
-    private _overlayRef;
-    private _panelPortal;
     contentId: string;
     contentType: AriaHasPopupValue;
-    private _changeDetectorRef;
-    constructor(_elementRef: ElementRef<HTMLElement>, _overlay: Overlay, _viewContainerRef: ViewContainerRef, _injector: Injector, _doc: any, _directionality?: Directionality | undefined);
     ngOnDestroy(): void;
     _keydown(event: KeyboardEvent): void;
     /** Handles click or focus interactions. */
@@ -73,7 +68,7 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy {
     private _coerceOpenActionProperty;
     /** Registers the content's id and the content type with the panel. */
     _registerContent(contentId: string, contentType: AriaHasPopupValue): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkCombobox<any>, [null, null, null, null, null, { optional: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkCombobox<any>, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkCombobox<any>, "[cdkCombobox]", ["cdkCombobox"], { "_panelTemplateRef": { "alias": "cdkComboboxTriggerFor"; "required": false; }; "value": { "alias": "value"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "openActions": { "alias": "openActions"; "required": false; }; "autoSetText": { "alias": "autoSetText"; "required": false; }; }, { "opened": "comboboxPanelOpened"; "closed": "comboboxPanelClosed"; "panelValueChanged": "panelValueChanged"; }, never, never, true, never>;
 }
 
@@ -93,7 +88,6 @@ export declare class CdkComboboxPopup<T = unknown> implements OnInit {
     set firstFocus(id: HTMLElement);
     private _firstFocusElement;
     id: string;
-    constructor(_elementRef: ElementRef<HTMLElement>, _combobox: CdkCombobox);
     ngOnInit(): void;
     registerWithPanel(): void;
     focusFirstElement(): void;

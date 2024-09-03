@@ -28,7 +28,6 @@ export declare class CdkColumnResize extends ColumnResize {
     protected readonly ngZone: NgZone;
     protected readonly notifier: ColumnResizeNotifierSource;
     protected readonly table: CdkTable<unknown>;
-    constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkColumnResize, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkColumnResize, "table[cdk-table][columnResize]", never, {}, {}, never, never, true, never>;
 }
@@ -54,7 +53,6 @@ export declare class CdkColumnResizeFlex extends ColumnResize {
     protected readonly ngZone: NgZone;
     protected readonly notifier: ColumnResizeNotifierSource;
     protected readonly table: CdkTable<unknown>;
-    constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkColumnResizeFlex, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkColumnResizeFlex, "cdk-table[columnResize]", never, {}, {}, never, never, true, never>;
 }
@@ -80,7 +78,6 @@ export declare class CdkDefaultEnabledColumnResize extends ColumnResize {
     protected readonly ngZone: NgZone;
     protected readonly notifier: ColumnResizeNotifierSource;
     protected readonly table: CdkTable<unknown>;
-    constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkDefaultEnabledColumnResize, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResize, "table[cdk-table]", never, {}, {}, never, never, true, never>;
 }
@@ -96,7 +93,6 @@ export declare class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
     protected readonly ngZone: NgZone;
     protected readonly notifier: ColumnResizeNotifierSource;
     protected readonly table: CdkTable<unknown>;
-    constructor(columnResizeNotifier: ColumnResizeNotifier, elementRef: ElementRef<HTMLElement>, eventDispatcher: HeaderRowEventDispatcher, ngZone: NgZone, notifier: ColumnResizeNotifierSource, table: CdkTable<unknown>);
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkDefaultEnabledColumnResizeFlex, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResizeFlex, "cdk-table", never, {}, {}, never, never, true, never>;
 }
@@ -111,7 +107,7 @@ export declare class CdkFlexTableResizeStrategy extends ResizeStrategy implement
     protected readonly columnResize: ColumnResize;
     protected readonly styleScheduler: _CoalescedStyleScheduler;
     protected readonly table: CdkTable<unknown>;
-    private readonly _nonce?;
+    private readonly _nonce;
     private readonly _document;
     private readonly _columnIndexes;
     private readonly _columnProperties;
@@ -119,7 +115,6 @@ export declare class CdkFlexTableResizeStrategy extends ResizeStrategy implement
     private _indexSequence;
     protected readonly defaultMinSize = 0;
     protected readonly defaultMaxSize: number;
-    constructor(columnResize: ColumnResize, styleScheduler: _CoalescedStyleScheduler, table: CdkTable<unknown>, document: any, _nonce?: (string | null) | undefined);
     applyColumnSize(cssFriendlyColumnName: string, columnHeader: HTMLElement, sizeInPx: number, previousSizeInPx?: number): void;
     applyMinColumnSize(cssFriendlyColumnName: string, _: HTMLElement, sizeInPx: number): void;
     applyMaxColumnSize(cssFriendlyColumnName: string, _: HTMLElement, sizeInPx: number): void;
@@ -131,7 +126,7 @@ export declare class CdkFlexTableResizeStrategy extends ResizeStrategy implement
     private _getStyleSheet;
     private _getColumnPropertiesMap;
     private _applySizeCss;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkFlexTableResizeStrategy, [null, null, null, null, { optional: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkFlexTableResizeStrategy, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<CdkFlexTableResizeStrategy>;
 }
 
@@ -241,7 +236,6 @@ export declare class HeaderRowEventDispatcher {
      * when no resize is in progress.
      */
     readonly overlayHandleActiveForCell: Subject<Element | null>;
-    constructor(_ngZone: NgZone);
     /** Distinct and shared version of headerCellHovered. */
     readonly headerCellHoveredDistinct: Observable<Element | null>;
     /**
@@ -410,7 +404,6 @@ export declare class TableLayoutFixedResizeStrategy extends ResizeStrategy {
     protected readonly columnResize: ColumnResize;
     protected readonly styleScheduler: _CoalescedStyleScheduler;
     protected readonly table: CdkTable<unknown>;
-    constructor(columnResize: ColumnResize, styleScheduler: _CoalescedStyleScheduler, table: CdkTable<unknown>);
     applyColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number, previousSizeInPx?: number): void;
     applyMinColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number): void;
     applyMaxColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number): void;

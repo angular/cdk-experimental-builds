@@ -1,5 +1,4 @@
 import { AfterViewInit } from '@angular/core';
-import { ControlContainer } from '@angular/forms';
 import { Directionality } from '@angular/cdk/bidi';
 import { ElementRef } from '@angular/core';
 import { EmbeddedViewRef } from '@angular/core';
@@ -28,13 +27,13 @@ import { ViewportRuler } from '@angular/cdk/scrolling';
  * EditEventDispatcher service for use by the other edit directives.
  */
 export declare class CdkEditable implements AfterViewInit, OnDestroy {
-    protected readonly elementRef: ElementRef;
+    protected readonly elementRef: ElementRef<any>;
     protected readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
     protected readonly focusDispatcher: FocusDispatcher;
     protected readonly ngZone: NgZone;
     protected readonly destroyed: Subject<void>;
     private _rendered;
-    constructor(elementRef: ElementRef, editEventDispatcher: EditEventDispatcher<EditRef<unknown>>, focusDispatcher: FocusDispatcher, ngZone: NgZone);
+    constructor();
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     private _listenForTableEvents;
@@ -46,7 +45,7 @@ export declare class CdkEditable implements AfterViewInit, OnDestroy {
 export declare class CdkEditClose<FormValue> {
     protected readonly elementRef: ElementRef<HTMLElement>;
     protected readonly editRef: EditRef<FormValue>;
-    constructor(elementRef: ElementRef<HTMLElement>, editRef: EditRef<FormValue>);
+    constructor();
     closeEdit(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditClose<any>, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditClose<any>, "[cdkEditClose]", never, {}, {}, never, never, true, never>;
@@ -59,7 +58,7 @@ export declare class CdkEditClose<FormValue> {
  * out.
  */
 export declare class CdkEditControl<FormValue> implements OnDestroy, OnInit {
-    protected readonly elementRef: ElementRef;
+    protected readonly elementRef: ElementRef<any>;
     readonly editRef: EditRef<FormValue>;
     protected readonly destroyed: Subject<void>;
     /**
@@ -79,7 +78,6 @@ export declare class CdkEditControl<FormValue> implements OnDestroy, OnInit {
      * state. By default the lens will remain open.
      */
     ignoreSubmitUnlessValid: boolean;
-    constructor(elementRef: ElementRef, editRef: EditRef<FormValue>);
     ngOnInit(): void;
     ngOnDestroy(): void;
     /**
@@ -110,7 +108,7 @@ export declare class CdkEditControl<FormValue> implements OnDestroy, OnInit {
 export declare class CdkEditOpen {
     protected readonly elementRef: ElementRef<HTMLElement>;
     protected readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
-    constructor(elementRef: ElementRef<HTMLElement>, editEventDispatcher: EditEventDispatcher<EditRef<unknown>>);
+    constructor();
     openEdit(evt: Event): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditOpen, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditOpen, "[cdkEditOpen]", never, {}, {}, never, never, true, never>;
@@ -121,7 +119,6 @@ export declare class CdkEditRevert<FormValue> {
     protected readonly editRef: EditRef<FormValue>;
     /** Type of the button. Defaults to `button` to avoid accident form submits. */
     type: string;
-    constructor(editRef: EditRef<FormValue>);
     revertEdit(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditRevert<any>, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditRevert<any>, "button[cdkEditRevert]", never, { "type": { "alias": "type"; "required": false; }; }, {}, never, never, true, never>;
@@ -134,7 +131,7 @@ export declare class CdkEditRevert<FormValue> {
  */
 export declare class CdkPopoverEdit<C> implements AfterViewInit, OnDestroy {
     protected readonly services: EditServices;
-    protected readonly elementRef: ElementRef;
+    protected readonly elementRef: ElementRef<any>;
     protected readonly viewContainerRef: ViewContainerRef;
     /** The edit lens template shown over the cell on edit. */
     template: TemplateRef<any> | null;
@@ -159,7 +156,6 @@ export declare class CdkPopoverEdit<C> implements AfterViewInit, OnDestroy {
     protected focusTrap?: FocusTrap;
     protected overlayRef?: OverlayRef;
     protected readonly destroyed: Subject<void>;
-    constructor(services: EditServices, elementRef: ElementRef, viewContainerRef: ViewContainerRef);
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     protected initFocusTrap(): void;
@@ -201,7 +197,6 @@ export declare class CdkPopoverEditModule {
 export declare class CdkPopoverEditTabOut<C> extends CdkPopoverEdit<C> {
     protected readonly focusEscapeNotifierFactory: FocusEscapeNotifierFactory;
     protected focusTrap?: FocusEscapeNotifier;
-    constructor(elementRef: ElementRef, viewContainerRef: ViewContainerRef, services: EditServices, focusEscapeNotifierFactory: FocusEscapeNotifierFactory);
     protected initFocusTrap(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEditTabOut<any>, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEditTabOut<any>, "[cdkPopoverEdit][cdkPopoverEditTabOut]", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; "ariaLabel": { "alias": "cdkPopoverEditAriaLabel"; "required": false; }; }, {}, never, never, true, never>;
@@ -213,13 +208,12 @@ export declare class CdkPopoverEditTabOut<C> extends CdkPopoverEdit<C> {
  */
 export declare class CdkRowHoverContent implements AfterViewInit, OnDestroy {
     protected readonly services: EditServices;
-    protected readonly elementRef: ElementRef;
+    protected readonly elementRef: ElementRef<any>;
     protected readonly templateRef: TemplateRef<any>;
     protected readonly viewContainerRef: ViewContainerRef;
     protected readonly destroyed: Subject<void>;
     protected viewRef: EmbeddedViewRef<any> | null;
     private _row?;
-    constructor(services: EditServices, elementRef: ElementRef, templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef);
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     /**
@@ -289,7 +283,7 @@ export declare class EditEventDispatcher<R> {
     private readonly _editingAndEnabledDistinct;
     private _lastSeenRow;
     private _lastSeenRowHoverOrFocus;
-    constructor(_ngZone: NgZone);
+    constructor();
     /**
      * Gets an Observable that emits true when the specified element's cell
      * is editing and false when not.
@@ -345,7 +339,7 @@ export declare class EditRef<FormValue> implements OnDestroy {
     /** The value to set the form back to on revert. */
     private _revertFormValue;
     private _injector;
-    constructor(_form: ControlContainer, _editEventDispatcher: EditEventDispatcher<EditRef<FormValue>>);
+    constructor();
     /**
      * Called by the host directive's OnInit hook. Reads the initial state of the
      * form and overrides it with persisted state from previous openings, if
@@ -366,7 +360,7 @@ export declare class EditRef<FormValue> implements OnDestroy {
      * revert value.
      */
     reset(value?: FormValue): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<EditRef<any>, [{ self: true; }, null]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<EditRef<any>, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<EditRef<any>>;
 }
 
@@ -385,7 +379,6 @@ declare class EditServices {
     readonly overlay: Overlay;
     readonly scrollDispatcher: ScrollDispatcher;
     readonly viewportRuler: ViewportRuler;
-    constructor(directionality: Directionality, editEventDispatcher: EditEventDispatcher<EditRef<unknown>>, focusDispatcher: FocusDispatcher, focusTrapFactory: FocusTrapFactory, ngZone: NgZone, overlay: Overlay, scrollDispatcher: ScrollDispatcher, viewportRuler: ViewportRuler);
     static ɵfac: i0.ɵɵFactoryDeclaration<EditServices, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<EditServices>;
 }
@@ -403,7 +396,7 @@ export declare class FocusDispatcher {
     protected readonly directionality: Directionality;
     /** Observes keydown events triggered from the table. */
     readonly keyObserver: PartialObserver<KeyboardEvent>;
-    constructor(directionality: Directionality);
+    constructor();
     /**
      * Moves focus to earlier or later cells (in dom order) by offset cells relative to
      * currentCell.
@@ -438,7 +431,6 @@ declare class FocusEscapeNotifierFactory {
     private _checker;
     private _ngZone;
     private _document;
-    constructor(_checker: InteractivityChecker, _ngZone: NgZone, _document: any);
     /**
      * Creates a focus escape notifier region around the given element.
      * @param element The element around which focus will be monitored.

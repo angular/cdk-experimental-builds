@@ -1,5 +1,3 @@
-import { Directionality } from '@angular/cdk/bidi';
-import { ElementRef } from '@angular/core';
 import * as i0 from '@angular/core';
 import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
@@ -20,8 +18,8 @@ import { StickyUpdate } from '@angular/cdk/table';
 export declare class CdkTableScrollContainer implements StickyPositioningListener, OnDestroy, OnInit {
     private readonly _elementRef;
     private readonly _document;
-    private readonly _directionality?;
-    private readonly _nonce?;
+    private readonly _directionality;
+    private readonly _nonce;
     private readonly _uniqueClassName;
     private _styleRoot;
     private _styleElement?;
@@ -30,7 +28,6 @@ export declare class CdkTableScrollContainer implements StickyPositioningListene
     private _endSizes;
     private _headerSizes;
     private _footerSizes;
-    constructor(_elementRef: ElementRef<HTMLElement>, _document: Document, _directionality?: Directionality | undefined, _nonce?: (string | null) | undefined);
     ngOnInit(): void;
     ngOnDestroy(): void;
     stickyColumnsUpdated({ sizes }: StickyUpdate): void;
@@ -46,7 +43,7 @@ export declare class CdkTableScrollContainer implements StickyPositioningListene
     /** Updates the stylesheet with the specified scrollbar style. */
     private _applyCss;
     private _clearCss;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkTableScrollContainer, [null, null, { optional: true; }, { optional: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkTableScrollContainer, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkTableScrollContainer, "[cdkTableScrollContainer]", never, {}, {}, never, never, true, never>;
 }
 

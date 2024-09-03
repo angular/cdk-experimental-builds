@@ -1,7 +1,7 @@
 import * as i0 from '@angular/core';
-import { CSP_NONCE, Directive, Inject, Optional, NgModule } from '@angular/core';
+import { inject, ElementRef, CSP_NONCE, Directive, NgModule } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import * as i1 from '@angular/cdk/bidi';
+import { Directionality } from '@angular/cdk/bidi';
 import { _getShadowRoot } from '@angular/cdk/platform';
 import { STICKY_POSITIONING_LISTENER } from '@angular/cdk/table';
 
@@ -18,23 +18,20 @@ let nextId = 0;
  * and height for the scrollbar and thumb.
  */
 class CdkTableScrollContainer {
-    constructor(_elementRef, _document, _directionality, _nonce) {
-        this._elementRef = _elementRef;
-        this._document = _document;
-        this._directionality = _directionality;
-        this._nonce = _nonce;
+    constructor() {
+        this._elementRef = inject(ElementRef);
+        this._document = inject(DOCUMENT);
+        this._directionality = inject(Directionality, { optional: true });
+        this._nonce = inject(CSP_NONCE, { optional: true });
+        this._uniqueClassName = `cdk-table-scroll-container-${++nextId}`;
         /** The most recent sticky column size values from the CdkTable. */
         this._startSizes = [];
         this._endSizes = [];
         this._headerSizes = [];
         this._footerSizes = [];
-        this._uniqueClassName = `cdk-table-scroll-container-${++nextId}`;
-        _elementRef.nativeElement.classList.add(this._uniqueClassName);
     }
     ngOnInit() {
-        // Note that we need to look up the root node in ngOnInit, rather than the constructor, because
-        // Angular seems to create the element outside the shadow root and then moves it inside, if the
-        // node is inside an `ngIf` and a ShadowDom-encapsulated component.
+        this._elementRef.nativeElement.classList.add(this._uniqueClassName);
         this._styleRoot = _getShadowRoot(this._elementRef.nativeElement) ?? this._document.head;
     }
     ngOnDestroy() {
@@ -97,7 +94,7 @@ class CdkTableScrollContainer {
             styleSheet.deleteRule(0);
         }
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.2", ngImport: i0, type: CdkTableScrollContainer, deps: [{ token: i0.ElementRef }, { token: DOCUMENT }, { token: i1.Directionality, optional: true }, { token: CSP_NONCE, optional: true }], target: i0.ɵɵFactoryTarget.Directive }); }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.2", ngImport: i0, type: CdkTableScrollContainer, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
     static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.2", type: CdkTableScrollContainer, isStandalone: true, selector: "[cdkTableScrollContainer]", host: { classAttribute: "cdk-table-scroll-container" }, providers: [{ provide: STICKY_POSITIONING_LISTENER, useExisting: CdkTableScrollContainer }], ngImport: i0 }); }
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.2", ngImport: i0, type: CdkTableScrollContainer, decorators: [{
@@ -110,17 +107,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.2", 
                     providers: [{ provide: STICKY_POSITIONING_LISTENER, useExisting: CdkTableScrollContainer }],
                     standalone: true,
                 }]
-        }], ctorParameters: () => [{ type: i0.ElementRef }, { type: Document, decorators: [{
-                    type: Inject,
-                    args: [DOCUMENT]
-                }] }, { type: i1.Directionality, decorators: [{
-                    type: Optional
-                }] }, { type: undefined, decorators: [{
-                    type: Optional
-                }, {
-                    type: Inject,
-                    args: [CSP_NONCE]
-                }] }] });
+        }] });
 function computeMargin(sizes) {
     let margin = 0;
     for (const size of sizes) {
