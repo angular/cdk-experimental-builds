@@ -6,7 +6,7 @@ import { Subject, Observable, of } from 'rxjs';
 import { takeUntil, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CdkTable, CdkColumnDef, CdkCellDef, CdkHeaderCellDef, CdkTableModule } from '@angular/cdk/table';
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 
 /**
  * Maintains a set of selected items. Support selecting and deselecting items, and checking if a
@@ -562,21 +562,18 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
 
 class CdkSelectionModule {
     static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkSelectionModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule }); }
-    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkSelectionModule, imports: [CommonModule,
-            CdkTableModule,
+    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkSelectionModule, imports: [CdkTableModule,
             CdkSelection,
             CdkSelectionToggle,
             CdkSelectAll,
             CdkSelectionColumn,
             CdkRowSelection], exports: [CdkSelection, CdkSelectionToggle, CdkSelectAll, CdkSelectionColumn, CdkRowSelection] }); }
-    static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkSelectionModule, imports: [CommonModule,
-            CdkTableModule] }); }
+    static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkSelectionModule, imports: [CdkTableModule] }); }
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkSelectionModule, decorators: [{
             type: NgModule,
             args: [{
                     imports: [
-                        CommonModule,
                         CdkTableModule,
                         CdkSelection,
                         CdkSelectionToggle,

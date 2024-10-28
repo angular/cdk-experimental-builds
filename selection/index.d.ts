@@ -4,8 +4,7 @@ import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/collections';
 import { EventEmitter } from '@angular/core';
 import * as i0 from '@angular/core';
-import * as i1 from '@angular/common';
-import * as i2 from '@angular/cdk/table';
+import * as i1 from '@angular/cdk/table';
 import { ListRange } from '@angular/cdk/collections';
 import { NumberInput } from '@angular/cdk/coercion';
 import { Observable } from 'rxjs';
@@ -147,7 +146,7 @@ export declare class CdkSelectionColumn<T> implements OnInit, OnDestroy {
 
 export declare class CdkSelectionModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkSelectionModule, never, [typeof i1.CommonModule, typeof i2.CdkTableModule, typeof i3.CdkSelection, typeof i4.CdkSelectionToggle, typeof i5.CdkSelectAll, typeof i6.CdkSelectionColumn, typeof i7.CdkRowSelection], [typeof i3.CdkSelection, typeof i4.CdkSelectionToggle, typeof i5.CdkSelectAll, typeof i6.CdkSelectionColumn, typeof i7.CdkRowSelection]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkSelectionModule, never, [typeof i1.CdkTableModule, typeof i2.CdkSelection, typeof i3.CdkSelectionToggle, typeof i4.CdkSelectAll, typeof i5.CdkSelectionColumn, typeof i6.CdkRowSelection], [typeof i2.CdkSelection, typeof i3.CdkSelectionToggle, typeof i4.CdkSelectAll, typeof i5.CdkSelectionColumn, typeof i6.CdkRowSelection]>;
     static ɵinj: i0.ɵɵInjectorDeclaration<CdkSelectionModule>;
 }
 
@@ -185,31 +184,31 @@ export declare class CdkSelectionToggle<T> implements OnDestroy, OnInit {
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectionToggle<any>, "[cdkSelectionToggle]", ["cdkSelectionToggle"], { "value": { "alias": "cdkSelectionToggleValue"; "required": false; }; "index": { "alias": "cdkSelectionToggleIndex"; "required": false; }; }, {}, never, never, true, never>;
 }
 
-declare namespace i3 {
+declare namespace i2 {
     export {
         CdkSelection
     }
 }
 
-declare namespace i4 {
+declare namespace i3 {
     export {
         CdkSelectionToggle
     }
 }
 
-declare namespace i5 {
+declare namespace i4 {
     export {
         CdkSelectAll
     }
 }
 
-declare namespace i6 {
+declare namespace i5 {
     export {
         CdkSelectionColumn
     }
 }
 
-declare namespace i7 {
+declare namespace i6 {
     export {
         CdkRowSelection
     }
