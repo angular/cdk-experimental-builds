@@ -23,11 +23,11 @@ let nextId = 0;
  * provide common events and services for column resizing.
  */
 class ColumnResize {
-    constructor() {
-        this.destroyed = new Subject();
-        /** Unique ID for this table instance. */
-        this.selectorId = `${++nextId}`;
-    }
+    destroyed = new Subject();
+    /** Unique ID for this table instance. */
+    selectorId = `${++nextId}`;
+    /** The id attribute of the table, if specified. */
+    id;
     ngAfterViewInit() {
         this.elementRef.nativeElement.classList.add(this.getUniqueCssClass());
         this._listenForRowHoverEvents();
@@ -77,8 +77,8 @@ class ColumnResize {
             }
         });
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResize, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: ColumnResize, isStandalone: true, ngImport: i0 }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResize, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: ColumnResize, isStandalone: true, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResize, decorators: [{
             type: Directive
@@ -89,27 +89,23 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * @docs-private
  */
 class ColumnResizeNotifierSource {
-    constructor() {
-        /** Emits when an in-progress resize is canceled. */
-        this.resizeCanceled = new Subject();
-        /** Emits when a resize is applied. */
-        this.resizeCompleted = new Subject();
-        /** Triggers a resize action. */
-        this.triggerResize = new Subject();
-    }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResizeNotifierSource, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResizeNotifierSource }); }
+    /** Emits when an in-progress resize is canceled. */
+    resizeCanceled = new Subject();
+    /** Emits when a resize is applied. */
+    resizeCompleted = new Subject();
+    /** Triggers a resize action. */
+    triggerResize = new Subject();
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResizeNotifierSource, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResizeNotifierSource });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResizeNotifierSource, decorators: [{
             type: Injectable
         }] });
 /** Service for triggering column resizes imperatively or being notified of them. */
 class ColumnResizeNotifier {
-    constructor() {
-        this._source = inject(ColumnResizeNotifierSource);
-        /** Emits whenever a column is resized. */
-        this.resizeCompleted = this._source.resizeCompleted;
-    }
+    _source = inject(ColumnResizeNotifierSource);
+    /** Emits whenever a column is resized. */
+    resizeCompleted = this._source.resizeCompleted;
     /** Instantly resizes the specified column. */
     resize(columnId, size) {
         this._source.triggerResize.next({
@@ -119,8 +115,8 @@ class ColumnResizeNotifier {
             isStickyColumn: true,
         });
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResizeNotifier, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResizeNotifier }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResizeNotifier, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResizeNotifier });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnResizeNotifier, decorators: [{
             type: Injectable
@@ -128,36 +124,34 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
 
 /** Coordinates events between the column resize directives. */
 class HeaderRowEventDispatcher {
-    constructor() {
-        this._ngZone = inject(NgZone);
-        /**
-         * Emits the currently hovered header cell or null when no header cells are hovered.
-         * Exposed publicly for events to feed in, but subscribers should use headerCellHoveredDistinct,
-         * defined below.
-         */
-        this.headerCellHovered = new Subject();
-        /**
-         * Emits the header cell for which a user-triggered resize is active or null
-         * when no resize is in progress.
-         */
-        this.overlayHandleActiveForCell = new Subject();
-        /** Distinct and shared version of headerCellHovered. */
-        this.headerCellHoveredDistinct = this.headerCellHovered.pipe(distinctUntilChanged(), share());
-        /**
-         * Emits the header that is currently hovered or hosting an active resize event (with active
-         * taking precedence).
-         */
-        this.headerRowHoveredOrActiveDistinct = combineLatest([
-            this.headerCellHoveredDistinct.pipe(map(cell => _closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged()),
-            this.overlayHandleActiveForCell.pipe(map(cell => _closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged()),
-        ]).pipe(skip(1), // Ignore initial [null, null] emission.
-        map(([hovered, active]) => active || hovered), distinctUntilChanged(), share());
-        this._headerRowHoveredOrActiveDistinctReenterZone = this.headerRowHoveredOrActiveDistinct.pipe(this._enterZone(), share());
-        // Optimization: Share row events observable with subsequent callers.
-        // At startup, calls will be sequential by row (and typically there's only one).
-        this._lastSeenRow = null;
-        this._lastSeenRowHover = null;
-    }
+    _ngZone = inject(NgZone);
+    /**
+     * Emits the currently hovered header cell or null when no header cells are hovered.
+     * Exposed publicly for events to feed in, but subscribers should use headerCellHoveredDistinct,
+     * defined below.
+     */
+    headerCellHovered = new Subject();
+    /**
+     * Emits the header cell for which a user-triggered resize is active or null
+     * when no resize is in progress.
+     */
+    overlayHandleActiveForCell = new Subject();
+    /** Distinct and shared version of headerCellHovered. */
+    headerCellHoveredDistinct = this.headerCellHovered.pipe(distinctUntilChanged(), share());
+    /**
+     * Emits the header that is currently hovered or hosting an active resize event (with active
+     * taking precedence).
+     */
+    headerRowHoveredOrActiveDistinct = combineLatest([
+        this.headerCellHoveredDistinct.pipe(map(cell => _closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged()),
+        this.overlayHandleActiveForCell.pipe(map(cell => _closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged()),
+    ]).pipe(skip(1), // Ignore initial [null, null] emission.
+    map(([hovered, active]) => active || hovered), distinctUntilChanged(), share());
+    _headerRowHoveredOrActiveDistinctReenterZone = this.headerRowHoveredOrActiveDistinct.pipe(this._enterZone(), share());
+    // Optimization: Share row events observable with subsequent callers.
+    // At startup, calls will be sequential by row (and typically there's only one).
+    _lastSeenRow = null;
+    _lastSeenRowHover = null;
     /**
      * Emits whether the specified row should show its overlay controls.
      * Emission occurs within the NgZone.
@@ -176,8 +170,8 @@ class HeaderRowEventDispatcher {
             complete: () => observer.complete(),
         }));
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: HeaderRowEventDispatcher, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: HeaderRowEventDispatcher }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: HeaderRowEventDispatcher, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: HeaderRowEventDispatcher });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: HeaderRowEventDispatcher, decorators: [{
             type: Injectable
@@ -188,9 +182,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * The details of how resizing works for tables for flex mat-tables are quite different.
  */
 class ResizeStrategy {
-    constructor() {
-        this._pendingResizeDelta = null;
-    }
+    _pendingResizeDelta = null;
     /** Adjusts the width of the table element by the specified delta. */
     updateTableWidthAndStickyColumns(delta) {
         if (this._pendingResizeDelta === null) {
@@ -206,8 +198,8 @@ class ResizeStrategy {
         }
         this._pendingResizeDelta = (this._pendingResizeDelta ?? 0) + delta;
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ResizeStrategy, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ResizeStrategy }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ResizeStrategy, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ResizeStrategy });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ResizeStrategy, decorators: [{
             type: Injectable
@@ -220,12 +212,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  *   Updating all cell nodes
  */
 class TableLayoutFixedResizeStrategy extends ResizeStrategy {
-    constructor() {
-        super(...arguments);
-        this.columnResize = inject(ColumnResize);
-        this.styleScheduler = inject(_COALESCED_STYLE_SCHEDULER);
-        this.table = inject(CdkTable);
-    }
+    columnResize = inject(ColumnResize);
+    styleScheduler = inject(_COALESCED_STYLE_SCHEDULER);
+    table = inject(CdkTable);
     applyColumnSize(_, columnHeader, sizeInPx, previousSizeInPx) {
         const delta = sizeInPx - (previousSizeInPx ?? getElementWidth(columnHeader));
         if (delta === 0) {
@@ -246,8 +235,8 @@ class TableLayoutFixedResizeStrategy extends ResizeStrategy {
         const newWidth = Math.min(currentWidth, sizeInPx);
         this.applyColumnSize(_, columnHeader, newWidth, currentWidth);
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: TableLayoutFixedResizeStrategy, deps: null, target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: TableLayoutFixedResizeStrategy }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: TableLayoutFixedResizeStrategy, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: TableLayoutFixedResizeStrategy });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: TableLayoutFixedResizeStrategy, decorators: [{
             type: Injectable
@@ -259,19 +248,17 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  *   Updating all mat-cell nodes
  */
 class CdkFlexTableResizeStrategy extends ResizeStrategy {
-    constructor() {
-        super(...arguments);
-        this.columnResize = inject(ColumnResize);
-        this.styleScheduler = inject(_COALESCED_STYLE_SCHEDULER);
-        this.table = inject(CdkTable);
-        this._nonce = inject(CSP_NONCE, { optional: true });
-        this._document = inject(DOCUMENT);
-        this._columnIndexes = new Map();
-        this._columnProperties = new Map();
-        this._indexSequence = 0;
-        this.defaultMinSize = 0;
-        this.defaultMaxSize = Number.MAX_SAFE_INTEGER;
-    }
+    columnResize = inject(ColumnResize);
+    styleScheduler = inject(_COALESCED_STYLE_SCHEDULER);
+    table = inject(CdkTable);
+    _nonce = inject(CSP_NONCE, { optional: true });
+    _document = inject(DOCUMENT);
+    _columnIndexes = new Map();
+    _columnProperties = new Map();
+    _styleElement;
+    _indexSequence = 0;
+    defaultMinSize = 0;
+    defaultMaxSize = Number.MAX_SAFE_INTEGER;
     applyColumnSize(cssFriendlyColumnName, columnHeader, sizeInPx, previousSizeInPx) {
         // Optimization: Check applied width first as we probably set it already before reading
         // offsetWidth which triggers layout.
@@ -361,8 +348,8 @@ class CdkFlexTableResizeStrategy extends ResizeStrategy {
         const body = propertyKeys.map(key => `${key}:${properties.get(key)}`).join(';');
         this._getStyleSheet().insertRule(`${selector} {${body}}`, index);
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkFlexTableResizeStrategy, deps: null, target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkFlexTableResizeStrategy }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkFlexTableResizeStrategy, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkFlexTableResizeStrategy });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkFlexTableResizeStrategy, decorators: [{
             type: Injectable
@@ -409,17 +396,14 @@ const FLEX_PROVIDERS = [...PROVIDERS, FLEX_RESIZE_STRATEGY_PROVIDER];
  * Individual columns must be annotated specifically.
  */
 class CdkColumnResize extends ColumnResize {
-    constructor() {
-        super(...arguments);
-        this.columnResizeNotifier = inject(ColumnResizeNotifier);
-        this.elementRef = inject(ElementRef);
-        this.eventDispatcher = inject(HeaderRowEventDispatcher);
-        this.ngZone = inject(NgZone);
-        this.notifier = inject(ColumnResizeNotifierSource);
-        this.table = inject(CdkTable);
-    }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResize, deps: null, target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkColumnResize, isStandalone: true, selector: "table[cdk-table][columnResize]", providers: [...TABLE_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResize }], usesInheritance: true, ngImport: i0 }); }
+    columnResizeNotifier = inject(ColumnResizeNotifier);
+    elementRef = inject(ElementRef);
+    eventDispatcher = inject(HeaderRowEventDispatcher);
+    ngZone = inject(NgZone);
+    notifier = inject(ColumnResizeNotifierSource);
+    table = inject(CdkTable);
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResize, deps: null, target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkColumnResize, isStandalone: true, selector: "table[cdk-table][columnResize]", providers: [...TABLE_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResize }], usesInheritance: true, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResize, decorators: [{
             type: Directive,
@@ -434,17 +418,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * Individual columns must be annotated specifically.
  */
 class CdkColumnResizeFlex extends ColumnResize {
-    constructor() {
-        super(...arguments);
-        this.columnResizeNotifier = inject(ColumnResizeNotifier);
-        this.elementRef = inject(ElementRef);
-        this.eventDispatcher = inject(HeaderRowEventDispatcher);
-        this.ngZone = inject(NgZone);
-        this.notifier = inject(ColumnResizeNotifierSource);
-        this.table = inject(CdkTable);
-    }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeFlex, deps: null, target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkColumnResizeFlex, isStandalone: true, selector: "cdk-table[columnResize]", providers: [...FLEX_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResizeFlex }], usesInheritance: true, ngImport: i0 }); }
+    columnResizeNotifier = inject(ColumnResizeNotifier);
+    elementRef = inject(ElementRef);
+    eventDispatcher = inject(HeaderRowEventDispatcher);
+    ngZone = inject(NgZone);
+    notifier = inject(ColumnResizeNotifierSource);
+    table = inject(CdkTable);
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeFlex, deps: null, target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkColumnResizeFlex, isStandalone: true, selector: "cdk-table[columnResize]", providers: [...FLEX_PROVIDERS, { provide: ColumnResize, useExisting: CdkColumnResizeFlex }], usesInheritance: true, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeFlex, decorators: [{
             type: Directive,
@@ -459,20 +440,17 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * Individual columns will be resizable unless opted out.
  */
 class CdkDefaultEnabledColumnResize extends ColumnResize {
-    constructor() {
-        super(...arguments);
-        this.columnResizeNotifier = inject(ColumnResizeNotifier);
-        this.elementRef = inject(ElementRef);
-        this.eventDispatcher = inject(HeaderRowEventDispatcher);
-        this.ngZone = inject(NgZone);
-        this.notifier = inject(ColumnResizeNotifierSource);
-        this.table = inject(CdkTable);
-    }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkDefaultEnabledColumnResize, deps: null, target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkDefaultEnabledColumnResize, isStandalone: true, selector: "table[cdk-table]", providers: [
+    columnResizeNotifier = inject(ColumnResizeNotifier);
+    elementRef = inject(ElementRef);
+    eventDispatcher = inject(HeaderRowEventDispatcher);
+    ngZone = inject(NgZone);
+    notifier = inject(ColumnResizeNotifierSource);
+    table = inject(CdkTable);
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkDefaultEnabledColumnResize, deps: null, target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkDefaultEnabledColumnResize, isStandalone: true, selector: "table[cdk-table]", providers: [
             ...TABLE_PROVIDERS,
             { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResize },
-        ], usesInheritance: true, ngImport: i0 }); }
+        ], usesInheritance: true, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkDefaultEnabledColumnResize, decorators: [{
             type: Directive,
@@ -490,20 +468,17 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * Individual columns will be resizable unless opted out.
  */
 class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
-    constructor() {
-        super(...arguments);
-        this.columnResizeNotifier = inject(ColumnResizeNotifier);
-        this.elementRef = inject(ElementRef);
-        this.eventDispatcher = inject(HeaderRowEventDispatcher);
-        this.ngZone = inject(NgZone);
-        this.notifier = inject(ColumnResizeNotifierSource);
-        this.table = inject(CdkTable);
-    }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkDefaultEnabledColumnResizeFlex, deps: null, target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkDefaultEnabledColumnResizeFlex, isStandalone: true, selector: "cdk-table", providers: [
+    columnResizeNotifier = inject(ColumnResizeNotifier);
+    elementRef = inject(ElementRef);
+    eventDispatcher = inject(HeaderRowEventDispatcher);
+    ngZone = inject(NgZone);
+    notifier = inject(ColumnResizeNotifierSource);
+    table = inject(CdkTable);
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkDefaultEnabledColumnResizeFlex, deps: null, target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkDefaultEnabledColumnResizeFlex, isStandalone: true, selector: "cdk-table", providers: [
             ...FLEX_PROVIDERS,
             { provide: ColumnResize, useExisting: CdkDefaultEnabledColumnResizeFlex },
-        ], usesInheritance: true, ngImport: i0 }); }
+        ], usesInheritance: true, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkDefaultEnabledColumnResizeFlex, decorators: [{
             type: Directive,
@@ -521,9 +496,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * When using this module, columns are resizable by default.
  */
 class CdkColumnResizeDefaultEnabledModule {
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeDefaultEnabledModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule }); }
-    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeDefaultEnabledModule, imports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex], exports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex] }); }
-    static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeDefaultEnabledModule }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeDefaultEnabledModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeDefaultEnabledModule, imports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex], exports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeDefaultEnabledModule });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeDefaultEnabledModule, decorators: [{
             type: NgModule,
@@ -537,9 +512,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * When using this module, columns are not resizable by default.
  */
 class CdkColumnResizeModule {
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule }); }
-    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeModule, imports: [CdkColumnResize, CdkColumnResizeFlex], exports: [CdkColumnResize, CdkColumnResizeFlex] }); }
-    static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeModule }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeModule, imports: [CdkColumnResize, CdkColumnResizeFlex], exports: [CdkColumnResize, CdkColumnResizeFlex] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeModule });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkColumnResizeModule, decorators: [{
             type: NgModule,
@@ -553,8 +528,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * Can be provided by the host application to enable persistence of column resize state.
  */
 class ColumnSizeStore {
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnSizeStore, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnSizeStore }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnSizeStore, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnSizeStore });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ColumnSizeStore, decorators: [{
             type: Injectable
@@ -562,6 +537,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
 
 /** Tracks state of resize events in progress. */
 class ResizeRef {
+    origin;
+    overlayRef;
+    minWidthPx;
+    maxWidthPx;
     constructor(origin, overlayRef, minWidthPx, maxWidthPx) {
         this.origin = origin;
         this.overlayRef = overlayRef;
@@ -576,13 +555,13 @@ const OVERLAY_ACTIVE_CLASS = 'cdk-resizable-overlay-thumb-active';
  * resizable.
  */
 class Resizable {
-    constructor() {
-        this.minWidthPxInternal = 0;
-        this.maxWidthPxInternal = Number.MAX_SAFE_INTEGER;
-        this.destroyed = new Subject();
-        this._viewInitialized = false;
-        this._isDestroyed = false;
-    }
+    minWidthPxInternal = 0;
+    maxWidthPxInternal = Number.MAX_SAFE_INTEGER;
+    inlineHandle;
+    overlayRef;
+    destroyed = new Subject();
+    _viewInitialized = false;
+    _isDestroyed = false;
     /** The minimum width to allow the column to be sized to. */
     get minWidthPx() {
         return this.minWidthPxInternal;
@@ -747,8 +726,8 @@ class Resizable {
             this.elementRef.nativeElement.appendChild(this.inlineHandle);
         });
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: Resizable, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: Resizable, isStandalone: true, ngImport: i0 }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: Resizable, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: Resizable, isStandalone: true, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: Resizable, decorators: [{
             type: Directive
@@ -761,9 +740,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * for handling column resize mouse events and displaying any visible UI on the column edge.
  */
 class ResizeOverlayHandle {
-    constructor() {
-        this.destroyed = new Subject();
-    }
+    destroyed = new Subject();
     ngAfterViewInit() {
         this._listenForMouseEvents();
     }
@@ -878,8 +855,8 @@ class ResizeOverlayHandle {
             }
         });
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ResizeOverlayHandle, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: ResizeOverlayHandle, isStandalone: true, ngImport: i0 }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ResizeOverlayHandle, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: ResizeOverlayHandle, isStandalone: true, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ResizeOverlayHandle, decorators: [{
             type: Directive

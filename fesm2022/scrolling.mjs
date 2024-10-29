@@ -9,10 +9,14 @@ import { Observable } from 'rxjs';
  * item size.
  */
 class ItemSizeAverager {
+    /** The total amount of weight behind the current average. */
+    _totalWeight = 0;
+    /** The current average item size. */
+    _averageItemSize;
+    /** The default size to use for items when no data is available. */
+    _defaultItemSize;
     /** @param defaultItemSize The default size to use for items when no data is available. */
     constructor(defaultItemSize = 50) {
-        /** The total amount of weight behind the current average. */
-        this._totalWeight = 0;
         this._defaultItemSize = defaultItemSize;
         this._averageItemSize = defaultItemSize;
     }
@@ -43,6 +47,34 @@ class ItemSizeAverager {
 }
 /** Virtual scrolling strategy for lists with items of unknown or dynamic size. */
 class AutoSizeVirtualScrollStrategy {
+    /** @docs-private Implemented as part of VirtualScrollStrategy. */
+    scrolledIndexChange = new Observable(() => {
+        // TODO(mmalerba): Implement.
+        if (typeof ngDevMode === 'undefined' || ngDevMode) {
+            throw Error('cdk-virtual-scroll: scrolledIndexChange is currently not supported for the' +
+                ' autosize scroll strategy');
+        }
+    });
+    /** The attached viewport. */
+    _viewport = null;
+    /** The minimum amount of buffer rendered beyond the viewport (in pixels). */
+    _minBufferPx;
+    /** The number of buffer items to render beyond the edge of the viewport (in pixels). */
+    _maxBufferPx;
+    /** The estimator used to estimate the size of unseen items. */
+    _averager;
+    /** The last measured scroll offset of the viewport. */
+    _lastScrollOffset;
+    /** The last measured size of the rendered content in the viewport. */
+    _lastRenderedContentSize;
+    /** The last measured size of the rendered content in the viewport. */
+    _lastRenderedContentOffset;
+    /**
+     * The number of consecutive cycles where removing extra items has failed. Failure here means that
+     * we estimated how many items we could safely remove, but our estimate turned out to be too much
+     * and it wasn't safe to remove that many elements.
+     */
+    _removalFailures = 0;
     /**
      * @param minBufferPx The minimum amount of buffer rendered beyond the viewport (in pixels).
      *     If the amount of buffer dips below this number, more items will be rendered.
@@ -52,22 +84,6 @@ class AutoSizeVirtualScrollStrategy {
      * @param averager The averager used to estimate the size of unseen items.
      */
     constructor(minBufferPx, maxBufferPx, averager = new ItemSizeAverager()) {
-        /** @docs-private Implemented as part of VirtualScrollStrategy. */
-        this.scrolledIndexChange = new Observable(() => {
-            // TODO(mmalerba): Implement.
-            if (typeof ngDevMode === 'undefined' || ngDevMode) {
-                throw Error('cdk-virtual-scroll: scrolledIndexChange is currently not supported for the' +
-                    ' autosize scroll strategy');
-            }
-        });
-        /** The attached viewport. */
-        this._viewport = null;
-        /**
-         * The number of consecutive cycles where removing extra items has failed. Failure here means that
-         * we estimated how many items we could safely remove, but our estimate turned out to be too much
-         * and it wasn't safe to remove that many elements.
-         */
-        this._removalFailures = 0;
         this._minBufferPx = minBufferPx;
         this._maxBufferPx = maxBufferPx;
         this._averager = averager;
@@ -355,12 +371,6 @@ function _autoSizeVirtualScrollStrategyFactory(autoSizeDir) {
 }
 /** A virtual scroll strategy that supports unknown or dynamic size items. */
 class CdkAutoSizeVirtualScroll {
-    constructor() {
-        this._minBufferPx = 100;
-        this._maxBufferPx = 200;
-        /** The scroll strategy used by this directive. */
-        this._scrollStrategy = new AutoSizeVirtualScrollStrategy(this.minBufferPx, this.maxBufferPx);
-    }
     /**
      * The minimum amount of buffer rendered beyond the viewport (in pixels).
      * If the amount of buffer dips below this number, more items will be rendered. Defaults to 100px.
@@ -371,6 +381,7 @@ class CdkAutoSizeVirtualScroll {
     set minBufferPx(value) {
         this._minBufferPx = coerceNumberProperty(value);
     }
+    _minBufferPx = 100;
     /**
      * The number of pixels worth of buffer to shoot for when rendering new items.
      * If the actual amount turns out to be less it will not necessarily trigger an additional
@@ -383,17 +394,20 @@ class CdkAutoSizeVirtualScroll {
     set maxBufferPx(value) {
         this._maxBufferPx = coerceNumberProperty(value);
     }
+    _maxBufferPx = 200;
+    /** The scroll strategy used by this directive. */
+    _scrollStrategy = new AutoSizeVirtualScrollStrategy(this.minBufferPx, this.maxBufferPx);
     ngOnChanges() {
         this._scrollStrategy.updateBufferSize(this.minBufferPx, this.maxBufferPx);
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkAutoSizeVirtualScroll, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkAutoSizeVirtualScroll, isStandalone: true, selector: "cdk-virtual-scroll-viewport[autosize]", inputs: { minBufferPx: "minBufferPx", maxBufferPx: "maxBufferPx" }, providers: [
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkAutoSizeVirtualScroll, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkAutoSizeVirtualScroll, isStandalone: true, selector: "cdk-virtual-scroll-viewport[autosize]", inputs: { minBufferPx: "minBufferPx", maxBufferPx: "maxBufferPx" }, providers: [
             {
                 provide: VIRTUAL_SCROLL_STRATEGY,
                 useFactory: _autoSizeVirtualScrollStrategyFactory,
                 deps: [forwardRef(() => CdkAutoSizeVirtualScroll)],
             },
-        ], usesOnChanges: true, ngImport: i0 }); }
+        ], usesOnChanges: true, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkAutoSizeVirtualScroll, decorators: [{
             type: Directive,
@@ -414,9 +428,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
             }] } });
 
 class ScrollingModule {
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ScrollingModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule }); }
-    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "19.0.0-next.10", ngImport: i0, type: ScrollingModule, imports: [CdkAutoSizeVirtualScroll], exports: [CdkAutoSizeVirtualScroll] }); }
-    static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ScrollingModule }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ScrollingModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "19.0.0-next.10", ngImport: i0, type: ScrollingModule, imports: [CdkAutoSizeVirtualScroll], exports: [CdkAutoSizeVirtualScroll] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ScrollingModule });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: ScrollingModule, decorators: [{
             type: NgModule,
