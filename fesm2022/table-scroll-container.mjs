@@ -18,18 +18,18 @@ let nextId = 0;
  * and height for the scrollbar and thumb.
  */
 class CdkTableScrollContainer {
-    constructor() {
-        this._elementRef = inject(ElementRef);
-        this._document = inject(DOCUMENT);
-        this._directionality = inject(Directionality, { optional: true });
-        this._nonce = inject(CSP_NONCE, { optional: true });
-        this._uniqueClassName = `cdk-table-scroll-container-${++nextId}`;
-        /** The most recent sticky column size values from the CdkTable. */
-        this._startSizes = [];
-        this._endSizes = [];
-        this._headerSizes = [];
-        this._footerSizes = [];
-    }
+    _elementRef = inject(ElementRef);
+    _document = inject(DOCUMENT);
+    _directionality = inject(Directionality, { optional: true });
+    _nonce = inject(CSP_NONCE, { optional: true });
+    _uniqueClassName = `cdk-table-scroll-container-${++nextId}`;
+    _styleRoot;
+    _styleElement;
+    /** The most recent sticky column size values from the CdkTable. */
+    _startSizes = [];
+    _endSizes = [];
+    _headerSizes = [];
+    _footerSizes = [];
     ngOnInit() {
         this._elementRef.nativeElement.classList.add(this._uniqueClassName);
         this._styleRoot = _getShadowRoot(this._elementRef.nativeElement) ?? this._document.head;
@@ -94,8 +94,8 @@ class CdkTableScrollContainer {
             styleSheet.deleteRule(0);
         }
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkTableScrollContainer, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkTableScrollContainer, isStandalone: true, selector: "[cdkTableScrollContainer]", host: { classAttribute: "cdk-table-scroll-container" }, providers: [{ provide: STICKY_POSITIONING_LISTENER, useExisting: CdkTableScrollContainer }], ngImport: i0 }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkTableScrollContainer, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkTableScrollContainer, isStandalone: true, selector: "[cdkTableScrollContainer]", host: { classAttribute: "cdk-table-scroll-container" }, providers: [{ provide: STICKY_POSITIONING_LISTENER, useExisting: CdkTableScrollContainer }], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkTableScrollContainer, decorators: [{
             type: Directive,
@@ -119,9 +119,9 @@ function computeMargin(sizes) {
 }
 
 class CdkTableScrollContainerModule {
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkTableScrollContainerModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule }); }
-    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkTableScrollContainerModule, imports: [CdkTableScrollContainer], exports: [CdkTableScrollContainer] }); }
-    static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkTableScrollContainerModule }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkTableScrollContainerModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkTableScrollContainerModule, imports: [CdkTableScrollContainer], exports: [CdkTableScrollContainer] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkTableScrollContainerModule });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkTableScrollContainerModule, decorators: [{
             type: NgModule,

@@ -59,61 +59,61 @@ var HoverContentState;
  * Service for sharing delegated events and state for triggering table edits.
  */
 class EditEventDispatcher {
+    _ngZone = inject(NgZone);
+    /** A subject that indicates which table cell is currently editing (unless it is disabled). */
+    editing = new Subject();
+    /** A subject that indicates which table row is currently hovered. */
+    hovering = new Subject();
+    /** A subject that indicates which table row currently contains focus. */
+    focused = new Subject();
+    /** A subject that indicates all elements in the table matching ROW_SELECTOR. */
+    allRows = new Subject();
+    /** A subject that emits mouse move events from the table indicating the targeted row. */
+    mouseMove = new Subject();
+    // TODO: Use WeakSet once IE11 support is dropped.
+    /**
+     * Tracks the currently disabled editable cells - edit calls will be ignored
+     * for these cells.
+     */
+    disabledCells = new WeakMap();
     /** The EditRef for the currently active edit lens (if any). */
     get editRef() {
         return this._editRef;
     }
+    _editRef = null;
+    // Optimization: Precompute common pipeable operators used per row/cell.
+    _distinctUntilChanged = distinctUntilChanged();
+    _startWithNull = startWith(null);
+    _distinctShare = pipe(this._distinctUntilChanged, shareReplay(1));
+    _startWithNullDistinct = pipe(this._startWithNull, this._distinctUntilChanged);
+    editingAndEnabled = this.editing.pipe(filter(cell => cell == null || !this.disabledCells.has(cell)), shareReplay(1));
+    /** An observable that emits the row containing focus or an active edit. */
+    editingOrFocused = combineLatest([
+        this.editingAndEnabled.pipe(map(cell => closest(cell, ROW_SELECTOR)), this._startWithNull),
+        this.focused.pipe(this._startWithNull),
+    ]).pipe(map(([editingRow, focusedRow]) => focusedRow || editingRow), this._distinctUntilChanged, auditTime(FOCUS_DELAY), // Use audit to skip over blur events to the next focused element.
+    this._distinctUntilChanged, shareReplay(1));
+    /** Tracks rows that contain hover content with a reference count. */
+    _rowsWithHoverContent = new WeakMap();
+    /** The table cell that has an active edit lens (or null). */
+    _currentlyEditing = null;
+    /** The combined set of row hover content states organized by row. */
+    _hoveredContentStateDistinct = combineLatest([
+        this._getFirstRowWithHoverContent(),
+        this._getLastRowWithHoverContent(),
+        this.editingOrFocused,
+        this.hovering.pipe(distinctUntilChanged(), audit(row => this.mouseMove.pipe(filter(mouseMoveRow => row === mouseMoveRow), this._startWithNull, debounceTime(MOUSE_EVENT_DELAY_MS))), this._startWithNullDistinct),
+    ]).pipe(skip(1), // Skip the initial emission of [null, null, null, null].
+    map(computeHoverContentState), distinctUntilChanged(areMapEntriesEqual), 
+    // Optimization: Enter the zone before shareReplay so that we trigger a single
+    // ApplicationRef.tick for all row updates.
+    this._enterZone(), shareReplay(1));
+    _editingAndEnabledDistinct = this.editingAndEnabled.pipe(distinctUntilChanged(), this._enterZone(), shareReplay(1));
+    // Optimization: Share row events observable with subsequent callers.
+    // At startup, calls will be sequential by row.
+    _lastSeenRow = null;
+    _lastSeenRowHoverOrFocus = null;
     constructor() {
-        this._ngZone = inject(NgZone);
-        /** A subject that indicates which table cell is currently editing (unless it is disabled). */
-        this.editing = new Subject();
-        /** A subject that indicates which table row is currently hovered. */
-        this.hovering = new Subject();
-        /** A subject that indicates which table row currently contains focus. */
-        this.focused = new Subject();
-        /** A subject that indicates all elements in the table matching ROW_SELECTOR. */
-        this.allRows = new Subject();
-        /** A subject that emits mouse move events from the table indicating the targeted row. */
-        this.mouseMove = new Subject();
-        // TODO: Use WeakSet once IE11 support is dropped.
-        /**
-         * Tracks the currently disabled editable cells - edit calls will be ignored
-         * for these cells.
-         */
-        this.disabledCells = new WeakMap();
-        this._editRef = null;
-        // Optimization: Precompute common pipeable operators used per row/cell.
-        this._distinctUntilChanged = distinctUntilChanged();
-        this._startWithNull = startWith(null);
-        this._distinctShare = pipe(this._distinctUntilChanged, shareReplay(1));
-        this._startWithNullDistinct = pipe(this._startWithNull, this._distinctUntilChanged);
-        this.editingAndEnabled = this.editing.pipe(filter(cell => cell == null || !this.disabledCells.has(cell)), shareReplay(1));
-        /** An observable that emits the row containing focus or an active edit. */
-        this.editingOrFocused = combineLatest([
-            this.editingAndEnabled.pipe(map(cell => closest(cell, ROW_SELECTOR)), this._startWithNull),
-            this.focused.pipe(this._startWithNull),
-        ]).pipe(map(([editingRow, focusedRow]) => focusedRow || editingRow), this._distinctUntilChanged, auditTime(FOCUS_DELAY), // Use audit to skip over blur events to the next focused element.
-        this._distinctUntilChanged, shareReplay(1));
-        /** Tracks rows that contain hover content with a reference count. */
-        this._rowsWithHoverContent = new WeakMap();
-        /** The table cell that has an active edit lens (or null). */
-        this._currentlyEditing = null;
-        /** The combined set of row hover content states organized by row. */
-        this._hoveredContentStateDistinct = combineLatest([
-            this._getFirstRowWithHoverContent(),
-            this._getLastRowWithHoverContent(),
-            this.editingOrFocused,
-            this.hovering.pipe(distinctUntilChanged(), audit(row => this.mouseMove.pipe(filter(mouseMoveRow => row === mouseMoveRow), this._startWithNull, debounceTime(MOUSE_EVENT_DELAY_MS))), this._startWithNullDistinct),
-        ]).pipe(skip(1), // Skip the initial emission of [null, null, null, null].
-        map(computeHoverContentState), distinctUntilChanged(areMapEntriesEqual), 
-        // Optimization: Enter the zone before shareReplay so that we trigger a single
-        // ApplicationRef.tick for all row updates.
-        this._enterZone(), shareReplay(1));
-        this._editingAndEnabledDistinct = this.editingAndEnabled.pipe(distinctUntilChanged(), this._enterZone(), shareReplay(1));
-        // Optimization: Share row events observable with subsequent callers.
-        // At startup, calls will be sequential by row.
-        this._lastSeenRow = null;
-        this._lastSeenRowHoverOrFocus = null;
         this._editingAndEnabledDistinct.subscribe(cell => {
             this._currentlyEditing = cell;
         });
@@ -210,8 +210,8 @@ class EditEventDispatcher {
     _mapAllRowsToSingleRow(mapper) {
         return this.allRows.pipe(map(mapper), this._startWithNullDistinct);
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditEventDispatcher, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditEventDispatcher }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditEventDispatcher, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditEventDispatcher });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditEventDispatcher, decorators: [{
             type: Injectable
@@ -255,16 +255,18 @@ function areMapEntriesEqual(a, b) {
  * table that launched it. Provided by CdkEditControl within the lens.
  */
 class EditRef {
+    _form = inject(ControlContainer, { self: true });
+    _editEventDispatcher = inject(EditEventDispatcher);
+    /** Emits the final value of this edit instance before closing. */
+    _finalValueSubject = new Subject();
+    finalValue = this._finalValueSubject;
+    /** Emits when the user tabs out of this edit lens before closing. */
+    _blurredSubject = new Subject();
+    blurred = this._blurredSubject;
+    /** The value to set the form back to on revert. */
+    _revertFormValue;
+    _injector = inject(Injector);
     constructor() {
-        this._form = inject(ControlContainer, { self: true });
-        this._editEventDispatcher = inject(EditEventDispatcher);
-        /** Emits the final value of this edit instance before closing. */
-        this._finalValueSubject = new Subject();
-        this.finalValue = this._finalValueSubject;
-        /** Emits when the user tabs out of this edit lens before closing. */
-        this._blurredSubject = new Subject();
-        this.blurred = this._blurredSubject;
-        this._injector = inject(Injector);
         this._editEventDispatcher.setActiveEditRef(this);
     }
     /**
@@ -310,8 +312,8 @@ class EditRef {
     reset(value) {
         this._form.reset(value || this._revertFormValue);
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditRef, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditRef }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditRef, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditRef });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditRef, decorators: [{
             type: Injectable
@@ -322,8 +324,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * May be overridden to customize the keyboard behavior of popover edit.
  */
 class FocusDispatcher {
+    directionality = inject(Directionality);
+    /** Observes keydown events triggered from the table. */
+    keyObserver;
     constructor() {
-        this.directionality = inject(Directionality);
         this.keyObserver = { next: event => this.handleKeyboardEvent(event) };
     }
     /**
@@ -377,8 +381,8 @@ class FocusDispatcher {
         }
         event.preventDefault();
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: FocusDispatcher, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: FocusDispatcher, providedIn: 'root' }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: FocusDispatcher, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: FocusDispatcher, providedIn: 'root' });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: FocusDispatcher, decorators: [{
             type: Injectable,
@@ -396,9 +400,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * &lt;form cdkEditControl [(cdkEditControlPreservedFormValue)]="nameEditValues.for(item).value"&gt;
  */
 class FormValueContainer {
-    constructor() {
-        this._formValues = new WeakMap();
-    }
+    _formValues = new WeakMap();
     for(key) {
         const _formValues = this._formValues;
         let entry = _formValues.get(key);
@@ -418,22 +420,26 @@ class FormValueContainer {
  * out.
  */
 class CdkEditControl {
-    constructor() {
-        this.elementRef = inject(ElementRef);
-        this.editRef = inject(EditRef);
-        this.destroyed = new Subject();
-        /**
-         * Specifies what should happen when the user clicks outside of the edit lens.
-         * The default behavior is to close the lens without submitting the form.
-         */
-        this.clickOutBehavior = 'close';
-        this.preservedFormValueChange = new EventEmitter();
-        /**
-         * Determines whether the lens will close on form submit if the form is not in a valid
-         * state. By default the lens will remain open.
-         */
-        this.ignoreSubmitUnlessValid = true;
-    }
+    elementRef = inject(ElementRef);
+    editRef = inject(EditRef);
+    destroyed = new Subject();
+    /**
+     * Specifies what should happen when the user clicks outside of the edit lens.
+     * The default behavior is to close the lens without submitting the form.
+     */
+    clickOutBehavior = 'close';
+    /**
+     * A two-way binding for storing unsubmitted form state. If not provided
+     * then form state will be discarded on close. The PeristBy directive is offered
+     * as a convenient shortcut for these bindings.
+     */
+    preservedFormValue;
+    preservedFormValueChange = new EventEmitter();
+    /**
+     * Determines whether the lens will close on form submit if the form is not in a valid
+     * state. By default the lens will remain open.
+     */
+    ignoreSubmitUnlessValid = true;
     ngOnInit() {
         this.editRef.init(this.preservedFormValue);
         this.editRef.finalValue.subscribe(this.preservedFormValueChange);
@@ -498,8 +504,8 @@ class CdkEditControl {
     _triggerFormSubmit() {
         this.elementRef.nativeElement.dispatchEvent(new Event('submit'));
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditControl, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkEditControl, isStandalone: true, selector: "form[cdkEditControl]", inputs: { clickOutBehavior: ["cdkEditControlClickOutBehavior", "clickOutBehavior"], preservedFormValue: ["cdkEditControlPreservedFormValue", "preservedFormValue"], ignoreSubmitUnlessValid: ["cdkEditControlIgnoreSubmitUnlessValid", "ignoreSubmitUnlessValid"] }, outputs: { preservedFormValueChange: "cdkEditControlPreservedFormValueChange" }, host: { listeners: { "ngSubmit": "handleFormSubmit()", "document:click": "handlePossibleClickOut($event)", "keydown": "_handleKeydown($event)" } }, providers: [EditRef], ngImport: i0 }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditControl, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkEditControl, isStandalone: true, selector: "form[cdkEditControl]", inputs: { clickOutBehavior: ["cdkEditControlClickOutBehavior", "clickOutBehavior"], preservedFormValue: ["cdkEditControlPreservedFormValue", "preservedFormValue"], ignoreSubmitUnlessValid: ["cdkEditControlIgnoreSubmitUnlessValid", "ignoreSubmitUnlessValid"] }, outputs: { preservedFormValueChange: "cdkEditControlPreservedFormValueChange" }, host: { listeners: { "ngSubmit": "handleFormSubmit()", "document:click": "handlePossibleClickOut($event)", "keydown": "_handleKeydown($event)" } }, providers: [EditRef], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditControl, decorators: [{
             type: Directive,
@@ -521,16 +527,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
         }] });
 /** Reverts the form to its initial or previously submitted state on click. */
 class CdkEditRevert {
-    constructor() {
-        this.editRef = inject(EditRef);
-        /** Type of the button. Defaults to `button` to avoid accident form submits. */
-        this.type = 'button';
-    }
+    editRef = inject(EditRef);
+    /** Type of the button. Defaults to `button` to avoid accident form submits. */
+    type = 'button';
     revertEdit() {
         this.editRef.reset();
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditRevert, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkEditRevert, isStandalone: true, selector: "button[cdkEditRevert]", inputs: { type: "type" }, host: { attributes: { "type": "button" }, listeners: { "click": "revertEdit()" } }, ngImport: i0 }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditRevert, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkEditRevert, isStandalone: true, selector: "button[cdkEditRevert]", inputs: { type: "type" }, host: { attributes: { "type": "button" }, listeners: { "click": "revertEdit()" } }, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditRevert, decorators: [{
             type: Directive,
@@ -546,9 +550,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
             }] } });
 /** Closes the lens on click. */
 class CdkEditClose {
+    elementRef = inject(ElementRef);
+    editRef = inject(EditRef);
     constructor() {
-        this.elementRef = inject(ElementRef);
-        this.editRef = inject(EditRef);
         const nativeElement = this.elementRef.nativeElement;
         // Prevent accidental form submits.
         if (nativeElement.nodeName === 'BUTTON' && !nativeElement.getAttribute('type')) {
@@ -563,8 +567,8 @@ class CdkEditClose {
         // the same event sequence if focus was moved quickly.
         this.editRef.close();
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditClose, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkEditClose, isStandalone: true, selector: "[cdkEditClose]", host: { listeners: { "click": "closeEdit()", "keydown.enter": "closeEdit()", "keydown.space": "closeEdit()" } }, ngImport: i0 }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditClose, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkEditClose, isStandalone: true, selector: "[cdkEditClose]", host: { listeners: { "click": "closeEdit()", "keydown.enter": "closeEdit()", "keydown.space": "closeEdit()" } }, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditClose, decorators: [{
             type: Directive,
@@ -585,18 +589,16 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * and 56 bytes of memory per instance.
  */
 class EditServices {
-    constructor() {
-        this.directionality = inject(Directionality);
-        this.editEventDispatcher = inject(EditEventDispatcher);
-        this.focusDispatcher = inject(FocusDispatcher);
-        this.focusTrapFactory = inject(FocusTrapFactory);
-        this.ngZone = inject(NgZone);
-        this.overlay = inject(Overlay);
-        this.scrollDispatcher = inject(ScrollDispatcher);
-        this.viewportRuler = inject(ViewportRuler);
-    }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditServices, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditServices }); }
+    directionality = inject(Directionality);
+    editEventDispatcher = inject(EditEventDispatcher);
+    focusDispatcher = inject(FocusDispatcher);
+    focusTrapFactory = inject(FocusTrapFactory);
+    ngZone = inject(NgZone);
+    overlay = inject(Overlay);
+    scrollDispatcher = inject(ScrollDispatcher);
+    viewportRuler = inject(ViewportRuler);
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditServices, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditServices });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: EditServices, decorators: [{
             type: Injectable
@@ -613,9 +615,9 @@ var FocusEscapeNotifierDirection;
  * focus leaves the region.
  */
 class FocusEscapeNotifier extends FocusTrap {
+    _escapeSubject = new Subject();
     constructor(element, checker, ngZone, document) {
         super(element, checker, ngZone, document, true /* deferAnchors */);
-        this._escapeSubject = new Subject();
         // The focus trap adds "anchors" at the beginning and end of a trapped region that redirect
         // focus. We override that redirect behavior here with simply emitting on a stream.
         this.startAnchorListener = () => {
@@ -634,11 +636,9 @@ class FocusEscapeNotifier extends FocusTrap {
 }
 /** Factory that allows easy instantiation of focus escape notifiers. */
 class FocusEscapeNotifierFactory {
-    constructor() {
-        this._checker = inject(InteractivityChecker);
-        this._ngZone = inject(NgZone);
-        this._document = inject(DOCUMENT);
-    }
+    _checker = inject(InteractivityChecker);
+    _ngZone = inject(NgZone);
+    _document = inject(DOCUMENT);
     /**
      * Creates a focus escape notifier region around the given element.
      * @param element The element around which focus will be monitored.
@@ -647,8 +647,8 @@ class FocusEscapeNotifierFactory {
     create(element) {
         return new FocusEscapeNotifier(element, this._checker, this._ngZone, this._document);
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: FocusEscapeNotifierFactory, deps: [], target: i0.ɵɵFactoryTarget.Injectable }); }
-    static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: FocusEscapeNotifierFactory, providedIn: 'root' }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: FocusEscapeNotifierFactory, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: FocusEscapeNotifierFactory, providedIn: 'root' });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: FocusEscapeNotifierFactory, decorators: [{
             type: Injectable,
@@ -663,13 +663,13 @@ const MOUSE_MOVE_THROTTLE_TIME_MS = 10;
  * EditEventDispatcher service for use by the other edit directives.
  */
 class CdkEditable {
+    elementRef = inject(ElementRef);
+    editEventDispatcher = inject(EditEventDispatcher);
+    focusDispatcher = inject(FocusDispatcher);
+    ngZone = inject(NgZone);
+    destroyed = new Subject();
+    _rendered = new Subject();
     constructor() {
-        this.elementRef = inject(ElementRef);
-        this.editEventDispatcher = inject(EditEventDispatcher);
-        this.focusDispatcher = inject(FocusDispatcher);
-        this.ngZone = inject(NgZone);
-        this.destroyed = new Subject();
-        this._rendered = new Subject();
         afterRender(() => {
             this._rendered.next();
         });
@@ -723,8 +723,8 @@ class CdkEditable {
                 .subscribe(this.focusDispatcher.keyObserver);
         });
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditable, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkEditable, isStandalone: true, selector: "table[editable], cdk-table[editable], mat-table[editable]", providers: [EditEventDispatcher, EditServices], ngImport: i0 }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditable, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkEditable, isStandalone: true, selector: "table[editable], cdk-table[editable], mat-table[editable]", providers: [EditEventDispatcher, EditServices], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditable, decorators: [{
             type: Directive,
@@ -751,16 +751,18 @@ const POPOVER_EDIT_INPUTS = [
  * Makes the cell focusable.
  */
 class CdkPopoverEdit {
-    constructor() {
-        this.services = inject(EditServices);
-        this.elementRef = inject(ElementRef);
-        this.viewContainerRef = inject(ViewContainerRef);
-        /** The edit lens template shown over the cell on edit. */
-        this.template = null;
-        this._colspan = {};
-        this._disabled = false;
-        this.destroyed = new Subject();
-    }
+    services = inject(EditServices);
+    elementRef = inject(ElementRef);
+    viewContainerRef = inject(ViewContainerRef);
+    /** The edit lens template shown over the cell on edit. */
+    template = null;
+    /**
+     * Implicit context to pass along to the template. Can be omitted if the template
+     * is defined within the cell.
+     */
+    context;
+    /** Aria label to set on the popover dialog element. */
+    ariaLabel;
     /**
      * Specifies that the popup should cover additional table cells before and/or after
      * this one.
@@ -778,6 +780,7 @@ class CdkPopoverEdit {
             }
         }
     }
+    _colspan = {};
     /** Whether popover edit is disabled for this cell. */
     get disabled() {
         return this._disabled;
@@ -792,6 +795,10 @@ class CdkPopoverEdit {
             this.services.editEventDispatcher.disabledCells.delete(this.elementRef.nativeElement);
         }
     }
+    _disabled = false;
+    focusTrap;
+    overlayRef;
+    destroyed = new Subject();
     ngAfterViewInit() {
         this._startListeningToEditEvents();
     }
@@ -917,8 +924,8 @@ class CdkPopoverEdit {
         }
         return { width: lastCell.getBoundingClientRect().right - firstCell.getBoundingClientRect().left };
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEdit, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkPopoverEdit, isStandalone: true, selector: "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"], ariaLabel: ["cdkPopoverEditAriaLabel", "ariaLabel"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, ngImport: i0 }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEdit, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkPopoverEdit, isStandalone: true, selector: "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"], ariaLabel: ["cdkPopoverEditAriaLabel", "ariaLabel"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEdit, decorators: [{
             type: Directive,
@@ -934,11 +941,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * Makes the cell focusable.
  */
 class CdkPopoverEditTabOut extends CdkPopoverEdit {
-    constructor() {
-        super(...arguments);
-        this.focusEscapeNotifierFactory = inject(FocusEscapeNotifierFactory);
-        this.focusTrap = undefined;
-    }
+    focusEscapeNotifierFactory = inject(FocusEscapeNotifierFactory);
+    focusTrap = undefined;
     initFocusTrap() {
         this.focusTrap = this.focusEscapeNotifierFactory.create(this.overlayRef.overlayElement);
         this.focusTrap
@@ -950,8 +954,8 @@ class CdkPopoverEditTabOut extends CdkPopoverEdit {
             this.closeEditOverlay();
         });
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEditTabOut, deps: null, target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkPopoverEditTabOut, isStandalone: true, selector: "[cdkPopoverEdit][cdkPopoverEditTabOut]", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"], ariaLabel: ["cdkPopoverEditAriaLabel", "ariaLabel"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, usesInheritance: true, ngImport: i0 }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEditTabOut, deps: null, target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkPopoverEditTabOut, isStandalone: true, selector: "[cdkPopoverEdit][cdkPopoverEditTabOut]", inputs: { template: ["cdkPopoverEdit", "template"], context: ["cdkPopoverEditContext", "context"], colspan: ["cdkPopoverEditColspan", "colspan"], disabled: ["cdkPopoverEditDisabled", "disabled"], ariaLabel: ["cdkPopoverEditAriaLabel", "ariaLabel"] }, host: { properties: { "attr.tabindex": "disabled ? null : 0", "attr.aria-haspopup": "!disabled" }, classAttribute: "cdk-popover-edit-cell" }, usesInheritance: true, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEditTabOut, decorators: [{
             type: Directive,
@@ -966,14 +970,13 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * it is hovered or when an element in the row has focus.
  */
 class CdkRowHoverContent {
-    constructor() {
-        this.services = inject(EditServices);
-        this.elementRef = inject(ElementRef);
-        this.templateRef = inject(TemplateRef);
-        this.viewContainerRef = inject(ViewContainerRef);
-        this.destroyed = new Subject();
-        this.viewRef = null;
-    }
+    services = inject(EditServices);
+    elementRef = inject(ElementRef);
+    templateRef = inject(TemplateRef);
+    viewContainerRef = inject(ViewContainerRef);
+    destroyed = new Subject();
+    viewRef = null;
+    _row;
     ngAfterViewInit() {
         this._row = closest(this.elementRef.nativeElement, ROW_SELECTOR);
         this.services.editEventDispatcher.registerRowWithHoverContent(this._row);
@@ -1038,8 +1041,8 @@ class CdkRowHoverContent {
             }
         });
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkRowHoverContent, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkRowHoverContent, isStandalone: true, selector: "[cdkRowHoverContent]", ngImport: i0 }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkRowHoverContent, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkRowHoverContent, isStandalone: true, selector: "[cdkRowHoverContent]", ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkRowHoverContent, decorators: [{
             type: Directive,
@@ -1052,9 +1055,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10",
  * element or an ancestor element.
  */
 class CdkEditOpen {
+    elementRef = inject(ElementRef);
+    editEventDispatcher = inject(EditEventDispatcher);
     constructor() {
-        this.elementRef = inject(ElementRef);
-        this.editEventDispatcher = inject(EditEventDispatcher);
         const elementRef = this.elementRef;
         const nativeElement = elementRef.nativeElement;
         // Prevent accidental form submits.
@@ -1066,8 +1069,8 @@ class CdkEditOpen {
         this.editEventDispatcher.editing.next(closest(this.elementRef.nativeElement, CELL_SELECTOR));
         evt.stopPropagation();
     }
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditOpen, deps: [], target: i0.ɵɵFactoryTarget.Directive }); }
-    static { this.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkEditOpen, isStandalone: true, selector: "[cdkEditOpen]", host: { listeners: { "click": "openEdit($event)" } }, ngImport: i0 }); }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditOpen, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0-next.10", type: CdkEditOpen, isStandalone: true, selector: "[cdkEditOpen]", host: { listeners: { "click": "openEdit($event)" } }, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkEditOpen, decorators: [{
             type: Directive,
@@ -1090,8 +1093,8 @@ const EXPORTED_DECLARATIONS = [
     CdkEditOpen,
 ];
 class CdkPopoverEditModule {
-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEditModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule }); }
-    static { this.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEditModule, imports: [OverlayModule, CdkPopoverEdit,
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEditModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEditModule, imports: [OverlayModule, CdkPopoverEdit,
             CdkPopoverEditTabOut,
             CdkRowHoverContent,
             CdkEditControl,
@@ -1105,8 +1108,8 @@ class CdkPopoverEditModule {
             CdkEditRevert,
             CdkEditClose,
             CdkEditable,
-            CdkEditOpen] }); }
-    static { this.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEditModule, imports: [OverlayModule] }); }
+            CdkEditOpen] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEditModule, imports: [OverlayModule] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-next.10", ngImport: i0, type: CdkPopoverEditModule, decorators: [{
             type: NgModule,
