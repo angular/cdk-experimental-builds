@@ -135,6 +135,7 @@ export declare class CdkFlexTableResizeStrategy extends ResizeStrategy implement
  * provide common events and services for column resizing.
  */
 export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
+    private _idGenerator;
     protected readonly destroyed: Subject<void>;
     abstract readonly columnResizeNotifier: ColumnResizeNotifier;
     abstract readonly elementRef: ElementRef<HTMLElement>;
