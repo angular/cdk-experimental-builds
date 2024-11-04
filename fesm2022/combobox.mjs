@@ -7,6 +7,7 @@ import { DOWN_ARROW, ENTER, ESCAPE, TAB } from '@angular/cdk/keycodes';
 import { _getEventTarget } from '@angular/cdk/platform';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
+import { _IdGenerator } from '@angular/cdk/a11y';
 
 const allowedOpenActions = ['focus', 'click', 'downKey', 'toggle'];
 const CDK_COMBOBOX = new InjectionToken('CDK_COMBOBOX');
@@ -268,7 +269,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0-rc.0", ng
                 args: ['panelValueChanged']
             }] } });
 
-let nextId = 0;
 class CdkComboboxPopup {
     _elementRef = inject(ElementRef);
     _combobox = inject(CDK_COMBOBOX);
@@ -286,7 +286,7 @@ class CdkComboboxPopup {
         this._firstFocusElement = id;
     }
     _firstFocusElement;
-    id = `cdk-combobox-popup-${nextId++}`;
+    id = inject(_IdGenerator).getId('cdk-combobox-popup-');
     ngOnInit() {
         this.registerWithPanel();
     }

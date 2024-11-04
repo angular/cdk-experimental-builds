@@ -1,5 +1,6 @@
 import * as i0 from '@angular/core';
-import { Directive, Injectable, inject, NgZone, CSP_NONCE, ElementRef, NgModule, Injector } from '@angular/core';
+import { inject, Directive, Injectable, NgZone, CSP_NONCE, ElementRef, NgModule, Injector } from '@angular/core';
+import { _IdGenerator } from '@angular/cdk/a11y';
 import { Subject, fromEvent, merge, combineLatest, Observable } from 'rxjs';
 import { map, takeUntil, filter, mapTo, take, startWith, pairwise, distinctUntilChanged, share, skip } from 'rxjs/operators';
 import { _closest } from '@angular/cdk-experimental/popover-edit';
@@ -17,15 +18,15 @@ const RESIZE_OVERLAY_SELECTOR = '.mat-column-resize-overlay-thumb';
 
 const HOVER_OR_ACTIVE_CLASS = 'cdk-column-resize-hover-or-active';
 const WITH_RESIZED_COLUMN_CLASS = 'cdk-column-resize-with-resized-column';
-let nextId = 0;
 /**
  * Base class for ColumnResize directives which attach to mat-table elements to
  * provide common events and services for column resizing.
  */
 class ColumnResize {
+    _idGenerator = inject(_IdGenerator);
     destroyed = new Subject();
     /** Unique ID for this table instance. */
-    selectorId = `${++nextId}`;
+    selectorId = this._idGenerator.getId('cdk-column-resize-');
     /** The id attribute of the table, if specified. */
     id;
     ngAfterViewInit() {
@@ -40,7 +41,7 @@ class ColumnResize {
     }
     /** Gets the unique CSS class name for this table instance. */
     getUniqueCssClass() {
-        return `cdk-column-resize-${this.selectorId}`;
+        return this.selectorId;
     }
     /** Called when a column in the table is resized. Applies a css class to the table element. */
     setResized() {

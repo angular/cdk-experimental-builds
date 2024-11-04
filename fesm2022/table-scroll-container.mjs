@@ -1,11 +1,11 @@
 import * as i0 from '@angular/core';
 import { inject, ElementRef, CSP_NONCE, Directive, NgModule } from '@angular/core';
+import { _IdGenerator } from '@angular/cdk/a11y';
 import { DOCUMENT } from '@angular/common';
 import { Directionality } from '@angular/cdk/bidi';
 import { _getShadowRoot } from '@angular/cdk/platform';
 import { STICKY_POSITIONING_LISTENER } from '@angular/cdk/table';
 
-let nextId = 0;
 /**
  * Applies styles to the host element that make its scrollbars match up with
  * the non-sticky scrollable portions of the CdkTable contained within.
@@ -22,7 +22,7 @@ class CdkTableScrollContainer {
     _document = inject(DOCUMENT);
     _directionality = inject(Directionality, { optional: true });
     _nonce = inject(CSP_NONCE, { optional: true });
-    _uniqueClassName = `cdk-table-scroll-container-${++nextId}`;
+    _uniqueClassName = inject(_IdGenerator).getId('cdk-table-scroll-container-');
     _styleRoot;
     _styleElement;
     /** The most recent sticky column size values from the CdkTable. */
