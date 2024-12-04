@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { inject, Directive, Injectable, NgZone, CSP_NONCE, ElementRef, NgModule, Injector } from '@angular/core';
+import { InjectionToken, inject, Directive, Input, Injectable, NgZone, CSP_NONCE, ElementRef, NgModule, Injector } from '@angular/core';
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { Subject, fromEvent, merge, combineLatest, Observable } from 'rxjs';
 import { map, takeUntil, filter, mapTo, take, startWith, pairwise, distinctUntilChanged, share, skip } from 'rxjs/operators';
@@ -18,6 +18,7 @@ const RESIZE_OVERLAY_SELECTOR = '.mat-column-resize-overlay-thumb';
 
 const HOVER_OR_ACTIVE_CLASS = 'cdk-column-resize-hover-or-active';
 const WITH_RESIZED_COLUMN_CLASS = 'cdk-column-resize-with-resized-column';
+const COLUMN_RESIZE_OPTIONS = new InjectionToken('CdkColumnResizeOptions');
 /**
  * Base class for ColumnResize directives which attach to mat-table elements to
  * provide common events and services for column resizing.
@@ -29,6 +30,11 @@ class ColumnResize {
     selectorId = this._idGenerator.getId('cdk-column-resize-');
     /** The id attribute of the table, if specified. */
     id;
+    /**
+     * Whether to update the column's width continuously as the mouse position
+     * changes, or to wait until mouseup to apply the new size.
+     */
+    liveResizeUpdates = inject(COLUMN_RESIZE_OPTIONS, { optional: true })?.liveResizeUpdates ?? true;
     ngAfterViewInit() {
         this.elementRef.nativeElement.classList.add(this.getUniqueCssClass());
         this._listenForRowHoverEvents();
@@ -79,11 +85,13 @@ class ColumnResize {
         });
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0", ngImport: i0, type: ColumnResize, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0", type: ColumnResize, isStandalone: true, ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0", type: ColumnResize, isStandalone: true, inputs: { liveResizeUpdates: "liveResizeUpdates" }, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0", ngImport: i0, type: ColumnResize, decorators: [{
             type: Directive
-        }] });
+        }], propDecorators: { liveResizeUpdates: [{
+                type: Input
+            }] } });
 
 /**
  * Originating source of column resize events within a table.
@@ -542,11 +550,13 @@ class ResizeRef {
     overlayRef;
     minWidthPx;
     maxWidthPx;
-    constructor(origin, overlayRef, minWidthPx, maxWidthPx) {
+    liveUpdates;
+    constructor(origin, overlayRef, minWidthPx, maxWidthPx, liveUpdates = true) {
         this.origin = origin;
         this.overlayRef = overlayRef;
         this.minWidthPx = minWidthPx;
         this.maxWidthPx = maxWidthPx;
+        this.liveUpdates = liveUpdates;
     }
 }
 
@@ -693,7 +703,7 @@ class Resizable {
             providers: [
                 {
                     provide: ResizeRef,
-                    useValue: new ResizeRef(this.elementRef, this.overlayRef, this.minWidthPx, this.maxWidthPx),
+                    useValue: new ResizeRef(this.elementRef, this.overlayRef, this.minWidthPx, this.maxWidthPx, this.columnResize.liveResizeUpdates),
                 },
             ],
         });
@@ -742,6 +752,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0", ngImpor
  */
 class ResizeOverlayHandle {
     destroyed = new Subject();
+    _cumulativeDeltaX = 0;
     ngAfterViewInit() {
         this._listenForMouseEvents();
     }
@@ -778,6 +789,7 @@ class ResizeOverlayHandle {
         let originOffset = this._getOriginOffset();
         let size = initialSize;
         let overshot = 0;
+        this._cumulativeDeltaX = 0;
         this.updateResizeActive(true);
         mouseup.pipe(takeUntil(merge(escape, this.destroyed))).subscribe(({ screenX }) => {
             this.styleScheduler.scheduleEnd(() => {
@@ -791,6 +803,12 @@ class ResizeOverlayHandle {
             .pipe(map(({ screenX }) => screenX), startWith(startX), distinctUntilChanged(), pairwise(), takeUntil(merge(mouseup, escape, this.destroyed)))
             .subscribe(([prevX, currX]) => {
             let deltaX = currX - prevX;
+            if (!this.resizeRef.liveUpdates) {
+                this._cumulativeDeltaX += deltaX;
+                const sizeDelta = this._computeNewSize(size, this._cumulativeDeltaX) - size;
+                this._updateOverlayOffset(sizeDelta);
+                return;
+            }
             // If the mouse moved further than the resize was able to match, limit the
             // movement of the overlay to match the actual size and position of the origin.
             if (overshot !== 0) {
@@ -808,14 +826,7 @@ class ResizeOverlayHandle {
                     }
                 }
             }
-            let computedNewSize = size + (this._isLtr() ? deltaX : -deltaX);
-            computedNewSize = Math.min(Math.max(computedNewSize, this.resizeRef.minWidthPx, 0), this.resizeRef.maxWidthPx);
-            this.resizeNotifier.triggerResize.next({
-                columnId: this.columnDef.name,
-                size: computedNewSize,
-                previousSize: size,
-                isStickyColumn: this.columnDef.sticky || this.columnDef.stickyEnd,
-            });
+            this._triggerResize(size, deltaX);
             this.styleScheduler.scheduleEnd(() => {
                 const originNewSize = this._getOriginWidth();
                 const originNewOffset = this._getOriginOffset();
@@ -831,6 +842,19 @@ class ResizeOverlayHandle {
     }
     updateResizeActive(active) {
         this.eventDispatcher.overlayHandleActiveForCell.next(active ? this.resizeRef.origin.nativeElement : null);
+    }
+    _triggerResize(startSize, deltaX) {
+        this.resizeNotifier.triggerResize.next({
+            columnId: this.columnDef.name,
+            size: this._computeNewSize(startSize, deltaX),
+            previousSize: startSize,
+            isStickyColumn: this.columnDef.sticky || this.columnDef.stickyEnd,
+        });
+    }
+    _computeNewSize(startSize, deltaX) {
+        let computedNewSize = startSize + (this._isLtr() ? deltaX : -deltaX);
+        computedNewSize = Math.min(Math.max(computedNewSize, this.resizeRef.minWidthPx, 0), this.resizeRef.maxWidthPx);
+        return computedNewSize;
     }
     _getOriginWidth() {
         return this.resizeRef.origin.nativeElement.offsetWidth;
@@ -849,6 +873,9 @@ class ResizeOverlayHandle {
         this.ngZone.run(() => {
             const sizeMessage = { columnId: this.columnDef.name, size };
             if (completedSuccessfully) {
+                if (!this.resizeRef.liveUpdates) {
+                    this._triggerResize(size, this._cumulativeDeltaX);
+                }
                 this.resizeNotifier.resizeCompleted.next(sizeMessage);
             }
             else {
@@ -867,5 +894,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0", ngImpor
  * Generated bundle index. Do not edit.
  */
 
-export { CdkColumnResize, CdkColumnResizeDefaultEnabledModule, CdkColumnResizeFlex, CdkColumnResizeModule, CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex, CdkFlexTableResizeStrategy, ColumnResize, ColumnResizeNotifier, ColumnResizeNotifierSource, ColumnSizeStore, FLEX_RESIZE_STRATEGY_PROVIDER, HeaderRowEventDispatcher, Resizable, ResizeOverlayHandle, ResizeRef, ResizeStrategy, TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER, TableLayoutFixedResizeStrategy };
+export { COLUMN_RESIZE_OPTIONS, CdkColumnResize, CdkColumnResizeDefaultEnabledModule, CdkColumnResizeFlex, CdkColumnResizeModule, CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex, CdkFlexTableResizeStrategy, ColumnResize, ColumnResizeNotifier, ColumnResizeNotifierSource, ColumnSizeStore, FLEX_RESIZE_STRATEGY_PROVIDER, HeaderRowEventDispatcher, Resizable, ResizeOverlayHandle, ResizeRef, ResizeStrategy, TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER, TableLayoutFixedResizeStrategy };
 //# sourceMappingURL=column-resize.mjs.map

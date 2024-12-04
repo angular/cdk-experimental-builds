@@ -6,6 +6,7 @@ import { _CoalescedStyleScheduler } from '@angular/cdk/table';
 import { Directionality } from '@angular/cdk/bidi';
 import { ElementRef } from '@angular/core';
 import * as i0 from '@angular/core';
+import { InjectionToken } from '@angular/core';
 import { Injector } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -130,6 +131,8 @@ export declare class CdkFlexTableResizeStrategy extends ResizeStrategy implement
     static ɵprov: i0.ɵɵInjectableDeclaration<CdkFlexTableResizeStrategy>;
 }
 
+export declare const COLUMN_RESIZE_OPTIONS: InjectionToken<ColumnResizeOptions>;
+
 /**
  * Base class for ColumnResize directives which attach to mat-table elements to
  * provide common events and services for column resizing.
@@ -146,6 +149,11 @@ export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
     protected readonly selectorId: string;
     /** The id attribute of the table, if specified. */
     id?: string;
+    /**
+     * Whether to update the column's width continuously as the mouse position
+     * changes, or to wait until mouseup to apply the new size.
+     */
+    liveResizeUpdates: boolean;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     /** Gets the unique CSS class name for this table instance. */
@@ -156,7 +164,7 @@ export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
     private _listenForResizeActivity;
     private _listenForHoverActivity;
     static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResize, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<ColumnResize, never, never, {}, {}, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<ColumnResize, never, never, { "liveResizeUpdates": { "alias": "liveResizeUpdates"; "required": false; }; }, {}, never, never, true, never>;
 }
 
 /** Service for triggering column resizes imperatively or being notified of them. */
@@ -183,6 +191,11 @@ export declare class ColumnResizeNotifierSource {
     readonly triggerResize: Subject<ColumnSizeAction>;
     static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResizeNotifierSource, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<ColumnResizeNotifierSource>;
+}
+
+/** Configurable options for column resize. */
+export declare interface ColumnResizeOptions {
+    liveResizeUpdates?: boolean;
 }
 
 /** Indicates the width of a column. */
@@ -348,11 +361,14 @@ export declare abstract class ResizeOverlayHandle implements AfterViewInit, OnDe
     protected abstract readonly resizeNotifier: ColumnResizeNotifierSource;
     protected abstract readonly resizeRef: ResizeRef;
     protected abstract readonly styleScheduler: _CoalescedStyleScheduler;
+    private _cumulativeDeltaX;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     private _listenForMouseEvents;
     private _dragStarted;
     protected updateResizeActive(active: boolean): void;
+    private _triggerResize;
+    private _computeNewSize;
     private _getOriginWidth;
     private _getOriginOffset;
     private _updateOverlayOffset;
@@ -368,7 +384,8 @@ export declare class ResizeRef {
     readonly overlayRef: OverlayRef;
     readonly minWidthPx: number;
     readonly maxWidthPx: number;
-    constructor(origin: ElementRef, overlayRef: OverlayRef, minWidthPx: number, maxWidthPx: number);
+    readonly liveUpdates: boolean;
+    constructor(origin: ElementRef, overlayRef: OverlayRef, minWidthPx: number, maxWidthPx: number, liveUpdates?: boolean);
 }
 
 /**
