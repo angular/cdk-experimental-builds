@@ -24,10 +24,9 @@ const COLUMN_RESIZE_OPTIONS = new InjectionToken('CdkColumnResizeOptions');
  * provide common events and services for column resizing.
  */
 class ColumnResize {
-    _idGenerator = inject(_IdGenerator);
     destroyed = new Subject();
     /** Unique ID for this table instance. */
-    selectorId = this._idGenerator.getId('cdk-column-resize-');
+    selectorId = inject(_IdGenerator).getId('cdk-column-resize-');
     /** The id attribute of the table, if specified. */
     id;
     /**
@@ -48,6 +47,10 @@ class ColumnResize {
     /** Gets the unique CSS class name for this table instance. */
     getUniqueCssClass() {
         return this.selectorId;
+    }
+    /** Gets the ID for this table used for column size persistance. */
+    getTableId() {
+        return String(this.elementRef.nativeElement.id);
     }
     /** Called when a column in the table is resized. Applies a css class to the table element. */
     setResized() {
@@ -571,6 +574,7 @@ class Resizable {
     inlineHandle;
     overlayRef;
     destroyed = new Subject();
+    columnSizeStore = inject(ColumnSizeStore, { optional: true });
     _viewInitialized = false;
     _isDestroyed = false;
     /** The minimum width to allow the column to be sized to. */
@@ -605,6 +609,15 @@ class Resizable {
             this._viewInitialized = true;
             this._applyMinWidthPx();
             this._applyMaxWidthPx();
+            this.columnSizeStore
+                ?.getSize(this.columnResize.getTableId(), this.columnDef.name)
+                ?.pipe(take(1), takeUntil(this.destroyed))
+                .subscribe(size => {
+                if (size == null) {
+                    return;
+                }
+                this._applySize(size);
+            });
         });
     }
     ngOnDestroy() {
@@ -677,6 +690,11 @@ class Resizable {
             .pipe(takeUntilDestroyed)
             .subscribe(columnSize => {
             this._cleanUpAfterResize(columnSize);
+        });
+        this.resizeNotifier.resizeCompleted
+            .pipe(filter(sizeUpdate => sizeUpdate.columnId === this.columnDef.name), distinctUntilChanged((a, b) => a.size === b.size), takeUntil(this.destroyed))
+            .subscribe(sizeUpdate => {
+            this.columnSizeStore?.setSize(this.columnResize.getTableId(), this.columnDef.name, sizeUpdate.size);
         });
     }
     _completeResizeOperation() {

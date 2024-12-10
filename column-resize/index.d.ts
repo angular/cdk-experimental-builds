@@ -138,7 +138,6 @@ export declare const COLUMN_RESIZE_OPTIONS: InjectionToken<ColumnResizeOptions>;
  * provide common events and services for column resizing.
  */
 export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
-    private _idGenerator;
     protected readonly destroyed: Subject<void>;
     abstract readonly columnResizeNotifier: ColumnResizeNotifier;
     abstract readonly elementRef: ElementRef<HTMLElement>;
@@ -158,6 +157,8 @@ export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
     ngOnDestroy(): void;
     /** Gets the unique CSS class name for this table instance. */
     getUniqueCssClass(): string;
+    /** Gets the ID for this table used for column size persistance. */
+    getTableId(): string;
     /** Called when a column in the table is resized. Applies a css class to the table element. */
     setResized(): void;
     private _listenForRowHoverEvents;
@@ -227,9 +228,9 @@ export declare interface ColumnSizeAction extends ColumnSize {
  */
 export declare abstract class ColumnSizeStore {
     /** Returns the persisted size of the specified column in the specified table. */
-    abstract getSize(tableId: string, columnId: string): number;
+    abstract getSize(tableId: string, columnId: string): Observable<number | null> | null;
     /** Persists the size of the specified column in the specified table. */
-    abstract setSize(tableId: string, columnId: string): void;
+    abstract setSize(tableId: string, columnId: string, sizePx: number): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<ColumnSizeStore, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<ColumnSizeStore>;
 }
@@ -318,6 +319,7 @@ export declare abstract class Resizable<HandleComponent extends ResizeOverlayHan
     protected abstract readonly styleScheduler: _CoalescedStyleScheduler;
     protected abstract readonly viewContainerRef: ViewContainerRef;
     protected abstract readonly changeDetectorRef: ChangeDetectorRef;
+    protected readonly columnSizeStore: ColumnSizeStore | null;
     private _viewInitialized;
     private _isDestroyed;
     /** The minimum width to allow the column to be sized to. */
