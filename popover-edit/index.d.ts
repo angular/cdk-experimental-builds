@@ -31,11 +31,13 @@ export declare class CdkEditable implements AfterViewInit, OnDestroy {
     protected readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
     protected readonly focusDispatcher: FocusDispatcher;
     protected readonly ngZone: NgZone;
+    private readonly _renderer;
     protected readonly destroyed: Subject<void>;
     private _rendered;
     constructor();
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
+    private _observableFromEvent;
     private _listenForTableEvents;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditable, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditable, "table[editable], cdk-table[editable], mat-table[editable]", never, {}, {}, never, never, true, never>;
