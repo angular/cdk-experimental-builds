@@ -138,6 +138,8 @@ export declare const COLUMN_RESIZE_OPTIONS: InjectionToken<ColumnResizeOptions>;
  * provide common events and services for column resizing.
  */
 export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
+    private _renderer;
+    private _eventCleanups;
     protected readonly destroyed: Subject<void>;
     abstract readonly columnResizeNotifier: ColumnResizeNotifier;
     abstract readonly elementRef: ElementRef<HTMLElement>;
@@ -353,6 +355,7 @@ export declare abstract class Resizable<HandleComponent extends ResizeOverlayHan
  * for handling column resize mouse events and displaying any visible UI on the column edge.
  */
 export declare abstract class ResizeOverlayHandle implements AfterViewInit, OnDestroy {
+    private _renderer;
     protected readonly destroyed: Subject<void>;
     protected abstract readonly columnDef: CdkColumnDef;
     protected abstract readonly document: Document;
@@ -376,6 +379,7 @@ export declare abstract class ResizeOverlayHandle implements AfterViewInit, OnDe
     private _updateOverlayOffset;
     private _isLtr;
     private _notifyResizeEnded;
+    private _observableFromEvent;
     static ɵfac: i0.ɵɵFactoryDeclaration<ResizeOverlayHandle, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<ResizeOverlayHandle, never, never, {}, {}, never, never, true, never>;
 }

@@ -1,8 +1,8 @@
 import * as i0 from '@angular/core';
-import { InjectionToken, inject, Directive, Input, Injectable, NgZone, CSP_NONCE, ElementRef, NgModule, Injector } from '@angular/core';
+import { InjectionToken, inject, Renderer2, Directive, Input, Injectable, NgZone, CSP_NONCE, ElementRef, NgModule, Injector } from '@angular/core';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { Subject, fromEvent, merge, combineLatest, Observable } from 'rxjs';
-import { map, takeUntil, filter, mapTo, take, startWith, pairwise, distinctUntilChanged, share, skip } from 'rxjs/operators';
+import { Subject, merge, combineLatest, Observable } from 'rxjs';
+import { mapTo, take, takeUntil, startWith, pairwise, distinctUntilChanged, share, map, skip, filter } from 'rxjs/operators';
 import { _closest } from '@angular/cdk-experimental/popover-edit';
 import { _COALESCED_STYLE_SCHEDULER, CdkTable } from '@angular/cdk/table';
 import { DOCUMENT } from '@angular/common';
@@ -24,6 +24,8 @@ const COLUMN_RESIZE_OPTIONS = new InjectionToken('CdkColumnResizeOptions');
  * provide common events and services for column resizing.
  */
 class ColumnResize {
+    _renderer = inject(Renderer2);
+    _eventCleanups;
     destroyed = new Subject();
     /** Unique ID for this table instance. */
     selectorId = inject(_IdGenerator).getId('cdk-column-resize-');
@@ -41,6 +43,7 @@ class ColumnResize {
         this._listenForHoverActivity();
     }
     ngOnDestroy() {
+        this._eventCleanups?.forEach(cleanup => cleanup());
         this.destroyed.next();
         this.destroyed.complete();
     }
@@ -59,13 +62,17 @@ class ColumnResize {
     _listenForRowHoverEvents() {
         this.ngZone.runOutsideAngular(() => {
             const element = this.elementRef.nativeElement;
-            fromEvent(element, 'mouseover')
-                .pipe(map(event => _closest(event.target, HEADER_CELL_SELECTOR)), takeUntil(this.destroyed))
-                .subscribe(this.eventDispatcher.headerCellHovered);
-            fromEvent(element, 'mouseleave')
-                .pipe(filter(event => !!event.relatedTarget &&
-                !event.relatedTarget.matches(RESIZE_OVERLAY_SELECTOR)), mapTo(null), takeUntil(this.destroyed))
-                .subscribe(this.eventDispatcher.headerCellHovered);
+            this._eventCleanups = [
+                this._renderer.listen(element, 'mouseover', (event) => {
+                    this.eventDispatcher.headerCellHovered.next(_closest(event.target, HEADER_CELL_SELECTOR));
+                }),
+                this._renderer.listen(element, 'mouseleave', (event) => {
+                    if (event.relatedTarget &&
+                        !event.relatedTarget.matches(RESIZE_OVERLAY_SELECTOR)) {
+                        this.eventDispatcher.headerCellHovered.next(null);
+                    }
+                }),
+            ];
         });
     }
     _listenForResizeActivity() {
@@ -769,6 +776,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.1.0-next.3", 
  * for handling column resize mouse events and displaying any visible UI on the column edge.
  */
 class ResizeOverlayHandle {
+    _renderer = inject(Renderer2);
     destroyed = new Subject();
     _cumulativeDeltaX = 0;
     ngAfterViewInit() {
@@ -780,13 +788,13 @@ class ResizeOverlayHandle {
     }
     _listenForMouseEvents() {
         this.ngZone.runOutsideAngular(() => {
-            fromEvent(this.elementRef.nativeElement, 'mouseenter')
+            this._observableFromEvent(this.elementRef.nativeElement, 'mouseenter')
                 .pipe(mapTo(this.resizeRef.origin.nativeElement), takeUntil(this.destroyed))
                 .subscribe(cell => this.eventDispatcher.headerCellHovered.next(cell));
-            fromEvent(this.elementRef.nativeElement, 'mouseleave')
+            this._observableFromEvent(this.elementRef.nativeElement, 'mouseleave')
                 .pipe(map(event => event.relatedTarget && _closest(event.relatedTarget, HEADER_CELL_SELECTOR)), takeUntil(this.destroyed))
                 .subscribe(cell => this.eventDispatcher.headerCellHovered.next(cell));
-            fromEvent(this.elementRef.nativeElement, 'mousedown')
+            this._observableFromEvent(this.elementRef.nativeElement, 'mousedown')
                 .pipe(takeUntil(this.destroyed))
                 .subscribe(mousedownEvent => {
                 this._dragStarted(mousedownEvent);
@@ -798,9 +806,9 @@ class ResizeOverlayHandle {
         if (mousedownEvent.button !== 0) {
             return;
         }
-        const mouseup = fromEvent(this.document, 'mouseup');
-        const mousemove = fromEvent(this.document, 'mousemove');
-        const escape = fromEvent(this.document, 'keyup').pipe(filter(event => event.keyCode === ESCAPE));
+        const mouseup = this._observableFromEvent(this.document, 'mouseup');
+        const mousemove = this._observableFromEvent(this.document, 'mousemove');
+        const escape = this._observableFromEvent(this.document, 'keyup').pipe(filter(event => event.keyCode === ESCAPE));
         const startX = mousedownEvent.screenX;
         const initialSize = this._getOriginWidth();
         let overlayOffset = 0;
@@ -902,6 +910,16 @@ class ResizeOverlayHandle {
             else {
                 this.resizeNotifier.resizeCanceled.next(sizeMessage);
             }
+        });
+    }
+    _observableFromEvent(element, name) {
+        return new Observable(subscriber => {
+            const handler = (event) => subscriber.next(event);
+            const cleanup = this._renderer.listen(element, name, handler);
+            return () => {
+                cleanup();
+                subscriber.complete();
+            };
         });
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.1.0-next.3", ngImport: i0, type: ResizeOverlayHandle, deps: [], target: i0.ɵɵFactoryTarget.Directive });
