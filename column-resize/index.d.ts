@@ -10,6 +10,7 @@ import { Injector } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
+import { OnInit } from '@angular/core';
 import { Overlay } from '@angular/cdk/overlay';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { Provider } from '@angular/core';
@@ -285,7 +286,7 @@ declare namespace i4 {
  * Base class for Resizable directives which are applied to column headers to make those columns
  * resizable.
  */
-export declare abstract class Resizable<HandleComponent extends ResizeOverlayHandle> implements AfterViewInit, OnDestroy {
+export declare abstract class Resizable<HandleComponent extends ResizeOverlayHandle> implements AfterViewInit, OnDestroy, OnInit {
     protected minWidthPxInternal: number;
     protected maxWidthPxInternal: number;
     protected inlineHandle?: HTMLElement;
@@ -313,6 +314,7 @@ export declare abstract class Resizable<HandleComponent extends ResizeOverlayHan
     /** The maximum width to allow the column to be sized to. */
     get maxWidthPx(): number;
     set maxWidthPx(value: number);
+    ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     protected abstract getInlineHandleCssClassName(): string;
@@ -375,11 +377,14 @@ export declare class ResizeRef {
  * Provides an implementation for resizing a column.
  * The details of how resizing works for tables for flex mat-tables are quite different.
  */
-export declare abstract class ResizeStrategy {
+export declare abstract class ResizeStrategy implements OnDestroy {
     protected abstract readonly columnResize: ColumnResize;
     protected abstract readonly styleScheduler: _CoalescedStyleScheduler;
     protected abstract readonly table: CdkTable<unknown>;
     private _pendingResizeDelta;
+    private _tableObserved;
+    private _elemSizeCache;
+    private _resizeObserver;
     /** Updates the width of the specified column. */
     abstract applyColumnSize(cssFriendlyColumnName: string, columnHeader: HTMLElement, sizeInPx: number, previousSizeInPx?: number): void;
     /** Applies a minimum width to the specified column, updating its current width as needed. */
@@ -388,6 +393,12 @@ export declare abstract class ResizeStrategy {
     abstract applyMaxColumnSize(cssFriendlyColumnName: string, columnHeader: HTMLElement, minSizeInPx: number): void;
     /** Adjusts the width of the table element by the specified delta. */
     protected updateTableWidthAndStickyColumns(delta: number): void;
+    /** Gets the style.width pixels on the specified element if present, otherwise its offsetWidth. */
+    protected getElementWidth(element: HTMLElement): number;
+    /** Informs the ResizeStrategy instance of a column that may be resized in the future. */
+    registerColumn(column: HTMLElement): void;
+    ngOnDestroy(): void;
+    private _updateCachedSizes;
     static ɵfac: i0.ɵɵFactoryDeclaration<ResizeStrategy, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<ResizeStrategy>;
 }

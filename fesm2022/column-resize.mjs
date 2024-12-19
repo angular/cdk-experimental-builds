@@ -184,11 +184,16 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0", ngImpor
  */
 class ResizeStrategy {
     _pendingResizeDelta = null;
+    _tableObserved = false;
+    _elemSizeCache = new WeakMap();
+    _resizeObserver = globalThis?.ResizeObserver
+        ? new globalThis.ResizeObserver(entries => this._updateCachedSizes(entries))
+        : null;
     /** Adjusts the width of the table element by the specified delta. */
     updateTableWidthAndStickyColumns(delta) {
         if (this._pendingResizeDelta === null) {
             const tableElement = this.columnResize.elementRef.nativeElement;
-            const tableWidth = getElementWidth(tableElement);
+            const tableWidth = this.getElementWidth(tableElement);
             this.styleScheduler.schedule(() => {
                 tableElement.style.width = coerceCssPixelValue(tableWidth + this._pendingResizeDelta);
                 this._pendingResizeDelta = null;
@@ -198,6 +203,41 @@ class ResizeStrategy {
             });
         }
         this._pendingResizeDelta = (this._pendingResizeDelta ?? 0) + delta;
+    }
+    /** Gets the style.width pixels on the specified element if present, otherwise its offsetWidth. */
+    getElementWidth(element) {
+        // Optimization: Check style.width first as we probably set it already before reading
+        // offsetWidth which triggers layout.
+        return (coercePixelsFromCssValue(element.style.width) ||
+            this._elemSizeCache.get(element)?.width ||
+            element.offsetWidth);
+    }
+    /** Informs the ResizeStrategy instance of a column that may be resized in the future. */
+    registerColumn(column) {
+        if (!this._tableObserved) {
+            this._tableObserved = true;
+            this._resizeObserver?.observe(this.columnResize.elementRef.nativeElement, {
+                box: 'border-box',
+            });
+        }
+        this._resizeObserver?.observe(column, { box: 'border-box' });
+    }
+    ngOnDestroy() {
+        this._resizeObserver?.disconnect();
+    }
+    _updateCachedSizes(entries) {
+        for (const entry of entries) {
+            const newEntry = entry.borderBoxSize?.length
+                ? {
+                    width: entry.borderBoxSize[0].inlineSize,
+                    height: entry.borderBoxSize[0].blockSize,
+                }
+                : {
+                    width: entry.contentRect.width,
+                    height: entry.contentRect.height,
+                };
+            this._elemSizeCache.set(entry.target, newEntry);
+        }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0", ngImport: i0, type: ResizeStrategy, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.0.0", ngImport: i0, type: ResizeStrategy });
@@ -217,7 +257,7 @@ class TableLayoutFixedResizeStrategy extends ResizeStrategy {
     styleScheduler = inject(_COALESCED_STYLE_SCHEDULER);
     table = inject(CdkTable);
     applyColumnSize(_, columnHeader, sizeInPx, previousSizeInPx) {
-        const delta = sizeInPx - (previousSizeInPx ?? getElementWidth(columnHeader));
+        const delta = sizeInPx - (previousSizeInPx ?? this.getElementWidth(columnHeader));
         if (delta === 0) {
             return;
         }
@@ -227,12 +267,12 @@ class TableLayoutFixedResizeStrategy extends ResizeStrategy {
         this.updateTableWidthAndStickyColumns(delta);
     }
     applyMinColumnSize(_, columnHeader, sizeInPx) {
-        const currentWidth = getElementWidth(columnHeader);
+        const currentWidth = this.getElementWidth(columnHeader);
         const newWidth = Math.max(currentWidth, sizeInPx);
         this.applyColumnSize(_, columnHeader, newWidth, currentWidth);
     }
     applyMaxColumnSize(_, columnHeader, sizeInPx) {
-        const currentWidth = getElementWidth(columnHeader);
+        const currentWidth = this.getElementWidth(columnHeader);
         const newWidth = Math.min(currentWidth, sizeInPx);
         this.applyColumnSize(_, columnHeader, newWidth, currentWidth);
     }
@@ -287,6 +327,7 @@ class CdkFlexTableResizeStrategy extends ResizeStrategy {
         return `cdk-column-${cssFriendlyColumnName}`;
     }
     ngOnDestroy() {
+        super.ngOnDestroy();
         this._styleElement?.remove();
         this._styleElement = undefined;
     }
@@ -358,12 +399,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.0.0", ngImpor
 /** Converts CSS pixel values to numbers, eg "123px" to 123. Returns NaN for non pixel values. */
 function coercePixelsFromCssValue(cssValue) {
     return Number(cssValue.match(/(\d+)px/)?.[1]);
-}
-/** Gets the style.width pixels on the specified element if present, otherwise its offsetWidth. */
-function getElementWidth(element) {
-    // Optimization: Check style.width first as we probably set it already before reading
-    // offsetWidth which triggers layout.
-    return coercePixelsFromCssValue(element.style.width) || element.offsetWidth;
 }
 /**
  * Converts CSS flex values as set in CdkFlexTableResizeStrategy to numbers,
@@ -585,6 +620,9 @@ class Resizable {
             this._applyMaxWidthPx();
         }
     }
+    ngOnInit() {
+        this.resizeStrategy.registerColumn(this.elementRef.nativeElement);
+    }
     ngAfterViewInit() {
         this._listenForRowHoverEvents();
         this._listenForResizeEvents();
@@ -719,13 +757,12 @@ class Resizable {
         this.resizeStrategy.applyMaxColumnSize(this.columnDef.cssClassFriendlyName, this.elementRef.nativeElement, this.maxWidthPx);
     }
     _appendInlineHandle() {
-        this.styleScheduler.schedule(() => {
-            this.inlineHandle = this.document.createElement('div');
-            this.inlineHandle.tabIndex = 0;
-            this.inlineHandle.className = this.getInlineHandleCssClassName();
-            // TODO: Apply correct aria role (probably slider) after a11y spec questions resolved.
-            this.elementRef.nativeElement.appendChild(this.inlineHandle);
-        });
+        this.inlineHandle = this.document.createElement('div');
+        // TODO: re-apply tab index once this element has behavior.
+        // this.inlineHandle.tabIndex = 0;
+        this.inlineHandle.className = this.getInlineHandleCssClassName();
+        // TODO: Apply correct aria role (probably slider) after a11y spec questions resolved.
+        this.elementRef.nativeElement.appendChild(this.inlineHandle);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.0.0", ngImport: i0, type: Resizable, deps: [], target: i0.ɵɵFactoryTarget.Directive });
     static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.0.0", type: Resizable, isStandalone: true, ngImport: i0 });
