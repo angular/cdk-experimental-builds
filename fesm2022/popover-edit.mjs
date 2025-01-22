@@ -1,6 +1,6 @@
 import * as i0 from '@angular/core';
-import { inject, NgZone, Injectable, Injector, afterNextRender, ElementRef, EventEmitter, Directive, Input, afterRender, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
-import { Subject, pipe, combineLatest, Observable, fromEvent, fromEventPattern, merge } from 'rxjs';
+import { inject, NgZone, Injectable, Injector, afterNextRender, ElementRef, EventEmitter, Directive, Input, Renderer2, afterRender, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
+import { Subject, pipe, combineLatest, Observable, merge } from 'rxjs';
 import { distinctUntilChanged, startWith, shareReplay, filter, map, auditTime, audit, debounceTime, skip, takeUntil, mapTo, throttleTime, share, withLatestFrom } from 'rxjs/operators';
 import { ControlContainer } from '@angular/forms';
 import { Directionality } from '@angular/cdk/bidi';
@@ -10,6 +10,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { FocusTrapFactory, FocusTrap, InteractivityChecker } from '@angular/cdk/a11y';
 import { ScrollDispatcher, ViewportRuler } from '@angular/cdk/scrolling';
 import { DOCUMENT } from '@angular/common';
+import { _bindEventWithOptions } from '@angular/cdk/platform';
 
 /** Selector for finding table cells. */
 const CELL_SELECTOR = '.cdk-cell, .mat-cell, td';
@@ -667,6 +668,7 @@ class CdkEditable {
     editEventDispatcher = inject(EditEventDispatcher);
     focusDispatcher = inject(FocusDispatcher);
     ngZone = inject(NgZone);
+    _renderer = inject(Renderer2);
     destroyed = new Subject();
     _rendered = new Subject();
     constructor() {
@@ -682,25 +684,37 @@ class CdkEditable {
         this.destroyed.complete();
         this._rendered.complete();
     }
+    _observableFromEvent(element, name, options) {
+        return new Observable(subscriber => {
+            const handler = (event) => subscriber.next(event);
+            const cleanup = options
+                ? _bindEventWithOptions(this._renderer, element, name, handler, options)
+                : this._renderer.listen(element, name, handler, options);
+            return () => {
+                cleanup();
+                subscriber.complete();
+            };
+        });
+    }
     _listenForTableEvents() {
         const element = this.elementRef.nativeElement;
         const toClosest = (selector) => map((event) => closest(event.target, selector));
         this.ngZone.runOutsideAngular(() => {
             // Track mouse movement over the table to hide/show hover content.
-            fromEvent(element, 'mouseover')
+            this._observableFromEvent(element, 'mouseover')
                 .pipe(toClosest(ROW_SELECTOR), takeUntil(this.destroyed))
                 .subscribe(this.editEventDispatcher.hovering);
-            fromEvent(element, 'mouseleave')
+            this._observableFromEvent(element, 'mouseleave')
                 .pipe(mapTo(null), takeUntil(this.destroyed))
                 .subscribe(this.editEventDispatcher.hovering);
-            fromEvent(element, 'mousemove')
+            this._observableFromEvent(element, 'mousemove')
                 .pipe(throttleTime(MOUSE_MOVE_THROTTLE_TIME_MS), toClosest(ROW_SELECTOR), takeUntil(this.destroyed))
                 .subscribe(this.editEventDispatcher.mouseMove);
             // Track focus within the table to hide/show/make focusable hover content.
-            fromEventPattern(handler => element.addEventListener('focus', handler, true), handler => element.removeEventListener('focus', handler, true))
+            this._observableFromEvent(element, 'focus', { capture: true })
                 .pipe(toClosest(ROW_SELECTOR), share(), takeUntil(this.destroyed))
                 .subscribe(this.editEventDispatcher.focused);
-            merge(fromEventPattern(handler => element.addEventListener('blur', handler, true), handler => element.removeEventListener('blur', handler, true)), fromEvent(element, 'keydown').pipe(filter(event => event.key === 'Escape')))
+            merge(this._observableFromEvent(element, 'blur', { capture: true }), this._observableFromEvent(element, 'keydown').pipe(filter(event => event.key === 'Escape')))
                 .pipe(mapTo(null), share(), takeUntil(this.destroyed))
                 .subscribe(this.editEventDispatcher.focused);
             // Keep track of rows within the table. This is used to know which rows with hover content
@@ -714,11 +728,11 @@ class CdkEditable {
             // ensure that rows above and below the focused/active row are tabbable.
             withLatestFrom(this.editEventDispatcher.editingOrFocused), filter(([_, activeRow]) => activeRow == null), map(() => element.querySelectorAll(ROW_SELECTOR)), share(), takeUntil(this.destroyed))
                 .subscribe(this.editEventDispatcher.allRows);
-            fromEvent(element, 'keydown')
+            this._observableFromEvent(element, 'keydown')
                 .pipe(filter(event => event.key === 'Enter'), toClosest(CELL_SELECTOR), takeUntil(this.destroyed))
                 .subscribe(this.editEventDispatcher.editing);
             // Keydown must be used here or else key auto-repeat does not work properly on some platforms.
-            fromEvent(element, 'keydown')
+            this._observableFromEvent(element, 'keydown')
                 .pipe(takeUntil(this.destroyed))
                 .subscribe(this.focusDispatcher.keyObserver);
         });
