@@ -217,6 +217,10 @@ class ResizeStrategy {
                 this._pendingResizeDelta = null;
             });
             this.styleScheduler.scheduleEnd(() => {
+                // Once the column sizes have updated, we unset the table width so that
+                // it does not have unwanted side effects on future changes in the table
+                // such as columns being added or removed.
+                tableElement.style.width = '';
                 this.table.updateStickyColumnStyles();
             });
         }
