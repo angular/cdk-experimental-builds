@@ -31,6 +31,8 @@ class ColumnResize {
     selectorId = inject(_IdGenerator).getId('cdk-column-resize-');
     /** The id attribute of the table, if specified. */
     id;
+    /** @docs-private Whether a call to updateStickyColumnStyles is pending after a resize. */
+    _flushPending = false;
     /**
      * Whether to update the column's width continuously as the mouse position
      * changes, or to wait until mouseup to apply the new size.
@@ -201,7 +203,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.1.3", ngImpor
  * The details of how resizing works for tables for flex mat-tables are quite different.
  */
 class ResizeStrategy {
-    _pendingResizeDelta = null;
     _tableObserved = false;
     _elemSizeCache = new WeakMap();
     _resizeObserver = globalThis?.ResizeObserver
@@ -209,22 +210,14 @@ class ResizeStrategy {
         : null;
     /** Adjusts the width of the table element by the specified delta. */
     updateTableWidthAndStickyColumns(delta) {
-        if (this._pendingResizeDelta === null) {
-            const tableElement = this.columnResize.elementRef.nativeElement;
-            const tableWidth = this.getElementWidth(tableElement);
-            this.styleScheduler.schedule(() => {
-                tableElement.style.width = coerceCssPixelValue(tableWidth + this._pendingResizeDelta);
-                this._pendingResizeDelta = null;
-            });
-            this.styleScheduler.scheduleEnd(() => {
-                // Once the column sizes have updated, we unset the table width so that
-                // it does not have unwanted side effects on future changes in the table
-                // such as columns being added or removed.
-                tableElement.style.width = '';
-                this.table.updateStickyColumnStyles();
-            });
-        }
-        this._pendingResizeDelta = (this._pendingResizeDelta ?? 0) + delta;
+        this.columnResize._flushPending = true;
+        this.styleScheduler.scheduleEnd(() => {
+            if (!this.columnResize._flushPending) {
+                return;
+            }
+            this.columnResize._flushPending = false;
+            this.table.updateStickyColumnStyles();
+        });
     }
     /** Gets the style.width pixels on the specified element if present, otherwise its offsetWidth. */
     getElementWidth(element) {

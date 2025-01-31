@@ -151,6 +151,8 @@ export declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
     protected readonly selectorId: string;
     /** The id attribute of the table, if specified. */
     id?: string;
+    /** @docs-private Whether a call to updateStickyColumnStyles is pending after a resize. */
+    _flushPending: boolean;
     /**
      * Whether to update the column's width continuously as the mouse position
      * changes, or to wait until mouseup to apply the new size.
@@ -404,7 +406,6 @@ export declare abstract class ResizeStrategy implements OnDestroy {
     protected abstract readonly columnResize: ColumnResize;
     protected abstract readonly styleScheduler: _CoalescedStyleScheduler;
     protected abstract readonly table: CdkTable<unknown>;
-    private _pendingResizeDelta;
     private _tableObserved;
     private _elemSizeCache;
     private _resizeObserver;
