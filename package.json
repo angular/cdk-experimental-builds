@@ -49,6 +49,10 @@
       "types": "./combobox/index.d.ts",
       "default": "./fesm2022/combobox.mjs"
     },
+    "./listbox": {
+      "types": "./listbox/index.d.ts",
+      "default": "./fesm2022/listbox.mjs"
+    },
     "./popover-edit": {
       "types": "./popover-edit/index.d.ts",
       "default": "./fesm2022/popover-edit.mjs"
@@ -64,6 +68,10 @@
     "./table-scroll-container": {
       "types": "./table-scroll-container/index.d.ts",
       "default": "./fesm2022/table-scroll-container.mjs"
+    },
+    "./ui-patterns": {
+      "types": "./ui-patterns/index.d.ts",
+      "default": "./fesm2022/ui-patterns.mjs"
     }
   }
 }
