@@ -56,13 +56,13 @@ declare class KeyboardEventManager<T extends KeyboardEvent> extends EventManager
  * Used to represent a keycode.
  *
  * This is used to match whether an events keycode should be handled. The ability to match using a
- * string, Signal, or Regexp gives us more flexibility when authoring event handlers.
+ * string, SignalLike, or Regexp gives us more flexibility when authoring event handlers.
  */
-declare type KeyCode = string | Signal<string> | RegExp;
+declare type KeyCode = string | SignalLike<string> | RegExp;
 
 /** Represents the required inputs for a listbox. */
 export declare type ListboxInputs = ListNavigationInputs<OptionPattern> & ListSelectionInputs<OptionPattern> & ListTypeaheadInputs & ListFocusInputs<OptionPattern> & {
-    disabled: Signal<boolean>;
+    disabled: SignalLike<boolean>;
 };
 
 /** Controls the state of a listbox. */
@@ -77,15 +77,15 @@ export declare class ListboxPattern {
     /** Controls focus for the listbox. */
     focusManager: ListFocus<OptionPattern>;
     /** Whether the list is vertically or horizontally oriented. */
-    orientation: Signal<'vertical' | 'horizontal'>;
+    orientation: SignalLike<'vertical' | 'horizontal'>;
     /** Whether the listbox is disabled. */
-    disabled: Signal<boolean>;
+    disabled: SignalLike<boolean>;
     /** The tabindex of the listbox. */
     tabindex: Signal<0 | -1>;
     /** The id of the current active item. */
     activedescendant: Signal<String | undefined>;
     /** Whether multiple items in the list can be selected at once. */
-    multiselectable: Signal<boolean>;
+    multiselectable: SignalLike<boolean>;
     /** The number of items in the listbox. */
     setsize: Signal<number>;
     /** Whether the listbox selection follows focus. */
@@ -154,15 +154,15 @@ declare class ListFocus<T extends ListFocusItem> {
 /** Represents the required inputs for a collection that contains focusable items. */
 declare interface ListFocusInputs<T extends ListFocusItem> {
     /** The focus strategy used by the list. */
-    focusMode: Signal<'roving' | 'activedescendant'>;
+    focusMode: SignalLike<'roving' | 'activedescendant'>;
 }
 
 /** Represents an item in a collection, such as a listbox option, than may receive focus. */
 declare interface ListFocusItem extends ListNavigationItem {
     /** A unique identifier for the item. */
-    id: Signal<string>;
+    id: SignalLike<string>;
     /** The html element that should receive focus. */
-    element: Signal<HTMLElement>;
+    element: SignalLike<HTMLElement>;
 }
 
 /** Controls navigation for a list of items. */
@@ -190,23 +190,23 @@ declare class ListNavigation<T extends ListNavigationItem> {
 /** Represents the required inputs for a collection that has navigable items. */
 declare interface ListNavigationInputs<T extends ListNavigationItem> {
     /** Whether focus should wrap when navigating. */
-    wrap: Signal<boolean>;
+    wrap: SignalLike<boolean>;
     /** The items in the list. */
-    items: Signal<T[]>;
+    items: SignalLike<T[]>;
     /** Whether disabled items in the list should be skipped when navigating. */
-    skipDisabled: Signal<boolean>;
+    skipDisabled: SignalLike<boolean>;
     /** The current index that has been navigated to. */
-    activeIndex: WritableSignal<number>;
+    activeIndex: WritableSignalLike<number>;
     /** Whether the list is vertically or horizontally oriented. */
-    orientation: Signal<'vertical' | 'horizontal'>;
+    orientation: SignalLike<'vertical' | 'horizontal'>;
     /** The direction that text is read based on the users locale. */
-    textDirection: Signal<'rtl' | 'ltr'>;
+    textDirection: SignalLike<'rtl' | 'ltr'>;
 }
 
 /** Represents an item in a collection, such as a listbox option, than can be navigated to. */
 declare interface ListNavigationItem {
     /** Whether an item is disabled. */
-    disabled: Signal<boolean>;
+    disabled: SignalLike<boolean>;
 }
 
 /** Controls selection for a list of items. */
@@ -248,21 +248,21 @@ declare class ListSelection<T extends ListSelectionItem> {
 /** Represents the required inputs for a collection that contains selectable items. */
 declare interface ListSelectionInputs<T extends ListSelectionItem> {
     /** The items in the list. */
-    items: Signal<T[]>;
+    items: SignalLike<T[]>;
     /** Whether multiple items in the list can be selected at once. */
-    multiselectable: Signal<boolean>;
+    multiselectable: SignalLike<boolean>;
     /** The ids of the current selected items. */
-    selectedIds: WritableSignal<string[]>;
+    selectedIds: WritableSignalLike<string[]>;
     /** The selection strategy used by the list. */
-    selectionMode: Signal<'follow' | 'explicit'>;
+    selectionMode: SignalLike<'follow' | 'explicit'>;
 }
 
 /** Represents an item in a collection, such as a listbox option, than can be selected. */
 declare interface ListSelectionItem extends ListNavigationItem {
     /** A unique identifier for the item. */
-    id: Signal<string>;
+    id: SignalLike<string>;
     /** Whether an item is disabled. */
-    disabled: Signal<boolean>;
+    disabled: SignalLike<boolean>;
 }
 
 /** Controls typeahead for a list of items. */
@@ -296,7 +296,7 @@ declare class ListTypeahead<T extends ListTypeaheadItem> {
  */
 declare interface ListTypeaheadInputs {
     /** The amount of time before the typeahead search is reset. */
-    typeaheadDelay: Signal<number>;
+    typeaheadDelay: SignalLike<number>;
 }
 
 /**
@@ -305,7 +305,7 @@ declare interface ListTypeaheadInputs {
  */
 declare interface ListTypeaheadItem extends ListNavigationItem {
     /** The text used by the typeahead search. */
-    searchTerm: Signal<string>;
+    searchTerm: SignalLike<string>;
 }
 
 declare type ModifierInputs = ModifierKey | ModifierKey[];
@@ -330,27 +330,27 @@ declare enum MouseButton {
 
 /** Represents the required inputs for an option in a listbox. */
 export declare interface OptionInputs extends ListNavigationItem, ListSelectionItem, ListTypeaheadItem, ListFocusItem {
-    listbox: Signal<ListboxPattern_2>;
+    listbox: SignalLike<ListboxPattern_2>;
 }
 
 /** Represents an option in a listbox. */
 export declare class OptionPattern {
     /** A unique identifier for the option. */
-    id: Signal<string>;
+    id: SignalLike<string>;
     /** The position of the option in the list. */
     index: Signal<number>;
     /** Whether the option is selected. */
     selected: Signal<boolean>;
     /** Whether the option is disabled. */
-    disabled: Signal<boolean>;
+    disabled: SignalLike<boolean>;
     /** The text used by the typeahead search. */
-    searchTerm: Signal<string>;
+    searchTerm: SignalLike<string>;
     /** A reference to the parent listbox. */
-    listbox: Signal<ListboxPattern_2>;
+    listbox: SignalLike<ListboxPattern_2>;
     /** The tabindex of the option. */
     tabindex: Signal<0 | -1>;
     /** The html element that should receive focus. */
-    element: Signal<HTMLElement>;
+    element: SignalLike<HTMLElement>;
     constructor(args: OptionInputs);
 }
 
@@ -386,6 +386,14 @@ declare interface SelectOptions {
     selectAll?: boolean;
     selectFromAnchor?: boolean;
     selectFromActive?: boolean;
+}
+
+
+declare type SignalLike<T> = () => T;
+
+declare interface WritableSignalLike<T> extends SignalLike<T> {
+    set(value: T): void;
+    update(updateFn: (value: T) => T): void;
 }
 
 export { }
