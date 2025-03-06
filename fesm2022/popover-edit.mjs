@@ -7,7 +7,7 @@ import { Directionality } from '@angular/cdk/bidi';
 import { RIGHT_ARROW, LEFT_ARROW, DOWN_ARROW, UP_ARROW, hasModifierKey } from '@angular/cdk/keycodes';
 import { Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { FocusTrapFactory, FocusTrap, InteractivityChecker } from '@angular/cdk/a11y';
+import { FocusTrapFactory, InteractivityChecker, FocusTrap } from '@angular/cdk/a11y';
 import { ScrollDispatcher, ViewportRuler } from '@angular/cdk/scrolling';
 import { DOCUMENT } from '@angular/common';
 import { _bindEventWithOptions } from '@angular/cdk/platform';
@@ -484,8 +484,6 @@ class CdkEditControl {
                 break;
             case 'close':
                 this.editRef.close();
-                break;
-            default:
                 break;
         }
     }
@@ -1132,10 +1130,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.1", 
                     exports: EXPORTED_DECLARATIONS,
                 }]
         }] });
-
-/**
- * Generated bundle index. Do not edit.
- */
 
 export { CdkEditClose, CdkEditControl, CdkEditOpen, CdkEditRevert, CdkEditable, CdkPopoverEdit, CdkPopoverEditModule, CdkPopoverEditTabOut, CdkRowHoverContent, EditEventDispatcher, EditRef, FocusDispatcher, FormValueContainer, HoverContentState, CELL_SELECTOR as _CELL_SELECTOR, closest as _closest };
 //# sourceMappingURL=popover-edit.mjs.map

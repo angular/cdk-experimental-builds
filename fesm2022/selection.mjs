@@ -35,12 +35,10 @@ class SelectionSet {
         if (!this._multiple) {
             this._selectionMap.clear();
         }
-        const toSelect = [];
         for (const select of selects) {
             if (this.isSelected(select)) {
                 continue;
             }
-            toSelect.push(select);
             this._markSelected(this._getTrackedByValue(select), select);
         }
         const after = this._getCurrentSelection();
@@ -51,12 +49,10 @@ class SelectionSet {
             throw Error('SelectionSet: not multiple selection');
         }
         const before = this._getCurrentSelection();
-        const toDeselect = [];
         for (const select of selects) {
             if (!this.isSelected(select)) {
                 continue;
             }
-            toDeselect.push(select);
             this._markDeselected(this._getTrackedByValue(select));
         }
         const after = this._getCurrentSelection();
@@ -610,10 +606,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.1", 
                     exports: [CdkSelection, CdkSelectionToggle, CdkSelectAll, CdkSelectionColumn, CdkRowSelection],
                 }]
         }] });
-
-/**
- * Generated bundle index. Do not edit.
- */
 
 export { CdkRowSelection, CdkSelectAll, CdkSelection, CdkSelectionColumn, CdkSelectionModule, CdkSelectionToggle, SelectionSet };
 //# sourceMappingURL=selection.mjs.map
