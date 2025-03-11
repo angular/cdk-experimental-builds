@@ -1,6 +1,6 @@
 import * as i0 from '@angular/core';
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
-import { OptionPattern, ListboxPattern } from '@angular/cdk-experimental/ui-patterns';
+import { O as OptionPattern, L as ListboxPattern } from '../listbox.d-8e28229b.js';
 
 /**
  * A listbox container.
