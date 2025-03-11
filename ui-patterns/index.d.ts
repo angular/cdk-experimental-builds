@@ -1,13 +1,9 @@
-import { Signal } from '@angular/core';
-import { WritableSignal } from '@angular/core';
+import * as i0 from '@angular/core';
 
-/** A basic event handler. */
-declare type EventHandler<T extends Event> = (event: T) => void;
-
-/** A config that specifies how to handle a particular event. */
-declare interface EventHandlerConfig<T extends Event> extends EventHandlerOptions {
-    matcher: EventMatcher<T>;
-    handler: EventHandler<T>;
+type SignalLike<T> = () => T;
+interface WritableSignalLike<T> extends SignalLike<T> {
+    set(value: T): void;
+    update(updateFn: (value: T) => T): void;
 }
 
 /**
@@ -15,11 +11,28 @@ declare interface EventHandlerConfig<T extends Event> extends EventHandlerOption
  *
  * This library has not yet had a need for stopPropagationImmediate.
  */
-declare interface EventHandlerOptions {
+interface EventHandlerOptions {
     stopPropagation: boolean;
     preventDefault: boolean;
 }
-
+/** A basic event handler. */
+type EventHandler<T extends Event> = (event: T) => void;
+/** A function that determines whether an event is to be handled. */
+type EventMatcher<T extends Event> = (event: T) => boolean;
+/** A config that specifies how to handle a particular event. */
+interface EventHandlerConfig<T extends Event> extends EventHandlerOptions {
+    matcher: EventMatcher<T>;
+    handler: EventHandler<T>;
+}
+/** Bit flag representation of the possible modifier keys that can be present on an event. */
+declare enum ModifierKey {
+    None = 0,
+    Ctrl = 1,
+    Shift = 2,
+    Alt = 4,
+    Meta = 8
+}
+type ModifierInputs = ModifierKey | ModifierKey[];
 /**
  * Abstract base class for all event managers.
  *
@@ -35,9 +48,13 @@ declare abstract class EventManager<T extends Event> {
     abstract on(...args: [...unknown[]]): this;
 }
 
-/** A function that determines whether an event is to be handled. */
-declare type EventMatcher<T extends Event> = (event: T) => boolean;
-
+/**
+ * Used to represent a keycode.
+ *
+ * This is used to match whether an events keycode should be handled. The ability to match using a
+ * string, SignalLike, or Regexp gives us more flexibility when authoring event handlers.
+ */
+type KeyCode = string | SignalLike<string> | RegExp;
 /**
  * An event manager that is specialized for handling keyboard events. By default this manager stops
  * propagation and prevents default on all events it handles.
@@ -53,123 +70,61 @@ declare class KeyboardEventManager<T extends KeyboardEvent> extends EventManager
 }
 
 /**
- * Used to represent a keycode.
- *
- * This is used to match whether an events keycode should be handled. The ability to match using a
- * string, SignalLike, or Regexp gives us more flexibility when authoring event handlers.
+ * The different mouse buttons that may appear on a pointer event.
  */
-declare type KeyCode = string | SignalLike<string> | RegExp;
+declare enum MouseButton {
+    Main = 0,
+    Auxiliary = 1,
+    Secondary = 2
+}
+/** An event manager that is specialized for handling pointer events. */
+declare class PointerEventManager<T extends PointerEvent> extends EventManager<T> {
+    options: EventHandlerOptions;
+    /**
+     * Configures this event manager to handle events with a specific modifer and mouse button
+     * combination.
+     */
+    on(button: MouseButton, modifiers: ModifierInputs, handler: EventHandler<T>): this;
+    /**
+     * Configures this event manager to handle events with a specific mouse button and no modifiers.
+     */
+    on(modifiers: ModifierInputs, handler: EventHandler<T>): this;
+    /**
+     * Configures this event manager to handle events with the main mouse button and no modifiers.
+     *
+     * @param handler The handler function
+     * @param options Options for whether to stop propagation or prevent default.
+     */
+    on(handler: EventHandler<T>): this;
+    private _normalizeInputs;
+    _isMatch(event: PointerEvent, button: MouseButton, modifiers: ModifierInputs): boolean;
+}
 
-/** Represents the required inputs for a listbox. */
-export declare type ListboxInputs = ListNavigationInputs<OptionPattern> & ListSelectionInputs<OptionPattern> & ListTypeaheadInputs & ListFocusInputs<OptionPattern> & {
+/** Represents an item in a collection, such as a listbox option, than can be navigated to. */
+interface ListNavigationItem {
+    /** Whether an item is disabled. */
     disabled: SignalLike<boolean>;
-};
-
-/** Controls the state of a listbox. */
-export declare class ListboxPattern {
-    readonly inputs: ListboxInputs;
-    /** Controls navigation for the listbox. */
-    navigation: ListNavigation<OptionPattern>;
-    /** Controls selection for the listbox. */
-    selection: ListSelection<OptionPattern>;
-    /** Controls typeahead for the listbox. */
-    typeahead: ListTypeahead<OptionPattern>;
-    /** Controls focus for the listbox. */
-    focusManager: ListFocus<OptionPattern>;
+}
+/** Represents the required inputs for a collection that has navigable items. */
+interface ListNavigationInputs<T extends ListNavigationItem> {
+    /** Whether focus should wrap when navigating. */
+    wrap: SignalLike<boolean>;
+    /** The items in the list. */
+    items: SignalLike<T[]>;
+    /** Whether disabled items in the list should be skipped when navigating. */
+    skipDisabled: SignalLike<boolean>;
+    /** The current index that has been navigated to. */
+    activeIndex: WritableSignalLike<number>;
     /** Whether the list is vertically or horizontally oriented. */
     orientation: SignalLike<'vertical' | 'horizontal'>;
-    /** Whether the listbox is disabled. */
-    disabled: SignalLike<boolean>;
-    /** The tabindex of the listbox. */
-    tabindex: Signal<0 | -1>;
-    /** The id of the current active item. */
-    activedescendant: Signal<String | undefined>;
-    /** Whether multiple items in the list can be selected at once. */
-    multiselectable: SignalLike<boolean>;
-    /** The number of items in the listbox. */
-    setsize: Signal<number>;
-    /** Whether the listbox selection follows focus. */
-    followFocus: Signal<boolean>;
-    /** The key used to navigate to the previous item in the list. */
-    prevKey: Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
-    /** The key used to navigate to the next item in the list. */
-    nextKey: Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
-    /** The regexp used to decide if a key should trigger typeahead. */
-    typeaheadRegexp: RegExp;
-    /** The keydown event manager for the listbox. */
-    keydown: Signal<KeyboardEventManager<KeyboardEvent>>;
-    /** The pointerdown event manager for the listbox. */
-    pointerdown: Signal<PointerEventManager<PointerEvent>>;
-    constructor(inputs: ListboxInputs);
-    /** Handles keydown events for the listbox. */
-    onKeydown(event: KeyboardEvent): void;
-    onPointerdown(event: PointerEvent): void;
-    /** Navigates to the first option in the listbox. */
-    first(opts?: SelectOptions): void;
-    /** Navigates to the last option in the listbox. */
-    last(opts?: SelectOptions): void;
-    /** Navigates to the next option in the listbox. */
-    next(opts?: SelectOptions): void;
-    /** Navigates to the previous option in the listbox. */
-    prev(opts?: SelectOptions): void;
-    /** Navigates to the given item in the listbox. */
-    goto(event: PointerEvent, opts?: SelectOptions): void;
-    /** Handles typeahead search navigation for the listbox. */
-    search(char: string, opts?: SelectOptions): void;
-    /** Handles updating selection for the listbox. */
-    private _updateSelection;
-    private _getItem;
+    /** The direction that text is read based on the users locale. */
+    textDirection: SignalLike<'rtl' | 'ltr'>;
 }
-
-/**
- * Represents the properties exposed by a listbox that need to be accessed by an option.
- * This exists to avoid circular dependency errors between the listbox and option.
- */
-declare interface ListboxPattern_2 {
-    focusManager: ListFocus<OptionPattern>;
-    selection: ListSelection<OptionPattern>;
-    navigation: ListNavigation<OptionPattern>;
-}
-
-/** Controls focus for a list of items. */
-declare class ListFocus<T extends ListFocusItem> {
-    readonly inputs: ListFocusInputs<T> & {
-        navigation: ListNavigation<T>;
-    };
-    /** The navigation controller of the parent list. */
-    navigation: ListNavigation<ListFocusItem>;
-    constructor(inputs: ListFocusInputs<T> & {
-        navigation: ListNavigation<T>;
-    });
-    /** The id of the current active item. */
-    getActiveDescendant(): String | undefined;
-    /** The tabindex for the list. */
-    getListTabindex(): -1 | 0;
-    /** Returns the tabindex for the given item. */
-    getItemTabindex(item: T): -1 | 0;
-    /** Focuses the current active item. */
-    focus(): void;
-}
-
-/** Represents the required inputs for a collection that contains focusable items. */
-declare interface ListFocusInputs<T extends ListFocusItem> {
-    /** The focus strategy used by the list. */
-    focusMode: SignalLike<'roving' | 'activedescendant'>;
-}
-
-/** Represents an item in a collection, such as a listbox option, than may receive focus. */
-declare interface ListFocusItem extends ListNavigationItem {
-    /** A unique identifier for the item. */
-    id: SignalLike<string>;
-    /** The html element that should receive focus. */
-    element: SignalLike<HTMLElement>;
-}
-
 /** Controls navigation for a list of items. */
 declare class ListNavigation<T extends ListNavigationItem> {
     readonly inputs: ListNavigationInputs<T>;
     /** The last index that was active. */
-    prevActiveIndex: WritableSignal<number>;
+    prevActiveIndex: i0.WritableSignal<number>;
     constructor(inputs: ListNavigationInputs<T>);
     /** Navigates to the given item. */
     goto(item: T): void;
@@ -187,35 +142,31 @@ declare class ListNavigation<T extends ListNavigationItem> {
     private _advance;
 }
 
-/** Represents the required inputs for a collection that has navigable items. */
-declare interface ListNavigationInputs<T extends ListNavigationItem> {
-    /** Whether focus should wrap when navigating. */
-    wrap: SignalLike<boolean>;
-    /** The items in the list. */
-    items: SignalLike<T[]>;
-    /** Whether disabled items in the list should be skipped when navigating. */
-    skipDisabled: SignalLike<boolean>;
-    /** The current index that has been navigated to. */
-    activeIndex: WritableSignalLike<number>;
-    /** Whether the list is vertically or horizontally oriented. */
-    orientation: SignalLike<'vertical' | 'horizontal'>;
-    /** The direction that text is read based on the users locale. */
-    textDirection: SignalLike<'rtl' | 'ltr'>;
-}
-
-/** Represents an item in a collection, such as a listbox option, than can be navigated to. */
-declare interface ListNavigationItem {
+/** Represents an item in a collection, such as a listbox option, than can be selected. */
+interface ListSelectionItem extends ListNavigationItem {
+    /** A unique identifier for the item. */
+    id: SignalLike<string>;
     /** Whether an item is disabled. */
     disabled: SignalLike<boolean>;
 }
-
+/** Represents the required inputs for a collection that contains selectable items. */
+interface ListSelectionInputs<T extends ListSelectionItem> {
+    /** The items in the list. */
+    items: SignalLike<T[]>;
+    /** Whether multiple items in the list can be selected at once. */
+    multiselectable: SignalLike<boolean>;
+    /** The ids of the current selected items. */
+    selectedIds: WritableSignalLike<string[]>;
+    /** The selection strategy used by the list. */
+    selectionMode: SignalLike<'follow' | 'explicit'>;
+}
 /** Controls selection for a list of items. */
 declare class ListSelection<T extends ListSelectionItem> {
     readonly inputs: ListSelectionInputs<T> & {
         navigation: ListNavigation<T>;
     };
     /** The id of the most recently selected item. */
-    previousSelectedId: WritableSignal<string | undefined>;
+    previousSelectedId: i0.WritableSignal<string | undefined>;
     /** The navigation controller of the parent list. */
     navigation: ListNavigation<T>;
     constructor(inputs: ListSelectionInputs<T> & {
@@ -245,26 +196,22 @@ declare class ListSelection<T extends ListSelectionItem> {
     private _anchor;
 }
 
-/** Represents the required inputs for a collection that contains selectable items. */
-declare interface ListSelectionInputs<T extends ListSelectionItem> {
-    /** The items in the list. */
-    items: SignalLike<T[]>;
-    /** Whether multiple items in the list can be selected at once. */
-    multiselectable: SignalLike<boolean>;
-    /** The ids of the current selected items. */
-    selectedIds: WritableSignalLike<string[]>;
-    /** The selection strategy used by the list. */
-    selectionMode: SignalLike<'follow' | 'explicit'>;
+/**
+ * Represents an item in a collection, such as a listbox option, than can be navigated to by
+ * typeahead.
+ */
+interface ListTypeaheadItem extends ListNavigationItem {
+    /** The text used by the typeahead search. */
+    searchTerm: SignalLike<string>;
 }
-
-/** Represents an item in a collection, such as a listbox option, than can be selected. */
-declare interface ListSelectionItem extends ListNavigationItem {
-    /** A unique identifier for the item. */
-    id: SignalLike<string>;
-    /** Whether an item is disabled. */
-    disabled: SignalLike<boolean>;
+/**
+ * Represents the required inputs for a collection that contains items that can be navigated to by
+ * typeahead.
+ */
+interface ListTypeaheadInputs {
+    /** The amount of time before the typeahead search is reset. */
+    typeaheadDelay: SignalLike<number>;
 }
-
 /** Controls typeahead for a list of items. */
 declare class ListTypeahead<T extends ListTypeaheadItem> {
     readonly inputs: ListTypeaheadInputs & {
@@ -290,95 +237,74 @@ declare class ListTypeahead<T extends ListTypeaheadItem> {
     private _getItem;
 }
 
-/**
- * Represents the required inputs for a collection that contains items that can be navigated to by
- * typeahead.
- */
-declare interface ListTypeaheadInputs {
-    /** The amount of time before the typeahead search is reset. */
-    typeaheadDelay: SignalLike<number>;
+/** Represents an item in a collection, such as a listbox option, than may receive focus. */
+interface ListFocusItem extends ListNavigationItem {
+    /** A unique identifier for the item. */
+    id: SignalLike<string>;
+    /** The html element that should receive focus. */
+    element: SignalLike<HTMLElement>;
+}
+/** Represents the required inputs for a collection that contains focusable items. */
+interface ListFocusInputs<T extends ListFocusItem> {
+    /** The focus strategy used by the list. */
+    focusMode: SignalLike<'roving' | 'activedescendant'>;
+}
+/** Controls focus for a list of items. */
+declare class ListFocus<T extends ListFocusItem> {
+    readonly inputs: ListFocusInputs<T> & {
+        navigation: ListNavigation<T>;
+    };
+    /** The navigation controller of the parent list. */
+    navigation: ListNavigation<ListFocusItem>;
+    constructor(inputs: ListFocusInputs<T> & {
+        navigation: ListNavigation<T>;
+    });
+    /** The id of the current active item. */
+    getActiveDescendant(): String | undefined;
+    /** The tabindex for the list. */
+    getListTabindex(): -1 | 0;
+    /** Returns the tabindex for the given item. */
+    getItemTabindex(item: T): -1 | 0;
+    /** Focuses the current active item. */
+    focus(): void;
 }
 
 /**
- * Represents an item in a collection, such as a listbox option, than can be navigated to by
- * typeahead.
+ * Represents the properties exposed by a listbox that need to be accessed by an option.
+ * This exists to avoid circular dependency errors between the listbox and option.
  */
-declare interface ListTypeaheadItem extends ListNavigationItem {
-    /** The text used by the typeahead search. */
-    searchTerm: SignalLike<string>;
+interface ListboxPattern$1 {
+    focusManager: ListFocus<OptionPattern>;
+    selection: ListSelection<OptionPattern>;
+    navigation: ListNavigation<OptionPattern>;
 }
-
-declare type ModifierInputs = ModifierKey | ModifierKey[];
-
-/** Bit flag representation of the possible modifier keys that can be present on an event. */
-declare enum ModifierKey {
-    None = 0,
-    Ctrl = 1,
-    Shift = 2,
-    Alt = 4,
-    Meta = 8
-}
-
-/**
- * The different mouse buttons that may appear on a pointer event.
- */
-declare enum MouseButton {
-    Main = 0,
-    Auxiliary = 1,
-    Secondary = 2
-}
-
 /** Represents the required inputs for an option in a listbox. */
-export declare interface OptionInputs extends ListNavigationItem, ListSelectionItem, ListTypeaheadItem, ListFocusItem {
-    listbox: SignalLike<ListboxPattern_2>;
+interface OptionInputs extends ListNavigationItem, ListSelectionItem, ListTypeaheadItem, ListFocusItem {
+    listbox: SignalLike<ListboxPattern$1>;
 }
-
 /** Represents an option in a listbox. */
-export declare class OptionPattern {
+declare class OptionPattern {
     /** A unique identifier for the option. */
     id: SignalLike<string>;
     /** The position of the option in the list. */
-    index: Signal<number>;
+    index: i0.Signal<number>;
     /** Whether the option is selected. */
-    selected: Signal<boolean>;
+    selected: i0.Signal<boolean>;
     /** Whether the option is disabled. */
     disabled: SignalLike<boolean>;
     /** The text used by the typeahead search. */
     searchTerm: SignalLike<string>;
     /** A reference to the parent listbox. */
-    listbox: SignalLike<ListboxPattern_2>;
+    listbox: SignalLike<ListboxPattern$1>;
     /** The tabindex of the option. */
-    tabindex: Signal<0 | -1>;
+    tabindex: i0.Signal<0 | -1>;
     /** The html element that should receive focus. */
     element: SignalLike<HTMLElement>;
     constructor(args: OptionInputs);
 }
 
-/** An event manager that is specialized for handling pointer events. */
-declare class PointerEventManager<T extends PointerEvent> extends EventManager<T> {
-    options: EventHandlerOptions;
-    /**
-     * Configures this event manager to handle events with a specific modifer and mouse button
-     * combination.
-     */
-    on(button: MouseButton, modifiers: ModifierInputs, handler: EventHandler<T>): this;
-    /**
-     * Configures this event manager to handle events with a specific mouse button and no modifiers.
-     */
-    on(modifiers: ModifierInputs, handler: EventHandler<T>): this;
-    /**
-     * Configures this event manager to handle events with the main mouse button and no modifiers.
-     *
-     * @param handler The handler function
-     * @param options Options for whether to stop propagation or prevent default.
-     */
-    on(handler: EventHandler<T>): this;
-    private _normalizeInputs;
-    _isMatch(event: PointerEvent, button: MouseButton, modifiers: ModifierInputs): boolean;
-}
-
 /** The selection operations that the listbox can perform. */
-declare interface SelectOptions {
+interface SelectOptions {
     select?: boolean;
     toggle?: boolean;
     toggleOne?: boolean;
@@ -387,13 +313,64 @@ declare interface SelectOptions {
     selectFromAnchor?: boolean;
     selectFromActive?: boolean;
 }
-
-
-declare type SignalLike<T> = () => T;
-
-declare interface WritableSignalLike<T> extends SignalLike<T> {
-    set(value: T): void;
-    update(updateFn: (value: T) => T): void;
+/** Represents the required inputs for a listbox. */
+type ListboxInputs = ListNavigationInputs<OptionPattern> & ListSelectionInputs<OptionPattern> & ListTypeaheadInputs & ListFocusInputs<OptionPattern> & {
+    disabled: SignalLike<boolean>;
+};
+/** Controls the state of a listbox. */
+declare class ListboxPattern {
+    readonly inputs: ListboxInputs;
+    /** Controls navigation for the listbox. */
+    navigation: ListNavigation<OptionPattern>;
+    /** Controls selection for the listbox. */
+    selection: ListSelection<OptionPattern>;
+    /** Controls typeahead for the listbox. */
+    typeahead: ListTypeahead<OptionPattern>;
+    /** Controls focus for the listbox. */
+    focusManager: ListFocus<OptionPattern>;
+    /** Whether the list is vertically or horizontally oriented. */
+    orientation: SignalLike<'vertical' | 'horizontal'>;
+    /** Whether the listbox is disabled. */
+    disabled: SignalLike<boolean>;
+    /** The tabindex of the listbox. */
+    tabindex: i0.Signal<0 | -1>;
+    /** The id of the current active item. */
+    activedescendant: i0.Signal<String | undefined>;
+    /** Whether multiple items in the list can be selected at once. */
+    multiselectable: SignalLike<boolean>;
+    /** The number of items in the listbox. */
+    setsize: i0.Signal<number>;
+    /** Whether the listbox selection follows focus. */
+    followFocus: i0.Signal<boolean>;
+    /** The key used to navigate to the previous item in the list. */
+    prevKey: i0.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
+    /** The key used to navigate to the next item in the list. */
+    nextKey: i0.Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
+    /** The regexp used to decide if a key should trigger typeahead. */
+    typeaheadRegexp: RegExp;
+    /** The keydown event manager for the listbox. */
+    keydown: i0.Signal<KeyboardEventManager<KeyboardEvent>>;
+    /** The pointerdown event manager for the listbox. */
+    pointerdown: i0.Signal<PointerEventManager<PointerEvent>>;
+    constructor(inputs: ListboxInputs);
+    /** Handles keydown events for the listbox. */
+    onKeydown(event: KeyboardEvent): void;
+    onPointerdown(event: PointerEvent): void;
+    /** Navigates to the first option in the listbox. */
+    first(opts?: SelectOptions): void;
+    /** Navigates to the last option in the listbox. */
+    last(opts?: SelectOptions): void;
+    /** Navigates to the next option in the listbox. */
+    next(opts?: SelectOptions): void;
+    /** Navigates to the previous option in the listbox. */
+    prev(opts?: SelectOptions): void;
+    /** Navigates to the given item in the listbox. */
+    goto(event: PointerEvent, opts?: SelectOptions): void;
+    /** Handles typeahead search navigation for the listbox. */
+    search(char: string, opts?: SelectOptions): void;
+    /** Handles updating selection for the listbox. */
+    private _updateSelection;
+    private _getItem;
 }
 
-export { }
+export { type ListboxInputs, ListboxPattern, type OptionInputs, OptionPattern };

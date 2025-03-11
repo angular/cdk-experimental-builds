@@ -1,13 +1,36 @@
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import * as i0 from '@angular/core';
-import { ListRange } from '@angular/cdk/collections';
 import { NumberInput } from '@angular/cdk/coercion';
-import { Observable } from 'rxjs';
+import { ListRange } from '@angular/cdk/collections';
+import { VirtualScrollStrategy, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import * as i0 from '@angular/core';
 import { OnChanges } from '@angular/core';
-import { VirtualScrollStrategy } from '@angular/cdk/scrolling';
+import { Observable } from 'rxjs';
 
+/**
+ * A class that tracks the size of items that have been seen and uses it to estimate the average
+ * item size.
+ */
+declare class ItemSizeAverager {
+    /** The total amount of weight behind the current average. */
+    private _totalWeight;
+    /** The current average item size. */
+    private _averageItemSize;
+    /** The default size to use for items when no data is available. */
+    private _defaultItemSize;
+    /** @param defaultItemSize The default size to use for items when no data is available. */
+    constructor(defaultItemSize?: number);
+    /** Returns the average item size. */
+    getAverageItemSize(): number;
+    /**
+     * Adds a measurement sample for the estimator to consider.
+     * @param range The measured range.
+     * @param size The measured size of the given range in pixels.
+     */
+    addSample(range: ListRange, size: number): void;
+    /** Resets the averager. */
+    reset(): void;
+}
 /** Virtual scrolling strategy for lists with items of unknown or dynamic size. */
-export declare class AutoSizeVirtualScrollStrategy implements VirtualScrollStrategy {
+declare class AutoSizeVirtualScrollStrategy implements VirtualScrollStrategy {
     /** @docs-private Implemented as part of VirtualScrollStrategy. */
     scrolledIndexChange: Observable<number>;
     /** The attached viewport. */
@@ -98,17 +121,15 @@ export declare class AutoSizeVirtualScrollStrategy implements VirtualScrollStrat
     /** Update the viewport's total content size. */
     private _updateTotalContentSize;
 }
-
 /**
  * Provider factory for `AutoSizeVirtualScrollStrategy` that simply extracts the already created
  * `AutoSizeVirtualScrollStrategy` from the given directive.
  * @param autoSizeDir The instance of `CdkAutoSizeVirtualScroll` to extract the
  *     `AutoSizeVirtualScrollStrategy` from.
  */
-export declare function _autoSizeVirtualScrollStrategyFactory(autoSizeDir: CdkAutoSizeVirtualScroll): AutoSizeVirtualScrollStrategy;
-
+declare function _autoSizeVirtualScrollStrategyFactory(autoSizeDir: CdkAutoSizeVirtualScroll): AutoSizeVirtualScrollStrategy;
 /** A virtual scroll strategy that supports unknown or dynamic size items. */
-export declare class CdkAutoSizeVirtualScroll implements OnChanges {
+declare class CdkAutoSizeVirtualScroll implements OnChanges {
     /**
      * The minimum amount of buffer rendered beyond the viewport (in pixels).
      * If the amount of buffer dips below this number, more items will be rendered. Defaults to 100px.
@@ -132,44 +153,10 @@ export declare class CdkAutoSizeVirtualScroll implements OnChanges {
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkAutoSizeVirtualScroll, "cdk-virtual-scroll-viewport[autosize]", never, { "minBufferPx": { "alias": "minBufferPx"; "required": false; }; "maxBufferPx": { "alias": "maxBufferPx"; "required": false; }; }, {}, never, never, true, never>;
 }
 
-declare namespace i1 {
-    export {
-        _autoSizeVirtualScrollStrategyFactory,
-        ItemSizeAverager,
-        AutoSizeVirtualScrollStrategy,
-        CdkAutoSizeVirtualScroll
-    }
-}
-
-/**
- * A class that tracks the size of items that have been seen and uses it to estimate the average
- * item size.
- */
-export declare class ItemSizeAverager {
-    /** The total amount of weight behind the current average. */
-    private _totalWeight;
-    /** The current average item size. */
-    private _averageItemSize;
-    /** The default size to use for items when no data is available. */
-    private _defaultItemSize;
-    /** @param defaultItemSize The default size to use for items when no data is available. */
-    constructor(defaultItemSize?: number);
-    /** Returns the average item size. */
-    getAverageItemSize(): number;
-    /**
-     * Adds a measurement sample for the estimator to consider.
-     * @param range The measured range.
-     * @param size The measured size of the given range in pixels.
-     */
-    addSample(range: ListRange, size: number): void;
-    /** Resets the averager. */
-    reset(): void;
-}
-
-export declare class ScrollingModule {
+declare class ScrollingModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<ScrollingModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<ScrollingModule, never, [typeof i1.CdkAutoSizeVirtualScroll], [typeof i1.CdkAutoSizeVirtualScroll]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ScrollingModule, never, [typeof CdkAutoSizeVirtualScroll], [typeof CdkAutoSizeVirtualScroll]>;
     static ɵinj: i0.ɵɵInjectorDeclaration<ScrollingModule>;
 }
 
-export { }
+export { AutoSizeVirtualScrollStrategy, CdkAutoSizeVirtualScroll, ItemSizeAverager, ScrollingModule, _autoSizeVirtualScrollStrategyFactory };
