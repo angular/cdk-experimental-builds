@@ -1,8 +1,6 @@
 import * as i0 from '@angular/core';
-import { OnDestroy } from '@angular/core';
-import { OnInit } from '@angular/core';
-import { StickyPositioningListener } from '@angular/cdk/table';
-import { StickyUpdate } from '@angular/cdk/table';
+import { OnDestroy, OnInit } from '@angular/core';
+import { StickyPositioningListener, StickyUpdate } from '@angular/cdk/table';
 
 /**
  * Applies styles to the host element that make its scrollbars match up with
@@ -15,7 +13,7 @@ import { StickyUpdate } from '@angular/cdk/table';
  * scrollbars. The easiest way to force them into custom mode is to specify width
  * and height for the scrollbar and thumb.
  */
-export declare class CdkTableScrollContainer implements StickyPositioningListener, OnDestroy, OnInit {
+declare class CdkTableScrollContainer implements StickyPositioningListener, OnDestroy, OnInit {
     private readonly _elementRef;
     private readonly _document;
     private readonly _directionality;
@@ -47,16 +45,10 @@ export declare class CdkTableScrollContainer implements StickyPositioningListene
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkTableScrollContainer, "[cdkTableScrollContainer]", never, {}, {}, never, never, true, never>;
 }
 
-export declare class CdkTableScrollContainerModule {
+declare class CdkTableScrollContainerModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkTableScrollContainerModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkTableScrollContainerModule, never, [typeof i1.CdkTableScrollContainer], [typeof i1.CdkTableScrollContainer]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkTableScrollContainerModule, never, [typeof CdkTableScrollContainer], [typeof CdkTableScrollContainer]>;
     static ɵinj: i0.ɵɵInjectorDeclaration<CdkTableScrollContainerModule>;
 }
 
-declare namespace i1 {
-    export {
-        CdkTableScrollContainer
-    }
-}
-
-export { }
+export { CdkTableScrollContainer, CdkTableScrollContainerModule };

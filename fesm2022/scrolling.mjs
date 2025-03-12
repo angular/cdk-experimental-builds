@@ -440,9 +440,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.0", ngImpor
                 }]
         }] });
 
-/**
- * Generated bundle index. Do not edit.
- */
-
 export { AutoSizeVirtualScrollStrategy, CdkAutoSizeVirtualScroll, ItemSizeAverager, ScrollingModule, _autoSizeVirtualScrollStrategyFactory };
 //# sourceMappingURL=scrolling.mjs.map

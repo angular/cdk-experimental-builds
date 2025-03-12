@@ -1,18 +1,13 @@
-import { BooleanInput } from '@angular/cdk/coercion';
-import { EventEmitter } from '@angular/core';
 import * as i0 from '@angular/core';
+import { InjectionToken, OnDestroy, ViewContainerRef, TemplateRef, EventEmitter, OnInit } from '@angular/core';
 import * as i1 from '@angular/cdk/overlay';
-import { InjectionToken } from '@angular/core';
-import { OnDestroy } from '@angular/core';
-import { OnInit } from '@angular/core';
-import { TemplateRef } from '@angular/core';
-import { ViewContainerRef } from '@angular/core';
+import { BooleanInput } from '@angular/cdk/coercion';
 
-export declare type AriaHasPopupValue = 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
-
-export declare const CDK_COMBOBOX: InjectionToken<CdkCombobox<unknown>>;
-
-export declare class CdkCombobox<T = unknown> implements OnDestroy {
+type AriaHasPopupValue = 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
+type OpenAction = 'focus' | 'click' | 'downKey' | 'toggle';
+type OpenActionInput = OpenAction | OpenAction[] | string | null | undefined;
+declare const CDK_COMBOBOX: InjectionToken<CdkCombobox<unknown>>;
+declare class CdkCombobox<T = unknown> implements OnDestroy {
     private readonly _elementRef;
     private readonly _overlay;
     protected readonly _viewContainerRef: ViewContainerRef;
@@ -72,13 +67,7 @@ export declare class CdkCombobox<T = unknown> implements OnDestroy {
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkCombobox<any>, "[cdkCombobox]", ["cdkCombobox"], { "_panelTemplateRef": { "alias": "cdkComboboxTriggerFor"; "required": false; }; "value": { "alias": "value"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "openActions": { "alias": "openActions"; "required": false; }; "autoSetText": { "alias": "autoSetText"; "required": false; }; }, { "opened": "comboboxPanelOpened"; "closed": "comboboxPanelClosed"; "panelValueChanged": "panelValueChanged"; }, never, never, true, never>;
 }
 
-export declare class CdkComboboxModule {
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkComboboxModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkComboboxModule, never, [typeof i1.OverlayModule, typeof i2.CdkCombobox, typeof i3.CdkComboboxPopup], [typeof i2.CdkCombobox, typeof i3.CdkComboboxPopup]>;
-    static ɵinj: i0.ɵɵInjectorDeclaration<CdkComboboxModule>;
-}
-
-export declare class CdkComboboxPopup<T = unknown> implements OnInit {
+declare class CdkComboboxPopup<T = unknown> implements OnInit {
     private readonly _elementRef;
     private readonly _combobox;
     get role(): AriaHasPopupValue;
@@ -95,24 +84,10 @@ export declare class CdkComboboxPopup<T = unknown> implements OnInit {
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkComboboxPopup<any>, "[cdkComboboxPopup]", ["cdkComboboxPopup"], { "role": { "alias": "role"; "required": false; }; "firstFocus": { "alias": "firstFocus"; "required": false; }; "id": { "alias": "id"; "required": false; }; }, {}, never, never, true, never>;
 }
 
-declare namespace i2 {
-    export {
-        AriaHasPopupValue,
-        OpenAction,
-        OpenActionInput,
-        CDK_COMBOBOX,
-        CdkCombobox
-    }
+declare class CdkComboboxModule {
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkComboboxModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkComboboxModule, never, [typeof i1.OverlayModule, typeof CdkCombobox, typeof CdkComboboxPopup], [typeof CdkCombobox, typeof CdkComboboxPopup]>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<CdkComboboxModule>;
 }
 
-declare namespace i3 {
-    export {
-        CdkComboboxPopup
-    }
-}
-
-export declare type OpenAction = 'focus' | 'click' | 'downKey' | 'toggle';
-
-export declare type OpenActionInput = OpenAction | OpenAction[] | string | null | undefined;
-
-export { }
+export { type AriaHasPopupValue, CDK_COMBOBOX, CdkCombobox, CdkComboboxModule, CdkComboboxPopup, type OpenAction, type OpenActionInput };
