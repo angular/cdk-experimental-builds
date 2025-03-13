@@ -5,6 +5,8 @@ interface WritableSignalLike<T> extends SignalLike<T> {
     set(value: T): void;
     update(updateFn: (value: T) => T): void;
 }
+/** Converts a getter setter style signal to a WritableSignalLike. */
+declare function convertGetterSetterToWritableSignalLike<T>(getter: () => T, setter: (v: T) => void): WritableSignalLike<T>;
 
 /**
  * Options that are applicable to all event handlers.
@@ -260,7 +262,7 @@ declare class ListFocus<T extends ListFocusItem> {
         navigation: ListNavigation<T>;
     });
     /** The id of the current active item. */
-    getActiveDescendant(): String | undefined;
+    getActiveDescendant(): string | undefined;
     /** The tabindex for the list. */
     getListTabindex(): -1 | 0;
     /** Returns the tabindex for the given item. */
@@ -280,7 +282,7 @@ interface ListboxPattern$1 {
 }
 /** Represents the required inputs for an option in a listbox. */
 interface OptionInputs extends ListNavigationItem, ListSelectionItem, ListTypeaheadItem, ListFocusItem {
-    listbox: SignalLike<ListboxPattern$1>;
+    listbox: SignalLike<ListboxPattern$1 | undefined>;
 }
 /** Represents an option in a listbox. */
 declare class OptionPattern {
@@ -289,15 +291,15 @@ declare class OptionPattern {
     /** The position of the option in the list. */
     index: i0.Signal<number>;
     /** Whether the option is selected. */
-    selected: i0.Signal<boolean>;
+    selected: i0.Signal<boolean | undefined>;
     /** Whether the option is disabled. */
     disabled: SignalLike<boolean>;
     /** The text used by the typeahead search. */
     searchTerm: SignalLike<string>;
     /** A reference to the parent listbox. */
-    listbox: SignalLike<ListboxPattern$1>;
+    listbox: SignalLike<ListboxPattern$1 | undefined>;
     /** The tabindex of the option. */
-    tabindex: i0.Signal<0 | -1>;
+    tabindex: i0.Signal<0 | -1 | undefined>;
     /** The html element that should receive focus. */
     element: SignalLike<HTMLElement>;
     constructor(args: OptionInputs);
@@ -335,7 +337,7 @@ declare class ListboxPattern {
     /** The tabindex of the listbox. */
     tabindex: i0.Signal<0 | -1>;
     /** The id of the current active item. */
-    activedescendant: i0.Signal<String | undefined>;
+    activedescendant: i0.Signal<string | undefined>;
     /** Whether multiple items in the list can be selected at once. */
     multiselectable: SignalLike<boolean>;
     /** The number of items in the listbox. */
@@ -373,4 +375,4 @@ declare class ListboxPattern {
     private _getItem;
 }
 
-export { ListboxPattern as L, OptionPattern as O, type ListboxInputs as a, type OptionInputs as b };
+export { ListboxPattern as L, OptionPattern as O, type SignalLike as S, type WritableSignalLike as W, type ListboxInputs as a, type OptionInputs as b, convertGetterSetterToWritableSignalLike as c };

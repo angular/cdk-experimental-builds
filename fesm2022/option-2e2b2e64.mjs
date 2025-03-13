@@ -286,7 +286,6 @@ class ListNavigation {
     prevActiveIndex = signal(0);
     constructor(inputs) {
         this.inputs = inputs;
-        this.prevActiveIndex.set(inputs.activeIndex());
     }
     /** Navigates to the given item. */
     goto(item) {
@@ -569,7 +568,7 @@ class ListboxPattern {
         if (!(e.target instanceof HTMLElement)) {
             return;
         }
-        const element = e.target.closest('[cdkoption]'); // TODO: Use a different identifier.
+        const element = e.target.closest('[role="option"]'); // TODO: Use a different identifier.
         return this.inputs.items().find(i => i.element() === element);
     }
 }
@@ -580,10 +579,10 @@ class OptionPattern {
     id;
     /** The position of the option in the list. */
     index = computed(() => this.listbox()
-        .navigation.inputs.items()
+        ?.navigation.inputs.items()
         .findIndex(i => i.id() === this.id()) ?? -1);
     /** Whether the option is selected. */
-    selected = computed(() => this.listbox().selection.inputs.selectedIds().includes(this.id()));
+    selected = computed(() => this.listbox()?.selection.inputs.selectedIds().includes(this.id()));
     /** Whether the option is disabled. */
     disabled;
     /** The text used by the typeahead search. */
@@ -591,7 +590,7 @@ class OptionPattern {
     /** A reference to the parent listbox. */
     listbox;
     /** The tabindex of the option. */
-    tabindex = computed(() => this.listbox().focusManager.getItemTabindex(this));
+    tabindex = computed(() => this.listbox()?.focusManager.getItemTabindex(this));
     /** The html element that should receive focus. */
     element;
     constructor(args) {
@@ -604,4 +603,4 @@ class OptionPattern {
 }
 
 export { ListboxPattern as L, OptionPattern as O };
-//# sourceMappingURL=option-d2bb1041.mjs.map
+//# sourceMappingURL=option-2e2b2e64.mjs.map
