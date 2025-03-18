@@ -1,3 +1,5 @@
+import { c as closest } from './polyfill-ae40ec6f.mjs';
+export { c as _closest } from './polyfill-ae40ec6f.mjs';
 import * as i0 from '@angular/core';
 import { inject, NgZone, Injectable, Injector, afterNextRender, ElementRef, EventEmitter, Directive, Input, Renderer2, afterRender, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
 import { Subject, pipe, combineLatest, Observable, merge } from 'rxjs';
@@ -24,18 +26,6 @@ const TABLE_SELECTOR = 'table, cdk-table, mat-table';
 const EDIT_PANE_CLASS = 'cdk-edit-pane';
 /** Selector for finding the edit lens pane. */
 const EDIT_PANE_SELECTOR = `.${EDIT_PANE_CLASS}, .mat-edit-pane`;
-
-/** closest implementation that is able to start from non-Element Nodes. */
-function closest(element, selector) {
-    if (!(element instanceof Node)) {
-        return null;
-    }
-    let curr = element;
-    while (curr != null && !(curr instanceof Element)) {
-        curr = curr.parentNode;
-    }
-    return curr?.closest(selector) ?? null;
-}
 
 /** The delay applied to mouse events before hiding or showing hover content. */
 const MOUSE_EVENT_DELAY_MS = 40;
@@ -1131,5 +1121,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.0", ngImpor
                 }]
         }] });
 
-export { CdkEditClose, CdkEditControl, CdkEditOpen, CdkEditRevert, CdkEditable, CdkPopoverEdit, CdkPopoverEditModule, CdkPopoverEditTabOut, CdkRowHoverContent, EditEventDispatcher, EditRef, FocusDispatcher, FormValueContainer, HoverContentState, CELL_SELECTOR as _CELL_SELECTOR, closest as _closest };
+export { CdkEditClose, CdkEditControl, CdkEditOpen, CdkEditRevert, CdkEditable, CdkPopoverEdit, CdkPopoverEditModule, CdkPopoverEditTabOut, CdkRowHoverContent, EditEventDispatcher, EditRef, FocusDispatcher, FormValueContainer, HoverContentState, CELL_SELECTOR as _CELL_SELECTOR };
 //# sourceMappingURL=popover-edit.mjs.map

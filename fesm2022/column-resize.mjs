@@ -3,7 +3,7 @@ import { InjectionToken, inject, Renderer2, Directive, Input, Injectable, NgZone
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { Subject, merge, combineLatest, Observable } from 'rxjs';
 import { mapTo, take, takeUntil, startWith, pairwise, distinctUntilChanged, share, map, skip, filter } from 'rxjs/operators';
-import { _closest } from '@angular/cdk-experimental/popover-edit';
+import { c as closest } from './polyfill-ae40ec6f.mjs';
 import { _COALESCED_STYLE_SCHEDULER, CdkTable } from '@angular/cdk/table';
 import { DOCUMENT } from '@angular/common';
 import { coerceCssPixelValue } from '@angular/cdk/coercion';
@@ -66,7 +66,7 @@ class ColumnResize {
             const element = this.elementRef.nativeElement;
             this._eventCleanups = [
                 this._renderer.listen(element, 'mouseover', (event) => {
-                    this.eventDispatcher.headerCellHovered.next(_closest(event.target, HEADER_CELL_SELECTOR));
+                    this.eventDispatcher.headerCellHovered.next(closest(event.target, HEADER_CELL_SELECTOR));
                 }),
                 this._renderer.listen(element, 'mouseleave', (event) => {
                     if (event.relatedTarget &&
@@ -164,8 +164,8 @@ class HeaderRowEventDispatcher {
      * taking precedence).
      */
     headerRowHoveredOrActiveDistinct = combineLatest([
-        this.headerCellHoveredDistinct.pipe(map(cell => _closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged()),
-        this.overlayHandleActiveForCell.pipe(map(cell => _closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged()),
+        this.headerCellHoveredDistinct.pipe(map(cell => closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged()),
+        this.overlayHandleActiveForCell.pipe(map(cell => closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged()),
     ]).pipe(skip(1), // Ignore initial [null, null] emission.
     map(([hovered, active]) => active || hovered), distinctUntilChanged(), share());
     _headerRowHoveredOrActiveDistinctReenterZone = this.headerRowHoveredOrActiveDistinct.pipe(this._enterZone(), share());
@@ -702,7 +702,7 @@ class Resizable {
         const element = this.elementRef.nativeElement;
         const takeUntilDestroyed = takeUntil(this.destroyed);
         this.eventDispatcher
-            .resizeOverlayVisibleForHeaderRow(_closest(element, HEADER_ROW_SELECTOR))
+            .resizeOverlayVisibleForHeaderRow(closest(element, HEADER_ROW_SELECTOR))
             .pipe(takeUntilDestroyed)
             .subscribe(hoveringRow => {
             if (hoveringRow) {
@@ -826,7 +826,7 @@ class ResizeOverlayHandle {
                 .pipe(mapTo(this.resizeRef.origin.nativeElement), takeUntil(this.destroyed))
                 .subscribe(cell => this.eventDispatcher.headerCellHovered.next(cell));
             this._observableFromEvent(this.elementRef.nativeElement, 'mouseleave')
-                .pipe(map(event => event.relatedTarget && _closest(event.relatedTarget, HEADER_CELL_SELECTOR)), takeUntil(this.destroyed))
+                .pipe(map(event => event.relatedTarget && closest(event.relatedTarget, HEADER_CELL_SELECTOR)), takeUntil(this.destroyed))
                 .subscribe(cell => this.eventDispatcher.headerCellHovered.next(cell));
             this._observableFromEvent(this.elementRef.nativeElement, 'mousedown')
                 .pipe(takeUntil(this.destroyed))
