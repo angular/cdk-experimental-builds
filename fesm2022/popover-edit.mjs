@@ -1,7 +1,7 @@
 import { c as closest } from './polyfill-c4e47556.mjs';
 export { c as _closest } from './polyfill-c4e47556.mjs';
 import * as i0 from '@angular/core';
-import { inject, NgZone, Injectable, Injector, afterNextRender, ElementRef, EventEmitter, Directive, Input, Renderer2, afterRender, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
+import { inject, NgZone, Injectable, Injector, afterNextRender, ElementRef, EventEmitter, Directive, Input, Renderer2, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
 import { Subject, pipe, combineLatest, Observable, merge } from 'rxjs';
 import { distinctUntilChanged, startWith, shareReplay, filter, map, auditTime, audit, debounceTime, skip, takeUntil, mapTo, throttleTime, share, withLatestFrom } from 'rxjs/operators';
 import { ControlContainer } from '@angular/forms';
@@ -9,10 +9,10 @@ import { Directionality } from '@angular/cdk/bidi';
 import { RIGHT_ARROW, LEFT_ARROW, DOWN_ARROW, UP_ARROW, hasModifierKey } from '@angular/cdk/keycodes';
 import { Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
+import { _bindEventWithOptions } from '@angular/cdk/platform';
 import { FocusTrapFactory, InteractivityChecker, FocusTrap } from '@angular/cdk/a11y';
 import { ScrollDispatcher, ViewportRuler } from '@angular/cdk/scrolling';
 import { DOCUMENT } from '@angular/common';
-import { _bindEventWithOptions } from '@angular/cdk/platform';
 
 /** Selector for finding table cells. */
 const CELL_SELECTOR = '.cdk-cell, .mat-cell, td';
@@ -646,6 +646,21 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.4", 
 
 /** Used for rate-limiting mousemove events. */
 const MOUSE_MOVE_THROTTLE_TIME_MS = 10;
+function hasRowElement(nl) {
+    for (let i = 0; i < nl.length; i++) {
+        const el = nl[i];
+        if (!(el instanceof HTMLElement)) {
+            continue;
+        }
+        if (el.matches(ROW_SELECTOR)) {
+            return true;
+        }
+    }
+    return false;
+}
+function isRowMutation(mutation) {
+    return hasRowElement(mutation.addedNodes) || hasRowElement(mutation.removedNodes);
+}
 /**
  * A directive that must be attached to enable editability on a table.
  * It is responsible for setting up delegated event handlers and providing the
@@ -658,10 +673,23 @@ class CdkEditable {
     ngZone = inject(NgZone);
     _renderer = inject(Renderer2);
     destroyed = new Subject();
-    _rendered = new Subject();
+    _rowsRendered = new Subject();
+    _rowMutationObserver = globalThis.MutationObserver
+        ? new globalThis.MutationObserver(mutations => {
+            if (mutations.some(isRowMutation)) {
+                this._rowsRendered.next();
+            }
+        })
+        : null;
     constructor() {
-        afterRender(() => {
-            this._rendered.next();
+        // TODO: consider a design where instead of polling for row changes we just use
+        // afterRenderEffect + a signal of the rows.
+        afterNextRender(() => {
+            this._rowsRendered.next();
+            this._rowMutationObserver?.observe(this.elementRef.nativeElement, {
+                childList: true,
+                subtree: true,
+            });
         });
     }
     ngAfterViewInit() {
@@ -670,7 +698,7 @@ class CdkEditable {
     ngOnDestroy() {
         this.destroyed.next();
         this.destroyed.complete();
-        this._rendered.complete();
+        this._rowMutationObserver?.disconnect();
     }
     _observableFromEvent(element, name, options) {
         return new Observable(subscriber => {
@@ -708,9 +736,10 @@ class CdkEditable {
             // Keep track of rows within the table. This is used to know which rows with hover content
             // are first or last in the table. They are kept focusable in case focus enters from above
             // or below the table.
-            this._rendered
+            this._rowsRendered
                 .pipe(
             // Avoid some timing inconsistencies since Angular v19.
+            // TODO: see if we can remove this now that we're using MutationObserver.
             debounceTime(0), 
             // Optimization: ignore dom changes while focus is within the table as we already
             // ensure that rows above and below the focused/active row are tabbable.

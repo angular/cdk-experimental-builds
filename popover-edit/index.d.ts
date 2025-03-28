@@ -317,7 +317,8 @@ declare class CdkEditable implements AfterViewInit, OnDestroy {
     protected readonly ngZone: NgZone;
     private readonly _renderer;
     protected readonly destroyed: Subject<void>;
-    private _rendered;
+    private _rowsRendered;
+    private _rowMutationObserver;
     constructor();
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
