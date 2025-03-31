@@ -9,7 +9,6 @@ import { Directionality } from '@angular/cdk/bidi';
 import { RIGHT_ARROW, LEFT_ARROW, DOWN_ARROW, UP_ARROW, hasModifierKey } from '@angular/cdk/keycodes';
 import { Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { _bindEventWithOptions } from '@angular/cdk/platform';
 import { FocusTrapFactory, InteractivityChecker, FocusTrap } from '@angular/cdk/a11y';
 import { ScrollDispatcher, ViewportRuler } from '@angular/cdk/scrolling';
 import { DOCUMENT } from '@angular/common';
@@ -703,9 +702,7 @@ class CdkEditable {
     _observableFromEvent(element, name, options) {
         return new Observable(subscriber => {
             const handler = (event) => subscriber.next(event);
-            const cleanup = options
-                ? _bindEventWithOptions(this._renderer, element, name, handler, options)
-                : this._renderer.listen(element, name, handler, options);
+            const cleanup = this._renderer.listen(element, name, handler, options);
             return () => {
                 cleanup();
                 subscriber.complete();
