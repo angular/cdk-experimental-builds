@@ -78,11 +78,14 @@ class KeyboardEventManager extends EventManager {
         };
     }
     _isMatch(event, key, modifiers) {
+        if (!hasModifiers(event, modifiers)) {
+            return false;
+        }
         if (key instanceof RegExp) {
             return key.test(event.key);
         }
         const keyStr = typeof key === 'string' ? key : key();
-        return keyStr.toLowerCase() === event.key.toLowerCase() && hasModifiers(event, modifiers);
+        return keyStr.toLowerCase() === event.key.toLowerCase();
     }
 }
 
@@ -139,8 +142,8 @@ class PointerEventManager extends EventManager {
 /** Controls selection for a list of items. */
 class ListSelection {
     inputs;
-    /** The id of the most recently selected item. */
-    previousSelectedId = signal(undefined);
+    /** The value of the most recently selected item. */
+    previousValue = signal(undefined);
     /** The navigation controller of the parent list. */
     navigation;
     constructor(inputs) {
@@ -150,7 +153,7 @@ class ListSelection {
     /** Selects the item at the current active index. */
     select(item) {
         item = item ?? this.inputs.items()[this.inputs.navigation.inputs.activeIndex()];
-        if (item.disabled() || this.inputs.selectedIds().includes(item.id())) {
+        if (item.disabled() || this.inputs.value().includes(item.value())) {
             return;
         }
         if (!this.inputs.multiselectable()) {
@@ -158,24 +161,24 @@ class ListSelection {
         }
         // TODO: Need to discuss when to drop this.
         this._anchor();
-        this.inputs.selectedIds.update(ids => ids.concat(item.id()));
+        this.inputs.value.update(values => values.concat(item.value()));
     }
     /** Deselects the item at the current active index. */
     deselect(item) {
         item = item ?? this.inputs.items()[this.inputs.navigation.inputs.activeIndex()];
         if (!item.disabled()) {
-            this.inputs.selectedIds.update(ids => ids.filter(id => id !== item.id()));
+            this.inputs.value.update(values => values.filter(value => value !== item.value()));
         }
     }
     /** Toggles the item at the current active index. */
     toggle() {
         const item = this.inputs.items()[this.inputs.navigation.inputs.activeIndex()];
-        this.inputs.selectedIds().includes(item.id()) ? this.deselect() : this.select();
+        this.inputs.value().includes(item.value()) ? this.deselect() : this.select();
     }
     /** Toggles only the item at the current active index. */
     toggleOne() {
         const item = this.inputs.items()[this.inputs.navigation.inputs.activeIndex()];
-        this.inputs.selectedIds().includes(item.id()) ? this.deselect() : this.selectOne();
+        this.inputs.value().includes(item.value()) ? this.deselect() : this.selectOne();
     }
     /** Selects all items in the list. */
     selectAll() {
@@ -195,8 +198,8 @@ class ListSelection {
     }
     /** Selects the items in the list starting at the last selected item. */
     selectFromPrevSelectedItem() {
-        const prevSelectedId = this.inputs.items().findIndex(i => this.previousSelectedId() === i.id());
-        this._selectFromIndex(prevSelectedId);
+        const previousValue = this.inputs.items().findIndex(i => this.previousValue() === i.value());
+        this._selectFromIndex(previousValue);
     }
     /** Selects the items in the list starting at the last active item. */
     selectFromActive() {
@@ -221,7 +224,7 @@ class ListSelection {
     /** Sets the anchor to the current active index. */
     _anchor() {
         const item = this.inputs.items()[this.inputs.navigation.inputs.activeIndex()];
-        this.previousSelectedId.set(item.id());
+        this.previousValue.set(item.value());
     }
 }
 
@@ -356,7 +359,10 @@ class ListFocus {
         if (this.inputs.focusMode() === 'roving') {
             return undefined;
         }
-        return this.navigation.inputs.items()[this.navigation.inputs.activeIndex()].id();
+        if (this.navigation.inputs.items().length) {
+            return this.navigation.inputs.items()[this.navigation.inputs.activeIndex()].id();
+        }
+        return undefined;
     }
     /** The tabindex for the list. */
     getListTabindex() {
@@ -577,12 +583,14 @@ class ListboxPattern {
 class OptionPattern {
     /** A unique identifier for the option. */
     id;
+    /** The value of the option. */
+    value;
     /** The position of the option in the list. */
     index = computed(() => this.listbox()
         ?.navigation.inputs.items()
         .findIndex(i => i.id() === this.id()) ?? -1);
     /** Whether the option is selected. */
-    selected = computed(() => this.listbox()?.selection.inputs.selectedIds().includes(this.id()));
+    selected = computed(() => this.listbox()?.selection.inputs.value().includes(this.value()));
     /** Whether the option is disabled. */
     disabled;
     /** The text used by the typeahead search. */
@@ -595,6 +603,7 @@ class OptionPattern {
     element;
     constructor(args) {
         this.id = args.id;
+        this.value = args.value;
         this.listbox = args.listbox;
         this.element = args.element;
         this.disabled = args.disabled;
@@ -603,4 +612,4 @@ class OptionPattern {
 }
 
 export { ListboxPattern as L, OptionPattern as O };
-//# sourceMappingURL=option-34b95b52.mjs.map
+//# sourceMappingURL=option-a8c77cfa.mjs.map

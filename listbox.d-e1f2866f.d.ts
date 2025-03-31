@@ -145,33 +145,33 @@ declare class ListNavigation<T extends ListNavigationItem> {
 }
 
 /** Represents an item in a collection, such as a listbox option, than can be selected. */
-interface ListSelectionItem extends ListNavigationItem {
-    /** A unique identifier for the item. */
-    id: SignalLike<string>;
+interface ListSelectionItem<V> extends ListNavigationItem {
+    /** The value of the item. */
+    value: SignalLike<V>;
     /** Whether an item is disabled. */
     disabled: SignalLike<boolean>;
 }
 /** Represents the required inputs for a collection that contains selectable items. */
-interface ListSelectionInputs<T extends ListSelectionItem> {
+interface ListSelectionInputs<T extends ListSelectionItem<V>, V> {
     /** The items in the list. */
     items: SignalLike<T[]>;
     /** Whether multiple items in the list can be selected at once. */
     multiselectable: SignalLike<boolean>;
-    /** The ids of the current selected items. */
-    selectedIds: WritableSignalLike<string[]>;
+    /** The current value of the list selection. */
+    value: WritableSignalLike<V[]>;
     /** The selection strategy used by the list. */
     selectionMode: SignalLike<'follow' | 'explicit'>;
 }
 /** Controls selection for a list of items. */
-declare class ListSelection<T extends ListSelectionItem> {
-    readonly inputs: ListSelectionInputs<T> & {
+declare class ListSelection<T extends ListSelectionItem<V>, V> {
+    readonly inputs: ListSelectionInputs<T, V> & {
         navigation: ListNavigation<T>;
     };
-    /** The id of the most recently selected item. */
-    previousSelectedId: i0.WritableSignal<string | undefined>;
+    /** The value of the most recently selected item. */
+    previousValue: i0.WritableSignal<V | undefined>;
     /** The navigation controller of the parent list. */
     navigation: ListNavigation<T>;
-    constructor(inputs: ListSelectionInputs<T> & {
+    constructor(inputs: ListSelectionInputs<T, V> & {
         navigation: ListNavigation<T>;
     });
     /** Selects the item at the current active index. */
@@ -275,19 +275,21 @@ declare class ListFocus<T extends ListFocusItem> {
  * Represents the properties exposed by a listbox that need to be accessed by an option.
  * This exists to avoid circular dependency errors between the listbox and option.
  */
-interface ListboxPattern$1 {
-    focusManager: ListFocus<OptionPattern>;
-    selection: ListSelection<OptionPattern>;
-    navigation: ListNavigation<OptionPattern>;
+interface ListboxPattern$1<V> {
+    focusManager: ListFocus<OptionPattern<V>>;
+    selection: ListSelection<OptionPattern<V>, V>;
+    navigation: ListNavigation<OptionPattern<V>>;
 }
 /** Represents the required inputs for an option in a listbox. */
-interface OptionInputs extends ListNavigationItem, ListSelectionItem, ListTypeaheadItem, ListFocusItem {
-    listbox: SignalLike<ListboxPattern$1 | undefined>;
+interface OptionInputs<V> extends ListNavigationItem, ListSelectionItem<V>, ListTypeaheadItem, ListFocusItem {
+    listbox: SignalLike<ListboxPattern$1<V> | undefined>;
 }
 /** Represents an option in a listbox. */
-declare class OptionPattern {
+declare class OptionPattern<V> {
     /** A unique identifier for the option. */
     id: SignalLike<string>;
+    /** The value of the option. */
+    value: SignalLike<V>;
     /** The position of the option in the list. */
     index: i0.Signal<number>;
     /** Whether the option is selected. */
@@ -297,12 +299,12 @@ declare class OptionPattern {
     /** The text used by the typeahead search. */
     searchTerm: SignalLike<string>;
     /** A reference to the parent listbox. */
-    listbox: SignalLike<ListboxPattern$1 | undefined>;
+    listbox: SignalLike<ListboxPattern$1<V> | undefined>;
     /** The tabindex of the option. */
     tabindex: i0.Signal<0 | -1 | undefined>;
     /** The html element that should receive focus. */
     element: SignalLike<HTMLElement>;
-    constructor(args: OptionInputs);
+    constructor(args: OptionInputs<V>);
 }
 
 /** The selection operations that the listbox can perform. */
@@ -316,20 +318,20 @@ interface SelectOptions {
     selectFromActive?: boolean;
 }
 /** Represents the required inputs for a listbox. */
-type ListboxInputs = ListNavigationInputs<OptionPattern> & ListSelectionInputs<OptionPattern> & ListTypeaheadInputs & ListFocusInputs<OptionPattern> & {
+type ListboxInputs<V> = ListNavigationInputs<OptionPattern<V>> & ListSelectionInputs<OptionPattern<V>, V> & ListTypeaheadInputs & ListFocusInputs<OptionPattern<V>> & {
     disabled: SignalLike<boolean>;
 };
 /** Controls the state of a listbox. */
-declare class ListboxPattern {
-    readonly inputs: ListboxInputs;
+declare class ListboxPattern<V> {
+    readonly inputs: ListboxInputs<V>;
     /** Controls navigation for the listbox. */
-    navigation: ListNavigation<OptionPattern>;
+    navigation: ListNavigation<OptionPattern<V>>;
     /** Controls selection for the listbox. */
-    selection: ListSelection<OptionPattern>;
+    selection: ListSelection<OptionPattern<V>, V>;
     /** Controls typeahead for the listbox. */
-    typeahead: ListTypeahead<OptionPattern>;
+    typeahead: ListTypeahead<OptionPattern<V>>;
     /** Controls focus for the listbox. */
-    focusManager: ListFocus<OptionPattern>;
+    focusManager: ListFocus<OptionPattern<V>>;
     /** Whether the list is vertically or horizontally oriented. */
     orientation: SignalLike<'vertical' | 'horizontal'>;
     /** Whether the listbox is disabled. */
@@ -354,7 +356,7 @@ declare class ListboxPattern {
     keydown: i0.Signal<KeyboardEventManager<KeyboardEvent>>;
     /** The pointerdown event manager for the listbox. */
     pointerdown: i0.Signal<PointerEventManager<PointerEvent>>;
-    constructor(inputs: ListboxInputs);
+    constructor(inputs: ListboxInputs<V>);
     /** Handles keydown events for the listbox. */
     onKeydown(event: KeyboardEvent): void;
     onPointerdown(event: PointerEvent): void;

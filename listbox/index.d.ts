@@ -1,6 +1,6 @@
 import * as i0 from '@angular/core';
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
-import { O as OptionPattern, L as ListboxPattern } from '../listbox.d-8d7fa1f3.js';
+import { O as OptionPattern, L as ListboxPattern } from '../listbox.d-e1f2866f.js';
 
 /**
  * A listbox container.
@@ -16,7 +16,7 @@ import { O as OptionPattern, L as ListboxPattern } from '../listbox.d-8d7fa1f3.j
  * </ul>
  * ```
  */
-declare class CdkListbox {
+declare class CdkListbox<V> {
     /** The directionality (LTR / RTL) context for the application (or a subtree of it). */
     private readonly _directionality;
     /** The CdkOptions nested inside of the CdkListbox. */
@@ -24,7 +24,7 @@ declare class CdkListbox {
     /** A signal wrapper for directionality. */
     protected textDirection: i0.Signal<_angular_cdk_bidi.Direction>;
     /** The Option UIPatterns of the child CdkOptions. */
-    protected items: i0.Signal<OptionPattern[]>;
+    protected items: i0.Signal<OptionPattern<any>[]>;
     /** Whether the list is vertically or horizontally oriented. */
     orientation: i0.InputSignal<"vertical" | "horizontal">;
     /** Whether multiple items in the list can be selected at once. */
@@ -41,17 +41,17 @@ declare class CdkListbox {
     typeaheadDelay: i0.InputSignal<number>;
     /** Whether the listbox is disabled. */
     disabled: i0.InputSignalWithTransform<boolean, unknown>;
-    /** The ids of the current selected items. */
-    selectedIds: i0.ModelSignal<string[]>;
+    /** The values of the current selected items. */
+    value: i0.ModelSignal<V[]>;
     /** The current index that has been navigated to. */
     activeIndex: i0.ModelSignal<number>;
     /** The Listbox UIPattern. */
-    pattern: ListboxPattern;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkListbox, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox, "[cdkListbox]", ["cdkListbox"], { "orientation": { "alias": "orientation"; "required": false; "isSignal": true; }; "multiselectable": { "alias": "multiselectable"; "required": false; "isSignal": true; }; "wrap": { "alias": "wrap"; "required": false; "isSignal": true; }; "skipDisabled": { "alias": "skipDisabled"; "required": false; "isSignal": true; }; "focusMode": { "alias": "focusMode"; "required": false; "isSignal": true; }; "selectionMode": { "alias": "selectionMode"; "required": false; "isSignal": true; }; "typeaheadDelay": { "alias": "typeaheadDelay"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "selectedIds": { "alias": "selectedIds"; "required": false; "isSignal": true; }; "activeIndex": { "alias": "activeIndex"; "required": false; "isSignal": true; }; }, { "selectedIds": "selectedIdsChange"; "activeIndex": "activeIndexChange"; }, ["_cdkOptions"], never, true, never>;
+    pattern: ListboxPattern<V>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkListbox<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "orientation": { "alias": "orientation"; "required": false; "isSignal": true; }; "multiselectable": { "alias": "multiselectable"; "required": false; "isSignal": true; }; "wrap": { "alias": "wrap"; "required": false; "isSignal": true; }; "skipDisabled": { "alias": "skipDisabled"; "required": false; "isSignal": true; }; "focusMode": { "alias": "focusMode"; "required": false; "isSignal": true; }; "selectionMode": { "alias": "selectionMode"; "required": false; "isSignal": true; }; "typeaheadDelay": { "alias": "typeaheadDelay"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "value": { "alias": "value"; "required": false; "isSignal": true; }; "activeIndex": { "alias": "activeIndex"; "required": false; "isSignal": true; }; }, { "value": "valueChange"; "activeIndex": "activeIndexChange"; }, ["_cdkOptions"], never, true, never>;
 }
 /** A selectable option in a CdkListbox. */
-declare class CdkOption {
+declare class CdkOption<V> {
     /** A reference to the option element. */
     private readonly _elementRef;
     /** The parent CdkListbox. */
@@ -60,10 +60,11 @@ declare class CdkOption {
     private readonly _generatedId;
     /** A unique identifier for the option. */
     protected id: i0.Signal<string>;
+    protected value: i0.InputSignal<V>;
     /** The text used by the typeahead search. */
     protected searchTerm: i0.Signal<any>;
     /** The parent Listbox UIPattern. */
-    protected listbox: i0.Signal<ListboxPattern>;
+    protected listbox: i0.Signal<ListboxPattern<any>>;
     /** A reference to the option element to be focused on navigation. */
     protected element: i0.Signal<any>;
     /** Whether an item is disabled. */
@@ -71,9 +72,9 @@ declare class CdkOption {
     /** The text used by the typeahead search. */
     label: i0.InputSignal<string | undefined>;
     /** The Option UIPattern. */
-    pattern: OptionPattern;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkOption, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkOption, "[cdkOption]", ["cdkOption"], { "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "label": { "alias": "label"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
+    pattern: OptionPattern<V>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkOption<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkOption<any>, "[cdkOption]", ["cdkOption"], { "value": { "alias": "value"; "required": true; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "label": { "alias": "label"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
 }
 
 export { CdkListbox, CdkOption };
