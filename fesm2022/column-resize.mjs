@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { InjectionToken, inject, Renderer2, Directive, Input, Injectable, NgZone, CSP_NONCE, ElementRef, NgModule, Injector } from '@angular/core';
+import { InjectionToken, inject, Renderer2, Directive, Input, Injectable, NgZone, CSP_NONCE, ElementRef, NgModule, Injector, runInInjectionContext, afterNextRender } from '@angular/core';
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { Subject, merge, combineLatest, Observable } from 'rxjs';
 import { mapTo, take, takeUntil, startWith, pairwise, distinctUntilChanged, share, map, skip, filter } from 'rxjs/operators';
@@ -776,7 +776,13 @@ class Resizable {
         this.changeDetectorRef.markForCheck();
     }
     _updateOverlayHandleHeight() {
-        this.overlayRef.updateSize({ height: this.elementRef.nativeElement.offsetHeight });
+        runInInjectionContext(this.injector, () => {
+            afterNextRender({
+                write: () => {
+                    this.overlayRef.updateSize({ height: this.elementRef.nativeElement.offsetHeight });
+                },
+            });
+        });
     }
     _applySize(sizeInPixels, previousSize) {
         const sizeToApply = Math.min(Math.max(sizeInPixels, this.minWidthPx, 0), this.maxWidthPx);
