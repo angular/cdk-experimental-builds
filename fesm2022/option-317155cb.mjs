@@ -468,6 +468,8 @@ class ListboxPattern {
             manager
                 .on(ModifierKey.Ctrl, this.prevKey, () => this.prev())
                 .on(ModifierKey.Ctrl, this.nextKey, () => this.next())
+                .on(ModifierKey.Ctrl, ' ', () => this._updateSelection({ toggle: true }))
+                .on(ModifierKey.Ctrl, 'Enter', () => this._updateSelection({ toggle: true }))
                 .on(ModifierKey.Ctrl, 'Home', () => this.first()) // TODO: Not in spec but prob should be.
                 .on(ModifierKey.Ctrl, 'End', () => this.last()); // TODO: Not in spec but prob should be.
         }
@@ -612,4 +614,4 @@ class OptionPattern {
 }
 
 export { ListboxPattern as L, OptionPattern as O };
-//# sourceMappingURL=option-a8c77cfa.mjs.map
+//# sourceMappingURL=option-317155cb.mjs.map
