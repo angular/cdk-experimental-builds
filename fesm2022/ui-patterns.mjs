@@ -1,4 +1,4 @@
-export { L as ListboxPattern, O as OptionPattern } from './option-317155cb.mjs';
+export { L as ListboxPattern, O as OptionPattern } from './option-5a3c2d27.mjs';
 import '@angular/core';
 
 /** Converts a getter setter style signal to a WritableSignalLike. */

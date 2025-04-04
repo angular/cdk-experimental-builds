@@ -156,7 +156,7 @@ interface ListSelectionInputs<T extends ListSelectionItem<V>, V> {
     /** The items in the list. */
     items: SignalLike<T[]>;
     /** Whether multiple items in the list can be selected at once. */
-    multiselectable: SignalLike<boolean>;
+    multi: SignalLike<boolean>;
     /** The current value of the list selection. */
     value: WritableSignalLike<V[]>;
     /** The selection strategy used by the list. */
@@ -341,7 +341,7 @@ declare class ListboxPattern<V> {
     /** The id of the current active item. */
     activedescendant: i0.Signal<string | undefined>;
     /** Whether multiple items in the list can be selected at once. */
-    multiselectable: SignalLike<boolean>;
+    multi: SignalLike<boolean>;
     /** The number of items in the listbox. */
     setsize: i0.Signal<number>;
     /** Whether the listbox selection follows focus. */

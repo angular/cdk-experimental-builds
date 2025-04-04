@@ -156,7 +156,7 @@ class ListSelection {
         if (item.disabled() || this.inputs.value().includes(item.value())) {
             return;
         }
-        if (!this.inputs.multiselectable()) {
+        if (!this.inputs.multi()) {
             this.deselectAll();
         }
         // TODO: Need to discuss when to drop this.
@@ -182,7 +182,7 @@ class ListSelection {
     }
     /** Selects all items in the list. */
     selectAll() {
-        if (!this.inputs.multiselectable()) {
+        if (!this.inputs.multi()) {
             return; // Should we log a warning?
         }
         for (const item of this.inputs.items()) {
@@ -406,7 +406,7 @@ class ListboxPattern {
     /** The id of the current active item. */
     activedescendant = computed(() => this.focusManager.getActiveDescendant());
     /** Whether multiple items in the list can be selected at once. */
-    multiselectable;
+    multi;
     /** The number of items in the listbox. */
     setsize = computed(() => this.navigation.inputs.items().length);
     /** Whether the listbox selection follows focus. */
@@ -446,7 +446,7 @@ class ListboxPattern {
                 .on('End', () => this.last({ selectOne: true }))
                 .on(this.typeaheadRegexp, e => this.search(e.key, { selectOne: true }));
         }
-        if (this.inputs.multiselectable()) {
+        if (this.inputs.multi()) {
             manager
                 .on(ModifierKey.Shift, ' ', () => this._updateSelection({ selectFromAnchor: true }))
                 .on(ModifierKey.Shift, 'Enter', () => this._updateSelection({ selectFromAnchor: true }))
@@ -456,15 +456,15 @@ class ListboxPattern {
                 .on(ModifierKey.Ctrl | ModifierKey.Shift, 'End', () => this.last({ selectFromActive: true }))
                 .on(ModifierKey.Ctrl, 'A', () => this._updateSelection({ selectAll: true }));
         }
-        if (!this.followFocus() && this.inputs.multiselectable()) {
+        if (!this.followFocus() && this.inputs.multi()) {
             manager.on(' ', () => this._updateSelection({ toggle: true }));
             manager.on('Enter', () => this._updateSelection({ toggle: true }));
         }
-        if (!this.followFocus() && !this.inputs.multiselectable()) {
+        if (!this.followFocus() && !this.inputs.multi()) {
             manager.on(' ', () => this._updateSelection({ toggleOne: true }));
             manager.on('Enter', () => this._updateSelection({ toggleOne: true }));
         }
-        if (this.inputs.multiselectable() && this.followFocus()) {
+        if (this.inputs.multi() && this.followFocus()) {
             manager
                 .on(ModifierKey.Ctrl, this.prevKey, () => this.prev())
                 .on(ModifierKey.Ctrl, this.nextKey, () => this.next())
@@ -478,7 +478,7 @@ class ListboxPattern {
     /** The pointerdown event manager for the listbox. */
     pointerdown = computed(() => {
         const manager = new PointerEventManager();
-        if (this.inputs.multiselectable()) {
+        if (this.inputs.multi()) {
             manager
                 .on(e => this.goto(e, { toggle: true }))
                 .on(ModifierKey.Shift, e => this.goto(e, { selectFromActive: true }));
@@ -492,7 +492,7 @@ class ListboxPattern {
         this.inputs = inputs;
         this.disabled = inputs.disabled;
         this.orientation = inputs.orientation;
-        this.multiselectable = inputs.multiselectable;
+        this.multi = inputs.multi;
         this.navigation = new ListNavigation(inputs);
         this.selection = new ListSelection({ ...inputs, navigation: this.navigation });
         this.typeahead = new ListTypeahead({ ...inputs, navigation: this.navigation });
@@ -614,4 +614,4 @@ class OptionPattern {
 }
 
 export { ListboxPattern as L, OptionPattern as O };
-//# sourceMappingURL=option-317155cb.mjs.map
+//# sourceMappingURL=option-5a3c2d27.mjs.map
