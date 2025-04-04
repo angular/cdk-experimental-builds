@@ -320,6 +320,7 @@ interface SelectOptions {
 /** Represents the required inputs for a listbox. */
 type ListboxInputs<V> = ListNavigationInputs<OptionPattern<V>> & ListSelectionInputs<OptionPattern<V>, V> & ListTypeaheadInputs & ListFocusInputs<OptionPattern<V>> & {
     disabled: SignalLike<boolean>;
+    readonly: SignalLike<boolean>;
 };
 /** Controls the state of a listbox. */
 declare class ListboxPattern<V> {
@@ -336,6 +337,8 @@ declare class ListboxPattern<V> {
     orientation: SignalLike<'vertical' | 'horizontal'>;
     /** Whether the listbox is disabled. */
     disabled: SignalLike<boolean>;
+    /** Whether the listbox is readonly. */
+    readonly: SignalLike<boolean>;
     /** The tabindex of the listbox. */
     tabindex: i0.Signal<0 | -1>;
     /** The id of the current active item. */

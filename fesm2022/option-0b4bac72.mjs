@@ -401,6 +401,8 @@ class ListboxPattern {
     orientation;
     /** Whether the listbox is disabled. */
     disabled;
+    /** Whether the listbox is readonly. */
+    readonly;
     /** The tabindex of the listbox. */
     tabindex = computed(() => this.focusManager.getListTabindex());
     /** The id of the current active item. */
@@ -430,6 +432,14 @@ class ListboxPattern {
     /** The keydown event manager for the listbox. */
     keydown = computed(() => {
         const manager = new KeyboardEventManager();
+        if (this.readonly()) {
+            return manager
+                .on(this.prevKey, () => this.prev())
+                .on(this.nextKey, () => this.next())
+                .on('Home', () => this.first())
+                .on('End', () => this.last())
+                .on(this.typeaheadRegexp, e => this.search(e.key));
+        }
         if (!this.followFocus()) {
             manager
                 .on(this.prevKey, () => this.prev())
@@ -478,19 +488,20 @@ class ListboxPattern {
     /** The pointerdown event manager for the listbox. */
     pointerdown = computed(() => {
         const manager = new PointerEventManager();
+        if (this.readonly()) {
+            return manager.on(e => this.goto(e));
+        }
         if (this.inputs.multi()) {
-            manager
+            return manager
                 .on(e => this.goto(e, { toggle: true }))
                 .on(ModifierKey.Shift, e => this.goto(e, { selectFromActive: true }));
         }
-        else {
-            manager.on(e => this.goto(e, { toggleOne: true }));
-        }
-        return manager;
+        return manager.on(e => this.goto(e, { toggleOne: true }));
     });
     constructor(inputs) {
         this.inputs = inputs;
         this.disabled = inputs.disabled;
+        this.readonly = inputs.readonly;
         this.orientation = inputs.orientation;
         this.multi = inputs.multi;
         this.navigation = new ListNavigation(inputs);
@@ -614,4 +625,4 @@ class OptionPattern {
 }
 
 export { ListboxPattern as L, OptionPattern as O };
-//# sourceMappingURL=option-5a3c2d27.mjs.map
+//# sourceMappingURL=option-0b4bac72.mjs.map
