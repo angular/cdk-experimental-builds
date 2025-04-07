@@ -380,4 +380,5 @@ declare class ListboxPattern<V> {
     private _getItem;
 }
 
-export { ListboxPattern as L, OptionPattern as O, type SignalLike as S, type WritableSignalLike as W, type ListboxInputs as a, type OptionInputs as b, convertGetterSetterToWritableSignalLike as c };
+export { ListboxPattern as L, OptionPattern as O, convertGetterSetterToWritableSignalLike as c };
+export type { SignalLike as S, WritableSignalLike as W, ListboxInputs as a, OptionInputs as b };

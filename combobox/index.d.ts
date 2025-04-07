@@ -90,4 +90,5 @@ declare class CdkComboboxModule {
     static ɵinj: i0.ɵɵInjectorDeclaration<CdkComboboxModule>;
 }
 
-export { type AriaHasPopupValue, CDK_COMBOBOX, CdkCombobox, CdkComboboxModule, CdkComboboxPopup, type OpenAction, type OpenActionInput };
+export { CDK_COMBOBOX, CdkCombobox, CdkComboboxModule, CdkComboboxPopup };
+export type { AriaHasPopupValue, OpenAction, OpenActionInput };

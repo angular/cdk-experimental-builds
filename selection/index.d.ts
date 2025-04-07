@@ -225,4 +225,5 @@ declare class CdkSelectionModule {
     static ɵinj: i0.ɵɵInjectorDeclaration<CdkSelectionModule>;
 }
 
-export { CdkRowSelection, CdkSelectAll, CdkSelection, CdkSelectionColumn, CdkSelectionModule, CdkSelectionToggle, type SelectableWithIndex, type SelectionChange, SelectionSet };
+export { CdkRowSelection, CdkSelectAll, CdkSelection, CdkSelectionColumn, CdkSelectionModule, CdkSelectionToggle, SelectionSet };
+export type { SelectableWithIndex, SelectionChange };

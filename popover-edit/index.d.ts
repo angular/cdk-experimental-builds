@@ -446,4 +446,5 @@ declare const CELL_SELECTOR = ".cdk-cell, .mat-cell, td";
 /** closest implementation that is able to start from non-Element Nodes. */
 declare function closest(element: EventTarget | Element | null | undefined, selector: string): Element | null;
 
-export { CdkEditClose, CdkEditControl, CdkEditOpen, CdkEditRevert, CdkEditable, CdkPopoverEdit, type CdkPopoverEditColspan, CdkPopoverEditModule, CdkPopoverEditTabOut, CdkRowHoverContent, EditEventDispatcher, EditRef, type Entry, FocusDispatcher, FormValueContainer, HoverContentState, type PopoverEditClickOutBehavior, CELL_SELECTOR as _CELL_SELECTOR, closest as _closest };
+export { CdkEditClose, CdkEditControl, CdkEditOpen, CdkEditRevert, CdkEditable, CdkPopoverEdit, CdkPopoverEditModule, CdkPopoverEditTabOut, CdkRowHoverContent, EditEventDispatcher, EditRef, FocusDispatcher, FormValueContainer, HoverContentState, CELL_SELECTOR as _CELL_SELECTOR, closest as _closest };
+export type { CdkPopoverEditColspan, Entry, PopoverEditClickOutBehavior };
