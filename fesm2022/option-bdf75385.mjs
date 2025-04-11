@@ -468,9 +468,9 @@ class ListboxPattern {
                 .on(ModifierKey.Shift, 'Enter', () => this._updateSelection({ selectFromAnchor: true }))
                 .on(ModifierKey.Shift, this.prevKey, () => this.prev({ toggle: true }))
                 .on(ModifierKey.Shift, this.nextKey, () => this.next({ toggle: true }))
-                .on(ModifierKey.Ctrl | ModifierKey.Shift, 'Home', () => this.first({ selectFromActive: true }))
-                .on(ModifierKey.Ctrl | ModifierKey.Shift, 'End', () => this.last({ selectFromActive: true }))
-                .on(ModifierKey.Ctrl, 'A', () => this._updateSelection({ selectAll: true }))
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'A', () => this._updateSelection({ selectAll: true }))
+                .on([ModifierKey.Ctrl | ModifierKey.Shift, ModifierKey.Meta | ModifierKey.Shift], 'Home', () => this.first({ selectFromActive: true }))
+                .on([ModifierKey.Ctrl | ModifierKey.Shift, ModifierKey.Meta | ModifierKey.Shift], 'End', () => this.last({ selectFromActive: true }))
                 .on(ModifierKey.Shift, this.dynamicSpaceKey, () => this._updateSelection({ selectFromAnchor: true }));
         }
         if (!this.followFocus() && this.inputs.multi()) {
@@ -483,12 +483,12 @@ class ListboxPattern {
         }
         if (this.inputs.multi() && this.followFocus()) {
             manager
-                .on(ModifierKey.Ctrl, this.prevKey, () => this.prev())
-                .on(ModifierKey.Ctrl, this.nextKey, () => this.next())
-                .on(ModifierKey.Ctrl, ' ', () => this._updateSelection({ toggle: true }))
-                .on(ModifierKey.Ctrl, 'Enter', () => this._updateSelection({ toggle: true }))
-                .on(ModifierKey.Ctrl, 'Home', () => this.first()) // TODO: Not in spec but prob should be.
-                .on(ModifierKey.Ctrl, 'End', () => this.last()); // TODO: Not in spec but prob should be.
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], this.prevKey, () => this.prev())
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], this.nextKey, () => this.next())
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], ' ', () => this._updateSelection({ toggle: true }))
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'Enter', () => this._updateSelection({ toggle: true }))
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'Home', () => this.first()) // TODO: Not in spec but prob should be.
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'End', () => this.last()); // TODO: Not in spec but prob should be.
         }
         return manager;
     });
@@ -632,4 +632,4 @@ class OptionPattern {
 }
 
 export { ListboxPattern as L, OptionPattern as O };
-//# sourceMappingURL=option-8d7987cc.mjs.map
+//# sourceMappingURL=option-bdf75385.mjs.map
