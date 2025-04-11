@@ -190,12 +190,16 @@ declare class ListSelection<T extends ListSelectionItem<V>, V> {
     selectFromPrevSelectedItem(): void;
     /** Selects the items in the list starting at the last active item. */
     selectFromActive(): void;
-    /** Selects the items in the list starting at the given index. */
-    private _selectFromIndex;
     /** Sets the selection to only the current active item. */
     selectOne(): void;
+    /** Toggles the items in the list starting at the last selected item. */
+    toggleFromPrevSelectedItem(): void;
     /** Sets the anchor to the current active index. */
     private _anchor;
+    /** Selects the items in the list starting at the given index. */
+    private _selectFromIndex;
+    /** Returns all items from the given index to the current active index. */
+    private _getItemsFromIndex;
 }
 
 /**
@@ -318,6 +322,7 @@ interface SelectOptions {
     selectAll?: boolean;
     selectFromAnchor?: boolean;
     selectFromActive?: boolean;
+    toggleFromAnchor?: boolean;
 }
 /** Represents the required inputs for a listbox. */
 type ListboxInputs<V> = ListNavigationInputs<OptionPattern<V>> & ListSelectionInputs<OptionPattern<V>, V> & ListTypeaheadInputs & ListFocusInputs<OptionPattern<V>> & {
