@@ -235,6 +235,8 @@ class ListTypeahead {
     timeout;
     /** The navigation controller of the parent list. */
     navigation;
+    /** Whether the user is actively typing a typeahead search query. */
+    isTyping = computed(() => this._query().length > 0);
     /** Keeps track of the characters that typeahead search is being called with. */
     _query = signal('');
     /** The index where that the typeahead search was initiated from. */
@@ -246,6 +248,9 @@ class ListTypeahead {
     /** Performs a typeahead search, appending the given character to the search string. */
     search(char) {
         if (char.length !== 1) {
+            return;
+        }
+        if (!this.isTyping() && char === ' ') {
             return;
         }
         if (this._startIndex() === undefined) {
@@ -427,6 +432,8 @@ class ListboxPattern {
         }
         return this.inputs.textDirection() === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
     });
+    /** Represents the space key. Does nothing when the user is actively using typeahead. */
+    dynamicSpaceKey = computed(() => (this.typeahead.isTyping() ? '' : ' '));
     /** The regexp used to decide if a key should trigger typeahead. */
     typeaheadRegexp = /^.$/; // TODO: Ignore spaces?
     /** The keydown event manager for the listbox. */
@@ -458,20 +465,20 @@ class ListboxPattern {
         }
         if (this.inputs.multi()) {
             manager
-                .on(ModifierKey.Shift, ' ', () => this._updateSelection({ selectFromAnchor: true }))
                 .on(ModifierKey.Shift, 'Enter', () => this._updateSelection({ selectFromAnchor: true }))
                 .on(ModifierKey.Shift, this.prevKey, () => this.prev({ toggle: true }))
                 .on(ModifierKey.Shift, this.nextKey, () => this.next({ toggle: true }))
                 .on(ModifierKey.Ctrl | ModifierKey.Shift, 'Home', () => this.first({ selectFromActive: true }))
                 .on(ModifierKey.Ctrl | ModifierKey.Shift, 'End', () => this.last({ selectFromActive: true }))
-                .on(ModifierKey.Ctrl, 'A', () => this._updateSelection({ selectAll: true }));
+                .on(ModifierKey.Ctrl, 'A', () => this._updateSelection({ selectAll: true }))
+                .on(ModifierKey.Shift, this.dynamicSpaceKey, () => this._updateSelection({ selectFromAnchor: true }));
         }
         if (!this.followFocus() && this.inputs.multi()) {
-            manager.on(' ', () => this._updateSelection({ toggle: true }));
+            manager.on(this.dynamicSpaceKey, () => this._updateSelection({ toggle: true }));
             manager.on('Enter', () => this._updateSelection({ toggle: true }));
         }
         if (!this.followFocus() && !this.inputs.multi()) {
-            manager.on(' ', () => this._updateSelection({ toggleOne: true }));
+            manager.on(this.dynamicSpaceKey, () => this._updateSelection({ toggleOne: true }));
             manager.on('Enter', () => this._updateSelection({ toggleOne: true }));
         }
         if (this.inputs.multi() && this.followFocus()) {
@@ -625,4 +632,4 @@ class OptionPattern {
 }
 
 export { ListboxPattern as L, OptionPattern as O };
-//# sourceMappingURL=option-0b4bac72.mjs.map
+//# sourceMappingURL=option-8d7987cc.mjs.map

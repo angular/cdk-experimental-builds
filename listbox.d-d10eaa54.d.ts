@@ -223,6 +223,8 @@ declare class ListTypeahead<T extends ListTypeaheadItem> {
     timeout?: ReturnType<typeof setTimeout> | undefined;
     /** The navigation controller of the parent list. */
     navigation: ListNavigation<T>;
+    /** Whether the user is actively typing a typeahead search query. */
+    isTyping: i0.Signal<boolean>;
     /** Keeps track of the characters that typeahead search is being called with. */
     private _query;
     /** The index where that the typeahead search was initiated from. */
@@ -353,6 +355,8 @@ declare class ListboxPattern<V> {
     prevKey: i0.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
     /** The key used to navigate to the next item in the list. */
     nextKey: i0.Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
+    /** Represents the space key. Does nothing when the user is actively using typeahead. */
+    dynamicSpaceKey: i0.Signal<"" | " ">;
     /** The regexp used to decide if a key should trigger typeahead. */
     typeaheadRegexp: RegExp;
     /** The keydown event manager for the listbox. */
