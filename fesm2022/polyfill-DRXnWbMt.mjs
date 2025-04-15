@@ -10,5 +10,5 @@ function closest(element, selector) {
     return curr?.closest(selector) ?? null;
 }
 
-export { closest as c };
-//# sourceMappingURL=polyfill-c4e47556.mjs.map
+export { closest };
+//# sourceMappingURL=polyfill-DRXnWbMt.mjs.map

@@ -1,6 +1,6 @@
 import * as i0 from '@angular/core';
 import { InjectionToken, AfterViewInit, OnDestroy, ElementRef, NgZone, Provider, OnInit, Injector, ViewContainerRef, ChangeDetectorRef, Type } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { CdkTable, CdkColumnDef, _CoalescedStyleScheduler } from '@angular/cdk/table';
 import { Directionality } from '@angular/cdk/bidi';
 import { OverlayRef, Overlay } from '@angular/cdk/overlay';
@@ -399,4 +399,5 @@ declare abstract class Resizable<HandleComponent extends ResizeOverlayHandle> im
     static ɵdir: i0.ɵɵDirectiveDeclaration<Resizable<any>, never, never, {}, {}, never, never, true, never>;
 }
 
-export { COLUMN_RESIZE_OPTIONS, CdkColumnResize, CdkColumnResizeDefaultEnabledModule, CdkColumnResizeFlex, CdkColumnResizeModule, CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex, CdkFlexTableResizeStrategy, ColumnResize, ColumnResizeNotifier, ColumnResizeNotifierSource, type ColumnResizeOptions, type ColumnSize, type ColumnSizeAction, ColumnSizeStore, FLEX_RESIZE_STRATEGY_PROVIDER, HeaderRowEventDispatcher, Resizable, ResizeOverlayHandle, ResizeRef, ResizeStrategy, TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER, TableLayoutFixedResizeStrategy };
+export { COLUMN_RESIZE_OPTIONS, CdkColumnResize, CdkColumnResizeDefaultEnabledModule, CdkColumnResizeFlex, CdkColumnResizeModule, CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex, CdkFlexTableResizeStrategy, ColumnResize, ColumnResizeNotifier, ColumnResizeNotifierSource, ColumnSizeStore, FLEX_RESIZE_STRATEGY_PROVIDER, HeaderRowEventDispatcher, Resizable, ResizeOverlayHandle, ResizeRef, ResizeStrategy, TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER, TableLayoutFixedResizeStrategy };
+export type { ColumnResizeOptions, ColumnSize, ColumnSizeAction };
