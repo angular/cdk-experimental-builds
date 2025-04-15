@@ -668,5 +668,5 @@ class OptionPattern {
     }
 }
 
-export { ListboxPattern as L, OptionPattern as O };
-//# sourceMappingURL=option-f4c75716.mjs.map
+export { ListboxPattern, OptionPattern };
+//# sourceMappingURL=option-CLP_R9cq.mjs.map

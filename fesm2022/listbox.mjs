@@ -1,9 +1,9 @@
 import * as i0 from '@angular/core';
-import { inject, contentChildren, computed, input, booleanAttribute, model, Directive, ElementRef } from '@angular/core';
+import { inject, contentChildren, computed, input, booleanAttribute, model, ElementRef, Directive } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { L as ListboxPattern, O as OptionPattern } from './option-f4c75716.mjs';
+import { ListboxPattern, OptionPattern } from './option-CLP_R9cq.mjs';
 
 /**
  * A listbox container.
