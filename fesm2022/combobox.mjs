@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { InjectionToken, inject, ElementRef, ViewContainerRef, Injector, ChangeDetectorRef, EventEmitter, Output, Input, Directive, NgModule } from '@angular/core';
+import { InjectionToken, inject, HOST_TAG_NAME, ElementRef, ViewContainerRef, Injector, ChangeDetectorRef, EventEmitter, Output, Input, Directive, NgModule } from '@angular/core';
 import { Overlay, OverlayConfig, OverlayModule } from '@angular/cdk/overlay';
 import { Directionality } from '@angular/cdk/bidi';
 import { coerceBooleanProperty, coerceArray } from '@angular/cdk/coercion';
@@ -12,6 +12,7 @@ import { _IdGenerator } from '@angular/cdk/a11y';
 const allowedOpenActions = ['focus', 'click', 'downKey', 'toggle'];
 const CDK_COMBOBOX = new InjectionToken('CDK_COMBOBOX');
 class CdkCombobox {
+    _tagName = inject(HOST_TAG_NAME);
     _elementRef = inject(ElementRef);
     _overlay = inject(Overlay);
     _viewContainerRef = inject(ViewContainerRef);
@@ -172,8 +173,8 @@ class CdkCombobox {
     }
     _isTextTrigger() {
         // TODO: Should check if the trigger is contenteditable.
-        const tagName = this._elementRef.nativeElement.tagName.toLowerCase();
-        return tagName === 'input' || tagName === 'textarea' ? true : false;
+        const tagName = this._tagName.toLowerCase();
+        return tagName === 'input' || tagName === 'textarea';
     }
     _getOverlayConfig() {
         return new OverlayConfig({
