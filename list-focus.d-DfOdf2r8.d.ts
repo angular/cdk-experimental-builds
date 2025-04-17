@@ -32,7 +32,8 @@ declare enum ModifierKey {
     Ctrl = 1,
     Shift = 2,
     Alt = 4,
-    Meta = 8
+    Meta = 8,
+    Any = "Any"
 }
 type ModifierInputs = ModifierKey | ModifierKey[];
 /**
@@ -127,17 +128,19 @@ declare class ListNavigation<T extends ListNavigationItem> {
     readonly inputs: ListNavigationInputs<T>;
     /** The last index that was active. */
     prevActiveIndex: i0.WritableSignal<number>;
+    /** The current active item. */
+    activeItem: i0.Signal<T>;
     constructor(inputs: ListNavigationInputs<T>);
     /** Navigates to the given item. */
-    goto(item: T): void;
+    goto(item?: T): boolean;
     /** Navigates to the next item in the list. */
-    next(): void;
+    next(): boolean;
     /** Navigates to the previous item in the list. */
-    prev(): void;
+    prev(): boolean;
     /** Navigates to the first item in the list. */
-    first(): void;
+    first(): boolean;
     /** Navigates to the last item in the list. */
-    last(): void;
+    last(): boolean;
     /** Returns true if the given item can be navigated to. */
     isFocusable(item: T): boolean;
     /** Advances to the next or previous focusable item in the list based on the given delta. */
@@ -167,15 +170,19 @@ declare class ListSelection<T extends ListSelectionItem<V>, V> {
     readonly inputs: ListSelectionInputs<T, V> & {
         navigation: ListNavigation<T>;
     };
-    /** The value of the most recently selected item. */
-    previousValue: i0.WritableSignal<V | undefined>;
+    /** The start index to use for range selection. */
+    rangeStartIndex: i0.WritableSignal<number>;
+    /** The end index to use for range selection. */
+    rangeEndIndex: i0.WritableSignal<number>;
     /** The navigation controller of the parent list. */
     navigation: ListNavigation<T>;
     constructor(inputs: ListSelectionInputs<T, V> & {
         navigation: ListNavigation<T>;
     });
     /** Selects the item at the current active index. */
-    select(item?: T): void;
+    select(item?: T, opts?: {
+        anchor: boolean;
+    }): void;
     /** Deselects the item at the current active index. */
     deselect(item?: T): void;
     /** Toggles the item at the current active index. */
@@ -186,19 +193,25 @@ declare class ListSelection<T extends ListSelectionItem<V>, V> {
     selectAll(): void;
     /** Deselects all items in the list. */
     deselectAll(): void;
-    /** Selects the items in the list starting at the last selected item. */
-    selectFromPrevSelectedItem(): void;
-    /** Selects the items in the list starting at the last active item. */
-    selectFromActive(): void;
+    /**
+     * Selects all items in the list or deselects all
+     * items in the list if all items are already selected.
+     */
+    toggleAll(): void;
     /** Sets the selection to only the current active item. */
     selectOne(): void;
-    /** Toggles the items in the list starting at the last selected item. */
-    toggleFromPrevSelectedItem(): void;
-    /** Sets the anchor to the current active index. */
-    private _anchor;
-    /** Selects the items in the list starting at the given index. */
-    private _selectFromIndex;
-    /** Returns all items from the given index to the current active index. */
+    /**
+     * Selects all items in the list up to the anchor item.
+     *
+     * Deselects all items that were previously within the
+     * selected range that are now outside of the selected range
+     */
+    selectRange(opts?: {
+        anchor: boolean;
+    }): void;
+    /** Marks the given index as the start of a range selection. */
+    beginRangeSelection(index?: number): void;
+    /** Returns the items in the list starting from the given index.  */
     private _getItemsFromIndex;
 }
 

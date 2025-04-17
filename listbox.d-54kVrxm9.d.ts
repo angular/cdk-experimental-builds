@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { ListNavigationItem, SignalLike, ListNavigation, ListFocus, ListSelection, ListSelectionItem, ListFocusItem, ListNavigationInputs, ListSelectionInputs, ListFocusInputs, KeyboardEventManager, PointerEventManager } from './list-focus.d-1SGksIi8.js';
+import { ListNavigationItem, SignalLike, ListNavigation, ListFocus, ListSelection, ListSelectionItem, ListFocusItem, ListNavigationInputs, ListSelectionInputs, ListFocusInputs, KeyboardEventManager, PointerEventManager } from './list-focus.d-DfOdf2r8.js';
 
 /**
  * Represents an item in a collection, such as a listbox option, than can be navigated to by
@@ -36,7 +36,7 @@ declare class ListTypeahead<T extends ListTypeaheadItem> {
         navigation: ListNavigation<T>;
     });
     /** Performs a typeahead search, appending the given character to the search string. */
-    search(char: string): void;
+    search(char: string): boolean;
     /**
      * Returns the first item whose search term matches the
      * current query starting from the the current anchor index.
@@ -82,14 +82,10 @@ declare class OptionPattern<V> {
 
 /** The selection operations that the listbox can perform. */
 interface SelectOptions {
-    select?: boolean;
     toggle?: boolean;
-    toggleOne?: boolean;
     selectOne?: boolean;
-    selectAll?: boolean;
-    selectFromAnchor?: boolean;
-    selectFromActive?: boolean;
-    toggleFromAnchor?: boolean;
+    selectRange?: boolean;
+    anchor?: boolean;
 }
 /** Represents the required inputs for a listbox. */
 type ListboxInputs<V> = ListNavigationInputs<OptionPattern<V>> & ListSelectionInputs<OptionPattern<V>, V> & ListTypeaheadInputs & ListFocusInputs<OptionPattern<V>> & {
@@ -123,6 +119,8 @@ declare class ListboxPattern<V> {
     setsize: i0.Signal<number>;
     /** Whether the listbox selection follows focus. */
     followFocus: i0.Signal<boolean>;
+    /** Whether the listbox should wrap. Used to disable wrapping while range selecting. */
+    wrap: i0.WritableSignal<boolean>;
     /** The key used to navigate to the previous item in the list. */
     prevKey: i0.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
     /** The key used to navigate to the next item in the list. */
@@ -131,6 +129,19 @@ declare class ListboxPattern<V> {
     dynamicSpaceKey: i0.Signal<"" | " ">;
     /** The regexp used to decide if a key should trigger typeahead. */
     typeaheadRegexp: RegExp;
+    /**
+     * The uncommitted index for selecting a range of options.
+     *
+     * NOTE: This is subtly distinct from the "rangeStartIndex" in the ListSelection behavior.
+     * The anchorIndex does not necessarily represent the start of a range, but represents the most
+     * recent index where the user showed intent to begin a range selection. Usually, this is wherever
+     * the user most recently pressed the "Shift" key, but if the user presses shift + space to select
+     * from the anchor, the user is not intending to start a new range from this index.
+     *
+     * In other words, "rangeStartIndex" is only set when a user commits to starting a range selection
+     * while "anchorIndex" is set whenever a user indicates they may be starting a range selection.
+     */
+    anchorIndex: i0.WritableSignal<number>;
     /** The keydown event manager for the listbox. */
     keydown: i0.Signal<KeyboardEventManager<KeyboardEvent>>;
     /** The pointerdown event manager for the listbox. */
@@ -151,6 +162,16 @@ declare class ListboxPattern<V> {
     goto(event: PointerEvent, opts?: SelectOptions): void;
     /** Handles typeahead search navigation for the listbox. */
     search(char: string, opts?: SelectOptions): void;
+    /**
+     * Safely performs a navigation operation.
+     *
+     * Handles conditionally disabling wrapping for when a navigation
+     * operation is occurring while the user is selecting a range of options.
+     *
+     * Handles boilerplate calling of focus & selection operations. Also ensures these
+     * additional operations are only called if the navigation operation moved focus to a new option.
+     */
+    private _navigate;
     /** Handles updating selection for the listbox. */
     private _updateSelection;
     private _getItem;

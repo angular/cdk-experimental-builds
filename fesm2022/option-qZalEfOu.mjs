@@ -1,4 +1,4 @@
-import { KeyboardEventManager, ModifierKey, PointerEventManager, ListNavigation, ListSelection, ListFocus } from './list-focus-DtTH4bDx.mjs';
+import { KeyboardEventManager, ModifierKey, PointerEventManager, ListNavigation, ListSelection, ListFocus } from './list-focus-P6xynDMg.mjs';
 import { computed, signal } from '@angular/core';
 
 /** Controls typeahead for a list of items. */
@@ -21,10 +21,10 @@ class ListTypeahead {
     /** Performs a typeahead search, appending the given character to the search string. */
     search(char) {
         if (char.length !== 1) {
-            return;
+            return false;
         }
         if (!this.isTyping() && char === ' ') {
-            return;
+            return false;
         }
         if (this._startIndex() === undefined) {
             this._startIndex.set(this.navigation.inputs.activeIndex());
@@ -39,6 +39,7 @@ class ListTypeahead {
             this._query.set('');
             this._startIndex.set(undefined);
         }, this.inputs.typeaheadDelay() * 1000);
+        return true;
     }
     /**
      * Returns the first item whose search term matches the
@@ -87,6 +88,8 @@ class ListboxPattern {
     setsize = computed(() => this.navigation.inputs.items().length);
     /** Whether the listbox selection follows focus. */
     followFocus = computed(() => this.inputs.selectionMode() === 'follow');
+    /** Whether the listbox should wrap. Used to disable wrapping while range selecting. */
+    wrap = signal(true);
     /** The key used to navigate to the previous item in the list. */
     prevKey = computed(() => {
         if (this.inputs.orientation() === 'vertical') {
@@ -105,6 +108,19 @@ class ListboxPattern {
     dynamicSpaceKey = computed(() => (this.typeahead.isTyping() ? '' : ' '));
     /** The regexp used to decide if a key should trigger typeahead. */
     typeaheadRegexp = /^.$/; // TODO: Ignore spaces?
+    /**
+     * The uncommitted index for selecting a range of options.
+     *
+     * NOTE: This is subtly distinct from the "rangeStartIndex" in the ListSelection behavior.
+     * The anchorIndex does not necessarily represent the start of a range, but represents the most
+     * recent index where the user showed intent to begin a range selection. Usually, this is wherever
+     * the user most recently pressed the "Shift" key, but if the user presses shift + space to select
+     * from the anchor, the user is not intending to start a new range from this index.
+     *
+     * In other words, "rangeStartIndex" is only set when a user commits to starting a range selection
+     * while "anchorIndex" is set whenever a user indicates they may be starting a range selection.
+     */
+    anchorIndex = signal(0);
     /** The keydown event manager for the listbox. */
     keydown = computed(() => {
         const manager = new KeyboardEventManager();
@@ -134,30 +150,36 @@ class ListboxPattern {
         }
         if (this.inputs.multi()) {
             manager
-                .on(ModifierKey.Shift, 'Enter', () => this._updateSelection({ selectFromAnchor: true }))
-                .on(ModifierKey.Shift, this.prevKey, () => this.prev({ toggle: true }))
-                .on(ModifierKey.Shift, this.nextKey, () => this.next({ toggle: true }))
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'A', () => this._updateSelection({ selectAll: true }))
-                .on([ModifierKey.Ctrl | ModifierKey.Shift, ModifierKey.Meta | ModifierKey.Shift], 'Home', () => this.first({ selectFromActive: true }))
-                .on([ModifierKey.Ctrl | ModifierKey.Shift, ModifierKey.Meta | ModifierKey.Shift], 'End', () => this.last({ selectFromActive: true }))
-                .on(ModifierKey.Shift, this.dynamicSpaceKey, () => this._updateSelection({ selectFromAnchor: true }));
+                .on(ModifierKey.Any, 'Shift', () => this.anchorIndex.set(this.inputs.activeIndex()))
+                .on(ModifierKey.Shift, this.prevKey, () => this.prev({ selectRange: true }))
+                .on(ModifierKey.Shift, this.nextKey, () => this.next({ selectRange: true }))
+                .on([ModifierKey.Ctrl | ModifierKey.Shift, ModifierKey.Meta | ModifierKey.Shift], 'Home', () => this.first({ selectRange: true, anchor: false }))
+                .on([ModifierKey.Ctrl | ModifierKey.Shift, ModifierKey.Meta | ModifierKey.Shift], 'End', () => this.last({ selectRange: true, anchor: false }))
+                .on(ModifierKey.Shift, 'Enter', () => this._updateSelection({ selectRange: true, anchor: false }))
+                .on(ModifierKey.Shift, this.dynamicSpaceKey, () => this._updateSelection({ selectRange: true, anchor: false }));
         }
         if (!this.followFocus() && this.inputs.multi()) {
-            manager.on(this.dynamicSpaceKey, () => this._updateSelection({ toggle: true }));
-            manager.on('Enter', () => this._updateSelection({ toggle: true }));
+            manager
+                .on(this.dynamicSpaceKey, () => this.selection.toggle())
+                .on('Enter', () => this.selection.toggle())
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'A', () => this.selection.toggleAll());
         }
         if (!this.followFocus() && !this.inputs.multi()) {
-            manager.on(this.dynamicSpaceKey, () => this._updateSelection({ toggleOne: true }));
-            manager.on('Enter', () => this._updateSelection({ toggleOne: true }));
+            manager.on(this.dynamicSpaceKey, () => this.selection.toggleOne());
+            manager.on('Enter', () => this.selection.toggleOne());
         }
         if (this.inputs.multi() && this.followFocus()) {
             manager
                 .on([ModifierKey.Ctrl, ModifierKey.Meta], this.prevKey, () => this.prev())
                 .on([ModifierKey.Ctrl, ModifierKey.Meta], this.nextKey, () => this.next())
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], ' ', () => this._updateSelection({ toggle: true }))
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'Enter', () => this._updateSelection({ toggle: true }))
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'Home', () => this.first()) // TODO: Not in spec but prob should be.
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'End', () => this.last()); // TODO: Not in spec but prob should be.
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], ' ', () => this.selection.toggle())
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'Enter', () => this.selection.toggle())
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'Home', () => this.first())
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'End', () => this.last())
+                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'A', () => {
+                this.selection.toggleAll();
+                this.selection.select(); // Ensure the currect option remains selected.
+            });
         }
         return manager;
     });
@@ -166,6 +188,9 @@ class ListboxPattern {
         const manager = new PointerEventManager();
         if (this.readonly()) {
             return manager.on(e => this.goto(e));
+        }
+        if (this.multi()) {
+            manager.on(ModifierKey.Shift, e => this.goto(e, { selectRange: true }));
         }
         if (!this.multi() && this.followFocus()) {
             return manager.on(e => this.goto(e, { selectOne: true }));
@@ -176,13 +201,10 @@ class ListboxPattern {
         if (this.multi() && this.followFocus()) {
             return manager
                 .on(e => this.goto(e, { selectOne: true }))
-                .on(ModifierKey.Ctrl, e => this.goto(e, { toggle: true }))
-                .on(ModifierKey.Shift, e => this.goto(e, { toggleFromAnchor: true }));
+                .on(ModifierKey.Ctrl, e => this.goto(e, { toggle: true }));
         }
         if (this.multi() && !this.followFocus()) {
-            return manager
-                .on(e => this.goto(e, { toggle: true }))
-                .on(ModifierKey.Shift, e => this.goto(e, { toggleFromAnchor: true }));
+            return manager.on(e => this.goto(e, { toggle: true }));
         }
         return manager;
     });
@@ -192,7 +214,10 @@ class ListboxPattern {
         this.readonly = inputs.readonly;
         this.orientation = inputs.orientation;
         this.multi = inputs.multi;
-        this.navigation = new ListNavigation(inputs);
+        this.navigation = new ListNavigation({
+            ...inputs,
+            wrap: computed(() => this.wrap() && this.inputs.wrap()),
+        });
         this.selection = new ListSelection({ ...inputs, navigation: this.navigation });
         this.typeahead = new ListTypeahead({ ...inputs, navigation: this.navigation });
         this.focusManager = new ListFocus({ ...inputs, navigation: this.navigation });
@@ -210,75 +235,70 @@ class ListboxPattern {
     }
     /** Navigates to the first option in the listbox. */
     first(opts) {
-        this.navigation.first();
-        this.focusManager.focus();
-        this._updateSelection(opts);
+        this._navigate(opts, () => this.navigation.first());
     }
     /** Navigates to the last option in the listbox. */
     last(opts) {
-        this.navigation.last();
-        this.focusManager.focus();
-        this._updateSelection(opts);
+        this._navigate(opts, () => this.navigation.last());
     }
     /** Navigates to the next option in the listbox. */
     next(opts) {
-        this.navigation.next();
-        this.focusManager.focus();
-        this._updateSelection(opts);
+        this._navigate(opts, () => this.navigation.next());
     }
     /** Navigates to the previous option in the listbox. */
     prev(opts) {
-        this.navigation.prev();
-        this.focusManager.focus();
-        this._updateSelection(opts);
+        this._navigate(opts, () => this.navigation.prev());
     }
     /** Navigates to the given item in the listbox. */
     goto(event, opts) {
         const item = this._getItem(event);
-        if (item) {
-            this.navigation.goto(item);
-            this.focusManager.focus();
-            this._updateSelection(opts);
-        }
+        this._navigate(opts, () => this.navigation.goto(item));
     }
     /** Handles typeahead search navigation for the listbox. */
     search(char, opts) {
-        this.typeahead.search(char);
-        this.focusManager.focus();
-        this._updateSelection(opts);
+        this._navigate(opts, () => this.typeahead.search(char));
+    }
+    /**
+     * Safely performs a navigation operation.
+     *
+     * Handles conditionally disabling wrapping for when a navigation
+     * operation is occurring while the user is selecting a range of options.
+     *
+     * Handles boilerplate calling of focus & selection operations. Also ensures these
+     * additional operations are only called if the navigation operation moved focus to a new option.
+     */
+    _navigate(opts = {}, operation) {
+        if (opts?.selectRange) {
+            this.wrap.set(false);
+            this.selection.rangeStartIndex.set(this.anchorIndex());
+        }
+        const moved = operation();
+        if (moved) {
+            this.focusManager.focus();
+            this._updateSelection(opts);
+        }
+        this.wrap.set(true);
     }
     /** Handles updating selection for the listbox. */
-    _updateSelection(opts) {
-        if (opts?.select) {
-            this.selection.select();
-        }
-        if (opts?.toggle) {
+    _updateSelection(opts = { anchor: true }) {
+        if (opts.toggle) {
             this.selection.toggle();
         }
-        if (opts?.toggleOne) {
-            this.selection.toggleOne();
-        }
-        if (opts?.selectOne) {
+        if (opts.selectOne) {
             this.selection.selectOne();
         }
-        if (opts?.selectAll) {
-            this.selection.selectAll();
+        if (opts.selectRange) {
+            this.selection.selectRange();
         }
-        if (opts?.selectFromAnchor) {
-            this.selection.selectFromPrevSelectedItem();
-        }
-        if (opts?.selectFromActive) {
-            this.selection.selectFromActive();
-        }
-        if (opts?.toggleFromAnchor) {
-            this.selection.toggleFromPrevSelectedItem();
+        if (!opts.anchor) {
+            this.anchorIndex.set(this.selection.rangeStartIndex());
         }
     }
     _getItem(e) {
         if (!(e.target instanceof HTMLElement)) {
             return;
         }
-        const element = e.target.closest('[role="option"]'); // TODO: Use a different identifier.
+        const element = e.target.closest('[role="option"]');
         return this.inputs.items().find(i => i.element() === element);
     }
 }
@@ -316,4 +336,4 @@ class OptionPattern {
 }
 
 export { ListboxPattern, OptionPattern };
-//# sourceMappingURL=option-Bgpacz3g.mjs.map
+//# sourceMappingURL=option-qZalEfOu.mjs.map
