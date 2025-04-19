@@ -1,6 +1,6 @@
 import { closest } from './polyfill-DRXnWbMt.mjs';
 import * as i0 from '@angular/core';
-import { inject, NgZone, Injectable, Injector, afterNextRender, ElementRef, EventEmitter, Directive, Input, Renderer2, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
+import { inject, NgZone, Injectable, Injector, afterNextRender, ElementRef, EventEmitter, Directive, Input, DOCUMENT, Renderer2, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
 import { Subject, pipe, combineLatest, Observable, merge } from 'rxjs';
 import { distinctUntilChanged, startWith, shareReplay, filter, map, auditTime, audit, debounceTime, skip, takeUntil, mapTo, throttleTime, share, withLatestFrom } from 'rxjs/operators';
 import { ControlContainer } from '@angular/forms';
@@ -10,7 +10,6 @@ import { Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { FocusTrapFactory, InteractivityChecker, FocusTrap } from '@angular/cdk/a11y';
 import { ScrollDispatcher, ViewportRuler } from '@angular/cdk/scrolling';
-import { DOCUMENT } from '@angular/common';
 
 /** Selector for finding table cells. */
 const CELL_SELECTOR = '.cdk-cell, .mat-cell, td';

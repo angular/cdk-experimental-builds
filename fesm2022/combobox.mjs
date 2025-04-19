@@ -1,12 +1,11 @@
 import * as i0 from '@angular/core';
-import { InjectionToken, inject, HOST_TAG_NAME, ElementRef, ViewContainerRef, Injector, ChangeDetectorRef, EventEmitter, Output, Input, Directive, NgModule } from '@angular/core';
+import { InjectionToken, inject, HOST_TAG_NAME, ElementRef, ViewContainerRef, Injector, DOCUMENT, ChangeDetectorRef, EventEmitter, Output, Input, Directive, NgModule } from '@angular/core';
 import { Overlay, OverlayConfig, OverlayModule } from '@angular/cdk/overlay';
 import { Directionality } from '@angular/cdk/bidi';
 import { coerceBooleanProperty, coerceArray } from '@angular/cdk/coercion';
 import { DOWN_ARROW, ENTER, ESCAPE, TAB } from '@angular/cdk/keycodes';
 import { _getEventTarget } from '@angular/cdk/platform';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { DOCUMENT } from '@angular/common';
 import { _IdGenerator } from '@angular/cdk/a11y';
 
 const allowedOpenActions = ['focus', 'click', 'downKey', 'toggle'];

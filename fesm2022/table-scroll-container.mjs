@@ -1,7 +1,6 @@
 import * as i0 from '@angular/core';
-import { inject, ElementRef, CSP_NONCE, Directive, NgModule } from '@angular/core';
+import { inject, ElementRef, DOCUMENT, CSP_NONCE, Directive, NgModule } from '@angular/core';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { DOCUMENT } from '@angular/common';
 import { Directionality } from '@angular/cdk/bidi';
 import { _getShadowRoot } from '@angular/cdk/platform';
 import { STICKY_POSITIONING_LISTENER } from '@angular/cdk/table';
