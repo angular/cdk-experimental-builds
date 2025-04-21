@@ -247,5 +247,5 @@ declare class ListFocus<T extends ListFocusItem> {
     focus(): void;
 }
 
-export { KeyboardEventManager, ListFocus, ListNavigation, ListSelection, PointerEventManager, convertGetterSetterToWritableSignalLike };
-export type { ListFocusInputs, ListFocusItem, ListNavigationInputs, ListNavigationItem, ListSelectionInputs, ListSelectionItem, SignalLike, WritableSignalLike };
+export { KeyboardEventManager as K, PointerEventManager as P, convertGetterSetterToWritableSignalLike as c, ListNavigation as g, ListSelection as h, ListFocus as i };
+export type { ListNavigationItem as L, SignalLike as S, WritableSignalLike as W, ListSelectionItem as a, ListFocusItem as b, ListNavigationInputs as d, ListSelectionInputs as e, ListFocusInputs as f };

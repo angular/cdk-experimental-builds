@@ -1,4 +1,4 @@
-import { KeyboardEventManager, ModifierKey, PointerEventManager, ListNavigation, ListSelection, ListFocus } from './list-focus-P6xynDMg.mjs';
+import { M as ModifierKey, L as ListNavigation, a as ListSelection, b as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './list-focus-U1Ld6qTa.mjs';
 import { computed, signal } from '@angular/core';
 
 /** Controls typeahead for a list of items. */
@@ -335,5 +335,5 @@ class OptionPattern {
     }
 }
 
-export { ListboxPattern, OptionPattern };
-//# sourceMappingURL=option-qZalEfOu.mjs.map
+export { ListboxPattern as L, OptionPattern as O };
+//# sourceMappingURL=option-Dswe3U--.mjs.map
