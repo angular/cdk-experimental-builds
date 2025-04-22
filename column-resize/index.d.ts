@@ -1,6 +1,6 @@
 import * as i0 from '@angular/core';
 import { InjectionToken, AfterViewInit, OnDestroy, ElementRef, NgZone, Provider, OnInit, Injector, ViewContainerRef, ChangeDetectorRef, Type } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { CdkTable, CdkColumnDef, _CoalescedStyleScheduler } from '@angular/cdk/table';
 import { Directionality } from '@angular/cdk/bidi';
 import { OverlayRef, Overlay } from '@angular/cdk/overlay';
