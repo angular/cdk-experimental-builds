@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { signal, input, Directive, inject, TemplateRef, ViewContainerRef, effect } from '@angular/core';
+import { signal, input, inject, TemplateRef, ViewContainerRef, effect, Directive } from '@angular/core';
 
 /**
  * A container directive controls the visibility of its content.

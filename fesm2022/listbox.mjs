@@ -1,10 +1,10 @@
 import * as i0 from '@angular/core';
-import { inject, contentChildren, computed, input, booleanAttribute, model, Directive, ElementRef } from '@angular/core';
+import { inject, contentChildren, computed, input, booleanAttribute, model, ElementRef, Directive } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { L as ListboxPattern, O as OptionPattern } from './option-Dswe3U--.mjs';
-import './list-focus-U1Ld6qTa.mjs';
+import { ListboxPattern, OptionPattern } from './option-qZalEfOu.mjs';
+import './list-focus-P6xynDMg.mjs';
 
 /**
  * A listbox container.

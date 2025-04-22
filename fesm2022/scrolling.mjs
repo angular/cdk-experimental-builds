@@ -1,7 +1,7 @@
 import { coerceNumberProperty } from '@angular/cdk/coercion';
 import { VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
 import * as i0 from '@angular/core';
-import { forwardRef, Directive, Input, NgModule } from '@angular/core';
+import { forwardRef, Input, Directive, NgModule } from '@angular/core';
 import { Observable } from 'rxjs';
 
 /**

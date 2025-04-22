@@ -3,10 +3,10 @@ import { DeferredContentAware, DeferredContent } from '@angular/cdk-experimental
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
-import { contentChild, contentChildren, computed, Directive, inject, input, booleanAttribute, model, signal, ElementRef, effect } from '@angular/core';
+import { contentChild, contentChildren, computed, inject, input, booleanAttribute, model, signal, ElementRef, effect, Directive } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-BWVmT432.mjs';
-import './list-focus-U1Ld6qTa.mjs';
+import { TabListPattern, TabPattern, TabPanelPattern } from './tabs-DMCcUWaU.mjs';
+import './list-focus-P6xynDMg.mjs';
 
 /**
  * A Tabs container.

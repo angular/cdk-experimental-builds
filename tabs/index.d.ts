@@ -1,8 +1,8 @@
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
-import { a as TabPattern, d as TabPanelPattern, e as TabListPattern } from '../tabs.d-i3V95OSm.js';
+import { TabPattern, TabPanelPattern, TabListPattern } from '../tabs.d-CQxKfVkl.js';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
-import '../list-focus.d-D9XXcaD8.js';
+import '../list-focus.d-DfOdf2r8.js';
 
 /**
  * A Tabs container.
