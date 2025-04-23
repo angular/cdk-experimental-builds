@@ -23,6 +23,8 @@ const TABLE_SELECTOR = 'table, cdk-table, mat-table';
 const EDIT_PANE_CLASS = 'cdk-edit-pane';
 /** Selector for finding the edit lens pane. */
 const EDIT_PANE_SELECTOR = `.${EDIT_PANE_CLASS}, .mat-edit-pane`;
+/** Selector for table rows that should be skipped when moving focus. */
+const SKIP_ROW_FOCUS_SELECTOR = '.cdk-popover-edit-skip-focus, .mat-popover-edit-skip-focus';
 
 /** The delay applied to mouse events before hiding or showing hover content. */
 const MOUSE_EVENT_DELAY_MS = 40;
@@ -336,7 +338,10 @@ class FocusDispatcher {
         const rows = Array.from(closest(currentRow, TABLE_SELECTOR).querySelectorAll(ROW_SELECTOR));
         const currentRowIndex = rows.indexOf(currentRow);
         const currentIndexWithinRow = Array.from(currentRow.querySelectorAll(EDITABLE_CELL_SELECTOR)).indexOf(currentCell);
-        const newRowIndex = currentRowIndex + offset;
+        let newRowIndex = currentRowIndex + offset;
+        while (rows[newRowIndex]?.matches(SKIP_ROW_FOCUS_SELECTOR)) {
+            newRowIndex = newRowIndex + (offset > 0 ? 1 : -1);
+        }
         if (rows[newRowIndex]) {
             const rowToFocus = Array.from(rows[newRowIndex].querySelectorAll(EDITABLE_CELL_SELECTOR));
             if (rowToFocus[currentIndexWithinRow]) {
