@@ -65,6 +65,8 @@ declare class OptionPattern<V> {
     value: SignalLike<V>;
     /** The position of the option in the list. */
     index: i0.Signal<number>;
+    /** Whether the option is active. */
+    active: i0.Signal<boolean>;
     /** Whether the option is selected. */
     selected: i0.Signal<boolean | undefined>;
     /** Whether the option is disabled. */

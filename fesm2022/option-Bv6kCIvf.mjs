@@ -339,6 +339,8 @@ class OptionPattern {
     index = computed(() => this.listbox()
         ?.navigation.inputs.items()
         .findIndex(i => i.id() === this.id()) ?? -1);
+    /** Whether the option is active. */
+    active = computed(() => this.listbox()?.focusManager.activeItem() === this);
     /** Whether the option is selected. */
     selected = computed(() => this.listbox()?.selection.inputs.value().includes(this.value()));
     /** Whether the option is disabled. */
@@ -362,4 +364,4 @@ class OptionPattern {
 }
 
 export { ListboxPattern, OptionPattern };
-//# sourceMappingURL=option-BMjCFPaL.mjs.map
+//# sourceMappingURL=option-Bv6kCIvf.mjs.map

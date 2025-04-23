@@ -1,7 +1,7 @@
 import * as i0 from '@angular/core';
 import { AfterViewInit } from '@angular/core';
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
-import { OptionPattern, ListboxPattern } from '../listbox.d-D9AswA0J.js';
+import { OptionPattern, ListboxPattern } from '../listbox.d-CfXFGQez.js';
 import '../list-navigation.d-cy63EByU.js';
 
 /**

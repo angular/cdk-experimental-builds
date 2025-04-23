@@ -3,7 +3,7 @@ import { inject, contentChildren, computed, input, booleanAttribute, model, sign
 import { Directionality } from '@angular/cdk/bidi';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { ListboxPattern, OptionPattern } from './option-BMjCFPaL.mjs';
+import { ListboxPattern, OptionPattern } from './option-Bv6kCIvf.mjs';
 import './list-focus-SMTTo80U.mjs';
 
 /**
@@ -134,7 +134,7 @@ class CdkOption {
         searchTerm: this.searchTerm,
     });
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: CdkOption, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0-next.5", type: CdkOption, isStandalone: true, selector: "[cdkOption]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "option" }, properties: { "attr.tabindex": "pattern.tabindex()", "attr.aria-selected": "pattern.selected()", "attr.aria-disabled": "pattern.disabled()" }, classAttribute: "cdk-option" }, exportAs: ["cdkOption"], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0-next.5", type: CdkOption, isStandalone: true, selector: "[cdkOption]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "option" }, properties: { "class.cdk-active": "pattern.active()", "attr.tabindex": "pattern.tabindex()", "attr.aria-selected": "pattern.selected()", "attr.aria-disabled": "pattern.disabled()" }, classAttribute: "cdk-option" }, exportAs: ["cdkOption"], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: CdkOption, decorators: [{
             type: Directive,
@@ -144,6 +144,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.5", 
                     host: {
                         'role': 'option',
                         'class': 'cdk-option',
+                        '[class.cdk-active]': 'pattern.active()',
                         '[attr.tabindex]': 'pattern.tabindex()',
                         '[attr.aria-selected]': 'pattern.selected()',
                         '[attr.aria-disabled]': 'pattern.disabled()',

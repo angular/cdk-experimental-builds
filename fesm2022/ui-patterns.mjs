@@ -1,4 +1,4 @@
-export { ListboxPattern, OptionPattern } from './option-BMjCFPaL.mjs';
+export { ListboxPattern, OptionPattern } from './option-Bv6kCIvf.mjs';
 export { TabListPattern, TabPanelPattern, TabPattern } from './tabs-C3iUgAka.mjs';
 import './list-focus-SMTTo80U.mjs';
 import '@angular/core';
