@@ -1,5 +1,5 @@
 import { computed, signal } from '@angular/core';
-import { KeyboardEventManager, PointerEventManager, ListFocus, ListNavigation, ListSelection } from './list-focus-SMTTo80U.mjs';
+import { L as ListFocus, b as ListNavigation, a as ListSelection, K as KeyboardEventManager, P as PointerEventManager } from './list-focus-Di7m_z_6.mjs';
 
 /** A tab in a tablist. */
 class TabPattern {
@@ -181,5 +181,5 @@ class TabListPattern {
     }
 }
 
-export { TabListPattern, TabPanelPattern, TabPattern };
-//# sourceMappingURL=tabs-C3iUgAka.mjs.map
+export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
+//# sourceMappingURL=tabs-CYLXBz0W.mjs.map

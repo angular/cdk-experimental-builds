@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { ListFocusItem, SignalLike, ListFocusInputs, ListFocus, ListSelection, ListNavigation, ListNavigationItem, ListSelectionItem, ListNavigationInputs, ListSelectionInputs, KeyboardEventManager, PointerEventManager } from './list-navigation.d-cy63EByU.js';
+import { b as ListFocusItem, S as SignalLike, f as ListFocusInputs, i as ListFocus, L as ListNavigationItem, a as ListSelectionItem, h as ListSelection, g as ListNavigation, d as ListNavigationInputs, e as ListSelectionInputs, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-DfOSxsSp.js';
 
 /**
  * Represents an item in a collection, such as a listbox option, than can be navigated to by
@@ -189,5 +189,5 @@ declare class ListboxPattern<V> {
     private _getItem;
 }
 
-export { ListboxPattern, OptionPattern };
-export type { ListboxInputs, OptionInputs };
+export { ListboxPattern as a, OptionPattern as b };
+export type { ListboxInputs as L, OptionInputs as O };
