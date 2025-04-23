@@ -162,6 +162,17 @@ declare class ListboxPattern<V> {
     /** Handles typeahead search navigation for the listbox. */
     search(char: string, opts?: SelectOptions): void;
     /**
+     * Sets the listbox to it's default initial state.
+     *
+     * Sets the active index of the listbox to the first focusable selected
+     * item if one exists. Otherwise, sets focus to the first focusable item.
+     *
+     * This method should be called once the listbox and it's options are properly initialized,
+     * meaning the ListboxPattern and OptionPatterns should have references to each other before this
+     * is called.
+     */
+    setDefaultState(): void;
+    /**
      * Safely performs a navigation operation.
      *
      * Handles conditionally disabling wrapping for when a navigation

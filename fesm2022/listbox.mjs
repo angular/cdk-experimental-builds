@@ -1,10 +1,10 @@
 import * as i0 from '@angular/core';
-import { inject, contentChildren, computed, input, booleanAttribute, model, ElementRef, Directive } from '@angular/core';
+import { inject, contentChildren, computed, input, booleanAttribute, model, signal, effect, ElementRef, Directive } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { ListboxPattern, OptionPattern } from './option-D1-Zcobx.mjs';
-import './list-focus-CSTLIgwc.mjs';
+import { ListboxPattern, OptionPattern } from './option-BMjCFPaL.mjs';
+import './list-focus-SMTTo80U.mjs';
 
 /**
  * A listbox container.
@@ -14,9 +14,9 @@ import './list-focus-CSTLIgwc.mjs';
  *
  * ```html
  * <ul cdkListbox>
- *   <li cdkOption>Item 1</li>
- *   <li cdkOption>Item 2</li>
- *   <li cdkOption>Item 3</li>
+ *   <li [value]="1" cdkOption>Item 1</li>
+ *   <li [value]="2" cdkOption>Item 2</li>
+ *   <li [value]="3" cdkOption>Item 3</li>
  * </ul>
  * ```
  */
@@ -59,8 +59,25 @@ class CdkListbox {
         items: this.items,
         textDirection: this.textDirection,
     });
+    /** Whether the listbox has received focus yet. */
+    _hasFocused = signal(false);
+    /** Whether the options in the listbox have been initialized. */
+    _isViewInitialized = signal(false);
+    constructor() {
+        effect(() => {
+            if (this._isViewInitialized() && !this._hasFocused()) {
+                this.pattern.setDefaultState();
+            }
+        });
+    }
+    ngAfterViewInit() {
+        this._isViewInitialized.set(true);
+    }
+    onFocus() {
+        this._hasFocused.set(true);
+    }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: CdkListbox, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.2.0", version: "20.0.0-next.5", type: CdkListbox, isStandalone: true, selector: "[cdkListbox]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, multi: { classPropertyName: "multi", publicName: "multi", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: true, isRequired: false, transformFunction: null }, typeaheadDelay: { classPropertyName: "typeaheadDelay", publicName: "typeaheadDelay", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, readonly: { classPropertyName: "readonly", publicName: "readonly", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, activeIndex: { classPropertyName: "activeIndex", publicName: "activeIndex", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange", activeIndex: "activeIndexChange" }, host: { attributes: { "role": "listbox" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)" }, properties: { "attr.tabindex": "pattern.tabindex()", "attr.aria-readonly": "pattern.readonly()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-orientation": "pattern.orientation()", "attr.aria-multiselectable": "pattern.multi()", "attr.aria-activedescendant": "pattern.activedescendant()" }, classAttribute: "cdk-listbox" }, queries: [{ propertyName: "_cdkOptions", predicate: CdkOption, descendants: true, isSignal: true }], exportAs: ["cdkListbox"], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.2.0", version: "20.0.0-next.5", type: CdkListbox, isStandalone: true, selector: "[cdkListbox]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, multi: { classPropertyName: "multi", publicName: "multi", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: true, isRequired: false, transformFunction: null }, typeaheadDelay: { classPropertyName: "typeaheadDelay", publicName: "typeaheadDelay", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, readonly: { classPropertyName: "readonly", publicName: "readonly", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, activeIndex: { classPropertyName: "activeIndex", publicName: "activeIndex", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange", activeIndex: "activeIndexChange" }, host: { attributes: { "role": "listbox" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.tabindex": "pattern.tabindex()", "attr.aria-readonly": "pattern.readonly()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-orientation": "pattern.orientation()", "attr.aria-multiselectable": "pattern.multi()", "attr.aria-activedescendant": "pattern.activedescendant()" }, classAttribute: "cdk-listbox" }, queries: [{ propertyName: "_cdkOptions", predicate: CdkOption, descendants: true, isSignal: true }], exportAs: ["cdkListbox"], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: CdkListbox, decorators: [{
             type: Directive,
@@ -78,9 +95,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.5", 
                         '[attr.aria-activedescendant]': 'pattern.activedescendant()',
                         '(keydown)': 'pattern.onKeydown($event)',
                         '(pointerdown)': 'pattern.onPointerdown($event)',
+                        '(focusin)': 'onFocus()',
                     },
                 }]
-        }] });
+        }], ctorParameters: () => [] });
 /** A selectable option in a CdkListbox. */
 class CdkOption {
     /** A reference to the option element. */
@@ -92,6 +110,7 @@ class CdkOption {
     // TODO(wagnermaciel): https://github.com/angular/components/pull/30495#discussion_r1972601144.
     /** A unique identifier for the option. */
     id = computed(() => this._generatedId);
+    /** The value of the option. */
     value = input.required();
     // TODO(wagnermaciel): See if we want to change how we handle this since textContent is not
     // reactive. See https://github.com/angular/components/pull/30495#discussion_r1961260216.

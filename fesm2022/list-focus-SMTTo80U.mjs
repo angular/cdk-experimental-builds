@@ -351,7 +351,7 @@ class ListFocus {
     }
     /** Returns the tabindex for the given item. */
     getItemTabindex(item) {
-        if (this.inputs.disabled()) {
+        if (this.isListDisabled()) {
             return -1;
         }
         if (this.inputs.focusMode() === 'activedescendant') {
@@ -379,4 +379,4 @@ class ListFocus {
 }
 
 export { KeyboardEventManager, ListFocus, ListNavigation, ListSelection, ModifierKey, PointerEventManager };
-//# sourceMappingURL=list-focus-CSTLIgwc.mjs.map
+//# sourceMappingURL=list-focus-SMTTo80U.mjs.map

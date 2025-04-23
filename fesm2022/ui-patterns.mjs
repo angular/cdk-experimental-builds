@@ -1,6 +1,6 @@
-export { ListboxPattern, OptionPattern } from './option-D1-Zcobx.mjs';
-export { TabListPattern, TabPanelPattern, TabPattern } from './tabs-C0pLghH2.mjs';
-import './list-focus-CSTLIgwc.mjs';
+export { ListboxPattern, OptionPattern } from './option-BMjCFPaL.mjs';
+export { TabListPattern, TabPanelPattern, TabPattern } from './tabs-C3iUgAka.mjs';
+import './list-focus-SMTTo80U.mjs';
 import '@angular/core';
 
 /** Converts a getter setter style signal to a WritableSignalLike. */

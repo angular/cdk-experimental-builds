@@ -1,6 +1,7 @@
 import * as i0 from '@angular/core';
+import { AfterViewInit } from '@angular/core';
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
-import { OptionPattern, ListboxPattern } from '../listbox.d-DJqDR_H3.js';
+import { OptionPattern, ListboxPattern } from '../listbox.d-D9AswA0J.js';
 import '../list-navigation.d-cy63EByU.js';
 
 /**
@@ -11,13 +12,13 @@ import '../list-navigation.d-cy63EByU.js';
  *
  * ```html
  * <ul cdkListbox>
- *   <li cdkOption>Item 1</li>
- *   <li cdkOption>Item 2</li>
- *   <li cdkOption>Item 3</li>
+ *   <li [value]="1" cdkOption>Item 1</li>
+ *   <li [value]="2" cdkOption>Item 2</li>
+ *   <li [value]="3" cdkOption>Item 3</li>
  * </ul>
  * ```
  */
-declare class CdkListbox<V> {
+declare class CdkListbox<V> implements AfterViewInit {
     /** The directionality (LTR / RTL) context for the application (or a subtree of it). */
     private readonly _directionality;
     /** The CdkOptions nested inside of the CdkListbox. */
@@ -50,6 +51,13 @@ declare class CdkListbox<V> {
     activeIndex: i0.ModelSignal<number>;
     /** The Listbox UIPattern. */
     pattern: ListboxPattern<V>;
+    /** Whether the listbox has received focus yet. */
+    private _hasFocused;
+    /** Whether the options in the listbox have been initialized. */
+    private _isViewInitialized;
+    constructor();
+    ngAfterViewInit(): void;
+    onFocus(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkListbox<any>, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "orientation": { "alias": "orientation"; "required": false; "isSignal": true; }; "multi": { "alias": "multi"; "required": false; "isSignal": true; }; "wrap": { "alias": "wrap"; "required": false; "isSignal": true; }; "skipDisabled": { "alias": "skipDisabled"; "required": false; "isSignal": true; }; "focusMode": { "alias": "focusMode"; "required": false; "isSignal": true; }; "selectionMode": { "alias": "selectionMode"; "required": false; "isSignal": true; }; "typeaheadDelay": { "alias": "typeaheadDelay"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "readonly": { "alias": "readonly"; "required": false; "isSignal": true; }; "value": { "alias": "value"; "required": false; "isSignal": true; }; "activeIndex": { "alias": "activeIndex"; "required": false; "isSignal": true; }; }, { "value": "valueChange"; "activeIndex": "activeIndexChange"; }, ["_cdkOptions"], never, true, never>;
 }
@@ -63,6 +71,7 @@ declare class CdkOption<V> {
     private readonly _generatedId;
     /** A unique identifier for the option. */
     protected id: i0.Signal<string>;
+    /** The value of the option. */
     protected value: i0.InputSignal<V>;
     /** The text used by the typeahead search. */
     protected searchTerm: i0.Signal<any>;
