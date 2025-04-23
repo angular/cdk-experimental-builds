@@ -150,15 +150,12 @@ class ListSelection {
     rangeStartIndex = signal(0);
     /** The end index to use for range selection. */
     rangeEndIndex = signal(0);
-    /** The navigation controller of the parent list. */
-    navigation;
     constructor(inputs) {
         this.inputs = inputs;
-        this.navigation = inputs.navigation;
     }
     /** Selects the item at the current active index. */
     select(item, opts = { anchor: true }) {
-        item = item ?? this.inputs.navigation.activeItem();
+        item = item ?? this.inputs.focusManager.activeItem();
         if (item.disabled() || this.inputs.value().includes(item.value())) {
             return;
         }
@@ -173,19 +170,19 @@ class ListSelection {
     }
     /** Deselects the item at the current active index. */
     deselect(item) {
-        item = item ?? this.inputs.navigation.activeItem();
+        item = item ?? this.inputs.focusManager.activeItem();
         if (!item.disabled()) {
             this.inputs.value.update(values => values.filter(value => value !== item.value()));
         }
     }
     /** Toggles the item at the current active index. */
     toggle() {
-        const item = this.inputs.navigation.activeItem();
+        const item = this.inputs.focusManager.activeItem();
         this.inputs.value().includes(item.value()) ? this.deselect() : this.select();
     }
     /** Toggles only the item at the current active index. */
     toggleOne() {
-        const item = this.inputs.navigation.activeItem();
+        const item = this.inputs.focusManager.activeItem();
         this.inputs.value().includes(item.value()) ? this.deselect() : this.selectOne();
     }
     /** Selects all items in the list. */
@@ -229,9 +226,9 @@ class ListSelection {
      * selected range that are now outside of the selected range
      */
     selectRange(opts = { anchor: true }) {
-        const isStartOfRange = this.navigation.prevActiveIndex() === this.rangeStartIndex();
+        const isStartOfRange = this.inputs.focusManager.prevActiveIndex() === this.rangeStartIndex();
         if (isStartOfRange && opts.anchor) {
-            this.beginRangeSelection(this.navigation.prevActiveIndex());
+            this.beginRangeSelection(this.inputs.focusManager.prevActiveIndex());
         }
         const itemsInRange = this._getItemsFromIndex(this.rangeStartIndex());
         const itemsOutOfRange = this._getItemsFromIndex(this.rangeEndIndex()).filter(i => !itemsInRange.includes(i));
@@ -248,7 +245,7 @@ class ListSelection {
         }
     }
     /** Marks the given index as the start of a range selection. */
-    beginRangeSelection(index = this.navigation.inputs.activeIndex()) {
+    beginRangeSelection(index = this.inputs.activeIndex()) {
         this.rangeStartIndex.set(index);
         this.rangeEndIndex.set(index);
     }
@@ -257,13 +254,13 @@ class ListSelection {
         if (index === -1) {
             return [];
         }
-        const upper = Math.max(this.inputs.navigation.inputs.activeIndex(), index);
-        const lower = Math.min(this.inputs.navigation.inputs.activeIndex(), index);
+        const upper = Math.max(this.inputs.activeIndex(), index);
+        const lower = Math.min(this.inputs.activeIndex(), index);
         const items = [];
         for (let i = lower; i <= upper; i++) {
             items.push(this.inputs.items()[i]);
         }
-        if (this.inputs.navigation.inputs.activeIndex() < index) {
+        if (this.inputs.activeIndex() < index) {
             return items.reverse();
         }
         return items;
@@ -273,22 +270,12 @@ class ListSelection {
 /** Controls navigation for a list of items. */
 class ListNavigation {
     inputs;
-    /** The last index that was active. */
-    prevActiveIndex = signal(0);
-    /** The current active item. */
-    activeItem = computed(() => this.inputs.items()[this.inputs.activeIndex()]);
     constructor(inputs) {
         this.inputs = inputs;
     }
     /** Navigates to the given item. */
     goto(item) {
-        if (item && this.isFocusable(item)) {
-            this.prevActiveIndex.set(this.inputs.activeIndex());
-            const index = this.inputs.items().indexOf(item);
-            this.inputs.activeIndex.set(index);
-            return true;
-        }
-        return false;
+        return item ? this.inputs.focusManager.focus(item) : false;
     }
     /** Navigates to the next item in the list. */
     next() {
@@ -300,22 +287,18 @@ class ListNavigation {
     }
     /** Navigates to the first item in the list. */
     first() {
-        const item = this.inputs.items().find(i => this.isFocusable(i));
+        const item = this.inputs.items().find(i => this.inputs.focusManager.isFocusable(i));
         return item ? this.goto(item) : false;
     }
     /** Navigates to the last item in the list. */
     last() {
         const items = this.inputs.items();
         for (let i = items.length - 1; i >= 0; i--) {
-            if (this.isFocusable(items[i])) {
+            if (this.inputs.focusManager.isFocusable(items[i])) {
                 return this.goto(items[i]);
             }
         }
         return false;
-    }
-    /** Returns true if the given item can be navigated to. */
-    isFocusable(item) {
-        return !item.disabled() || !this.inputs.skipDisabled();
     }
     /** Advances to the next or previous focusable item in the list based on the given delta. */
     _advance(delta) {
@@ -327,7 +310,7 @@ class ListNavigation {
         // in the case that all options are disabled. If wrapping is disabled, the loop terminates
         // when the index goes out of bounds.
         for (let i = step(startIndex); i !== startIndex && i < itemCount && i >= 0; i = step(i)) {
-            if (this.isFocusable(items[i])) {
+            if (this.inputs.focusManager.isFocusable(items[i])) {
                 return this.goto(items[i]);
             }
         }
@@ -338,43 +321,62 @@ class ListNavigation {
 /** Controls focus for a list of items. */
 class ListFocus {
     inputs;
-    /** The navigation controller of the parent list. */
-    navigation;
+    /** The last index that was active. */
+    prevActiveIndex = signal(0);
+    /** The current active item. */
+    activeItem = computed(() => this.inputs.items()[this.inputs.activeIndex()]);
     constructor(inputs) {
         this.inputs = inputs;
-        this.navigation = inputs.navigation;
+    }
+    /** Whether the list is in a disabled state. */
+    isListDisabled() {
+        return this.inputs.disabled() || this.inputs.items().every(i => i.disabled());
     }
     /** The id of the current active item. */
     getActiveDescendant() {
+        if (this.isListDisabled()) {
+            return undefined;
+        }
         if (this.inputs.focusMode() === 'roving') {
             return undefined;
         }
-        if (this.navigation.inputs.items().length) {
-            return this.navigation.inputs.items()[this.navigation.inputs.activeIndex()].id();
-        }
-        return undefined;
+        return this.inputs.items()[this.inputs.activeIndex()].id();
     }
     /** The tabindex for the list. */
     getListTabindex() {
+        if (this.isListDisabled()) {
+            return 0;
+        }
         return this.inputs.focusMode() === 'activedescendant' ? 0 : -1;
     }
     /** Returns the tabindex for the given item. */
     getItemTabindex(item) {
+        if (this.inputs.disabled()) {
+            return -1;
+        }
         if (this.inputs.focusMode() === 'activedescendant') {
             return -1;
         }
-        const index = this.navigation.inputs.items().indexOf(item);
-        return this.navigation.inputs.activeIndex() === index ? 0 : -1;
+        return this.activeItem() === item ? 0 : -1;
     }
-    /** Focuses the current active item. */
-    focus() {
-        if (this.inputs.focusMode() === 'activedescendant') {
-            return;
+    /** Moves focus to the given item if it is focusable. */
+    focus(item) {
+        if (this.isListDisabled() || !this.isFocusable(item)) {
+            return false;
         }
-        const item = this.navigation.inputs.items()[this.navigation.inputs.activeIndex()];
-        item.element().focus();
+        this.prevActiveIndex.set(this.inputs.activeIndex());
+        const index = this.inputs.items().indexOf(item);
+        this.inputs.activeIndex.set(index);
+        if (this.inputs.focusMode() === 'roving') {
+            item.element().focus();
+        }
+        return true;
+    }
+    /** Returns true if the given item can be navigated to. */
+    isFocusable(item) {
+        return !item.disabled() || !this.inputs.skipDisabled();
     }
 }
 
 export { KeyboardEventManager, ListFocus, ListNavigation, ListSelection, ModifierKey, PointerEventManager };
-//# sourceMappingURL=list-focus-P6xynDMg.mjs.map
+//# sourceMappingURL=list-focus-CSTLIgwc.mjs.map

@@ -1,5 +1,5 @@
 import { computed, signal } from '@angular/core';
-import { KeyboardEventManager, PointerEventManager, ListNavigation, ListSelection, ListFocus } from './list-focus-P6xynDMg.mjs';
+import { KeyboardEventManager, PointerEventManager, ListFocus, ListNavigation, ListSelection } from './list-focus-CSTLIgwc.mjs';
 
 /** A tab in a tablist. */
 class TabPattern {
@@ -109,13 +109,13 @@ class TabListPattern {
         this.inputs = inputs;
         this.disabled = inputs.disabled;
         this.orientation = inputs.orientation;
-        this.navigation = new ListNavigation(inputs);
+        this.focusManager = new ListFocus(inputs);
+        this.navigation = new ListNavigation({ ...inputs, focusManager: this.focusManager });
         this.selection = new ListSelection({
             ...inputs,
-            navigation: this.navigation,
             multi: signal(false),
+            focusManager: this.focusManager,
         });
-        this.focusManager = new ListFocus({ ...inputs, navigation: this.navigation });
     }
     /** Handles keydown events for the tablist. */
     onKeydown(event) {
@@ -132,25 +132,21 @@ class TabListPattern {
     /** Navigates to the first option in the tablist. */
     first(opts) {
         this.navigation.first();
-        this.focusManager.focus();
         this._updateSelection(opts);
     }
     /** Navigates to the last option in the tablist. */
     last(opts) {
         this.navigation.last();
-        this.focusManager.focus();
         this._updateSelection(opts);
     }
     /** Navigates to the next option in the tablist. */
     next(opts) {
         this.navigation.next();
-        this.focusManager.focus();
         this._updateSelection(opts);
     }
     /** Navigates to the previous option in the tablist. */
     prev(opts) {
         this.navigation.prev();
-        this.focusManager.focus();
         this._updateSelection(opts);
     }
     /** Navigates to the given item in the tablist. */
@@ -158,7 +154,6 @@ class TabListPattern {
         const item = this._getItem(event);
         if (item) {
             this.navigation.goto(item);
-            this.focusManager.focus();
             this._updateSelection(opts);
         }
     }
@@ -187,4 +182,4 @@ class TabListPattern {
 }
 
 export { TabListPattern, TabPanelPattern, TabPattern };
-//# sourceMappingURL=tabs-DMCcUWaU.mjs.map
+//# sourceMappingURL=tabs-C0pLghH2.mjs.map

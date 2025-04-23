@@ -1,11 +1,11 @@
 import * as i0 from '@angular/core';
-import { ListNavigationItem, SignalLike, ListNavigation, ListFocus, ListSelection, ListSelectionItem, ListFocusItem, ListNavigationInputs, ListSelectionInputs, ListFocusInputs, KeyboardEventManager, PointerEventManager } from './list-focus.d-DfOdf2r8.js';
+import { ListFocusItem, SignalLike, ListFocusInputs, ListFocus, ListSelection, ListNavigation, ListNavigationItem, ListSelectionItem, ListNavigationInputs, ListSelectionInputs, KeyboardEventManager, PointerEventManager } from './list-navigation.d-cy63EByU.js';
 
 /**
  * Represents an item in a collection, such as a listbox option, than can be navigated to by
  * typeahead.
  */
-interface ListTypeaheadItem extends ListNavigationItem {
+interface ListTypeaheadItem extends ListFocusItem {
     /** The text used by the typeahead search. */
     searchTerm: SignalLike<string>;
 }
@@ -13,27 +13,27 @@ interface ListTypeaheadItem extends ListNavigationItem {
  * Represents the required inputs for a collection that contains items that can be navigated to by
  * typeahead.
  */
-interface ListTypeaheadInputs {
+interface ListTypeaheadInputs<T extends ListTypeaheadItem> extends ListFocusInputs<T> {
     /** The amount of time before the typeahead search is reset. */
     typeaheadDelay: SignalLike<number>;
 }
 /** Controls typeahead for a list of items. */
 declare class ListTypeahead<T extends ListTypeaheadItem> {
-    readonly inputs: ListTypeaheadInputs & {
-        navigation: ListNavigation<T>;
+    readonly inputs: ListTypeaheadInputs<T> & {
+        focusManager: ListFocus<T>;
     };
     /** A reference to the timeout for resetting the typeahead search. */
     timeout?: ReturnType<typeof setTimeout> | undefined;
-    /** The navigation controller of the parent list. */
-    navigation: ListNavigation<T>;
+    /** The focus controller of the parent list. */
+    focusManager: ListFocus<T>;
     /** Whether the user is actively typing a typeahead search query. */
     isTyping: i0.Signal<boolean>;
     /** Keeps track of the characters that typeahead search is being called with. */
     private _query;
     /** The index where that the typeahead search was initiated from. */
     private _startIndex;
-    constructor(inputs: ListTypeaheadInputs & {
-        navigation: ListNavigation<T>;
+    constructor(inputs: ListTypeaheadInputs<T> & {
+        focusManager: ListFocus<T>;
     });
     /** Performs a typeahead search, appending the given character to the search string. */
     search(char: string): boolean;
@@ -88,8 +88,7 @@ interface SelectOptions {
     anchor?: boolean;
 }
 /** Represents the required inputs for a listbox. */
-type ListboxInputs<V> = ListNavigationInputs<OptionPattern<V>> & ListSelectionInputs<OptionPattern<V>, V> & ListTypeaheadInputs & ListFocusInputs<OptionPattern<V>> & {
-    disabled: SignalLike<boolean>;
+type ListboxInputs<V> = ListNavigationInputs<OptionPattern<V>> & ListSelectionInputs<OptionPattern<V>, V> & ListTypeaheadInputs<OptionPattern<V>> & ListFocusInputs<OptionPattern<V>> & {
     readonly: SignalLike<boolean>;
 };
 /** Controls the state of a listbox. */
@@ -106,7 +105,7 @@ declare class ListboxPattern<V> {
     /** Whether the list is vertically or horizontally oriented. */
     orientation: SignalLike<'vertical' | 'horizontal'>;
     /** Whether the listbox is disabled. */
-    disabled: SignalLike<boolean>;
+    disabled: i0.Signal<boolean>;
     /** Whether the listbox is readonly. */
     readonly: SignalLike<boolean>;
     /** The tabindex of the listbox. */

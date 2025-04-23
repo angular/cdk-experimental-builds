@@ -5,8 +5,8 @@ import { Directionality } from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
 import { contentChild, contentChildren, computed, inject, input, booleanAttribute, model, signal, ElementRef, effect, Directive } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TabListPattern, TabPattern, TabPanelPattern } from './tabs-DMCcUWaU.mjs';
-import './list-focus-P6xynDMg.mjs';
+import { TabListPattern, TabPattern, TabPanelPattern } from './tabs-C0pLghH2.mjs';
+import './list-focus-CSTLIgwc.mjs';
 
 /**
  * A Tabs container.

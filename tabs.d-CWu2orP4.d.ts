@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { SignalLike, ListNavigationInputs, ListSelectionInputs, ListFocusInputs, ListNavigation, ListSelection, ListFocus, KeyboardEventManager, PointerEventManager, ListNavigationItem, ListSelectionItem, ListFocusItem } from './list-focus.d-DfOdf2r8.js';
+import { SignalLike, ListNavigationInputs, ListSelectionInputs, ListFocusInputs, ListNavigation, ListSelection, ListFocus, KeyboardEventManager, PointerEventManager, ListNavigationItem, ListSelectionItem, ListFocusItem } from './list-navigation.d-cy63EByU.js';
 
 /** The required inputs to tabs. */
 interface TabInputs extends ListNavigationItem, ListSelectionItem<string>, ListFocusItem {

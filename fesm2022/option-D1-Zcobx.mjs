@@ -1,4 +1,4 @@
-import { KeyboardEventManager, ModifierKey, PointerEventManager, ListNavigation, ListSelection, ListFocus } from './list-focus-P6xynDMg.mjs';
+import { KeyboardEventManager, ModifierKey, PointerEventManager, ListFocus, ListSelection, ListNavigation } from './list-focus-CSTLIgwc.mjs';
 import { computed, signal } from '@angular/core';
 
 /** Controls typeahead for a list of items. */
@@ -6,8 +6,8 @@ class ListTypeahead {
     inputs;
     /** A reference to the timeout for resetting the typeahead search. */
     timeout;
-    /** The navigation controller of the parent list. */
-    navigation;
+    /** The focus controller of the parent list. */
+    focusManager;
     /** Whether the user is actively typing a typeahead search query. */
     isTyping = computed(() => this._query().length > 0);
     /** Keeps track of the characters that typeahead search is being called with. */
@@ -16,7 +16,7 @@ class ListTypeahead {
     _startIndex = signal(undefined);
     constructor(inputs) {
         this.inputs = inputs;
-        this.navigation = inputs.navigation;
+        this.focusManager = inputs.focusManager;
     }
     /** Performs a typeahead search, appending the given character to the search string. */
     search(char) {
@@ -27,13 +27,13 @@ class ListTypeahead {
             return false;
         }
         if (this._startIndex() === undefined) {
-            this._startIndex.set(this.navigation.inputs.activeIndex());
+            this._startIndex.set(this.focusManager.inputs.activeIndex());
         }
         clearTimeout(this.timeout);
         this._query.update(q => q + char.toLowerCase());
         const item = this._getItem();
         if (item) {
-            this.navigation.goto(item);
+            this.focusManager.focus(item);
         }
         this.timeout = setTimeout(() => {
             this._query.set('');
@@ -46,14 +46,14 @@ class ListTypeahead {
      * current query starting from the the current anchor index.
      */
     _getItem() {
-        let items = this.navigation.inputs.items();
+        let items = this.focusManager.inputs.items();
         const after = items.slice(this._startIndex() + 1);
         const before = items.slice(0, this._startIndex());
-        items = this.navigation.inputs.wrap() ? after.concat(before) : after; // TODO: Always wrap?
-        items.push(this.navigation.inputs.items()[this._startIndex()]);
+        items = after.concat(before);
+        items.push(this.inputs.items()[this._startIndex()]);
         const focusableItems = [];
         for (const item of items) {
-            if (this.navigation.isFocusable(item)) {
+            if (this.focusManager.isFocusable(item)) {
                 focusableItems.push(item);
             }
         }
@@ -75,7 +75,7 @@ class ListboxPattern {
     /** Whether the list is vertically or horizontally oriented. */
     orientation;
     /** Whether the listbox is disabled. */
-    disabled;
+    disabled = computed(() => this.focusManager.isListDisabled());
     /** Whether the listbox is readonly. */
     readonly;
     /** The tabindex of the listbox. */
@@ -210,17 +210,17 @@ class ListboxPattern {
     });
     constructor(inputs) {
         this.inputs = inputs;
-        this.disabled = inputs.disabled;
         this.readonly = inputs.readonly;
         this.orientation = inputs.orientation;
         this.multi = inputs.multi;
+        this.focusManager = new ListFocus(inputs);
+        this.selection = new ListSelection({ ...inputs, focusManager: this.focusManager });
+        this.typeahead = new ListTypeahead({ ...inputs, focusManager: this.focusManager });
         this.navigation = new ListNavigation({
             ...inputs,
+            focusManager: this.focusManager,
             wrap: computed(() => this.wrap() && this.inputs.wrap()),
         });
-        this.selection = new ListSelection({ ...inputs, navigation: this.navigation });
-        this.typeahead = new ListTypeahead({ ...inputs, navigation: this.navigation });
-        this.focusManager = new ListFocus({ ...inputs, navigation: this.navigation });
     }
     /** Handles keydown events for the listbox. */
     onKeydown(event) {
@@ -274,7 +274,6 @@ class ListboxPattern {
         }
         const moved = operation();
         if (moved) {
-            this.focusManager.focus();
             this._updateSelection(opts);
         }
         this.wrap.set(true);
@@ -336,4 +335,4 @@ class OptionPattern {
 }
 
 export { ListboxPattern, OptionPattern };
-//# sourceMappingURL=option-qZalEfOu.mjs.map
+//# sourceMappingURL=option-D1-Zcobx.mjs.map

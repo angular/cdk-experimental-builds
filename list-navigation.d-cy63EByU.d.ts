@@ -103,61 +103,57 @@ declare class PointerEventManager<T extends PointerEvent> extends EventManager<T
     _isMatch(event: PointerEvent, button: MouseButton, modifiers: ModifierInputs): boolean;
 }
 
-/** Represents an item in a collection, such as a listbox option, than can be navigated to. */
-interface ListNavigationItem {
+/** Represents an item in a collection, such as a listbox option, than may receive focus. */
+interface ListFocusItem {
+    /** A unique identifier for the item. */
+    id: SignalLike<string>;
+    /** The html element that should receive focus. */
+    element: SignalLike<HTMLElement>;
     /** Whether an item is disabled. */
     disabled: SignalLike<boolean>;
 }
-/** Represents the required inputs for a collection that has navigable items. */
-interface ListNavigationInputs<T extends ListNavigationItem> {
-    /** Whether focus should wrap when navigating. */
-    wrap: SignalLike<boolean>;
+/** Represents the required inputs for a collection that contains focusable items. */
+interface ListFocusInputs<T extends ListFocusItem> {
+    /** The focus strategy used by the list. */
+    focusMode: SignalLike<'roving' | 'activedescendant'>;
+    /** Whether the list is disabled. */
+    disabled: SignalLike<boolean>;
     /** The items in the list. */
     items: SignalLike<T[]>;
+    /** The index of the current active item. */
+    activeIndex: WritableSignalLike<number>;
     /** Whether disabled items in the list should be skipped when navigating. */
     skipDisabled: SignalLike<boolean>;
-    /** The current index that has been navigated to. */
-    activeIndex: WritableSignalLike<number>;
-    /** Whether the list is vertically or horizontally oriented. */
-    orientation: SignalLike<'vertical' | 'horizontal'>;
-    /** The direction that text is read based on the users locale. */
-    textDirection: SignalLike<'rtl' | 'ltr'>;
 }
-/** Controls navigation for a list of items. */
-declare class ListNavigation<T extends ListNavigationItem> {
-    readonly inputs: ListNavigationInputs<T>;
+/** Controls focus for a list of items. */
+declare class ListFocus<T extends ListFocusItem> {
+    readonly inputs: ListFocusInputs<T>;
     /** The last index that was active. */
     prevActiveIndex: i0.WritableSignal<number>;
     /** The current active item. */
     activeItem: i0.Signal<T>;
-    constructor(inputs: ListNavigationInputs<T>);
-    /** Navigates to the given item. */
-    goto(item?: T): boolean;
-    /** Navigates to the next item in the list. */
-    next(): boolean;
-    /** Navigates to the previous item in the list. */
-    prev(): boolean;
-    /** Navigates to the first item in the list. */
-    first(): boolean;
-    /** Navigates to the last item in the list. */
-    last(): boolean;
+    constructor(inputs: ListFocusInputs<T>);
+    /** Whether the list is in a disabled state. */
+    isListDisabled(): boolean;
+    /** The id of the current active item. */
+    getActiveDescendant(): string | undefined;
+    /** The tabindex for the list. */
+    getListTabindex(): -1 | 0;
+    /** Returns the tabindex for the given item. */
+    getItemTabindex(item: T): -1 | 0;
+    /** Moves focus to the given item if it is focusable. */
+    focus(item: T): boolean;
     /** Returns true if the given item can be navigated to. */
     isFocusable(item: T): boolean;
-    /** Advances to the next or previous focusable item in the list based on the given delta. */
-    private _advance;
 }
 
 /** Represents an item in a collection, such as a listbox option, than can be selected. */
-interface ListSelectionItem<V> extends ListNavigationItem {
+interface ListSelectionItem<V> extends ListFocusItem {
     /** The value of the item. */
     value: SignalLike<V>;
-    /** Whether an item is disabled. */
-    disabled: SignalLike<boolean>;
 }
 /** Represents the required inputs for a collection that contains selectable items. */
-interface ListSelectionInputs<T extends ListSelectionItem<V>, V> {
-    /** The items in the list. */
-    items: SignalLike<T[]>;
+interface ListSelectionInputs<T extends ListSelectionItem<V>, V> extends ListFocusInputs<T> {
     /** Whether multiple items in the list can be selected at once. */
     multi: SignalLike<boolean>;
     /** The current value of the list selection. */
@@ -168,19 +164,17 @@ interface ListSelectionInputs<T extends ListSelectionItem<V>, V> {
 /** Controls selection for a list of items. */
 declare class ListSelection<T extends ListSelectionItem<V>, V> {
     readonly inputs: ListSelectionInputs<T, V> & {
-        navigation: ListNavigation<T>;
+        focusManager: ListFocus<T>;
     };
     /** The start index to use for range selection. */
     rangeStartIndex: i0.WritableSignal<number>;
     /** The end index to use for range selection. */
     rangeEndIndex: i0.WritableSignal<number>;
-    /** The navigation controller of the parent list. */
-    navigation: ListNavigation<T>;
     constructor(inputs: ListSelectionInputs<T, V> & {
-        navigation: ListNavigation<T>;
+        focusManager: ListFocus<T>;
     });
     /** Selects the item at the current active index. */
-    select(item?: T, opts?: {
+    select(item?: ListSelectionItem<V>, opts?: {
         anchor: boolean;
     }): void;
     /** Deselects the item at the current active index. */
@@ -215,36 +209,38 @@ declare class ListSelection<T extends ListSelectionItem<V>, V> {
     private _getItemsFromIndex;
 }
 
-/** Represents an item in a collection, such as a listbox option, than may receive focus. */
-interface ListFocusItem extends ListNavigationItem {
-    /** A unique identifier for the item. */
-    id: SignalLike<string>;
-    /** The html element that should receive focus. */
-    element: SignalLike<HTMLElement>;
+/** Represents an item in a collection, such as a listbox option, than can be navigated to. */
+interface ListNavigationItem extends ListFocusItem {
 }
-/** Represents the required inputs for a collection that contains focusable items. */
-interface ListFocusInputs<T extends ListFocusItem> {
-    /** The focus strategy used by the list. */
-    focusMode: SignalLike<'roving' | 'activedescendant'>;
+/** Represents the required inputs for a collection that has navigable items. */
+interface ListNavigationInputs<T extends ListNavigationItem> extends ListFocusInputs<T> {
+    /** Whether focus should wrap when navigating. */
+    wrap: SignalLike<boolean>;
+    /** Whether the list is vertically or horizontally oriented. */
+    orientation: SignalLike<'vertical' | 'horizontal'>;
+    /** The direction that text is read based on the users locale. */
+    textDirection: SignalLike<'rtl' | 'ltr'>;
 }
-/** Controls focus for a list of items. */
-declare class ListFocus<T extends ListFocusItem> {
-    readonly inputs: ListFocusInputs<T> & {
-        navigation: ListNavigation<T>;
+/** Controls navigation for a list of items. */
+declare class ListNavigation<T extends ListNavigationItem> {
+    readonly inputs: ListNavigationInputs<T> & {
+        focusManager: ListFocus<T>;
     };
-    /** The navigation controller of the parent list. */
-    navigation: ListNavigation<ListFocusItem>;
-    constructor(inputs: ListFocusInputs<T> & {
-        navigation: ListNavigation<T>;
+    constructor(inputs: ListNavigationInputs<T> & {
+        focusManager: ListFocus<T>;
     });
-    /** The id of the current active item. */
-    getActiveDescendant(): string | undefined;
-    /** The tabindex for the list. */
-    getListTabindex(): -1 | 0;
-    /** Returns the tabindex for the given item. */
-    getItemTabindex(item: T): -1 | 0;
-    /** Focuses the current active item. */
-    focus(): void;
+    /** Navigates to the given item. */
+    goto(item?: T): boolean;
+    /** Navigates to the next item in the list. */
+    next(): boolean;
+    /** Navigates to the previous item in the list. */
+    prev(): boolean;
+    /** Navigates to the first item in the list. */
+    first(): boolean;
+    /** Navigates to the last item in the list. */
+    last(): boolean;
+    /** Advances to the next or previous focusable item in the list based on the given delta. */
+    private _advance;
 }
 
 export { KeyboardEventManager, ListFocus, ListNavigation, ListSelection, PointerEventManager, convertGetterSetterToWritableSignalLike };
