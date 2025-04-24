@@ -1,5 +1,5 @@
 export { L as ListboxPattern, O as OptionPattern } from './option-f_gNslw8.mjs';
-export { T as TabListPattern, b as TabPanelPattern, a as TabPattern } from './tabs-CYLXBz0W.mjs';
+export { T as TabListPattern, b as TabPanelPattern, a as TabPattern } from './tabs-BDmqS14d.mjs';
 import './list-focus-Di7m_z_6.mjs';
 import '@angular/core';
 

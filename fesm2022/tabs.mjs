@@ -5,7 +5,7 @@ import { Directionality } from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
 import { contentChild, contentChildren, computed, Directive, inject, input, booleanAttribute, model, signal, ElementRef, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-CYLXBz0W.mjs';
+import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-BDmqS14d.mjs';
 import './list-focus-Di7m_z_6.mjs';
 
 /**
@@ -135,7 +135,7 @@ class CdkTab {
         value: this.value,
     });
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: CdkTab, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0-next.5", type: CdkTab, isStandalone: true, selector: "[cdkTab]", inputs: { disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "tab" }, properties: { "attr.id": "pattern.id()", "attr.tabindex": "pattern.tabindex()", "attr.aria-selected": "pattern.selected()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-controls": "pattern.controls()" }, classAttribute: "cdk-tab" }, exportAs: ["cdkTab"], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0-next.5", type: CdkTab, isStandalone: true, selector: "[cdkTab]", inputs: { disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "tab" }, properties: { "class.cdk-active": "pattern.active()", "attr.id": "pattern.id()", "attr.tabindex": "pattern.tabindex()", "attr.aria-selected": "pattern.selected()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-controls": "pattern.controls()" }, classAttribute: "cdk-tab" }, exportAs: ["cdkTab"], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: CdkTab, decorators: [{
             type: Directive,
@@ -145,6 +145,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.5", 
                     host: {
                         'role': 'tab',
                         'class': 'cdk-tab',
+                        '[class.cdk-active]': 'pattern.active()',
                         '[attr.id]': 'pattern.id()',
                         '[attr.tabindex]': 'pattern.tabindex()',
                         '[attr.aria-selected]': 'pattern.selected()',

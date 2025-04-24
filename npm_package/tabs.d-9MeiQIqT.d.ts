@@ -12,6 +12,8 @@ declare class TabPattern {
     id: SignalLike<string>;
     /** A local unique identifier for the tab. */
     value: SignalLike<string>;
+    /** Whether the tab is active. */
+    active: i0.Signal<boolean>;
     /** Whether the tab is selected. */
     selected: i0.Signal<boolean>;
     /** A Tabpanel Id controlled by the tab. */

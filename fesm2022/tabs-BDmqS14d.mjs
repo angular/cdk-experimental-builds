@@ -7,6 +7,8 @@ class TabPattern {
     id;
     /** A local unique identifier for the tab. */
     value;
+    /** Whether the tab is active. */
+    active = computed(() => this.tablist()?.focusManager.activeItem() === this);
     /** Whether the tab is selected. */
     selected = computed(() => this.tablist().selection.inputs.value().includes(this.value()));
     /** A Tabpanel Id controlled by the tab. */
@@ -182,4 +184,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-CYLXBz0W.mjs.map
+//# sourceMappingURL=tabs-BDmqS14d.mjs.map
