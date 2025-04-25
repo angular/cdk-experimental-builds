@@ -76,6 +76,7 @@ declare class TabListPattern {
     tabindex: i0.Signal<0 | -1>;
     /** The id of the current active tab. */
     activedescendant: i0.Signal<string | undefined>;
+    /** Whether selection should follow focus. */
     followFocus: i0.Signal<boolean>;
     /** The key used to navigate to the previous tab in the tablist. */
     prevKey: i0.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
