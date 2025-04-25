@@ -3,7 +3,7 @@ import * as i0 from '@angular/core';
 import { OnDestroy, OnInit, ElementRef, EventEmitter, NgZone, AfterViewInit, ViewContainerRef, TemplateRef, EmbeddedViewRef } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import * as i1 from '@angular/cdk/overlay';
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { OverlayRef } from '@angular/cdk/overlay';
 import { FocusTrapFactory, FocusTrap, InteractivityChecker } from '@angular/cdk/a11y';
 import { ScrollDispatcher, ViewportRuler } from '@angular/cdk/scrolling';
 
@@ -260,7 +260,6 @@ declare class EditServices {
     readonly focusDispatcher: FocusDispatcher;
     readonly focusTrapFactory: FocusTrapFactory;
     readonly ngZone: NgZone;
-    readonly overlay: Overlay;
     readonly scrollDispatcher: ScrollDispatcher;
     readonly viewportRuler: ViewportRuler;
     static ɵfac: i0.ɵɵFactoryDeclaration<EditServices, never>;
@@ -336,6 +335,7 @@ declare class CdkPopoverEdit<C> implements AfterViewInit, OnDestroy {
     protected readonly services: EditServices;
     protected readonly elementRef: ElementRef<any>;
     protected readonly viewContainerRef: ViewContainerRef;
+    private _injector;
     /** The edit lens template shown over the cell on edit. */
     template: TemplateRef<any> | null;
     /**

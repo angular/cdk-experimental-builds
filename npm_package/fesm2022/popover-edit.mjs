@@ -6,7 +6,7 @@ import { distinctUntilChanged, startWith, shareReplay, filter, map, auditTime, a
 import { ControlContainer } from '@angular/forms';
 import { Directionality } from '@angular/cdk/bidi';
 import { RIGHT_ARROW, LEFT_ARROW, DOWN_ARROW, UP_ARROW, hasModifierKey } from '@angular/cdk/keycodes';
-import { Overlay, OverlayModule } from '@angular/cdk/overlay';
+import { createOverlayRef, createRepositionScrollStrategy, createFlexibleConnectedPositionStrategy, OverlayModule } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { FocusTrapFactory, InteractivityChecker, FocusTrap } from '@angular/cdk/a11y';
 import { ScrollDispatcher, ViewportRuler } from '@angular/cdk/scrolling';
@@ -585,7 +585,6 @@ class EditServices {
     focusDispatcher = inject(FocusDispatcher);
     focusTrapFactory = inject(FocusTrapFactory);
     ngZone = inject(NgZone);
-    overlay = inject(Overlay);
     scrollDispatcher = inject(ScrollDispatcher);
     viewportRuler = inject(ViewportRuler);
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: EditServices, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
@@ -785,6 +784,7 @@ class CdkPopoverEdit {
     services = inject(EditServices);
     elementRef = inject(ElementRef);
     viewContainerRef = inject(ViewContainerRef);
+    _injector = inject(Injector);
     /** The edit lens template shown over the cell on edit. */
     template = null;
     /**
@@ -871,11 +871,11 @@ class CdkPopoverEdit {
         });
     }
     _createEditOverlay() {
-        this.overlayRef = this.services.overlay.create({
+        this.overlayRef = createOverlayRef(this._injector, {
             disposeOnNavigation: true,
             panelClass: this.panelClass(),
             positionStrategy: this._getPositionStrategy(),
-            scrollStrategy: this.services.overlay.scrollStrategies.reposition(),
+            scrollStrategy: createRepositionScrollStrategy(this._injector),
             direction: this.services.directionality,
         });
         this.initFocusTrap();
@@ -914,9 +914,7 @@ class CdkPopoverEdit {
     }
     _getPositionStrategy() {
         const cells = this._getOverlayCells();
-        return this.services.overlay
-            .position()
-            .flexibleConnectedTo(cells[0])
+        return createFlexibleConnectedPositionStrategy(this._injector, cells[0])
             .withGrowAfterOpen()
             .withPush()
             .withViewportMargin(16)

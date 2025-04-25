@@ -3,7 +3,7 @@ import { InjectionToken, AfterViewInit, OnDestroy, ElementRef, NgZone, Provider,
 import { Subject, Observable } from 'rxjs';
 import { CdkTable, CdkColumnDef, _CoalescedStyleScheduler } from '@angular/cdk/table';
 import { Directionality } from '@angular/cdk/bidi';
-import { OverlayRef, Overlay } from '@angular/cdk/overlay';
+import { OverlayRef } from '@angular/cdk/overlay';
 
 /** Indicates the width of a column. */
 interface ColumnSize {
@@ -363,13 +363,13 @@ declare abstract class Resizable<HandleComponent extends ResizeOverlayHandle> im
     protected abstract readonly eventDispatcher: HeaderRowEventDispatcher;
     protected abstract readonly injector: Injector;
     protected abstract readonly ngZone: NgZone;
-    protected abstract readonly overlay: Overlay;
     protected abstract readonly resizeNotifier: ColumnResizeNotifierSource;
     protected abstract readonly resizeStrategy: ResizeStrategy;
     protected abstract readonly styleScheduler: _CoalescedStyleScheduler;
     protected abstract readonly viewContainerRef: ViewContainerRef;
     protected abstract readonly changeDetectorRef: ChangeDetectorRef;
     protected readonly columnSizeStore: ColumnSizeStore | null;
+    private _injector;
     private _viewInitialized;
     private _isDestroyed;
     /** The minimum width to allow the column to be sized to. */

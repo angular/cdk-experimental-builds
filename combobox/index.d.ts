@@ -10,7 +10,6 @@ declare const CDK_COMBOBOX: InjectionToken<CdkCombobox<unknown>>;
 declare class CdkCombobox<T = unknown> implements OnDestroy {
     private readonly _tagName;
     private readonly _elementRef;
-    private readonly _overlay;
     protected readonly _viewContainerRef: ViewContainerRef;
     private readonly _injector;
     private readonly _doc;

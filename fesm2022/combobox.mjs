@@ -1,6 +1,6 @@
 import * as i0 from '@angular/core';
 import { InjectionToken, inject, HOST_TAG_NAME, ElementRef, ViewContainerRef, Injector, DOCUMENT, ChangeDetectorRef, EventEmitter, Directive, Input, Output, NgModule } from '@angular/core';
-import { Overlay, OverlayConfig, OverlayModule } from '@angular/cdk/overlay';
+import { createOverlayRef, OverlayConfig, createBlockScrollStrategy, createFlexibleConnectedPositionStrategy, OverlayModule } from '@angular/cdk/overlay';
 import { Directionality } from '@angular/cdk/bidi';
 import { coerceBooleanProperty, coerceArray } from '@angular/cdk/coercion';
 import { DOWN_ARROW, ENTER, ESCAPE, TAB } from '@angular/cdk/keycodes';
@@ -13,7 +13,6 @@ const CDK_COMBOBOX = new InjectionToken('CDK_COMBOBOX');
 class CdkCombobox {
     _tagName = inject(HOST_TAG_NAME);
     _elementRef = inject(ElementRef);
-    _overlay = inject(Overlay);
     _viewContainerRef = inject(ViewContainerRef);
     _injector = inject(Injector);
     _doc = inject(DOCUMENT);
@@ -124,7 +123,8 @@ class CdkCombobox {
     open() {
         if (!this.isOpen() && !this.disabled) {
             this.opened.next();
-            this._overlayRef = this._overlayRef || this._overlay.create(this._getOverlayConfig());
+            this._overlayRef =
+                this._overlayRef || createOverlayRef(this._injector, this._getOverlayConfig());
             this._overlayRef.attach(this._getPanelContent());
             this._changeDetectorRef.markForCheck();
             if (!this._isTextTrigger()) {
@@ -178,15 +178,12 @@ class CdkCombobox {
     _getOverlayConfig() {
         return new OverlayConfig({
             positionStrategy: this._getOverlayPositionStrategy(),
-            scrollStrategy: this._overlay.scrollStrategies.block(),
+            scrollStrategy: createBlockScrollStrategy(this._injector),
             direction: this._directionality || undefined,
         });
     }
     _getOverlayPositionStrategy() {
-        return this._overlay
-            .position()
-            .flexibleConnectedTo(this._elementRef)
-            .withPositions(this._getOverlayPositions());
+        return createFlexibleConnectedPositionStrategy(this._injector, this._elementRef).withPositions(this._getOverlayPositions());
     }
     _getOverlayPositions() {
         return [

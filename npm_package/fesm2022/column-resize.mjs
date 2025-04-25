@@ -7,6 +7,7 @@ import { c as closest } from './polyfill-CXksG4af.mjs';
 import { _COALESCED_STYLE_SCHEDULER, CdkTable } from '@angular/cdk/table';
 import { coerceCssPixelValue } from '@angular/cdk/coercion';
 import { ComponentPortal } from '@angular/cdk/portal';
+import { createFlexibleConnectedPositionStrategy, createOverlayRef, createRepositionScrollStrategy } from '@angular/cdk/overlay';
 import { ESCAPE } from '@angular/cdk/keycodes';
 
 // TODO: Figure out how to remove `mat-` classes from the CDK part of the
@@ -613,6 +614,7 @@ class Resizable {
     overlayRef;
     destroyed = new Subject();
     columnSizeStore = inject(ColumnSizeStore, { optional: true });
+    _injector = inject(Injector);
     _viewInitialized = false;
     _isDestroyed = false;
     /** The minimum width to allow the column to be sized to. */
@@ -673,9 +675,7 @@ class Resizable {
         // of two table cells and is also useful for displaying a resize thumb
         // over both cells and extending it down the table as needed.
         const isRtl = this.directionality.value === 'rtl';
-        const positionStrategy = this.overlay
-            .position()
-            .flexibleConnectedTo(this.elementRef.nativeElement)
+        const positionStrategy = createFlexibleConnectedPositionStrategy(this._injector, this.elementRef.nativeElement)
             .withFlexibleDimensions(false)
             .withGrowAfterOpen(false)
             .withPush(false)
@@ -688,12 +688,12 @@ class Resizable {
                 overlayY: 'top',
             },
         ]);
-        return this.overlay.create({
+        return createOverlayRef(this._injector, {
             // Always position the overlay based on left-indexed coordinates.
             direction: 'ltr',
             disposeOnNavigation: true,
             positionStrategy,
-            scrollStrategy: this.overlay.scrollStrategies.reposition(),
+            scrollStrategy: createRepositionScrollStrategy(this._injector),
             width: '16px',
         });
     }
