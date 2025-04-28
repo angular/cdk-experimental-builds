@@ -1,7 +1,7 @@
 import * as i0 from '@angular/core';
 import { InjectionToken, AfterViewInit, OnDestroy, ElementRef, NgZone, Provider, OnInit, Injector, ViewContainerRef, ChangeDetectorRef, Type } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
-import { CdkTable, CdkColumnDef, _CoalescedStyleScheduler } from '@angular/cdk/table';
+import { CdkTable, CdkColumnDef } from '@angular/cdk/table';
 import { Directionality } from '@angular/cdk/bidi';
 import { OverlayRef } from '@angular/cdk/overlay';
 
@@ -232,6 +232,40 @@ declare class ResizeRef {
 }
 
 /**
+ * @docs-private
+ */
+declare class _Schedule {
+    tasks: (() => unknown)[];
+    endTasks: (() => unknown)[];
+}
+/** Injection token used to provide a coalesced style scheduler. */
+declare const _COALESCED_STYLE_SCHEDULER: InjectionToken<_CoalescedStyleScheduler>;
+/**
+ * Allows grouping up CSSDom mutations after the current execution context.
+ * This can significantly improve performance when separate consecutive functions are
+ * reading from the CSSDom and then mutating it.
+ *
+ * @docs-private
+ */
+declare class _CoalescedStyleScheduler {
+    private _currentSchedule;
+    private _ngZone;
+    constructor(...args: unknown[]);
+    /**
+     * Schedules the specified task to run at the end of the current VM turn.
+     */
+    schedule(task: () => unknown): void;
+    /**
+     * Schedules the specified task to run after other scheduled tasks at the end of the current
+     * VM turn.
+     */
+    scheduleEnd(task: () => unknown): void;
+    private _createScheduleIfNeeded;
+    static ɵfac: i0.ɵɵFactoryDeclaration<_CoalescedStyleScheduler, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<_CoalescedStyleScheduler>;
+}
+
+/**
  * Base class for a component shown over the edge of a resizable column that is responsible
  * for handling column resize mouse events and displaying any visible UI on the column edge.
  */
@@ -399,5 +433,5 @@ declare abstract class Resizable<HandleComponent extends ResizeOverlayHandle> im
     static ɵdir: i0.ɵɵDirectiveDeclaration<Resizable<any>, never, never, {}, {}, never, never, true, never>;
 }
 
-export { COLUMN_RESIZE_OPTIONS, CdkColumnResize, CdkColumnResizeDefaultEnabledModule, CdkColumnResizeFlex, CdkColumnResizeModule, CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex, CdkFlexTableResizeStrategy, ColumnResize, ColumnResizeNotifier, ColumnResizeNotifierSource, ColumnSizeStore, FLEX_RESIZE_STRATEGY_PROVIDER, HeaderRowEventDispatcher, Resizable, ResizeOverlayHandle, ResizeRef, ResizeStrategy, TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER, TableLayoutFixedResizeStrategy };
+export { COLUMN_RESIZE_OPTIONS, CdkColumnResize, CdkColumnResizeDefaultEnabledModule, CdkColumnResizeFlex, CdkColumnResizeModule, CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex, CdkFlexTableResizeStrategy, ColumnResize, ColumnResizeNotifier, ColumnResizeNotifierSource, ColumnSizeStore, FLEX_RESIZE_STRATEGY_PROVIDER, HeaderRowEventDispatcher, Resizable, ResizeOverlayHandle, ResizeRef, ResizeStrategy, TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER, TableLayoutFixedResizeStrategy, _COALESCED_STYLE_SCHEDULER, _CoalescedStyleScheduler, _Schedule };
 export type { ColumnResizeOptions, ColumnSize, ColumnSizeAction };

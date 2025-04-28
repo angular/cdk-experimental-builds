@@ -4,7 +4,7 @@ import { _IdGenerator } from '@angular/cdk/a11y';
 import { Subject, merge, combineLatest, Observable } from 'rxjs';
 import { mapTo, take, takeUntil, startWith, pairwise, distinctUntilChanged, share, map, skip, filter } from 'rxjs/operators';
 import { c as closest } from './polyfill-CXksG4af.mjs';
-import { _COALESCED_STYLE_SCHEDULER, CdkTable } from '@angular/cdk/table';
+import { CdkTable } from '@angular/cdk/table';
 import { coerceCssPixelValue } from '@angular/cdk/coercion';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { createFlexibleConnectedPositionStrategy, createOverlayRef, createRepositionScrollStrategy } from '@angular/cdk/overlay';
@@ -197,6 +197,73 @@ class HeaderRowEventDispatcher {
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: HeaderRowEventDispatcher, decorators: [{
             type: Injectable
         }] });
+
+/**
+ * @docs-private
+ */
+class _Schedule {
+    tasks = [];
+    endTasks = [];
+}
+/** Injection token used to provide a coalesced style scheduler. */
+const _COALESCED_STYLE_SCHEDULER = new InjectionToken('_COALESCED_STYLE_SCHEDULER');
+/**
+ * Allows grouping up CSSDom mutations after the current execution context.
+ * This can significantly improve performance when separate consecutive functions are
+ * reading from the CSSDom and then mutating it.
+ *
+ * @docs-private
+ */
+class _CoalescedStyleScheduler {
+    _currentSchedule = null;
+    _ngZone = inject(NgZone);
+    constructor() { }
+    /**
+     * Schedules the specified task to run at the end of the current VM turn.
+     */
+    schedule(task) {
+        this._createScheduleIfNeeded();
+        this._currentSchedule.tasks.push(task);
+    }
+    /**
+     * Schedules the specified task to run after other scheduled tasks at the end of the current
+     * VM turn.
+     */
+    scheduleEnd(task) {
+        this._createScheduleIfNeeded();
+        this._currentSchedule.endTasks.push(task);
+    }
+    _createScheduleIfNeeded() {
+        if (this._currentSchedule) {
+            return;
+        }
+        this._currentSchedule = new _Schedule();
+        this._ngZone.runOutsideAngular(() => 
+        // TODO(mmalerba): Scheduling this using something that runs less frequently
+        //  (e.g. requestAnimationFrame, setTimeout, etc.) causes noticeable jank with the column
+        //  resizer. We should audit the usages of schedule / scheduleEnd in that component and see
+        //  if we can refactor it so that we don't need to flush the tasks quite so frequently.
+        queueMicrotask(() => {
+            while (this._currentSchedule.tasks.length || this._currentSchedule.endTasks.length) {
+                const schedule = this._currentSchedule;
+                // Capture new tasks scheduled by the current set of tasks.
+                this._currentSchedule = new _Schedule();
+                for (const task of schedule.tasks) {
+                    task();
+                }
+                for (const task of schedule.endTasks) {
+                    task();
+                }
+            }
+            this._currentSchedule = null;
+        }));
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: _CoalescedStyleScheduler, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: _CoalescedStyleScheduler });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: _CoalescedStyleScheduler, decorators: [{
+            type: Injectable
+        }], ctorParameters: () => [] });
 
 /**
  * Provides an implementation for resizing a column.
@@ -435,6 +502,7 @@ const PROVIDERS = [
     ColumnResizeNotifier,
     HeaderRowEventDispatcher,
     ColumnResizeNotifierSource,
+    { provide: _COALESCED_STYLE_SCHEDULER, useClass: _CoalescedStyleScheduler },
 ];
 const TABLE_PROVIDERS = [
     ...PROVIDERS,
@@ -968,5 +1036,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.5", 
             type: Directive
         }] });
 
-export { COLUMN_RESIZE_OPTIONS, CdkColumnResize, CdkColumnResizeDefaultEnabledModule, CdkColumnResizeFlex, CdkColumnResizeModule, CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex, CdkFlexTableResizeStrategy, ColumnResize, ColumnResizeNotifier, ColumnResizeNotifierSource, ColumnSizeStore, FLEX_RESIZE_STRATEGY_PROVIDER, HeaderRowEventDispatcher, Resizable, ResizeOverlayHandle, ResizeRef, ResizeStrategy, TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER, TableLayoutFixedResizeStrategy };
+export { COLUMN_RESIZE_OPTIONS, CdkColumnResize, CdkColumnResizeDefaultEnabledModule, CdkColumnResizeFlex, CdkColumnResizeModule, CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex, CdkFlexTableResizeStrategy, ColumnResize, ColumnResizeNotifier, ColumnResizeNotifierSource, ColumnSizeStore, FLEX_RESIZE_STRATEGY_PROVIDER, HeaderRowEventDispatcher, Resizable, ResizeOverlayHandle, ResizeRef, ResizeStrategy, TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER, TableLayoutFixedResizeStrategy, _COALESCED_STYLE_SCHEDULER, _CoalescedStyleScheduler, _Schedule };
 //# sourceMappingURL=column-resize.mjs.map
