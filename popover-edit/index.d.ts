@@ -1,255 +1,27 @@
-import { AfterViewInit } from '@angular/core';
-import { Directionality } from '@angular/cdk/bidi';
-import { ElementRef } from '@angular/core';
-import { EmbeddedViewRef } from '@angular/core';
-import { EventEmitter } from '@angular/core';
-import { FocusTrap } from '@angular/cdk/a11y';
-import { FocusTrapFactory } from '@angular/cdk/a11y';
+import { Subject, Observable, PartialObserver } from 'rxjs';
 import * as i0 from '@angular/core';
+import { OnDestroy, OnInit, ElementRef, EventEmitter, NgZone, AfterViewInit, ViewContainerRef, TemplateRef, EmbeddedViewRef } from '@angular/core';
+import { Directionality } from '@angular/cdk/bidi';
 import * as i1 from '@angular/cdk/overlay';
-import { InteractivityChecker } from '@angular/cdk/a11y';
-import { NgZone } from '@angular/core';
-import { Observable } from 'rxjs';
-import { OnDestroy } from '@angular/core';
-import { OnInit } from '@angular/core';
-import { Overlay } from '@angular/cdk/overlay';
 import { OverlayRef } from '@angular/cdk/overlay';
-import { PartialObserver } from 'rxjs';
-import { ScrollDispatcher } from '@angular/cdk/scrolling';
-import { Subject } from 'rxjs';
-import { TemplateRef } from '@angular/core';
-import { ViewContainerRef } from '@angular/core';
-import { ViewportRuler } from '@angular/cdk/scrolling';
+import { FocusTrapFactory, FocusTrap, InteractivityChecker } from '@angular/cdk/a11y';
+import { ScrollDispatcher, ViewportRuler } from '@angular/cdk/scrolling';
 
 /**
- * A directive that must be attached to enable editability on a table.
- * It is responsible for setting up delegated event handlers and providing the
- * EditEventDispatcher service for use by the other edit directives.
+ * The possible states for hover content:
+ * OFF - Not rendered.
+ * FOCUSABLE - Rendered in the dom and styled for its contents to be focusable but invisible.
+ * ON - Rendered and fully visible.
  */
-export declare class CdkEditable implements AfterViewInit, OnDestroy {
-    protected readonly elementRef: ElementRef<any>;
-    protected readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
-    protected readonly focusDispatcher: FocusDispatcher;
-    protected readonly ngZone: NgZone;
-    private readonly _renderer;
-    protected readonly destroyed: Subject<void>;
-    private _rendered;
-    constructor();
-    ngAfterViewInit(): void;
-    ngOnDestroy(): void;
-    private _observableFromEvent;
-    private _listenForTableEvents;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditable, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditable, "table[editable], cdk-table[editable], mat-table[editable]", never, {}, {}, never, never, true, never>;
+declare enum HoverContentState {
+    OFF = 0,
+    FOCUSABLE = 1,
+    ON = 2
 }
-
-/** Closes the lens on click. */
-export declare class CdkEditClose<FormValue> {
-    protected readonly elementRef: ElementRef<HTMLElement>;
-    protected readonly editRef: EditRef<FormValue>;
-    constructor();
-    closeEdit(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditClose<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditClose<any>, "[cdkEditClose]", never, {}, {}, never, never, true, never>;
-}
-
-/**
- * A directive that attaches to a form within the edit lens.
- * It coordinates the form state with the table-wide edit system and handles
- * closing the edit lens when the form is submitted or the user clicks
- * out.
- */
-export declare class CdkEditControl<FormValue> implements OnDestroy, OnInit {
-    protected readonly elementRef: ElementRef<any>;
-    readonly editRef: EditRef<FormValue>;
-    protected readonly destroyed: Subject<void>;
-    /**
-     * Specifies what should happen when the user clicks outside of the edit lens.
-     * The default behavior is to close the lens without submitting the form.
-     */
-    clickOutBehavior: PopoverEditClickOutBehavior;
-    /**
-     * A two-way binding for storing unsubmitted form state. If not provided
-     * then form state will be discarded on close. The PeristBy directive is offered
-     * as a convenient shortcut for these bindings.
-     */
-    preservedFormValue?: FormValue;
-    readonly preservedFormValueChange: EventEmitter<FormValue>;
-    /**
-     * Determines whether the lens will close on form submit if the form is not in a valid
-     * state. By default the lens will remain open.
-     */
-    ignoreSubmitUnlessValid: boolean;
-    ngOnInit(): void;
-    ngOnDestroy(): void;
-    /**
-     * Called when the form submits. If ignoreSubmitUnlessValid is true, checks
-     * the form for validity before proceeding.
-     * Updates the revert state with the latest submitted value then closes the edit.
-     */
-    handleFormSubmit(): void;
-    /** Called on Escape keyup. Closes the edit. */
-    close(): void;
-    /**
-     * Called on click anywhere in the document.
-     * If the click was outside of the lens, trigger the specified click out behavior.
-     */
-    handlePossibleClickOut(evt: Event): void;
-    _handleKeydown(event: KeyboardEvent): void;
-    /** Triggers submit on tab out if clickOutBehavior is 'submit'. */
-    private _handleBlur;
-    private _triggerFormSubmit;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditControl<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditControl<any>, "form[cdkEditControl]", never, { "clickOutBehavior": { "alias": "cdkEditControlClickOutBehavior"; "required": false; }; "preservedFormValue": { "alias": "cdkEditControlPreservedFormValue"; "required": false; }; "ignoreSubmitUnlessValid": { "alias": "cdkEditControlIgnoreSubmitUnlessValid"; "required": false; }; }, { "preservedFormValueChange": "cdkEditControlPreservedFormValueChange"; }, never, never, true, never>;
-}
-
-/**
- * Opens the closest edit popover to this element, whether it's associated with this exact
- * element or an ancestor element.
- */
-export declare class CdkEditOpen {
-    protected readonly elementRef: ElementRef<HTMLElement>;
-    protected readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
-    constructor();
-    openEdit(evt: Event): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditOpen, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditOpen, "[cdkEditOpen]", never, {}, {}, never, never, true, never>;
-}
-
-/** Reverts the form to its initial or previously submitted state on click. */
-export declare class CdkEditRevert<FormValue> {
-    protected readonly editRef: EditRef<FormValue>;
-    /** Type of the button. Defaults to `button` to avoid accident form submits. */
-    type: string;
-    revertEdit(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditRevert<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditRevert<any>, "button[cdkEditRevert]", never, { "type": { "alias": "type"; "required": false; }; }, {}, never, never, true, never>;
-}
-
-/**
- * Attaches an ng-template to a cell and shows it when instructed to by the
- * EditEventDispatcher service.
- * Makes the cell focusable.
- */
-export declare class CdkPopoverEdit<C> implements AfterViewInit, OnDestroy {
-    protected readonly services: EditServices;
-    protected readonly elementRef: ElementRef<any>;
-    protected readonly viewContainerRef: ViewContainerRef;
-    /** The edit lens template shown over the cell on edit. */
-    template: TemplateRef<any> | null;
-    /**
-     * Implicit context to pass along to the template. Can be omitted if the template
-     * is defined within the cell.
-     */
-    context?: C;
-    /** Aria label to set on the popover dialog element. */
-    ariaLabel?: string;
-    /**
-     * Specifies that the popup should cover additional table cells before and/or after
-     * this one.
-     */
-    get colspan(): CdkPopoverEditColspan;
-    set colspan(value: CdkPopoverEditColspan);
-    private _colspan;
-    /** Whether popover edit is disabled for this cell. */
-    get disabled(): boolean;
-    set disabled(value: boolean);
-    private _disabled;
-    protected focusTrap?: FocusTrap;
-    protected overlayRef?: OverlayRef;
-    protected readonly destroyed: Subject<void>;
-    ngAfterViewInit(): void;
-    ngOnDestroy(): void;
-    protected initFocusTrap(): void;
-    protected closeEditOverlay(): void;
-    protected panelClass(): string;
-    private _startListeningToEditEvents;
-    private _createEditOverlay;
-    private _showEditOverlay;
-    private _getOverlayCells;
-    private _getPositionStrategy;
-    private _updateOverlaySize;
-    private _maybeReturnFocusToCell;
-    private _sizeConfigForCells;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEdit<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEdit<any>, "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; "ariaLabel": { "alias": "cdkPopoverEditAriaLabel"; "required": false; }; }, {}, never, never, true, never>;
-}
-
-/**
- * Describes the number of columns before and after the originating cell that the
- * edit popup should span. In left to right locales, before means left and after means
- * right. In right to left locales before means right and after means left.
- */
-export declare interface CdkPopoverEditColspan {
-    before?: number;
-    after?: number;
-}
-
-export declare class CdkPopoverEditModule {
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEditModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkPopoverEditModule, never, [typeof i1.OverlayModule, typeof i2.CdkPopoverEdit, typeof i2.CdkPopoverEditTabOut, typeof i2.CdkRowHoverContent, typeof i3.CdkEditControl, typeof i3.CdkEditRevert, typeof i3.CdkEditClose, typeof i2.CdkEditable, typeof i2.CdkEditOpen], [typeof i2.CdkPopoverEdit, typeof i2.CdkPopoverEditTabOut, typeof i2.CdkRowHoverContent, typeof i3.CdkEditControl, typeof i3.CdkEditRevert, typeof i3.CdkEditClose, typeof i2.CdkEditable, typeof i2.CdkEditOpen]>;
-    static ɵinj: i0.ɵɵInjectorDeclaration<CdkPopoverEditModule>;
-}
-
-/**
- * Attaches an ng-template to a cell and shows it when instructed to by the
- * EditEventDispatcher service.
- * Makes the cell focusable.
- */
-export declare class CdkPopoverEditTabOut<C> extends CdkPopoverEdit<C> {
-    protected readonly focusEscapeNotifierFactory: FocusEscapeNotifierFactory;
-    protected focusTrap?: FocusEscapeNotifier;
-    protected initFocusTrap(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEditTabOut<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEditTabOut<any>, "[cdkPopoverEdit][cdkPopoverEditTabOut]", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; "ariaLabel": { "alias": "cdkPopoverEditAriaLabel"; "required": false; }; }, {}, never, never, true, never>;
-}
-
-/**
- * A structural directive that shows its contents when the table row containing
- * it is hovered or when an element in the row has focus.
- */
-export declare class CdkRowHoverContent implements AfterViewInit, OnDestroy {
-    protected readonly services: EditServices;
-    protected readonly elementRef: ElementRef<any>;
-    protected readonly templateRef: TemplateRef<any>;
-    protected readonly viewContainerRef: ViewContainerRef;
-    protected readonly destroyed: Subject<void>;
-    protected viewRef: EmbeddedViewRef<any> | null;
-    private _row?;
-    ngAfterViewInit(): void;
-    ngOnDestroy(): void;
-    /**
-     * Called immediately after the hover content is created and added to the dom.
-     * In the CDK version, this is a noop but subclasses such as MatRowHoverContent use this
-     * to prepare/style the inserted element.
-     */
-    protected initElement(_: HTMLElement): void;
-    /**
-     * Called when the hover content needs to be focusable to preserve a reasonable tab ordering
-     * but should not yet be shown.
-     */
-    protected makeElementHiddenButFocusable(element: HTMLElement): void;
-    /**
-     * Called when the hover content needs to be focusable to preserve a reasonable tab ordering
-     * but should not yet be shown.
-     */
-    protected makeElementVisible(element: HTMLElement): void;
-    private _listenForHoverAndFocusEvents;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkRowHoverContent, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowHoverContent, "[cdkRowHoverContent]", never, {}, {}, never, never, true, never>;
-}
-
-/** Selector for finding table cells. */
-export declare const _CELL_SELECTOR = ".cdk-cell, .mat-cell, td";
-
-
-/** closest implementation that is able to start from non-Element Nodes. */
-export declare function _closest(element: EventTarget | Element | null | undefined, selector: string): Element | null;
-
 /**
  * Service for sharing delegated events and state for triggering table edits.
  */
-export declare class EditEventDispatcher<R> {
+declare class EditEventDispatcher<R> {
     private readonly _ngZone;
     /** A subject that indicates which table cell is currently editing (unless it is disabled). */
     readonly editing: Subject<Element | null>;
@@ -329,7 +101,7 @@ export declare class EditEventDispatcher<R> {
  * Used for communication between the form within the edit lens and the
  * table that launched it. Provided by CdkEditControl within the lens.
  */
-export declare class EditRef<FormValue> implements OnDestroy {
+declare class EditRef<FormValue> implements OnDestroy {
     private readonly _form;
     private readonly _editEventDispatcher;
     /** Emits the final value of this edit instance before closing. */
@@ -367,34 +139,10 @@ export declare class EditRef<FormValue> implements OnDestroy {
 }
 
 /**
- * Optimization
- * Collects multiple Injectables into a singleton shared across the table. By reducing the
- * number of services injected into each CdkPopoverEdit, this saves about 0.023ms of cpu time
- * and 56 bytes of memory per instance.
- */
-declare class EditServices {
-    readonly directionality: Directionality;
-    readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
-    readonly focusDispatcher: FocusDispatcher;
-    readonly focusTrapFactory: FocusTrapFactory;
-    readonly ngZone: NgZone;
-    readonly overlay: Overlay;
-    readonly scrollDispatcher: ScrollDispatcher;
-    readonly viewportRuler: ViewportRuler;
-    static ɵfac: i0.ɵɵFactoryDeclaration<EditServices, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<EditServices>;
-}
-
-
-export declare interface Entry<FormValue> {
-    value?: FormValue;
-}
-
-/**
  * Service responsible for moving cell focus around in response to keyboard events.
  * May be overridden to customize the keyboard behavior of popover edit.
  */
-export declare class FocusDispatcher {
+declare class FocusDispatcher {
     protected readonly directionality: Directionality;
     /** Observes keydown events triggered from the table. */
     readonly keyObserver: PartialObserver<KeyboardEvent>;
@@ -412,6 +160,117 @@ export declare class FocusDispatcher {
     static ɵprov: i0.ɵɵInjectableDeclaration<FocusDispatcher>;
 }
 
+interface Entry<FormValue> {
+    value?: FormValue;
+}
+/**
+ * A convenience class for preserving unsaved form state while an edit lens is closed.
+ *
+ * Example usage:
+ * class MyComponent {
+ *   readonly nameEditValues = new FormValueContainer&lt;Item, {name: string}&gt;();
+ * }
+ *
+ * &lt;form cdkEditControl [(cdkEditControlPreservedFormValue)]="nameEditValues.for(item).value"&gt;
+ */
+declare class FormValueContainer<Key extends object, FormValue> {
+    private _formValues;
+    for(key: Key): Entry<FormValue>;
+}
+
+/** Options for what do to when the user clicks outside of an edit lens. */
+type PopoverEditClickOutBehavior = 'close' | 'submit' | 'noop';
+/**
+ * A directive that attaches to a form within the edit lens.
+ * It coordinates the form state with the table-wide edit system and handles
+ * closing the edit lens when the form is submitted or the user clicks
+ * out.
+ */
+declare class CdkEditControl<FormValue> implements OnDestroy, OnInit {
+    protected readonly elementRef: ElementRef<any>;
+    readonly editRef: EditRef<FormValue>;
+    protected readonly destroyed: Subject<void>;
+    /**
+     * Specifies what should happen when the user clicks outside of the edit lens.
+     * The default behavior is to close the lens without submitting the form.
+     */
+    clickOutBehavior: PopoverEditClickOutBehavior;
+    /**
+     * A two-way binding for storing unsubmitted form state. If not provided
+     * then form state will be discarded on close. The PeristBy directive is offered
+     * as a convenient shortcut for these bindings.
+     */
+    preservedFormValue?: FormValue;
+    readonly preservedFormValueChange: EventEmitter<FormValue>;
+    /**
+     * Determines whether the lens will close on form submit if the form is not in a valid
+     * state. By default the lens will remain open.
+     */
+    ignoreSubmitUnlessValid: boolean;
+    ngOnInit(): void;
+    ngOnDestroy(): void;
+    /**
+     * Called when the form submits. If ignoreSubmitUnlessValid is true, checks
+     * the form for validity before proceeding.
+     * Updates the revert state with the latest submitted value then closes the edit.
+     */
+    handleFormSubmit(): void;
+    /** Called on Escape keyup. Closes the edit. */
+    close(): void;
+    /**
+     * Called on click anywhere in the document.
+     * If the click was outside of the lens, trigger the specified click out behavior.
+     */
+    handlePossibleClickOut(evt: Event): void;
+    _handleKeydown(event: KeyboardEvent): void;
+    /** Triggers submit on tab out if clickOutBehavior is 'submit'. */
+    private _handleBlur;
+    private _triggerFormSubmit;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditControl<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditControl<any>, "form[cdkEditControl]", never, { "clickOutBehavior": { "alias": "cdkEditControlClickOutBehavior"; "required": false; }; "preservedFormValue": { "alias": "cdkEditControlPreservedFormValue"; "required": false; }; "ignoreSubmitUnlessValid": { "alias": "cdkEditControlIgnoreSubmitUnlessValid"; "required": false; }; }, { "preservedFormValueChange": "cdkEditControlPreservedFormValueChange"; }, never, never, true, never>;
+}
+/** Reverts the form to its initial or previously submitted state on click. */
+declare class CdkEditRevert<FormValue> {
+    protected readonly editRef: EditRef<FormValue>;
+    /** Type of the button. Defaults to `button` to avoid accident form submits. */
+    type: string;
+    revertEdit(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditRevert<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditRevert<any>, "button[cdkEditRevert]", never, { "type": { "alias": "type"; "required": false; }; }, {}, never, never, true, never>;
+}
+/** Closes the lens on click. */
+declare class CdkEditClose<FormValue> {
+    protected readonly elementRef: ElementRef<HTMLElement>;
+    protected readonly editRef: EditRef<FormValue>;
+    constructor();
+    closeEdit(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditClose<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditClose<any>, "[cdkEditClose]", never, {}, {}, never, never, true, never>;
+}
+
+/**
+ * Optimization
+ * Collects multiple Injectables into a singleton shared across the table. By reducing the
+ * number of services injected into each CdkPopoverEdit, this saves about 0.023ms of cpu time
+ * and 56 bytes of memory per instance.
+ */
+declare class EditServices {
+    readonly directionality: Directionality;
+    readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
+    readonly focusDispatcher: FocusDispatcher;
+    readonly focusTrapFactory: FocusTrapFactory;
+    readonly ngZone: NgZone;
+    readonly scrollDispatcher: ScrollDispatcher;
+    readonly viewportRuler: ViewportRuler;
+    static ɵfac: i0.ɵɵFactoryDeclaration<EditServices, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<EditServices>;
+}
+
+/** Value indicating whether focus left the target area before or after the enclosed elements. */
+declare enum FocusEscapeNotifierDirection {
+    START = 0,
+    END = 1
+}
 /**
  * Like FocusTrap, but rather than trapping focus within a dom region, notifies subscribers when
  * focus leaves the region.
@@ -421,13 +280,6 @@ declare class FocusEscapeNotifier extends FocusTrap {
     constructor(element: HTMLElement, checker: InteractivityChecker, ngZone: NgZone, document: Document);
     escapes(): Observable<FocusEscapeNotifierDirection>;
 }
-
-/** Value indicating whether focus left the target area before or after the enclosed elements. */
-declare enum FocusEscapeNotifierDirection {
-    START = 0,
-    END = 1
-}
-
 /** Factory that allows easy instantiation of focus escape notifiers. */
 declare class FocusEscapeNotifierFactory {
     private _checker;
@@ -444,53 +296,155 @@ declare class FocusEscapeNotifierFactory {
 }
 
 /**
- * A convenience class for preserving unsaved form state while an edit lens is closed.
- *
- * Example usage:
- * class MyComponent {
- *   readonly nameEditValues = new FormValueContainer&lt;Item, {name: string}&gt;();
- * }
- *
- * &lt;form cdkEditControl [(cdkEditControlPreservedFormValue)]="nameEditValues.for(item).value"&gt;
+ * Describes the number of columns before and after the originating cell that the
+ * edit popup should span. In left to right locales, before means left and after means
+ * right. In right to left locales before means right and after means left.
  */
-export declare class FormValueContainer<Key extends object, FormValue> {
-    private _formValues;
-    for(key: Key): Entry<FormValue>;
+interface CdkPopoverEditColspan {
+    before?: number;
+    after?: number;
 }
-
 /**
- * The possible states for hover content:
- * OFF - Not rendered.
- * FOCUSABLE - Rendered in the dom and styled for its contents to be focusable but invisible.
- * ON - Rendered and fully visible.
+ * A directive that must be attached to enable editability on a table.
+ * It is responsible for setting up delegated event handlers and providing the
+ * EditEventDispatcher service for use by the other edit directives.
  */
-export declare enum HoverContentState {
-    OFF = 0,
-    FOCUSABLE = 1,
-    ON = 2
+declare class CdkEditable implements AfterViewInit, OnDestroy {
+    protected readonly elementRef: ElementRef<any>;
+    protected readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
+    protected readonly focusDispatcher: FocusDispatcher;
+    protected readonly ngZone: NgZone;
+    private readonly _renderer;
+    protected readonly destroyed: Subject<void>;
+    private _rowsRendered;
+    private _rowMutationObserver;
+    constructor();
+    ngAfterViewInit(): void;
+    ngOnDestroy(): void;
+    private _observableFromEvent;
+    private _listenForTableEvents;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditable, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditable, "table[editable], cdk-table[editable], mat-table[editable]", never, {}, {}, never, never, true, never>;
+}
+/**
+ * Attaches an ng-template to a cell and shows it when instructed to by the
+ * EditEventDispatcher service.
+ * Makes the cell focusable.
+ */
+declare class CdkPopoverEdit<C> implements AfterViewInit, OnDestroy {
+    protected readonly services: EditServices;
+    protected readonly elementRef: ElementRef<any>;
+    protected readonly viewContainerRef: ViewContainerRef;
+    private _injector;
+    /** The edit lens template shown over the cell on edit. */
+    template: TemplateRef<any> | null;
+    /**
+     * Implicit context to pass along to the template. Can be omitted if the template
+     * is defined within the cell.
+     */
+    context?: C;
+    /** Aria label to set on the popover dialog element. */
+    ariaLabel?: string;
+    /**
+     * Specifies that the popup should cover additional table cells before and/or after
+     * this one.
+     */
+    get colspan(): CdkPopoverEditColspan;
+    set colspan(value: CdkPopoverEditColspan);
+    private _colspan;
+    /** Whether popover edit is disabled for this cell. */
+    get disabled(): boolean;
+    set disabled(value: boolean);
+    private _disabled;
+    protected focusTrap?: FocusTrap;
+    protected overlayRef?: OverlayRef;
+    protected readonly destroyed: Subject<void>;
+    ngAfterViewInit(): void;
+    ngOnDestroy(): void;
+    protected initFocusTrap(): void;
+    protected closeEditOverlay(): void;
+    protected panelClass(): string;
+    private _startListeningToEditEvents;
+    private _createEditOverlay;
+    private _showEditOverlay;
+    private _getOverlayCells;
+    private _getPositionStrategy;
+    private _updateOverlaySize;
+    private _maybeReturnFocusToCell;
+    private _sizeConfigForCells;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEdit<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEdit<any>, "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; "ariaLabel": { "alias": "cdkPopoverEditAriaLabel"; "required": false; }; }, {}, never, never, true, never>;
+}
+/**
+ * Attaches an ng-template to a cell and shows it when instructed to by the
+ * EditEventDispatcher service.
+ * Makes the cell focusable.
+ */
+declare class CdkPopoverEditTabOut<C> extends CdkPopoverEdit<C> {
+    protected readonly focusEscapeNotifierFactory: FocusEscapeNotifierFactory;
+    protected focusTrap?: FocusEscapeNotifier;
+    protected initFocusTrap(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEditTabOut<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkPopoverEditTabOut<any>, "[cdkPopoverEdit][cdkPopoverEditTabOut]", never, { "template": { "alias": "cdkPopoverEdit"; "required": false; }; "context": { "alias": "cdkPopoverEditContext"; "required": false; }; "colspan": { "alias": "cdkPopoverEditColspan"; "required": false; }; "disabled": { "alias": "cdkPopoverEditDisabled"; "required": false; }; "ariaLabel": { "alias": "cdkPopoverEditAriaLabel"; "required": false; }; }, {}, never, never, true, never>;
+}
+/**
+ * A structural directive that shows its contents when the table row containing
+ * it is hovered or when an element in the row has focus.
+ */
+declare class CdkRowHoverContent implements AfterViewInit, OnDestroy {
+    protected readonly services: EditServices;
+    protected readonly elementRef: ElementRef<any>;
+    protected readonly templateRef: TemplateRef<any>;
+    protected readonly viewContainerRef: ViewContainerRef;
+    protected readonly destroyed: Subject<void>;
+    protected viewRef: EmbeddedViewRef<any> | null;
+    private _row?;
+    ngAfterViewInit(): void;
+    ngOnDestroy(): void;
+    /**
+     * Called immediately after the hover content is created and added to the dom.
+     * In the CDK version, this is a noop but subclasses such as MatRowHoverContent use this
+     * to prepare/style the inserted element.
+     */
+    protected initElement(_: HTMLElement): void;
+    /**
+     * Called when the hover content needs to be focusable to preserve a reasonable tab ordering
+     * but should not yet be shown.
+     */
+    protected makeElementHiddenButFocusable(element: HTMLElement): void;
+    /**
+     * Called when the hover content needs to be focusable to preserve a reasonable tab ordering
+     * but should not yet be shown.
+     */
+    protected makeElementVisible(element: HTMLElement): void;
+    private _listenForHoverAndFocusEvents;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkRowHoverContent, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowHoverContent, "[cdkRowHoverContent]", never, {}, {}, never, never, true, never>;
+}
+/**
+ * Opens the closest edit popover to this element, whether it's associated with this exact
+ * element or an ancestor element.
+ */
+declare class CdkEditOpen {
+    protected readonly elementRef: ElementRef<HTMLElement>;
+    protected readonly editEventDispatcher: EditEventDispatcher<EditRef<unknown>>;
+    constructor();
+    openEdit(evt: Event): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkEditOpen, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkEditOpen, "[cdkEditOpen]", never, {}, {}, never, never, true, never>;
 }
 
-declare namespace i2 {
-    export {
-        CdkPopoverEditColspan,
-        CdkEditable,
-        CdkPopoverEdit,
-        CdkPopoverEditTabOut,
-        CdkRowHoverContent,
-        CdkEditOpen
-    }
+declare class CdkPopoverEditModule {
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkPopoverEditModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkPopoverEditModule, never, [typeof i1.OverlayModule, typeof CdkPopoverEdit, typeof CdkPopoverEditTabOut, typeof CdkRowHoverContent, typeof CdkEditControl, typeof CdkEditRevert, typeof CdkEditClose, typeof CdkEditable, typeof CdkEditOpen], [typeof CdkPopoverEdit, typeof CdkPopoverEditTabOut, typeof CdkRowHoverContent, typeof CdkEditControl, typeof CdkEditRevert, typeof CdkEditClose, typeof CdkEditable, typeof CdkEditOpen]>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<CdkPopoverEditModule>;
 }
 
-declare namespace i3 {
-    export {
-        PopoverEditClickOutBehavior,
-        CdkEditControl,
-        CdkEditRevert,
-        CdkEditClose
-    }
-}
+/** Selector for finding table cells. */
+declare const CELL_SELECTOR = ".cdk-cell, .mat-cell, td";
 
-/** Options for what do to when the user clicks outside of an edit lens. */
-export declare type PopoverEditClickOutBehavior = 'close' | 'submit' | 'noop';
+/** closest implementation that is able to start from non-Element Nodes. */
+declare function closest(element: EventTarget | Element | null | undefined, selector: string): Element | null;
 
-export { }
+export { CdkEditClose, CdkEditControl, CdkEditOpen, CdkEditRevert, CdkEditable, CdkPopoverEdit, CdkPopoverEditModule, CdkPopoverEditTabOut, CdkRowHoverContent, EditEventDispatcher, EditRef, FocusDispatcher, FormValueContainer, HoverContentState, CELL_SELECTOR as _CELL_SELECTOR, closest as _closest };
+export type { CdkPopoverEditColspan, Entry, PopoverEditClickOutBehavior };

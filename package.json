@@ -1,6 +1,6 @@
 {
   "name": "@angular/cdk-experimental",
-  "version": "20.0.0-next.0",
+  "version": "20.0.0-next.9",
   "description": "Experimental components for Angular CDK",
   "repository": {
     "type": "git",
@@ -12,8 +12,11 @@
   },
   "homepage": "https://github.com/angular/components#readme",
   "peerDependencies": {
-    "@angular/cdk": "20.0.0-next.0",
+    "@angular/cdk": "20.0.0-next.9",
     "@angular/core": "^20.0.0-0 || ^20.1.0-0 || ^20.2.0-0 || ^20.3.0-0 || ^21.0.0-0"
+  },
+  "devDependencies": {
+    "@angular/cdk": "workspace:*"
   },
   "dependencies": {
     "tslib": "^2.3.0"
@@ -49,6 +52,10 @@
       "types": "./combobox/index.d.ts",
       "default": "./fesm2022/combobox.mjs"
     },
+    "./deferred-content": {
+      "types": "./deferred-content/index.d.ts",
+      "default": "./fesm2022/deferred-content.mjs"
+    },
     "./listbox": {
       "types": "./listbox/index.d.ts",
       "default": "./fesm2022/listbox.mjs"
@@ -68,6 +75,10 @@
     "./table-scroll-container": {
       "types": "./table-scroll-container/index.d.ts",
       "default": "./fesm2022/table-scroll-container.mjs"
+    },
+    "./tabs": {
+      "types": "./tabs/index.d.ts",
+      "default": "./fesm2022/tabs.mjs"
     },
     "./ui-patterns": {
       "types": "./ui-patterns/index.d.ts",

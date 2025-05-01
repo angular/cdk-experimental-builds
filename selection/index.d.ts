@@ -1,74 +1,55 @@
-import { AfterContentChecked } from '@angular/core';
-import { BooleanInput } from '@angular/cdk/coercion';
-import { CollectionViewer } from '@angular/cdk/collections';
-import { DataSource } from '@angular/cdk/collections';
-import { EventEmitter } from '@angular/core';
+import { BooleanInput, NumberInput } from '@angular/cdk/coercion';
+import { CollectionViewer, ListRange, DataSource } from '@angular/cdk/collections';
 import * as i0 from '@angular/core';
+import { TrackByFunction, OnInit, AfterContentChecked, OnDestroy, EventEmitter } from '@angular/core';
+import { Subject, Observable } from 'rxjs';
 import * as i1 from '@angular/cdk/table';
-import { ListRange } from '@angular/cdk/collections';
-import { NumberInput } from '@angular/cdk/coercion';
-import { Observable } from 'rxjs';
-import { OnDestroy } from '@angular/core';
-import { OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
-import { TrackByFunction } from '@angular/core';
 
 /**
- * Applies `cdk-selected` class and `aria-selected` to an element.
- *
- * Must be used within a parent `CdkSelection` directive.
- * Must be provided with the value. The index is required if `trackBy` is used on the `CdkSelection`
- * directive.
+ * Maintains a set of selected values. One or more values can be added to or removed from the
+ * selection.
  */
-export declare class CdkRowSelection<T> {
-    readonly _selection: CdkSelection<T>;
-    value: T;
-    get index(): number | undefined;
-    set index(index: NumberInput);
-    protected _index?: number;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkRowSelection<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowSelection<any>, "[cdkRowSelection]", never, { "value": { "alias": "cdkRowSelectionValue"; "required": false; }; "index": { "alias": "cdkRowSelectionIndex"; "required": false; }; }, {}, never, never, true, never>;
+interface TrackBySelection<T> {
+    isSelected(value: SelectableWithIndex<T>): boolean;
+    select(...values: SelectableWithIndex<T>[]): void;
+    deselect(...values: SelectableWithIndex<T>[]): void;
+    changed: Subject<SelectionChange<T>>;
 }
-
 /**
- * Makes the element a select-all toggle.
- *
- * Must be used within a parent `CdkSelection` directive. It toggles the selection states
- * of all the selection toggles connected with the `CdkSelection` directive.
- * If the element implements `ControlValueAccessor`, e.g. `MatCheckbox`, the directive
- * automatically connects it with the select-all state provided by the `CdkSelection` directive. If
- * not, use `checked$` to get the checked state, `indeterminate$` to get the indeterminate state,
- * and `toggle()` to change the selection state.
+ * A selectable value with an optional index. The index is required when the selection is used with
+ * `trackBy`.
  */
-export declare class CdkSelectAll<T> implements OnDestroy, OnInit {
-    private readonly _selection;
-    private readonly _controlValueAccessor;
-    /**
-     * The checked state of the toggle.
-     * Resolves to `true` if all the values are selected, `false` if no value is selected.
-     */
-    readonly checked: Observable<boolean>;
-    /**
-     * The indeterminate state of the toggle.
-     * Resolves to `true` if part (not all) of the values are selected, `false` if all values or no
-     * value at all are selected.
-     */
-    readonly indeterminate: Observable<boolean>;
-    /**
-     * Toggles the select-all state.
-     * @param event The click event if the toggle is triggered by a (mouse or keyboard) click. If
-     *     using with a native `<input type="checkbox">`, the parameter is required for the
-     *     indeterminate state to work properly.
-     */
-    toggle(event?: MouseEvent): void;
-    private readonly _destroyed;
-    constructor();
-    ngOnInit(): void;
-    private _configureControlValueAccessor;
-    private _assertValidParentSelection;
-    ngOnDestroy(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectAll<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectAll<any>, "[cdkSelectAll]", ["cdkSelectAll"], {}, {}, never, never, true, never>;
+interface SelectableWithIndex<T> {
+    value: T;
+    index?: number;
+}
+/**
+ * Represents the change in the selection set.
+ */
+interface SelectionChange<T> {
+    before: SelectableWithIndex<T>[];
+    after: SelectableWithIndex<T>[];
+}
+/**
+ * Maintains a set of selected items. Support selecting and deselecting items, and checking if a
+ * value is selected.
+ * When constructed with a `trackByFn`, all the items will be identified by applying the `trackByFn`
+ * on them. Because `trackByFn` requires the index of the item to be passed in, the `index` field is
+ * expected to be set when calling `isSelected`, `select` and `deselect`.
+ */
+declare class SelectionSet<T> implements TrackBySelection<T> {
+    private _multiple;
+    private _trackByFn?;
+    private _selectionMap;
+    changed: Subject<SelectionChange<T>>;
+    constructor(_multiple?: boolean, _trackByFn?: TrackByFunction<T> | undefined);
+    isSelected(value: SelectableWithIndex<T>): boolean;
+    select(...selects: SelectableWithIndex<T>[]): void;
+    deselect(...selects: SelectableWithIndex<T>[]): void;
+    private _markSelected;
+    private _markDeselected;
+    private _getTrackedByValue;
+    private _getCurrentSelection;
 }
 
 /**
@@ -77,7 +58,7 @@ export declare class CdkSelectAll<T> implements OnDestroy, OnInit {
  * It must be applied to the parent element if `cdkSelectionToggle`, `cdkSelectAll`,
  * `cdkRowSelection` and `cdkSelectionColumn` are applied.
  */
-export declare class CdkSelection<T> implements OnInit, AfterContentChecked, CollectionViewer, OnDestroy {
+declare class CdkSelection<T> implements OnInit, AfterContentChecked, CollectionViewer, OnDestroy {
     viewChange: Observable<ListRange>;
     get dataSource(): TableDataSource<T>;
     set dataSource(dataSource: TableDataSource<T>);
@@ -120,34 +101,48 @@ export declare class CdkSelection<T> implements OnInit, AfterContentChecked, Col
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelection<any>, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelection<any>, "[cdkSelection]", ["cdkSelection"], { "dataSource": { "alias": "dataSource"; "required": false; }; "trackByFn": { "alias": "trackBy"; "required": false; }; "multiple": { "alias": "cdkSelectionMultiple"; "required": false; }; }, { "change": "cdkSelectionChange"; }, never, never, true, never>;
 }
+type SelectAllState = 'all' | 'none' | 'partial';
+type TableDataSource<T> = DataSource<T> | Observable<readonly T[]> | readonly T[];
 
 /**
- * Column that adds row selecting checkboxes and a select-all checkbox if `cdkSelectionMultiple` is
- * `true`.
+ * Makes the element a select-all toggle.
  *
- * Must be used within a parent `CdkSelection` directive.
+ * Must be used within a parent `CdkSelection` directive. It toggles the selection states
+ * of all the selection toggles connected with the `CdkSelection` directive.
+ * If the element implements `ControlValueAccessor`, e.g. `MatCheckbox`, the directive
+ * automatically connects it with the select-all state provided by the `CdkSelection` directive. If
+ * not, use `checked$` to get the checked state, `indeterminate$` to get the indeterminate state,
+ * and `toggle()` to change the selection state.
  */
-export declare class CdkSelectionColumn<T> implements OnInit, OnDestroy {
-    private _table;
-    readonly selection: CdkSelection<T> | null;
-    /** Column name that should be used to reference this column. */
-    get name(): string;
-    set name(name: string);
-    private _name;
-    private readonly _columnDef;
-    private readonly _cell;
-    private readonly _headerCell;
+declare class CdkSelectAll<T> implements OnDestroy, OnInit {
+    private readonly _selection;
+    private readonly _controlValueAccessor;
+    /**
+     * The checked state of the toggle.
+     * Resolves to `true` if all the values are selected, `false` if no value is selected.
+     */
+    readonly checked: Observable<boolean>;
+    /**
+     * The indeterminate state of the toggle.
+     * Resolves to `true` if part (not all) of the values are selected, `false` if all values or no
+     * value at all are selected.
+     */
+    readonly indeterminate: Observable<boolean>;
+    /**
+     * Toggles the select-all state.
+     * @param event The click event if the toggle is triggered by a (mouse or keyboard) click. If
+     *     using with a native `<input type="checkbox">`, the parameter is required for the
+     *     indeterminate state to work properly.
+     */
+    toggle(event?: MouseEvent): void;
+    private readonly _destroyed;
+    constructor();
     ngOnInit(): void;
+    private _configureControlValueAccessor;
+    private _assertValidParentSelection;
     ngOnDestroy(): void;
-    private _syncColumnDefName;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionColumn<any>, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CdkSelectionColumn<any>, "cdk-selection-column", never, { "name": { "alias": "cdkSelectionColumnName"; "required": false; }; }, {}, never, never, true, never>;
-}
-
-export declare class CdkSelectionModule {
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkSelectionModule, never, [typeof i1.CdkTableModule, typeof i2.CdkSelection, typeof i3.CdkSelectionToggle, typeof i4.CdkSelectAll, typeof i5.CdkSelectionColumn, typeof i6.CdkRowSelection], [typeof i2.CdkSelection, typeof i3.CdkSelectionToggle, typeof i4.CdkSelectAll, typeof i5.CdkSelectionColumn, typeof i6.CdkRowSelection]>;
-    static ɵinj: i0.ɵɵInjectorDeclaration<CdkSelectionModule>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectAll<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectAll<any>, "[cdkSelectAll]", ["cdkSelectAll"], {}, {}, never, never, true, never>;
 }
 
 /**
@@ -160,7 +155,7 @@ export declare class CdkSelectionModule {
  * not, use `checked$` to get the checked state of the value, and `toggle()` to change the selection
  * state.
  */
-export declare class CdkSelectionToggle<T> implements OnDestroy, OnInit {
+declare class CdkSelectionToggle<T> implements OnDestroy, OnInit {
     private _selection;
     private _controlValueAccessors;
     /** The value that is associated with the toggle */
@@ -184,88 +179,51 @@ export declare class CdkSelectionToggle<T> implements OnDestroy, OnInit {
     static ɵdir: i0.ɵɵDirectiveDeclaration<CdkSelectionToggle<any>, "[cdkSelectionToggle]", ["cdkSelectionToggle"], { "value": { "alias": "cdkSelectionToggleValue"; "required": false; }; "index": { "alias": "cdkSelectionToggleIndex"; "required": false; }; }, {}, never, never, true, never>;
 }
 
-declare namespace i2 {
-    export {
-        CdkSelection
-    }
-}
-
-declare namespace i3 {
-    export {
-        CdkSelectionToggle
-    }
-}
-
-declare namespace i4 {
-    export {
-        CdkSelectAll
-    }
-}
-
-declare namespace i5 {
-    export {
-        CdkSelectionColumn
-    }
-}
-
-declare namespace i6 {
-    export {
-        CdkRowSelection
-    }
+/**
+ * Column that adds row selecting checkboxes and a select-all checkbox if `cdkSelectionMultiple` is
+ * `true`.
+ *
+ * Must be used within a parent `CdkSelection` directive.
+ */
+declare class CdkSelectionColumn<T> implements OnInit, OnDestroy {
+    private _table;
+    readonly selection: CdkSelection<T> | null;
+    /** Column name that should be used to reference this column. */
+    get name(): string;
+    set name(name: string);
+    private _name;
+    private readonly _columnDef;
+    private readonly _cell;
+    private readonly _headerCell;
+    ngOnInit(): void;
+    ngOnDestroy(): void;
+    private _syncColumnDefName;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionColumn<any>, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CdkSelectionColumn<any>, "cdk-selection-column", never, { "name": { "alias": "cdkSelectionColumnName"; "required": false; }; }, {}, never, never, true, never>;
 }
 
 /**
- * A selectable value with an optional index. The index is required when the selection is used with
- * `trackBy`.
+ * Applies `cdk-selected` class and `aria-selected` to an element.
+ *
+ * Must be used within a parent `CdkSelection` directive.
+ * Must be provided with the value. The index is required if `trackBy` is used on the `CdkSelection`
+ * directive.
  */
-export declare interface SelectableWithIndex<T> {
+declare class CdkRowSelection<T> {
+    readonly _selection: CdkSelection<T>;
     value: T;
-    index?: number;
+    get index(): number | undefined;
+    set index(index: NumberInput);
+    protected _index?: number;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkRowSelection<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkRowSelection<any>, "[cdkRowSelection]", never, { "value": { "alias": "cdkRowSelectionValue"; "required": false; }; "index": { "alias": "cdkRowSelectionIndex"; "required": false; }; }, {}, never, never, true, never>;
 }
 
-declare type SelectAllState = 'all' | 'none' | 'partial';
-
-/**
- * Represents the change in the selection set.
- */
-export declare interface SelectionChange<T> {
-    before: SelectableWithIndex<T>[];
-    after: SelectableWithIndex<T>[];
+declare class CdkSelectionModule {
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkSelectionModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkSelectionModule, never, [typeof i1.CdkTableModule, typeof CdkSelection, typeof CdkSelectionToggle, typeof CdkSelectAll, typeof CdkSelectionColumn, typeof CdkRowSelection], [typeof CdkSelection, typeof CdkSelectionToggle, typeof CdkSelectAll, typeof CdkSelectionColumn, typeof CdkRowSelection]>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<CdkSelectionModule>;
 }
 
-/**
- * Maintains a set of selected items. Support selecting and deselecting items, and checking if a
- * value is selected.
- * When constructed with a `trackByFn`, all the items will be identified by applying the `trackByFn`
- * on them. Because `trackByFn` requires the index of the item to be passed in, the `index` field is
- * expected to be set when calling `isSelected`, `select` and `deselect`.
- */
-export declare class SelectionSet<T> implements TrackBySelection<T> {
-    private _multiple;
-    private _trackByFn?;
-    private _selectionMap;
-    changed: Subject<SelectionChange<T>>;
-    constructor(_multiple?: boolean, _trackByFn?: TrackByFunction<T> | undefined);
-    isSelected(value: SelectableWithIndex<T>): boolean;
-    select(...selects: SelectableWithIndex<T>[]): void;
-    deselect(...selects: SelectableWithIndex<T>[]): void;
-    private _markSelected;
-    private _markDeselected;
-    private _getTrackedByValue;
-    private _getCurrentSelection;
-}
-
-declare type TableDataSource<T> = DataSource<T> | Observable<readonly T[]> | readonly T[];
-
-/**
- * Maintains a set of selected values. One or more values can be added to or removed from the
- * selection.
- */
-declare interface TrackBySelection<T> {
-    isSelected(value: SelectableWithIndex<T>): boolean;
-    select(...values: SelectableWithIndex<T>[]): void;
-    deselect(...values: SelectableWithIndex<T>[]): void;
-    changed: Subject<SelectionChange<T>>;
-}
-
-export { }
+export { CdkRowSelection, CdkSelectAll, CdkSelection, CdkSelectionColumn, CdkSelectionModule, CdkSelectionToggle, SelectionSet };
+export type { SelectableWithIndex, SelectionChange };
