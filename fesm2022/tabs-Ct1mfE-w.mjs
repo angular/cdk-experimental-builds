@@ -1,35 +1,77 @@
 import { computed, signal } from '@angular/core';
 import { K as KeyboardEventManager, P as PointerEventManager, L as ListFocus, b as ListNavigation, a as ListSelection } from './list-focus-Di7m_z_6.mjs';
 
+/**
+ * An Expansion control.
+ *
+ * Use Expansion behavior if a pattern has a collapsible view that has two elements rely on the
+ * states from each other. For example
+ *
+ * ```html
+ * <button aria-controls="remote-content" aria-expanded="false">Toggle Content</button>
+ *
+ * ...
+ *
+ * <div id="remote-content" aria-hidden="true">
+ *  Collapsible content
+ * </div>
+ * ```
+ */
+class ExpansionControl {
+    inputs;
+    /** Whether an Expansion is visible. */
+    visible;
+    /** The controllerd Expansion panel Id. */
+    controls = computed(() => this.inputs.expansionPanel()?.id());
+    constructor(inputs) {
+        this.inputs = inputs;
+        this.visible = inputs.visible;
+    }
+}
+/** A Expansion panel. */
+class ExpansionPanel {
+    inputs;
+    /** A unique identifier for the panel. */
+    id;
+    /** Whether the panel is hidden. */
+    hidden = computed(() => !this.inputs.expansionControl()?.visible());
+    constructor(inputs) {
+        this.inputs = inputs;
+        this.id = inputs.id;
+    }
+}
+
 /** A tab in a tablist. */
 class TabPattern {
+    inputs;
     /** A global unique identifier for the tab. */
     id;
     /** A local unique identifier for the tab. */
     value;
-    /** Whether the tab is active. */
-    active = computed(() => this.tablist()?.focusManager.activeItem() === this);
-    /** Whether the tab is selected. */
-    selected = computed(() => this.tablist().selection.inputs.value().includes(this.value()));
-    /** A Tabpanel Id controlled by the tab. */
-    controls = computed(() => this.tabpanel()?.id());
     /** Whether the tab is disabled. */
     disabled;
-    /** A reference to the parent tablist. */
-    tablist;
-    /** A reference to the corresponding tabpanel. */
-    tabpanel;
-    /** The tabindex of the tab. */
-    tabindex = computed(() => this.tablist().focusManager.getItemTabindex(this));
     /** The html element that should receive focus. */
     element;
+    /** Controls the expansion state for the tab.  */
+    expansionControl;
+    /** Whether the tab is active. */
+    active = computed(() => this.inputs.tablist().focusManager.activeItem() === this);
+    /** Whether the tab is selected. */
+    selected = computed(() => !!this.inputs.tablist().selection.inputs.value().includes(this.value()));
+    /** A tabpanel Id controlled by the tab. */
+    controls = computed(() => this.expansionControl.controls());
+    /** The tabindex of the tab. */
+    tabindex = computed(() => this.inputs.tablist().focusManager.getItemTabindex(this));
     constructor(inputs) {
+        this.inputs = inputs;
         this.id = inputs.id;
         this.value = inputs.value;
-        this.tablist = inputs.tablist;
-        this.tabpanel = inputs.tabpanel;
-        this.element = inputs.element;
         this.disabled = inputs.disabled;
+        this.element = inputs.element;
+        this.expansionControl = new ExpansionControl({
+            visible: this.selected,
+            expansionPanel: computed(() => inputs.tabpanel()?.expansionPanel),
+        });
     }
 }
 /** A tabpanel associated with a tab. */
@@ -38,14 +80,17 @@ class TabPanelPattern {
     id;
     /** A local unique identifier for the tabpanel. */
     value;
-    /** A reference to the corresponding tab. */
-    tab;
+    /** Represents the expansion state for the tabpanel.  */
+    expansionPanel;
     /** Whether the tabpanel is hidden. */
-    hidden = computed(() => !this.tab()?.selected());
+    hidden = computed(() => this.expansionPanel.hidden());
     constructor(inputs) {
         this.id = inputs.id;
         this.value = inputs.value;
-        this.tab = inputs.tab;
+        this.expansionPanel = new ExpansionPanel({
+            id: inputs.id,
+            expansionControl: computed(() => inputs.tab()?.expansionControl),
+        });
     }
 }
 /** Controls the state of a tablist. */
@@ -173,4 +218,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-BunANY1M.mjs.map
+//# sourceMappingURL=tabs-Ct1mfE-w.mjs.map

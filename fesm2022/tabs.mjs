@@ -5,7 +5,7 @@ import { Directionality } from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
 import { contentChild, contentChildren, computed, Directive, inject, input, booleanAttribute, model, signal, ElementRef, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-BunANY1M.mjs';
+import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-Ct1mfE-w.mjs';
 import './list-focus-Di7m_z_6.mjs';
 
 /**
@@ -17,15 +17,20 @@ import './list-focus-Di7m_z_6.mjs';
  * ```html
  * <div cdkTabs>
  *   <ul cdkTabList>
- *     <li cdkTab>Tab 1</li>
- *     <li cdkTab>Tab 2</li>
- *     <li cdkTab>Tab 3</li>
+ *     <li cdkTab value="tab1">Tab 1</li>
+ *     <li cdkTab value="tab2">Tab 2</li>
+ *     <li cdkTab value="tab3">Tab 3</li>
  *   </ul>
  *
- *   <div cdkTabPanel>Tab content 1</div>
- *   <div cdkTabPanel>Tab content 2</div>
- *   <div cdkTabPanel>Tab content 3</div>
- * </div>
+ *   <div cdkTabPanel value="tab1">
+ *      <ng-template cdkTabContent>Tab content 1</ng-template>
+ *   </div>
+ *   <div cdkTabPanel value="tab2">
+ *      <ng-template cdkTabContent>Tab content 2</ng-template>
+ *   </div>
+ *   <div cdkTabPanel value="tab3">
+ *      <ng-template cdkTabContent>Tab content 3</ng-template>
+ *   </div>
  * ```
  */
 class CdkTabs {

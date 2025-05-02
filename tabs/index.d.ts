@@ -1,6 +1,6 @@
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
-import { a as TabPattern, d as TabPanelPattern, e as TabListPattern } from '../tabs.d-BAo141mw.js';
+import { a as TabPattern, c as TabPanelPattern, e as TabListPattern } from '../tabs.d-DooGD7Uk.js';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
 import '../list-navigation.d-DfOSxsSp.js';
 
@@ -13,15 +13,20 @@ import '../list-navigation.d-DfOSxsSp.js';
  * ```html
  * <div cdkTabs>
  *   <ul cdkTabList>
- *     <li cdkTab>Tab 1</li>
- *     <li cdkTab>Tab 2</li>
- *     <li cdkTab>Tab 3</li>
+ *     <li cdkTab value="tab1">Tab 1</li>
+ *     <li cdkTab value="tab2">Tab 2</li>
+ *     <li cdkTab value="tab3">Tab 3</li>
  *   </ul>
  *
- *   <div cdkTabPanel>Tab content 1</div>
- *   <div cdkTabPanel>Tab content 2</div>
- *   <div cdkTabPanel>Tab content 3</div>
- * </div>
+ *   <div cdkTabPanel value="tab1">
+ *      <ng-template cdkTabContent>Tab content 1</ng-template>
+ *   </div>
+ *   <div cdkTabPanel value="tab2">
+ *      <ng-template cdkTabContent>Tab content 2</ng-template>
+ *   </div>
+ *   <div cdkTabPanel value="tab3">
+ *      <ng-template cdkTabContent>Tab content 3</ng-template>
+ *   </div>
  * ```
  */
 declare class CdkTabs {
