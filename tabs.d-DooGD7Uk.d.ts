@@ -1,46 +1,84 @@
 import * as i0 from '@angular/core';
-import { L as ListNavigationItem, a as ListSelectionItem, b as ListFocusItem, S as SignalLike, d as ListNavigationInputs, e as ListSelectionInputs, f as ListFocusInputs, g as ListNavigation, h as ListSelection, i as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-DfOSxsSp.js';
+import { S as SignalLike, L as ListNavigationItem, a as ListSelectionItem, b as ListFocusItem, d as ListNavigationInputs, e as ListSelectionInputs, f as ListFocusInputs, g as ListNavigation, h as ListSelection, i as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-DfOSxsSp.js';
+
+/** Inputs for an Expansion control. */
+interface ExpansionControlInputs {
+    /** Whether an Expansion is visible. */
+    visible: SignalLike<boolean>;
+    /** The controlled Expansion panel. */
+    expansionPanel: SignalLike<ExpansionPanel | undefined>;
+}
+/** Inputs for an Expansion panel. */
+interface ExpansionPanelInputs {
+    /** A unique identifier for the panel. */
+    id: SignalLike<string>;
+    /** The Expansion control. */
+    expansionControl: SignalLike<ExpansionControl | undefined>;
+}
+/**
+ * An Expansion control.
+ *
+ * Use Expansion behavior if a pattern has a collapsible view that has two elements rely on the
+ * states from each other. For example
+ *
+ * ```html
+ * <button aria-controls="remote-content" aria-expanded="false">Toggle Content</button>
+ *
+ * ...
+ *
+ * <div id="remote-content" aria-hidden="true">
+ *  Collapsible content
+ * </div>
+ * ```
+ */
+declare class ExpansionControl {
+    readonly inputs: ExpansionControlInputs;
+    /** Whether an Expansion is visible. */
+    visible: SignalLike<boolean>;
+    /** The controllerd Expansion panel Id. */
+    controls: i0.Signal<string | undefined>;
+    constructor(inputs: ExpansionControlInputs);
+}
+/** A Expansion panel. */
+declare class ExpansionPanel {
+    readonly inputs: ExpansionPanelInputs;
+    /** A unique identifier for the panel. */
+    id: SignalLike<string>;
+    /** Whether the panel is hidden. */
+    hidden: i0.Signal<boolean>;
+    constructor(inputs: ExpansionPanelInputs);
+}
 
 /** The required inputs to tabs. */
 interface TabInputs extends ListNavigationItem, ListSelectionItem<string>, ListFocusItem {
+    /** The parent tablist that controls the tab. */
     tablist: SignalLike<TabListPattern>;
+    /** The remote tabpanel controlled by the tab. */
     tabpanel: SignalLike<TabPanelPattern | undefined>;
 }
 /** A tab in a tablist. */
 declare class TabPattern {
+    readonly inputs: TabInputs;
     /** A global unique identifier for the tab. */
     id: SignalLike<string>;
     /** A local unique identifier for the tab. */
     value: SignalLike<string>;
+    /** Whether the tab is disabled. */
+    disabled: SignalLike<boolean>;
+    /** The html element that should receive focus. */
+    element: SignalLike<HTMLElement>;
+    /** Controls the expansion state for the tab.  */
+    expansionControl: ExpansionControl;
     /** Whether the tab is active. */
     active: i0.Signal<boolean>;
     /** Whether the tab is selected. */
     selected: i0.Signal<boolean>;
-    /** A Tabpanel Id controlled by the tab. */
+    /** A tabpanel Id controlled by the tab. */
     controls: i0.Signal<string | undefined>;
-    /** Whether the tab is disabled. */
-    disabled: SignalLike<boolean>;
-    /** A reference to the parent tablist. */
-    tablist: SignalLike<TabListPattern>;
-    /** A reference to the corresponding tabpanel. */
-    tabpanel: SignalLike<TabPanelPattern | undefined>;
     /** The tabindex of the tab. */
     tabindex: i0.Signal<0 | -1>;
-    /** The html element that should receive focus. */
-    element: SignalLike<HTMLElement>;
     constructor(inputs: TabInputs);
 }
-/** The selection operations that the tablist can perform. */
-interface SelectOptions {
-    select?: boolean;
-    toggle?: boolean;
-    toggleOne?: boolean;
-    selectOne?: boolean;
-}
-/** The required inputs for the tablist. */
-type TabListInputs = ListNavigationInputs<TabPattern> & Omit<ListSelectionInputs<TabPattern, string>, 'multi'> & ListFocusInputs<TabPattern> & {
-    disabled: SignalLike<boolean>;
-};
 /** The required inputs for the tabpanel. */
 interface TabPanelInputs {
     id: SignalLike<string>;
@@ -53,12 +91,23 @@ declare class TabPanelPattern {
     id: SignalLike<string>;
     /** A local unique identifier for the tabpanel. */
     value: SignalLike<string>;
-    /** A reference to the corresponding tab. */
-    tab: SignalLike<TabPattern | undefined>;
+    /** Represents the expansion state for the tabpanel.  */
+    expansionPanel: ExpansionPanel;
     /** Whether the tabpanel is hidden. */
     hidden: i0.Signal<boolean>;
     constructor(inputs: TabPanelInputs);
 }
+/** The selection operations that the tablist can perform. */
+interface SelectOptions {
+    select?: boolean;
+    toggle?: boolean;
+    toggleOne?: boolean;
+    selectOne?: boolean;
+}
+/** The required inputs for the tablist. */
+type TabListInputs = ListNavigationInputs<TabPattern> & Omit<ListSelectionInputs<TabPattern, string>, 'multi'> & ListFocusInputs<TabPattern> & {
+    disabled: SignalLike<boolean>;
+};
 /** Controls the state of a tablist. */
 declare class TabListPattern {
     readonly inputs: TabListInputs;
@@ -106,5 +155,5 @@ declare class TabListPattern {
     private _getItem;
 }
 
-export { TabPattern as a, TabPanelPattern as d, TabListPattern as e };
-export type { TabInputs as T, TabListInputs as b, TabPanelInputs as c };
+export { TabPattern as a, TabPanelPattern as c, TabListPattern as e };
+export type { TabInputs as T, TabPanelInputs as b, TabListInputs as d };
