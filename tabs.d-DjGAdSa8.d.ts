@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { S as SignalLike, L as ListNavigationItem, a as ListSelectionItem, b as ListFocusItem, d as ListNavigationInputs, e as ListSelectionInputs, f as ListFocusInputs, g as ListNavigation, h as ListSelection, i as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-DfOSxsSp.js';
+import { S as SignalLike, L as ListNavigationItem, a as ListSelectionItem, b as ListFocusItem, f as ListNavigationInputs, g as ListSelectionInputs, h as ListFocusInputs, e as ListNavigation, d as ListSelection, c as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-mll4djs5.js';
 
 /** Inputs for an Expansion control. */
 interface ExpansionControlInputs {
@@ -155,5 +155,5 @@ declare class TabListPattern {
     private _getItem;
 }
 
-export { TabPattern as a, TabPanelPattern as c, TabListPattern as e };
-export type { TabInputs as T, TabPanelInputs as b, TabListInputs as d };
+export { TabPattern as T, TabPanelPattern as a, TabListPattern as b };
+export type { TabInputs as c, TabPanelInputs as d, TabListInputs as e };

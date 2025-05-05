@@ -243,5 +243,5 @@ declare class ListNavigation<T extends ListNavigationItem> {
     private _advance;
 }
 
-export { KeyboardEventManager as K, PointerEventManager as P, convertGetterSetterToWritableSignalLike as c, ListNavigation as g, ListSelection as h, ListFocus as i };
-export type { ListNavigationItem as L, SignalLike as S, WritableSignalLike as W, ListSelectionItem as a, ListFocusItem as b, ListNavigationInputs as d, ListSelectionInputs as e, ListFocusInputs as f };
+export { KeyboardEventManager as K, PointerEventManager as P, ListFocus as c, ListSelection as d, ListNavigation as e, convertGetterSetterToWritableSignalLike as i };
+export type { ListNavigationItem as L, SignalLike as S, WritableSignalLike as W, ListSelectionItem as a, ListFocusItem as b, ListNavigationInputs as f, ListSelectionInputs as g, ListFocusInputs as h };
