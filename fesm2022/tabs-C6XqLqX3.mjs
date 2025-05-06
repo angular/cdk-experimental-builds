@@ -1,4 +1,4 @@
-import { computed, signal } from '@angular/core';
+import { computed } from '@angular/core';
 import { K as KeyboardEventManager, P as PointerEventManager, L as ListFocus, a as ListNavigation, b as ListSelection } from './list-focus-CxzPwJEC.mjs';
 
 /**
@@ -149,7 +149,7 @@ class TabListPattern {
         this.navigation = new ListNavigation({ ...inputs, focusManager: this.focusManager });
         this.selection = new ListSelection({
             ...inputs,
-            multi: signal(false),
+            multi: () => false,
             focusManager: this.focusManager,
         });
     }
@@ -218,4 +218,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-vJuPd4oK.mjs.map
+//# sourceMappingURL=tabs-C6XqLqX3.mjs.map

@@ -1,7 +1,7 @@
 export { L as ListboxPattern, O as OptionPattern } from './option-BPMDK7_q.mjs';
 import { computed, signal } from '@angular/core';
 import { L as ListFocus, a as ListNavigation, b as ListSelection, K as KeyboardEventManager, P as PointerEventManager } from './list-focus-CxzPwJEC.mjs';
-export { T as TabListPattern, b as TabPanelPattern, a as TabPattern } from './tabs-vJuPd4oK.mjs';
+export { T as TabListPattern, b as TabPanelPattern, a as TabPattern } from './tabs-C6XqLqX3.mjs';
 
 /** Controls the state of a radio group. */
 class RadioGroupPattern {

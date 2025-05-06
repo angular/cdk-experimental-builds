@@ -51,6 +51,8 @@ declare class CdkTabList {
     private readonly _directionality;
     /** The CdkTabs nested inside of the CdkTabList. */
     private readonly _cdkTabs;
+    /** The internal tab selection state. */
+    private readonly _selection;
     /** A signal wrapper for directionality. */
     protected textDirection: i0.Signal<_angular_cdk_bidi.Direction>;
     /** The Tab UIPatterns of the child Tabs. */
@@ -69,10 +71,13 @@ declare class CdkTabList {
     disabled: i0.InputSignalWithTransform<boolean, unknown>;
     /** The current index that has been navigated to. */
     activeIndex: i0.ModelSignal<number>;
+    /** The current selected tab. */
+    tab: i0.ModelSignal<string | undefined>;
     /** The TabList UIPattern. */
     pattern: TabListPattern;
+    constructor();
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkTabList, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkTabList, "[cdkTabList]", ["cdkTabList"], { "orientation": { "alias": "orientation"; "required": false; "isSignal": true; }; "wrap": { "alias": "wrap"; "required": false; "isSignal": true; }; "skipDisabled": { "alias": "skipDisabled"; "required": false; "isSignal": true; }; "focusMode": { "alias": "focusMode"; "required": false; "isSignal": true; }; "selectionMode": { "alias": "selectionMode"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "activeIndex": { "alias": "activeIndex"; "required": false; "isSignal": true; }; }, { "activeIndex": "activeIndexChange"; }, ["_cdkTabs"], never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkTabList, "[cdkTabList]", ["cdkTabList"], { "orientation": { "alias": "orientation"; "required": false; "isSignal": true; }; "wrap": { "alias": "wrap"; "required": false; "isSignal": true; }; "skipDisabled": { "alias": "skipDisabled"; "required": false; "isSignal": true; }; "focusMode": { "alias": "focusMode"; "required": false; "isSignal": true; }; "selectionMode": { "alias": "selectionMode"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "activeIndex": { "alias": "activeIndex"; "required": false; "isSignal": true; }; "tab": { "alias": "tab"; "required": false; "isSignal": true; }; }, { "activeIndex": "activeIndexChange"; "tab": "tabChange"; }, ["_cdkTabs"], never, true, never>;
 }
 /** A selectable tab in a TabList. */
 declare class CdkTab {
