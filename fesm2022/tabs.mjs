@@ -3,9 +3,9 @@ import { DeferredContentAware, DeferredContent } from '@angular/cdk-experimental
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
-import { contentChild, contentChildren, computed, Directive, inject, input, booleanAttribute, model, signal, ElementRef, effect } from '@angular/core';
+import { contentChild, contentChildren, computed, Directive, inject, linkedSignal, input, booleanAttribute, model, effect, ElementRef } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-Ct1mfE-w.mjs';
+import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-DFP3Xs4J.mjs';
 import './list-focus-Di7m_z_6.mjs';
 
 /**
@@ -65,6 +65,8 @@ class CdkTabList {
     _directionality = inject(Directionality);
     /** The CdkTabs nested inside of the CdkTabList. */
     _cdkTabs = contentChildren(CdkTab);
+    /** The internal tab selection state. */
+    _selection = linkedSignal(() => (this.tab() ? [this.tab()] : []));
     /** A signal wrapper for directionality. */
     textDirection = toSignal(this._directionality.change, {
         initialValue: this._directionality.value,
@@ -85,15 +87,21 @@ class CdkTabList {
     disabled = input(false, { transform: booleanAttribute });
     /** The current index that has been navigated to. */
     activeIndex = model(0);
+    // TODO(ok7sai): Provides a default state when there is no pre-select tab.
+    /** The current selected tab. */
+    tab = model();
     /** The TabList UIPattern. */
     pattern = new TabListPattern({
         ...this,
         items: this.tabs,
         textDirection: this.textDirection,
-        value: signal([]),
+        value: this._selection,
     });
+    constructor() {
+        effect(() => this.tab.set(this._selection()[0]));
+    }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: CdkTabList, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.2.0", version: "20.0.0-next.5", type: CdkTabList, isStandalone: true, selector: "[cdkTabList]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, activeIndex: { classPropertyName: "activeIndex", publicName: "activeIndex", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { activeIndex: "activeIndexChange" }, host: { attributes: { "role": "tablist" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)" }, properties: { "attr.tabindex": "pattern.tabindex()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-orientation": "pattern.orientation()", "attr.aria-activedescendant": "pattern.activedescendant()" }, classAttribute: "cdk-tablist" }, queries: [{ propertyName: "_cdkTabs", predicate: CdkTab, isSignal: true }], exportAs: ["cdkTabList"], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.2.0", version: "20.0.0-next.5", type: CdkTabList, isStandalone: true, selector: "[cdkTabList]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, activeIndex: { classPropertyName: "activeIndex", publicName: "activeIndex", isSignal: true, isRequired: false, transformFunction: null }, tab: { classPropertyName: "tab", publicName: "tab", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { activeIndex: "activeIndexChange", tab: "tabChange" }, host: { attributes: { "role": "tablist" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)" }, properties: { "attr.tabindex": "pattern.tabindex()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-orientation": "pattern.orientation()", "attr.aria-activedescendant": "pattern.activedescendant()" }, classAttribute: "cdk-tablist" }, queries: [{ propertyName: "_cdkTabs", predicate: CdkTab, isSignal: true }], exportAs: ["cdkTabList"], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.5", ngImport: i0, type: CdkTabList, decorators: [{
             type: Directive,
@@ -111,7 +119,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-next.5", 
                         '(pointerdown)': 'pattern.onPointerdown($event)',
                     },
                 }]
-        }] });
+        }], ctorParameters: () => [] });
 /** A selectable tab in a TabList. */
 class CdkTab {
     /** A reference to the tab element. */
