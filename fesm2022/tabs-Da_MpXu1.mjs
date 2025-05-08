@@ -1,43 +1,59 @@
-import { computed } from '@angular/core';
+import { computed, signal } from '@angular/core';
 import { K as KeyboardEventManager, P as PointerEventManager, L as ListFocus, a as ListNavigation, b as ListSelection } from './list-focus-CxzPwJEC.mjs';
 
-/**
- * An Expansion control.
- *
- * Use Expansion behavior if a pattern has a collapsible view that has two elements rely on the
- * states from each other. For example
- *
- * ```html
- * <button aria-controls="remote-content" aria-expanded="false">Toggle Content</button>
- *
- * ...
- *
- * <div id="remote-content" aria-hidden="true">
- *  Collapsible content
- * </div>
- * ```
- */
-class ExpansionControl {
+/** Manages the expansion state of a list of items. */
+class Expansion {
     inputs;
-    /** Whether an Expansion is visible. */
-    visible;
-    /** The controllerd Expansion panel Id. */
-    controls = computed(() => this.inputs.expansionPanel()?.id());
+    /** A signal holding an array of ids of the currently expanded items. */
+    expandedIds;
+    /** The currently active (focused) item in the list. */
+    activeItem = computed(() => this.inputs.focusManager.activeItem());
     constructor(inputs) {
         this.inputs = inputs;
-        this.visible = inputs.visible;
+        this.expandedIds = inputs.expandedIds ?? signal([]);
     }
-}
-/** A Expansion panel. */
-class ExpansionPanel {
-    inputs;
-    /** A unique identifier for the panel. */
-    id;
-    /** Whether the panel is hidden. */
-    hidden = computed(() => !this.inputs.expansionControl()?.visible());
-    constructor(inputs) {
-        this.inputs = inputs;
-        this.id = inputs.id;
+    /** Opens the specified item, or the currently active item if none is specified. */
+    open(item = this.activeItem()) {
+        if (this.isExpandable(item)) {
+            this.inputs.multiExpandable()
+                ? this.expandedIds.update(ids => ids.concat(item.expansionId()))
+                : this.expandedIds.set([item.expansionId()]);
+        }
+    }
+    /** Closes the specified item, or the currently active item if none is specified. */
+    close(item = this.activeItem()) {
+        if (this.isExpandable(item)) {
+            this.expandedIds.update(ids => ids.filter(id => id !== item.expansionId()));
+        }
+    }
+    /**
+     * Toggles the expansion state of the specified item,
+     * or the currently active item if none is specified.
+     */
+    toggle(item = this.activeItem()) {
+        this.expandedIds().includes(item.expansionId()) ? this.close(item) : this.open(item);
+    }
+    /** Opens all focusable items in the list. */
+    openAll() {
+        if (this.inputs.multiExpandable()) {
+            for (const item of this.inputs.items()) {
+                this.open(item);
+            }
+        }
+    }
+    /** Closes all focusable items in the list. */
+    closeAll() {
+        for (const item of this.inputs.items()) {
+            this.close(item);
+        }
+    }
+    /** Checks whether the specified item is expandable / collapsible. */
+    isExpandable(item) {
+        return this.inputs.focusManager.isFocusable(item) && item.expandable();
+    }
+    /** Checks whether the specified item is currently expanded. */
+    isExpanded(item) {
+        return this.expandedIds().includes(item.expansionId());
     }
 }
 
@@ -52,45 +68,42 @@ class TabPattern {
     disabled;
     /** The html element that should receive focus. */
     element;
-    /** Controls the expansion state for the tab.  */
-    expansionControl;
+    /** Whether this tab has expandable content. */
+    expandable = () => true;
+    /** The unique identifier used by the expansion behavior. */
+    expansionId;
+    /** Whether the tab is expanded. */
+    expanded = computed(() => this.inputs.tablist().expansionBehavior.isExpanded(this));
     /** Whether the tab is active. */
     active = computed(() => this.inputs.tablist().focusManager.activeItem() === this);
     /** Whether the tab is selected. */
     selected = computed(() => !!this.inputs.tablist().selection.inputs.value().includes(this.value()));
-    /** A tabpanel Id controlled by the tab. */
-    controls = computed(() => this.expansionControl.controls());
     /** The tabindex of the tab. */
     tabindex = computed(() => this.inputs.tablist().focusManager.getItemTabindex(this));
+    /** The id of the tabpanel associated with the tab. */
+    controls = computed(() => this.inputs.tabpanel()?.id());
     constructor(inputs) {
         this.inputs = inputs;
         this.id = inputs.id;
         this.value = inputs.value;
         this.disabled = inputs.disabled;
         this.element = inputs.element;
-        this.expansionControl = new ExpansionControl({
-            visible: this.selected,
-            expansionPanel: computed(() => inputs.tabpanel()?.expansionPanel),
-        });
+        this.expansionId = inputs.value;
     }
 }
 /** A tabpanel associated with a tab. */
 class TabPanelPattern {
+    inputs;
     /** A global unique identifier for the tabpanel. */
     id;
     /** A local unique identifier for the tabpanel. */
     value;
-    /** Represents the expansion state for the tabpanel.  */
-    expansionPanel;
     /** Whether the tabpanel is hidden. */
-    hidden = computed(() => this.expansionPanel.hidden());
+    hidden = computed(() => this.inputs.tab()?.expanded() === false);
     constructor(inputs) {
+        this.inputs = inputs;
         this.id = inputs.id;
         this.value = inputs.value;
-        this.expansionPanel = new ExpansionPanel({
-            id: inputs.id,
-            expansionControl: computed(() => inputs.tab()?.expansionControl),
-        });
     }
 }
 /** Controls the state of a tablist. */
@@ -102,6 +115,8 @@ class TabListPattern {
     selection;
     /** Controls focus for the tablist. */
     focusManager;
+    /** Controls expansion for the tablist. */
+    expansionBehavior;
     /** Whether the tablist is vertically or horizontally oriented. */
     orientation;
     /** Whether the tablist is disabled. */
@@ -128,18 +143,17 @@ class TabListPattern {
     });
     /** The keydown event manager for the tablist. */
     keydown = computed(() => {
-        const manager = new KeyboardEventManager()
-            .on(this.prevKey, () => this.prev({ selectOne: this.followFocus() }))
-            .on(this.nextKey, () => this.next({ selectOne: this.followFocus() }))
-            .on('Home', () => this.first({ selectOne: this.followFocus() }))
-            .on('End', () => this.last({ selectOne: this.followFocus() }))
-            .on(' ', () => this.selection.selectOne())
-            .on('Enter', () => this.selection.selectOne());
-        return manager;
+        return new KeyboardEventManager()
+            .on(this.prevKey, () => this.prev({ select: this.followFocus() }))
+            .on(this.nextKey, () => this.next({ select: this.followFocus() }))
+            .on('Home', () => this.first({ select: this.followFocus() }))
+            .on('End', () => this.last({ select: this.followFocus() }))
+            .on(' ', () => this._select({ select: true }))
+            .on('Enter', () => this._select({ select: true }));
     });
     /** The pointerdown event manager for the tablist. */
     pointerdown = computed(() => {
-        return new PointerEventManager().on(e => this.goto(e, { selectOne: true }));
+        return new PointerEventManager().on(e => this.goto(e, { select: true }));
     });
     constructor(inputs) {
         this.inputs = inputs;
@@ -150,6 +164,12 @@ class TabListPattern {
         this.selection = new ListSelection({
             ...inputs,
             multi: () => false,
+            focusManager: this.focusManager,
+        });
+        this.expansionBehavior = new Expansion({
+            ...inputs,
+            multiExpandable: () => false,
+            expandedIds: this.inputs.value,
             focusManager: this.focusManager,
         });
     }
@@ -168,44 +188,36 @@ class TabListPattern {
     /** Navigates to the first option in the tablist. */
     first(opts) {
         this.navigation.first();
-        this._updateSelection(opts);
+        this._select(opts);
     }
     /** Navigates to the last option in the tablist. */
     last(opts) {
         this.navigation.last();
-        this._updateSelection(opts);
+        this._select(opts);
     }
     /** Navigates to the next option in the tablist. */
     next(opts) {
         this.navigation.next();
-        this._updateSelection(opts);
+        this._select(opts);
     }
     /** Navigates to the previous option in the tablist. */
     prev(opts) {
         this.navigation.prev();
-        this._updateSelection(opts);
+        this._select(opts);
     }
     /** Navigates to the given item in the tablist. */
     goto(event, opts) {
         const item = this._getItem(event);
         if (item) {
             this.navigation.goto(item);
-            this._updateSelection(opts);
+            this._select(opts);
         }
     }
     /** Handles updating selection for the tablist. */
-    _updateSelection(opts) {
+    _select(opts) {
         if (opts?.select) {
-            this.selection.select();
-        }
-        if (opts?.toggle) {
-            this.selection.toggle();
-        }
-        if (opts?.toggleOne) {
-            this.selection.toggleOne();
-        }
-        if (opts?.selectOne) {
             this.selection.selectOne();
+            this.expansionBehavior.open();
         }
     }
     _getItem(e) {
@@ -218,4 +230,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-C6XqLqX3.mjs.map
+//# sourceMappingURL=tabs-Da_MpXu1.mjs.map
