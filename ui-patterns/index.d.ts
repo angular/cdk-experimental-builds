@@ -2,7 +2,7 @@ export { a as ListboxInputs, L as ListboxPattern, b as OptionInputs, O as Option
 import * as i0 from '@angular/core';
 import { L as ListNavigationItem, a as ListSelectionItem, b as ListFocusItem, S as SignalLike, c as ListFocus, d as ListSelection, e as ListNavigation, f as ListNavigationInputs, g as ListSelectionInputs, h as ListFocusInputs, K as KeyboardEventManager, P as PointerEventManager } from '../list-navigation.d-mll4djs5.js';
 export { W as WritableSignalLike, i as convertGetterSetterToWritableSignalLike } from '../list-navigation.d-mll4djs5.js';
-export { c as TabInputs, e as TabListInputs, b as TabListPattern, d as TabPanelInputs, a as TabPanelPattern, T as TabPattern } from '../tabs.d-BCnPgd0y.js';
+export { c as TabInputs, e as TabListInputs, b as TabListPattern, d as TabPanelInputs, a as TabPanelPattern, T as TabPattern } from '../tabs.d-CsJ84e5t.js';
 
 /**
  * Represents the properties exposed by a radio group that need to be accessed by a radio button.

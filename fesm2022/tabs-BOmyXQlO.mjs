@@ -1,8 +1,38 @@
 import { computed, signal } from '@angular/core';
 import { K as KeyboardEventManager, P as PointerEventManager, L as ListFocus, a as ListNavigation, b as ListSelection } from './list-focus-CxzPwJEC.mjs';
 
+/**
+ * Controls a single item's expansion state and interactions,
+ * delegating actual state changes to an Expansion manager.
+ */
+class ExpansionControl {
+    inputs;
+    /** Whether this specific item is currently expanded. Derived from the Expansion manager. */
+    isExpanded = computed(() => this.inputs.expansionManager.isExpanded(this));
+    /** Whether this item can be expanded. */
+    isExpandable = computed(() => this.inputs.expansionManager.isExpandable(this));
+    constructor(inputs) {
+        this.inputs = inputs;
+        this.expansionId = inputs.expansionId;
+        this.expandable = inputs.expandable;
+        this.element = inputs.element;
+        this.disabled = inputs.disabled;
+    }
+    /** Requests the Expansopn manager to open this item. */
+    open() {
+        this.inputs.expansionManager.open(this);
+    }
+    /** Requests the Expansion manager to close this item. */
+    close() {
+        this.inputs.expansionManager.close(this);
+    }
+    /** Requests the Expansion manager to toggle this item. */
+    toggle() {
+        this.inputs.expansionManager.toggle(this);
+    }
+}
 /** Manages the expansion state of a list of items. */
-class Expansion {
+class ListExpansion {
     inputs;
     /** A signal holding an array of ids of the currently expanded items. */
     expandedIds;
@@ -49,7 +79,7 @@ class Expansion {
     }
     /** Checks whether the specified item is expandable / collapsible. */
     isExpandable(item) {
-        return this.inputs.focusManager.isFocusable(item) && item.expandable();
+        return (!this.inputs.disabled() && this.inputs.focusManager.isFocusable(item) && item.expandable());
     }
     /** Checks whether the specified item is currently expanded. */
     isExpanded(item) {
@@ -69,11 +99,11 @@ class TabPattern {
     /** The html element that should receive focus. */
     element;
     /** Whether this tab has expandable content. */
-    expandable = () => true;
+    expandable;
     /** The unique identifier used by the expansion behavior. */
     expansionId;
     /** Whether the tab is expanded. */
-    expanded = computed(() => this.inputs.tablist().expansionBehavior.isExpanded(this));
+    expanded;
     /** Whether the tab is active. */
     active = computed(() => this.inputs.tablist().focusManager.activeItem() === this);
     /** Whether the tab is selected. */
@@ -88,7 +118,15 @@ class TabPattern {
         this.value = inputs.value;
         this.disabled = inputs.disabled;
         this.element = inputs.element;
-        this.expansionId = inputs.value;
+        const expansionControl = new ExpansionControl({
+            ...inputs,
+            expansionId: inputs.value,
+            expandable: () => true,
+            expansionManager: inputs.tablist().expansionManager,
+        });
+        this.expansionId = expansionControl.expansionId;
+        this.expandable = expansionControl.isExpandable;
+        this.expanded = expansionControl.isExpanded;
     }
 }
 /** A tabpanel associated with a tab. */
@@ -116,7 +154,7 @@ class TabListPattern {
     /** Controls focus for the tablist. */
     focusManager;
     /** Controls expansion for the tablist. */
-    expansionBehavior;
+    expansionManager;
     /** Whether the tablist is vertically or horizontally oriented. */
     orientation;
     /** Whether the tablist is disabled. */
@@ -166,7 +204,7 @@ class TabListPattern {
             multi: () => false,
             focusManager: this.focusManager,
         });
-        this.expansionBehavior = new Expansion({
+        this.expansionManager = new ListExpansion({
             ...inputs,
             multiExpandable: () => false,
             expandedIds: this.inputs.value,
@@ -217,7 +255,7 @@ class TabListPattern {
     _select(opts) {
         if (opts?.select) {
             this.selection.selectOne();
-            this.expansionBehavior.open();
+            this.expansionManager.open();
         }
     }
     _getItem(e) {
@@ -230,4 +268,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-Da_MpXu1.mjs.map
+//# sourceMappingURL=tabs-BOmyXQlO.mjs.map

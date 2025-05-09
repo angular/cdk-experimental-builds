@@ -9,22 +9,22 @@ interface ExpansionItem extends ListFocusItem {
     expansionId: SignalLike<string>;
 }
 /** Represents the required inputs for an expansion behavior. */
-interface ExpansionInputs<T extends ExpansionItem> extends ListFocusInputs<T> {
+interface ListExpansionInputs<T extends ExpansionItem> extends ListFocusInputs<T> {
     /** Whether multiple items can be expanded at once. */
     multiExpandable: SignalLike<boolean>;
     /** An array of ids of the currently expanded items. */
     expandedIds: WritableSignalLike<string[]>;
 }
 /** Manages the expansion state of a list of items. */
-declare class Expansion<T extends ExpansionItem> {
-    readonly inputs: ExpansionInputs<T> & {
+declare class ListExpansion<T extends ExpansionItem> {
+    readonly inputs: ListExpansionInputs<T> & {
         focusManager: ListFocus<T>;
     };
     /** A signal holding an array of ids of the currently expanded items. */
     expandedIds: WritableSignalLike<string[]>;
     /** The currently active (focused) item in the list. */
     activeItem: i0.Signal<T>;
-    constructor(inputs: ExpansionInputs<T> & {
+    constructor(inputs: ListExpansionInputs<T> & {
         focusManager: ListFocus<T>;
     });
     /** Opens the specified item, or the currently active item if none is specified. */
@@ -65,11 +65,11 @@ declare class TabPattern {
     /** The html element that should receive focus. */
     element: SignalLike<HTMLElement>;
     /** Whether this tab has expandable content. */
-    expandable: () => boolean;
+    expandable: SignalLike<boolean>;
     /** The unique identifier used by the expansion behavior. */
     expansionId: SignalLike<string>;
     /** Whether the tab is expanded. */
-    expanded: i0.Signal<boolean>;
+    expanded: SignalLike<boolean>;
     /** Whether the tab is active. */
     active: i0.Signal<boolean>;
     /** Whether the tab is selected. */
@@ -102,7 +102,7 @@ interface SelectOptions {
     select?: boolean;
 }
 /** The required inputs for the tablist. */
-type TabListInputs = ListNavigationInputs<TabPattern> & Omit<ListSelectionInputs<TabPattern, string>, 'multi'> & ListFocusInputs<TabPattern> & Omit<ExpansionInputs<TabPattern>, 'multiExpandable' | 'expandedIds'> & {
+type TabListInputs = ListNavigationInputs<TabPattern> & Omit<ListSelectionInputs<TabPattern, string>, 'multi'> & ListFocusInputs<TabPattern> & Omit<ListExpansionInputs<TabPattern>, 'multiExpandable' | 'expandedIds'> & {
     disabled: SignalLike<boolean>;
 };
 /** Controls the state of a tablist. */
@@ -115,7 +115,7 @@ declare class TabListPattern {
     /** Controls focus for the tablist. */
     focusManager: ListFocus<TabPattern>;
     /** Controls expansion for the tablist. */
-    expansionBehavior: Expansion<TabPattern>;
+    expansionManager: ListExpansion<TabPattern>;
     /** Whether the tablist is vertically or horizontally oriented. */
     orientation: SignalLike<'vertical' | 'horizontal'>;
     /** Whether the tablist is disabled. */
