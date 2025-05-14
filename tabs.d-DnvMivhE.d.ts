@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { b as ListFocusItem, S as SignalLike, h as ListFocusInputs, W as WritableSignalLike, c as ListFocus, L as ListNavigationItem, a as ListSelectionItem, f as ListNavigationInputs, g as ListSelectionInputs, e as ListNavigation, d as ListSelection, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-mll4djs5.js';
+import { b as ListFocusItem, S as SignalLike, i as ListFocusInputs, W as WritableSignalLike, d as ListFocus, L as ListNavigationItem, a as ListSelectionItem, g as ListNavigationInputs, h as ListSelectionInputs, f as ListNavigation, e as ListSelection, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-DBM6WNf9.js';
 
 /** Represents an item that can be expanded or collapsed. */
 interface ExpansionItem extends ListFocusItem {
@@ -154,5 +154,5 @@ declare class TabListPattern {
     private _getItem;
 }
 
-export { TabPattern as T, TabPanelPattern as a, TabListPattern as b };
-export type { TabInputs as c, TabPanelInputs as d, TabListInputs as e };
+export { TabPattern as a, TabPanelPattern as c, TabListPattern as e };
+export type { TabInputs as T, TabPanelInputs as b, TabListInputs as d };
