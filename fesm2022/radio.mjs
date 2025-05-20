@@ -2,8 +2,9 @@ import * as i0 from '@angular/core';
 import { contentChildren, inject, computed, input, booleanAttribute, model, signal, afterRenderEffect, Directive, ElementRef, linkedSignal } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { R as RadioGroupPattern, a as RadioButtonPattern } from './radio-CEFsGTm8.mjs';
-import './list-focus-Di7m_z_6.mjs';
+import { R as RadioGroupPattern, a as RadioButtonPattern } from './radio-B6IYVjCK.mjs';
+import './list-focus-BXQdAA3i.mjs';
+import './list-selection-Nv_R5GBA.mjs';
 
 // TODO: Move mapSignal to it's own file so it can be reused across components.
 /**

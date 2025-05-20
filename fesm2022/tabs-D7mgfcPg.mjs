@@ -1,91 +1,7 @@
-import { computed, signal } from '@angular/core';
-import { K as KeyboardEventManager, P as PointerEventManager, L as ListFocus, b as ListNavigation, a as ListSelection } from './list-focus-Di7m_z_6.mjs';
-
-/**
- * Controls a single item's expansion state and interactions,
- * delegating actual state changes to an Expansion manager.
- */
-class ExpansionControl {
-    inputs;
-    /** Whether this specific item is currently expanded. Derived from the Expansion manager. */
-    isExpanded = computed(() => this.inputs.expansionManager.isExpanded(this));
-    /** Whether this item can be expanded. */
-    isExpandable = computed(() => this.inputs.expansionManager.isExpandable(this));
-    constructor(inputs) {
-        this.inputs = inputs;
-        this.expansionId = inputs.expansionId;
-        this.expandable = inputs.expandable;
-        this.element = inputs.element;
-        this.disabled = inputs.disabled;
-    }
-    /** Requests the Expansopn manager to open this item. */
-    open() {
-        this.inputs.expansionManager.open(this);
-    }
-    /** Requests the Expansion manager to close this item. */
-    close() {
-        this.inputs.expansionManager.close(this);
-    }
-    /** Requests the Expansion manager to toggle this item. */
-    toggle() {
-        this.inputs.expansionManager.toggle(this);
-    }
-}
-/** Manages the expansion state of a list of items. */
-class ListExpansion {
-    inputs;
-    /** A signal holding an array of ids of the currently expanded items. */
-    expandedIds;
-    /** The currently active (focused) item in the list. */
-    activeItem = computed(() => this.inputs.focusManager.activeItem());
-    constructor(inputs) {
-        this.inputs = inputs;
-        this.expandedIds = inputs.expandedIds ?? signal([]);
-    }
-    /** Opens the specified item, or the currently active item if none is specified. */
-    open(item = this.activeItem()) {
-        if (this.isExpandable(item)) {
-            this.inputs.multiExpandable()
-                ? this.expandedIds.update(ids => ids.concat(item.expansionId()))
-                : this.expandedIds.set([item.expansionId()]);
-        }
-    }
-    /** Closes the specified item, or the currently active item if none is specified. */
-    close(item = this.activeItem()) {
-        if (this.isExpandable(item)) {
-            this.expandedIds.update(ids => ids.filter(id => id !== item.expansionId()));
-        }
-    }
-    /**
-     * Toggles the expansion state of the specified item,
-     * or the currently active item if none is specified.
-     */
-    toggle(item = this.activeItem()) {
-        this.expandedIds().includes(item.expansionId()) ? this.close(item) : this.open(item);
-    }
-    /** Opens all focusable items in the list. */
-    openAll() {
-        if (this.inputs.multiExpandable()) {
-            for (const item of this.inputs.items()) {
-                this.open(item);
-            }
-        }
-    }
-    /** Closes all focusable items in the list. */
-    closeAll() {
-        for (const item of this.inputs.items()) {
-            this.close(item);
-        }
-    }
-    /** Checks whether the specified item is expandable / collapsible. */
-    isExpandable(item) {
-        return (!this.inputs.disabled() && this.inputs.focusManager.isFocusable(item) && item.expandable());
-    }
-    /** Checks whether the specified item is currently expanded. */
-    isExpanded(item) {
-        return this.expandedIds().includes(item.expansionId());
-    }
-}
+import { computed } from '@angular/core';
+import { K as KeyboardEventManager, P as PointerEventManager, L as ListFocus, a as ListNavigation } from './list-focus-BXQdAA3i.mjs';
+import { L as ListSelection } from './list-selection-Nv_R5GBA.mjs';
+import { E as ExpansionControl, L as ListExpansion } from './expansion-DykBzWrb.mjs';
 
 /** A tab in a tablist. */
 class TabPattern {
@@ -268,4 +184,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-CurTEFu8.mjs.map
+//# sourceMappingURL=tabs-D7mgfcPg.mjs.map

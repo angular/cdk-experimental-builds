@@ -1,50 +1,7 @@
 import * as i0 from '@angular/core';
-import { b as ListFocusItem, S as SignalLike, i as ListFocusInputs, W as WritableSignalLike, d as ListFocus, L as ListNavigationItem, a as ListSelectionItem, g as ListNavigationInputs, h as ListSelectionInputs, f as ListNavigation, e as ListSelection, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-DBM6WNf9.js';
-
-/** Represents an item that can be expanded or collapsed. */
-interface ExpansionItem extends ListFocusItem {
-    /** Whether the item is expandable. */
-    expandable: SignalLike<boolean>;
-    /** Used to uniquely identify an expansion item. */
-    expansionId: SignalLike<string>;
-}
-/** Represents the required inputs for an expansion behavior. */
-interface ListExpansionInputs<T extends ExpansionItem> extends ListFocusInputs<T> {
-    /** Whether multiple items can be expanded at once. */
-    multiExpandable: SignalLike<boolean>;
-    /** An array of ids of the currently expanded items. */
-    expandedIds: WritableSignalLike<string[]>;
-}
-/** Manages the expansion state of a list of items. */
-declare class ListExpansion<T extends ExpansionItem> {
-    readonly inputs: ListExpansionInputs<T> & {
-        focusManager: ListFocus<T>;
-    };
-    /** A signal holding an array of ids of the currently expanded items. */
-    expandedIds: WritableSignalLike<string[]>;
-    /** The currently active (focused) item in the list. */
-    activeItem: i0.Signal<T>;
-    constructor(inputs: ListExpansionInputs<T> & {
-        focusManager: ListFocus<T>;
-    });
-    /** Opens the specified item, or the currently active item if none is specified. */
-    open(item?: T): void;
-    /** Closes the specified item, or the currently active item if none is specified. */
-    close(item?: T): void;
-    /**
-     * Toggles the expansion state of the specified item,
-     * or the currently active item if none is specified.
-     */
-    toggle(item?: T): void;
-    /** Opens all focusable items in the list. */
-    openAll(): void;
-    /** Closes all focusable items in the list. */
-    closeAll(): void;
-    /** Checks whether the specified item is expandable / collapsible. */
-    isExpandable(item: T): boolean;
-    /** Checks whether the specified item is currently expanded. */
-    isExpanded(item: T): boolean;
-}
+import { e as ListNavigationItem, f as ListFocusItem, S as SignalLike, L as ListNavigationInputs, a as ListFocusInputs, b as ListNavigation, d as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-Br99p_2O.js';
+import { L as ListSelectionItem, a as ListSelectionInputs, b as ListSelection } from './list-selection.d-Cf9OLCzn.js';
+import { E as ExpansionItem, L as ListExpansionInputs, a as ListExpansion } from './expansion.d-DSLPa1yp.js';
 
 /** The required inputs to tabs. */
 interface TabInputs extends ListNavigationItem, ListSelectionItem<string>, ListFocusItem, Omit<ExpansionItem, 'expansionId' | 'expandable'> {
