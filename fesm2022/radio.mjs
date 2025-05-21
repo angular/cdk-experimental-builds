@@ -2,9 +2,9 @@ import * as i0 from '@angular/core';
 import { contentChildren, inject, computed, input, booleanAttribute, model, signal, afterRenderEffect, Directive, ElementRef, linkedSignal } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { R as RadioGroupPattern, a as RadioButtonPattern } from './radio-B6IYVjCK.mjs';
+import { R as RadioGroupPattern, a as RadioButtonPattern } from './radio-s5uO_tmJ.mjs';
 import './list-focus-BXQdAA3i.mjs';
-import './list-selection-Nv_R5GBA.mjs';
+import './list-selection-BLV4Yy7T.mjs';
 
 // TODO: Move mapSignal to it's own file so it can be reused across components.
 /**
@@ -80,6 +80,14 @@ class CdkRadioGroup {
     /** Whether the radio group has received focus yet. */
     _hasFocused = signal(false);
     constructor() {
+        afterRenderEffect(() => {
+            if (typeof ngDevMode === 'undefined' || ngDevMode) {
+                const violations = this.pattern.validate();
+                for (const violation of violations) {
+                    console.error(violation);
+                }
+            }
+        });
         afterRenderEffect(() => {
             if (!this._hasFocused()) {
                 this.pattern.setDefaultState();

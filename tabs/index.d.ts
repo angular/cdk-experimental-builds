@@ -1,9 +1,9 @@
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
-import { a as TabPattern, c as TabPanelPattern, e as TabListPattern } from '../tabs.d-BsYCULar.js';
+import { a as TabPattern, c as TabPanelPattern, e as TabListPattern } from '../tabs.d-D0UIRVMM.js';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
 import '../list-navigation.d-Br99p_2O.js';
-import '../list-selection.d-Cf9OLCzn.js';
+import '../list-selection.d-BQWRFJI-.js';
 import '../expansion.d-DSLPa1yp.js';
 
 /**

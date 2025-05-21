@@ -1,9 +1,9 @@
 import * as i0 from '@angular/core';
 import { WritableSignal } from '@angular/core';
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
-import { c as RadioButtonPattern, a as RadioGroupPattern } from '../radio-group.d-DihR8GAn.js';
+import { c as RadioButtonPattern, a as RadioGroupPattern } from '../radio-group.d-C3xIREax.js';
 import '../list-navigation.d-Br99p_2O.js';
-import '../list-selection.d-Cf9OLCzn.js';
+import '../list-selection.d-BQWRFJI-.js';
 
 /**
  * A radio button group container.

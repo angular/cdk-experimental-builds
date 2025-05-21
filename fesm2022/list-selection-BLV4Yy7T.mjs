@@ -1,4 +1,4 @@
-import { signal } from '@angular/core';
+import { signal, computed } from '@angular/core';
 
 /** Controls selection for a list of items. */
 class ListSelection {
@@ -7,6 +7,8 @@ class ListSelection {
     rangeStartIndex = signal(0);
     /** The end index to use for range selection. */
     rangeEndIndex = signal(0);
+    /** The currently selected items. */
+    selectedItems = computed(() => this.inputs.items().filter(item => this.inputs.value().includes(item.value())));
     constructor(inputs) {
         this.inputs = inputs;
     }
@@ -125,4 +127,4 @@ class ListSelection {
 }
 
 export { ListSelection as L };
-//# sourceMappingURL=list-selection-Nv_R5GBA.mjs.map
+//# sourceMappingURL=list-selection-BLV4Yy7T.mjs.map

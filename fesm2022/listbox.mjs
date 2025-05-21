@@ -3,9 +3,9 @@ import { inject, contentChildren, computed, input, booleanAttribute, model, sign
 import { Directionality } from '@angular/cdk/bidi';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { L as ListboxPattern, O as OptionPattern } from './option-FVBjwHVM.mjs';
+import { L as ListboxPattern, O as OptionPattern } from './option-DIK0kC0u.mjs';
 import './list-focus-BXQdAA3i.mjs';
-import './list-selection-Nv_R5GBA.mjs';
+import './list-selection-BLV4Yy7T.mjs';
 
 /**
  * A listbox container.

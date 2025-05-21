@@ -1,6 +1,6 @@
 import * as i0 from '@angular/core';
 import { e as ListNavigationItem, f as ListFocusItem, S as SignalLike, d as ListFocus, b as ListNavigation, L as ListNavigationInputs, a as ListFocusInputs, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-Br99p_2O.js';
-import { L as ListSelectionItem, b as ListSelection, a as ListSelectionInputs } from './list-selection.d-Cf9OLCzn.js';
+import { L as ListSelectionItem, b as ListSelection, a as ListSelectionInputs } from './list-selection.d-BQWRFJI-.js';
 
 /**
  * Represents the properties exposed by a radio group that need to be accessed by a radio button.
@@ -64,8 +64,10 @@ declare class RadioGroupPattern<V> {
     orientation: SignalLike<'vertical' | 'horizontal'>;
     /** Whether the radio group is disabled. */
     disabled: i0.Signal<boolean>;
+    /** The currently selected radio button. */
+    selectedItem: i0.Signal<RadioButtonPattern<V>>;
     /** Whether the radio group is readonly. */
-    readonly: SignalLike<boolean>;
+    readonly: i0.Signal<boolean>;
     /** The tabindex of the radio group (if using activedescendant). */
     tabindex: i0.Signal<0 | -1>;
     /** The id of the current active radio button (if using activedescendant). */
@@ -100,6 +102,8 @@ declare class RadioGroupPattern<V> {
      * Otherwise, sets the active index to the first focusable radio button.
      */
     setDefaultState(): void;
+    /** Validates the state of the radio group and returns a list of accessibility violations. */
+    validate(): string[];
     /** Safely performs a navigation operation and updates selection if needed. */
     private _navigate;
     /** Finds the RadioButtonPattern associated with a pointer event target. */

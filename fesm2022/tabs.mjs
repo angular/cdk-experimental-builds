@@ -5,9 +5,9 @@ import { Directionality } from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
 import { contentChild, contentChildren, computed, Directive, inject, linkedSignal, input, booleanAttribute, model, effect, ElementRef } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-D7mgfcPg.mjs';
+import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-BN3wsMdD.mjs';
 import './list-focus-BXQdAA3i.mjs';
-import './list-selection-Nv_R5GBA.mjs';
+import './list-selection-BLV4Yy7T.mjs';
 import './expansion-DykBzWrb.mjs';
 
 /**

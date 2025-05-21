@@ -1,6 +1,6 @@
 import { computed } from '@angular/core';
 import { K as KeyboardEventManager, P as PointerEventManager, L as ListFocus, a as ListNavigation } from './list-focus-BXQdAA3i.mjs';
-import { L as ListSelection } from './list-selection-Nv_R5GBA.mjs';
+import { L as ListSelection } from './list-selection-BLV4Yy7T.mjs';
 import { E as ExpansionControl, L as ListExpansion } from './expansion-DykBzWrb.mjs';
 
 /** A tab in a tablist. */
@@ -184,4 +184,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-D7mgfcPg.mjs.map
+//# sourceMappingURL=tabs-BN3wsMdD.mjs.map

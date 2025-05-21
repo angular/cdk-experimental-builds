@@ -24,6 +24,8 @@ declare class ListSelection<T extends ListSelectionItem<V>, V> {
     rangeStartIndex: i0.WritableSignal<number>;
     /** The end index to use for range selection. */
     rangeEndIndex: i0.WritableSignal<number>;
+    /** The currently selected items. */
+    selectedItems: i0.Signal<T[]>;
     constructor(inputs: ListSelectionInputs<T, V> & {
         focusManager: ListFocus<T>;
     });
