@@ -7,10 +7,10 @@ import { signal, input, Directive, inject, TemplateRef, ViewContainerRef, effect
 class DeferredContentAware {
     contentVisible = signal(false);
     preserveContent = input(false);
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0-rc.1", ngImport: i0, type: DeferredContentAware, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0-rc.1", type: DeferredContentAware, isStandalone: true, inputs: { preserveContent: { classPropertyName: "preserveContent", publicName: "preserveContent", isSignal: true, isRequired: false, transformFunction: null } }, ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0-rc.2", ngImport: i0, type: DeferredContentAware, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0-rc.2", type: DeferredContentAware, isStandalone: true, inputs: { preserveContent: { classPropertyName: "preserveContent", publicName: "preserveContent", isSignal: true, isRequired: false, transformFunction: null } }, ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-rc.1", ngImport: i0, type: DeferredContentAware, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-rc.2", ngImport: i0, type: DeferredContentAware, decorators: [{
             type: Directive
         }] });
 /**
@@ -49,10 +49,10 @@ class DeferredContent {
             }
         });
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0-rc.1", ngImport: i0, type: DeferredContent, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.0.0-rc.1", type: DeferredContent, isStandalone: true, ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0-rc.2", ngImport: i0, type: DeferredContent, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.0.0-rc.2", type: DeferredContent, isStandalone: true, ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-rc.1", ngImport: i0, type: DeferredContent, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0-rc.2", ngImport: i0, type: DeferredContent, decorators: [{
             type: Directive
         }], ctorParameters: () => [] });
 
