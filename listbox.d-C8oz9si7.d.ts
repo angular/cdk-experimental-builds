@@ -149,6 +149,8 @@ declare class ListboxPattern<V> {
     /** The pointerdown event manager for the listbox. */
     pointerdown: i0.Signal<PointerEventManager<PointerEvent>>;
     constructor(inputs: ListboxInputs<V>);
+    /** Returns a set of violations */
+    validate(): string[];
     /** Handles keydown events for the listbox. */
     onKeydown(event: KeyboardEvent): void;
     onPointerdown(event: PointerEvent): void;

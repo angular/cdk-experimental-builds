@@ -1,4 +1,4 @@
-export { L as ListboxPattern, O as OptionPattern } from './option-DIK0kC0u.mjs';
+export { L as ListboxPattern, O as OptionPattern } from './option-r2ojgVMH.mjs';
 export { a as RadioButtonPattern, R as RadioGroupPattern } from './radio-s5uO_tmJ.mjs';
 export { T as TabListPattern, b as TabPanelPattern, a as TabPattern } from './tabs-BN3wsMdD.mjs';
 export { b as AccordionGroupPattern, A as AccordionPanelPattern, a as AccordionTriggerPattern } from './accordion-CyyDY39y.mjs';

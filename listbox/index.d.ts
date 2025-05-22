@@ -1,7 +1,6 @@
 import * as i0 from '@angular/core';
-import { AfterViewInit } from '@angular/core';
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
-import { b as OptionPattern, a as ListboxPattern } from '../listbox.d-DOzPUJVC.js';
+import { b as OptionPattern, a as ListboxPattern } from '../listbox.d-C8oz9si7.js';
 import '../list-navigation.d-Br99p_2O.js';
 import '../list-selection.d-BQWRFJI-.js';
 
@@ -19,7 +18,7 @@ import '../list-selection.d-BQWRFJI-.js';
  * </ul>
  * ```
  */
-declare class CdkListbox<V> implements AfterViewInit {
+declare class CdkListbox<V> {
     /** The directionality (LTR / RTL) context for the application (or a subtree of it). */
     private readonly _directionality;
     /** The CdkOptions nested inside of the CdkListbox. */
@@ -48,19 +47,14 @@ declare class CdkListbox<V> implements AfterViewInit {
     readonly: i0.InputSignalWithTransform<boolean, unknown>;
     /** The values of the current selected items. */
     value: i0.ModelSignal<V[]>;
-    /** The current index that has been navigated to. */
-    activeIndex: i0.ModelSignal<number>;
     /** The Listbox UIPattern. */
     pattern: ListboxPattern<V>;
     /** Whether the listbox has received focus yet. */
     private _hasFocused;
-    /** Whether the options in the listbox have been initialized. */
-    private _isViewInitialized;
     constructor();
-    ngAfterViewInit(): void;
     onFocus(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkListbox<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "orientation": { "alias": "orientation"; "required": false; "isSignal": true; }; "multi": { "alias": "multi"; "required": false; "isSignal": true; }; "wrap": { "alias": "wrap"; "required": false; "isSignal": true; }; "skipDisabled": { "alias": "skipDisabled"; "required": false; "isSignal": true; }; "focusMode": { "alias": "focusMode"; "required": false; "isSignal": true; }; "selectionMode": { "alias": "selectionMode"; "required": false; "isSignal": true; }; "typeaheadDelay": { "alias": "typeaheadDelay"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "readonly": { "alias": "readonly"; "required": false; "isSignal": true; }; "value": { "alias": "value"; "required": false; "isSignal": true; }; "activeIndex": { "alias": "activeIndex"; "required": false; "isSignal": true; }; }, { "value": "valueChange"; "activeIndex": "activeIndexChange"; }, ["_cdkOptions"], never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "orientation": { "alias": "orientation"; "required": false; "isSignal": true; }; "multi": { "alias": "multi"; "required": false; "isSignal": true; }; "wrap": { "alias": "wrap"; "required": false; "isSignal": true; }; "skipDisabled": { "alias": "skipDisabled"; "required": false; "isSignal": true; }; "focusMode": { "alias": "focusMode"; "required": false; "isSignal": true; }; "selectionMode": { "alias": "selectionMode"; "required": false; "isSignal": true; }; "typeaheadDelay": { "alias": "typeaheadDelay"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "readonly": { "alias": "readonly"; "required": false; "isSignal": true; }; "value": { "alias": "value"; "required": false; "isSignal": true; }; }, { "value": "valueChange"; }, ["_cdkOptions"], never, true, never>;
 }
 /** A selectable option in a CdkListbox. */
 declare class CdkOption<V> {
