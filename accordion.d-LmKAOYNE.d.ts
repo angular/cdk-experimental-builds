@@ -1,9 +1,9 @@
 import * as i0 from '@angular/core';
 import { L as ListNavigationInputs, a as ListFocusInputs, b as ListNavigation, d as ListFocus, e as ListNavigationItem, f as ListFocusItem, S as SignalLike, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-Br99p_2O.js';
-import { L as ListExpansionInputs, a as ListExpansion, E as ExpansionItem, b as ExpansionControl } from './expansion.d-DSLPa1yp.js';
+import { L as ListExpansionInputs, a as ListExpansion, E as ExpansionItem, b as ExpansionControl } from './expansion.d-DB4i_1Aa.js';
 
 /** Inputs of the AccordionGroupPattern. */
-type AccordionGroupInputs = Omit<ListNavigationInputs<AccordionTriggerPattern> & ListFocusInputs<AccordionTriggerPattern> & ListExpansionInputs<AccordionTriggerPattern>, 'focusMode'>;
+type AccordionGroupInputs = Omit<ListNavigationInputs<AccordionTriggerPattern> & ListFocusInputs<AccordionTriggerPattern> & Omit<ListExpansionInputs, 'items'>, 'focusMode'>;
 interface AccordionGroupPattern extends AccordionGroupInputs {
 }
 /** A pattern controls the nested Accordions. */
@@ -14,7 +14,7 @@ declare class AccordionGroupPattern {
     /** Controls focus for the group. */
     focusManager: ListFocus<AccordionTriggerPattern>;
     /** Controls expansion for the group. */
-    expansionManager: ListExpansion<AccordionTriggerPattern>;
+    expansionManager: ListExpansion;
     constructor(inputs: AccordionGroupInputs);
 }
 /** Inputs for the AccordionTriggerPattern. */

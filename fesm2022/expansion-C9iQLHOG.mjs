@@ -1,4 +1,4 @@
-import { computed, signal } from '@angular/core';
+import { computed } from '@angular/core';
 
 /**
  * Controls a single item's expansion state and interactions,
@@ -14,7 +14,6 @@ class ExpansionControl {
         this.inputs = inputs;
         this.expansionId = inputs.expansionId;
         this.expandable = inputs.expandable;
-        this.element = inputs.element;
         this.disabled = inputs.disabled;
     }
     /** Requests the Expansopn manager to open this item. */
@@ -35,14 +34,12 @@ class ListExpansion {
     inputs;
     /** A signal holding an array of ids of the currently expanded items. */
     expandedIds;
-    /** The currently active (focused) item in the list. */
-    activeItem = computed(() => this.inputs.focusManager.activeItem());
     constructor(inputs) {
         this.inputs = inputs;
-        this.expandedIds = inputs.expandedIds ?? signal([]);
+        this.expandedIds = inputs.expandedIds;
     }
-    /** Opens the specified item, or the currently active item if none is specified. */
-    open(item = this.activeItem()) {
+    /** Opens the specified item. */
+    open(item) {
         if (!this.isExpandable(item))
             return;
         if (this.isExpanded(item))
@@ -52,17 +49,14 @@ class ListExpansion {
         }
         this.expandedIds.update(ids => ids.concat(item.expansionId()));
     }
-    /** Closes the specified item, or the currently active item if none is specified. */
-    close(item = this.activeItem()) {
+    /** Closes the specified item. */
+    close(item) {
         if (this.isExpandable(item)) {
             this.expandedIds.update(ids => ids.filter(id => id !== item.expansionId()));
         }
     }
-    /**
-     * Toggles the expansion state of the specified item,
-     * or the currently active item if none is specified.
-     */
-    toggle(item = this.activeItem()) {
+    /** Toggles the expansion state of the specified item. */
+    toggle(item) {
         this.expandedIds().includes(item.expansionId()) ? this.close(item) : this.open(item);
     }
     /** Opens all focusable items in the list. */
@@ -90,4 +84,4 @@ class ListExpansion {
 }
 
 export { ExpansionControl as E, ListExpansion as L };
-//# sourceMappingURL=expansion-DykBzWrb.mjs.map
+//# sourceMappingURL=expansion-C9iQLHOG.mjs.map

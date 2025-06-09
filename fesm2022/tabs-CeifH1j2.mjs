@@ -1,7 +1,7 @@
 import { computed } from '@angular/core';
 import { K as KeyboardEventManager, P as PointerEventManager, L as ListFocus, a as ListNavigation } from './list-focus-BXQdAA3i.mjs';
 import { L as ListSelection } from './list-selection-BLV4Yy7T.mjs';
-import { E as ExpansionControl, L as ListExpansion } from './expansion-DykBzWrb.mjs';
+import { E as ExpansionControl, L as ListExpansion } from './expansion-C9iQLHOG.mjs';
 
 /** A tab in a tablist. */
 class TabPattern {
@@ -124,7 +124,6 @@ class TabListPattern {
             ...inputs,
             multiExpandable: () => false,
             expandedIds: this.inputs.value,
-            focusManager: this.focusManager,
         });
     }
     /** Handles keydown events for the tablist. */
@@ -171,7 +170,7 @@ class TabListPattern {
     _select(opts) {
         if (opts?.select) {
             this.selection.selectOne();
-            this.expansionManager.open();
+            this.expansionManager.open(this.focusManager.activeItem());
         }
     }
     _getItem(e) {
@@ -184,4 +183,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-BN3wsMdD.mjs.map
+//# sourceMappingURL=tabs-CeifH1j2.mjs.map

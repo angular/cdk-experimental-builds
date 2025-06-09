@@ -1,7 +1,7 @@
 import * as i0 from '@angular/core';
 import { e as ListNavigationItem, f as ListFocusItem, S as SignalLike, L as ListNavigationInputs, a as ListFocusInputs, b as ListNavigation, d as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-Br99p_2O.js';
 import { L as ListSelectionItem, a as ListSelectionInputs, b as ListSelection } from './list-selection.d-BQWRFJI-.js';
-import { E as ExpansionItem, L as ListExpansionInputs, a as ListExpansion } from './expansion.d-DSLPa1yp.js';
+import { E as ExpansionItem, L as ListExpansionInputs, a as ListExpansion } from './expansion.d-DB4i_1Aa.js';
 
 /** The required inputs to tabs. */
 interface TabInputs extends ListNavigationItem, ListSelectionItem<string>, ListFocusItem, Omit<ExpansionItem, 'expansionId' | 'expandable'> {
@@ -59,9 +59,7 @@ interface SelectOptions {
     select?: boolean;
 }
 /** The required inputs for the tablist. */
-type TabListInputs = ListNavigationInputs<TabPattern> & Omit<ListSelectionInputs<TabPattern, string>, 'multi'> & ListFocusInputs<TabPattern> & Omit<ListExpansionInputs<TabPattern>, 'multiExpandable' | 'expandedIds'> & {
-    disabled: SignalLike<boolean>;
-};
+type TabListInputs = ListNavigationInputs<TabPattern> & Omit<ListSelectionInputs<TabPattern, string>, 'multi'> & ListFocusInputs<TabPattern> & Omit<ListExpansionInputs, 'multiExpandable' | 'expandedIds' | 'items'>;
 /** Controls the state of a tablist. */
 declare class TabListPattern {
     readonly inputs: TabListInputs;
@@ -72,7 +70,7 @@ declare class TabListPattern {
     /** Controls focus for the tablist. */
     focusManager: ListFocus<TabPattern>;
     /** Controls expansion for the tablist. */
-    expansionManager: ListExpansion<TabPattern>;
+    expansionManager: ListExpansion;
     /** Whether the tablist is vertically or horizontally oriented. */
     orientation: SignalLike<'vertical' | 'horizontal'>;
     /** Whether the tablist is disabled. */
