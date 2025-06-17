@@ -1,5 +1,5 @@
-import * as i0 from '@angular/core';
-import { f as ListFocusItem, S as SignalLike, a as ListFocusInputs, W as WritableSignalLike, d as ListFocus } from './list-navigation.d-Br99p_2O.js';
+import * as _angular_core from '@angular/core';
+import { f as ListFocusItem, S as SignalLike, a as ListFocusInputs, W as WritableSignalLike, d as ListFocus } from './list-navigation.d-tcweHm4g.js';
 
 /** Represents an item in a collection, such as a listbox option, than can be selected. */
 interface ListSelectionItem<V> extends ListFocusItem {
@@ -21,11 +21,11 @@ declare class ListSelection<T extends ListSelectionItem<V>, V> {
         focusManager: ListFocus<T>;
     };
     /** The start index to use for range selection. */
-    rangeStartIndex: i0.WritableSignal<number>;
+    rangeStartIndex: _angular_core.WritableSignal<number>;
     /** The end index to use for range selection. */
-    rangeEndIndex: i0.WritableSignal<number>;
+    rangeEndIndex: _angular_core.WritableSignal<number>;
     /** The currently selected items. */
-    selectedItems: i0.Signal<T[]>;
+    selectedItems: _angular_core.Signal<T[]>;
     constructor(inputs: ListSelectionInputs<T, V> & {
         focusManager: ListFocus<T>;
     });

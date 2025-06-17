@@ -1,4 +1,4 @@
-import * as i0 from '@angular/core';
+import * as _angular_core from '@angular/core';
 import { InjectionToken, OnDestroy, ViewContainerRef, TemplateRef, EventEmitter, OnInit } from '@angular/core';
 import * as i1 from '@angular/cdk/overlay';
 import { BooleanInput } from '@angular/cdk/coercion';
@@ -63,8 +63,8 @@ declare class CdkCombobox<T = unknown> implements OnDestroy {
     private _coerceOpenActionProperty;
     /** Registers the content's id and the content type with the panel. */
     _registerContent(contentId: string, contentType: AriaHasPopupValue): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkCombobox<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkCombobox<any>, "[cdkCombobox]", ["cdkCombobox"], { "_panelTemplateRef": { "alias": "cdkComboboxTriggerFor"; "required": false; }; "value": { "alias": "value"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "openActions": { "alias": "openActions"; "required": false; }; "autoSetText": { "alias": "autoSetText"; "required": false; }; }, { "opened": "comboboxPanelOpened"; "closed": "comboboxPanelClosed"; "panelValueChanged": "panelValueChanged"; }, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkCombobox<any>, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkCombobox<any>, "[cdkCombobox]", ["cdkCombobox"], { "_panelTemplateRef": { "alias": "cdkComboboxTriggerFor"; "required": false; }; "value": { "alias": "value"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "openActions": { "alias": "openActions"; "required": false; }; "autoSetText": { "alias": "autoSetText"; "required": false; }; }, { "opened": "comboboxPanelOpened"; "closed": "comboboxPanelClosed"; "panelValueChanged": "panelValueChanged"; }, never, never, true, never>;
 }
 
 declare class CdkComboboxPopup<T = unknown> implements OnInit {
@@ -80,14 +80,14 @@ declare class CdkComboboxPopup<T = unknown> implements OnInit {
     ngOnInit(): void;
     registerWithPanel(): void;
     focusFirstElement(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkComboboxPopup<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkComboboxPopup<any>, "[cdkComboboxPopup]", ["cdkComboboxPopup"], { "role": { "alias": "role"; "required": false; }; "firstFocus": { "alias": "firstFocus"; "required": false; }; "id": { "alias": "id"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkComboboxPopup<any>, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkComboboxPopup<any>, "[cdkComboboxPopup]", ["cdkComboboxPopup"], { "role": { "alias": "role"; "required": false; }; "firstFocus": { "alias": "firstFocus"; "required": false; }; "id": { "alias": "id"; "required": false; }; }, {}, never, never, true, never>;
 }
 
 declare class CdkComboboxModule {
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkComboboxModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkComboboxModule, never, [typeof i1.OverlayModule, typeof CdkCombobox, typeof CdkComboboxPopup], [typeof CdkCombobox, typeof CdkComboboxPopup]>;
-    static ɵinj: i0.ɵɵInjectorDeclaration<CdkComboboxModule>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkComboboxModule, never>;
+    static ɵmod: _angular_core.ɵɵNgModuleDeclaration<CdkComboboxModule, never, [typeof i1.OverlayModule, typeof CdkCombobox, typeof CdkComboboxPopup], [typeof CdkCombobox, typeof CdkComboboxPopup]>;
+    static ɵinj: _angular_core.ɵɵInjectorDeclaration<CdkComboboxModule>;
 }
 
 export { CDK_COMBOBOX, CdkCombobox, CdkComboboxModule, CdkComboboxPopup };

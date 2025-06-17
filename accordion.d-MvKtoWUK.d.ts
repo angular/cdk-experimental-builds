@@ -1,6 +1,6 @@
-import * as i0 from '@angular/core';
-import { L as ListNavigationInputs, a as ListFocusInputs, b as ListNavigation, d as ListFocus, e as ListNavigationItem, f as ListFocusItem, S as SignalLike, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-Br99p_2O.js';
-import { L as ListExpansionInputs, a as ListExpansion, E as ExpansionItem, b as ExpansionControl } from './expansion.d-DB4i_1Aa.js';
+import * as _angular_core from '@angular/core';
+import { L as ListNavigationInputs, a as ListFocusInputs, b as ListNavigation, d as ListFocus, e as ListNavigationItem, f as ListFocusItem, S as SignalLike, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-tcweHm4g.js';
+import { L as ListExpansionInputs, a as ListExpansion, E as ExpansionItem, b as ExpansionControl } from './expansion.d-BvIuKvYU.js';
 
 /** Inputs of the AccordionGroupPattern. */
 type AccordionGroupInputs = Omit<ListNavigationInputs<AccordionTriggerPattern> & ListFocusInputs<AccordionTriggerPattern> & Omit<ListExpansionInputs, 'items'>, 'focusMode'>;
@@ -40,22 +40,22 @@ declare class AccordionTriggerPattern {
     /** Controls the expansion state for the trigger. */
     expansionControl: ExpansionControl;
     /** Whether the trigger is active. */
-    active: i0.Signal<boolean>;
+    active: _angular_core.Signal<boolean>;
     /** Id of the accordion panel controlled by the trigger. */
-    controls: i0.Signal<string | undefined>;
+    controls: _angular_core.Signal<string | undefined>;
     /** The tabindex of the trigger. */
-    tabindex: i0.Signal<-1 | 0>;
+    tabindex: _angular_core.Signal<-1 | 0>;
     /** Whether the trigger is disabled. Disabling an accordion group disables all the triggers. */
-    disabled: i0.Signal<boolean>;
+    disabled: _angular_core.Signal<boolean>;
     constructor(inputs: AccordionTriggerInputs);
     /** The key used to navigate to the previous accordion trigger. */
-    prevKey: i0.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
+    prevKey: _angular_core.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
     /** The key used to navigate to the next accordion trigger. */
-    nextKey: i0.Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
+    nextKey: _angular_core.Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
     /** The keydown event manager for the accordion trigger. */
-    keydown: i0.Signal<KeyboardEventManager<KeyboardEvent>>;
+    keydown: _angular_core.Signal<KeyboardEventManager<KeyboardEvent>>;
     /** The pointerdown event manager for the accordion trigger. */
-    pointerdown: i0.Signal<PointerEventManager<PointerEvent>>;
+    pointerdown: _angular_core.Signal<PointerEventManager<PointerEvent>>;
     /** Handles keydown events on the trigger, delegating to the group if not disabled. */
     onKeydown(event: KeyboardEvent): void;
     /** Handles pointerdown events on the trigger, delegating to the group if not disabled. */

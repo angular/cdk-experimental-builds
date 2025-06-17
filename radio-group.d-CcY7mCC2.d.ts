@@ -1,6 +1,6 @@
-import * as i0 from '@angular/core';
-import { e as ListNavigationItem, f as ListFocusItem, S as SignalLike, d as ListFocus, b as ListNavigation, L as ListNavigationInputs, a as ListFocusInputs, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-Br99p_2O.js';
-import { L as ListSelectionItem, b as ListSelection, a as ListSelectionInputs } from './list-selection.d-BQWRFJI-.js';
+import * as _angular_core from '@angular/core';
+import { e as ListNavigationItem, f as ListFocusItem, S as SignalLike, d as ListFocus, b as ListNavigation, L as ListNavigationInputs, a as ListFocusInputs, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-tcweHm4g.js';
+import { L as ListSelectionItem, b as ListSelection, a as ListSelectionInputs } from './list-selection.d-BBLdeUeF.js';
 
 /**
  * Represents the properties exposed by a radio group that need to be accessed by a radio button.
@@ -24,9 +24,9 @@ declare class RadioButtonPattern<V> {
     /** The value associated with the radio button. */
     value: SignalLike<V>;
     /** The position of the radio button within the group. */
-    index: i0.Signal<number>;
+    index: _angular_core.Signal<number>;
     /** Whether the radio button is currently the active one (focused). */
-    active: i0.Signal<boolean>;
+    active: _angular_core.Signal<boolean>;
     /** Whether the radio button is selected. */
     selected: SignalLike<boolean>;
     /** Whether the radio button is disabled. */
@@ -34,7 +34,7 @@ declare class RadioButtonPattern<V> {
     /** A reference to the parent radio group. */
     group: SignalLike<RadioGroupLike<V> | undefined>;
     /** The tabindex of the radio button. */
-    tabindex: i0.Signal<0 | -1 | undefined>;
+    tabindex: _angular_core.Signal<0 | -1 | undefined>;
     /** The HTML element associated with the radio button. */
     element: SignalLike<HTMLElement>;
     constructor(inputs: RadioButtonInputs<V>);
@@ -63,23 +63,23 @@ declare class RadioGroupPattern<V> {
     /** Whether the radio group is vertically or horizontally oriented. */
     orientation: SignalLike<'vertical' | 'horizontal'>;
     /** Whether the radio group is disabled. */
-    disabled: i0.Signal<boolean>;
+    disabled: _angular_core.Signal<boolean>;
     /** The currently selected radio button. */
-    selectedItem: i0.Signal<RadioButtonPattern<V>>;
+    selectedItem: _angular_core.Signal<RadioButtonPattern<V>>;
     /** Whether the radio group is readonly. */
-    readonly: i0.Signal<boolean>;
+    readonly: _angular_core.Signal<boolean>;
     /** The tabindex of the radio group (if using activedescendant). */
-    tabindex: i0.Signal<0 | -1>;
+    tabindex: _angular_core.Signal<0 | -1>;
     /** The id of the current active radio button (if using activedescendant). */
-    activedescendant: i0.Signal<string | undefined>;
+    activedescendant: _angular_core.Signal<string | undefined>;
     /** The key used to navigate to the previous radio button. */
-    prevKey: i0.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
+    prevKey: _angular_core.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
     /** The key used to navigate to the next radio button. */
-    nextKey: i0.Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
+    nextKey: _angular_core.Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
     /** The keydown event manager for the radio group. */
-    keydown: i0.Signal<KeyboardEventManager<KeyboardEvent>>;
+    keydown: _angular_core.Signal<KeyboardEventManager<KeyboardEvent>>;
     /** The pointerdown event manager for the radio group. */
-    pointerdown: i0.Signal<PointerEventManager<PointerEvent>>;
+    pointerdown: _angular_core.Signal<PointerEventManager<PointerEvent>>;
     constructor(inputs: RadioGroupInputs<V>);
     /** Handles keydown events for the radio group. */
     onKeydown(event: KeyboardEvent): void;

@@ -1,4 +1,4 @@
-import * as i0 from '@angular/core';
+import * as _angular_core from '@angular/core';
 
 type SignalLike<T> = () => T;
 interface WritableSignalLike<T> extends SignalLike<T> {
@@ -129,9 +129,9 @@ interface ListFocusInputs<T extends ListFocusItem> {
 declare class ListFocus<T extends ListFocusItem> {
     readonly inputs: ListFocusInputs<T>;
     /** The last index that was active. */
-    prevActiveIndex: i0.WritableSignal<number>;
+    prevActiveIndex: _angular_core.WritableSignal<number>;
     /** The current active item. */
-    activeItem: i0.Signal<T>;
+    activeItem: _angular_core.Signal<T>;
     constructor(inputs: ListFocusInputs<T>);
     /** Whether the list is in a disabled state. */
     isListDisabled(): boolean;

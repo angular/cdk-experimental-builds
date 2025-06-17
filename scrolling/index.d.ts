@@ -1,7 +1,7 @@
 import { NumberInput } from '@angular/cdk/coercion';
 import { ListRange } from '@angular/cdk/collections';
 import { VirtualScrollStrategy, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import * as i0 from '@angular/core';
+import * as _angular_core from '@angular/core';
 import { OnChanges } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -149,14 +149,14 @@ declare class CdkAutoSizeVirtualScroll implements OnChanges {
     /** The scroll strategy used by this directive. */
     _scrollStrategy: AutoSizeVirtualScrollStrategy;
     ngOnChanges(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkAutoSizeVirtualScroll, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkAutoSizeVirtualScroll, "cdk-virtual-scroll-viewport[autosize]", never, { "minBufferPx": { "alias": "minBufferPx"; "required": false; }; "maxBufferPx": { "alias": "maxBufferPx"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkAutoSizeVirtualScroll, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkAutoSizeVirtualScroll, "cdk-virtual-scroll-viewport[autosize]", never, { "minBufferPx": { "alias": "minBufferPx"; "required": false; }; "maxBufferPx": { "alias": "maxBufferPx"; "required": false; }; }, {}, never, never, true, never>;
 }
 
 declare class ScrollingModule {
-    static ɵfac: i0.ɵɵFactoryDeclaration<ScrollingModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<ScrollingModule, never, [typeof CdkAutoSizeVirtualScroll], [typeof CdkAutoSizeVirtualScroll]>;
-    static ɵinj: i0.ɵɵInjectorDeclaration<ScrollingModule>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<ScrollingModule, never>;
+    static ɵmod: _angular_core.ɵɵNgModuleDeclaration<ScrollingModule, never, [typeof CdkAutoSizeVirtualScroll], [typeof CdkAutoSizeVirtualScroll]>;
+    static ɵinj: _angular_core.ɵɵInjectorDeclaration<ScrollingModule>;
 }
 
 export { AutoSizeVirtualScrollStrategy, CdkAutoSizeVirtualScroll, ItemSizeAverager, ScrollingModule, _autoSizeVirtualScrollStrategyFactory };

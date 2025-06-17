@@ -1,7 +1,7 @@
-import * as i0 from '@angular/core';
-import { e as ListNavigationItem, f as ListFocusItem, S as SignalLike, L as ListNavigationInputs, a as ListFocusInputs, b as ListNavigation, d as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-Br99p_2O.js';
-import { L as ListSelectionItem, a as ListSelectionInputs, b as ListSelection } from './list-selection.d-BQWRFJI-.js';
-import { E as ExpansionItem, b as ExpansionControl, L as ListExpansionInputs, a as ListExpansion } from './expansion.d-DB4i_1Aa.js';
+import * as _angular_core from '@angular/core';
+import { e as ListNavigationItem, f as ListFocusItem, S as SignalLike, L as ListNavigationInputs, a as ListFocusInputs, b as ListNavigation, d as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-tcweHm4g.js';
+import { L as ListSelectionItem, a as ListSelectionInputs, b as ListSelection } from './list-selection.d-BBLdeUeF.js';
+import { E as ExpansionItem, b as ExpansionControl, L as ListExpansionInputs, a as ListExpansion } from './expansion.d-BvIuKvYU.js';
 
 /** The required inputs to tabs. */
 interface TabInputs extends ListNavigationItem, ListSelectionItem<string>, ListFocusItem, Omit<ExpansionItem, 'expansionId' | 'expandable'> {
@@ -24,19 +24,19 @@ declare class TabPattern {
     /** The html element that should receive focus. */
     readonly element: SignalLike<HTMLElement>;
     /** Whether this tab has expandable content. */
-    readonly expandable: i0.Signal<boolean>;
+    readonly expandable: _angular_core.Signal<boolean>;
     /** The unique identifier used by the expansion behavior. */
-    readonly expansionId: i0.Signal<string>;
+    readonly expansionId: _angular_core.Signal<string>;
     /** Whether the tab is expanded. */
-    readonly expanded: i0.Signal<boolean>;
+    readonly expanded: _angular_core.Signal<boolean>;
     /** Whether the tab is active. */
-    readonly active: i0.Signal<boolean>;
+    readonly active: _angular_core.Signal<boolean>;
     /** Whether the tab is selected. */
-    readonly selected: i0.Signal<boolean>;
+    readonly selected: _angular_core.Signal<boolean>;
     /** The tabindex of the tab. */
-    readonly tabindex: i0.Signal<0 | -1>;
+    readonly tabindex: _angular_core.Signal<0 | -1>;
     /** The id of the tabpanel associated with the tab. */
-    readonly controls: i0.Signal<string | undefined>;
+    readonly controls: _angular_core.Signal<string | undefined>;
     constructor(inputs: TabInputs);
 }
 /** The required inputs for the tabpanel. */
@@ -53,7 +53,7 @@ declare class TabPanelPattern {
     /** A local unique identifier for the tabpanel. */
     readonly value: SignalLike<string>;
     /** Whether the tabpanel is hidden. */
-    readonly hidden: i0.Signal<boolean>;
+    readonly hidden: _angular_core.Signal<boolean>;
     constructor(inputs: TabPanelInputs);
 }
 /** The selection operations that the tablist can perform. */
@@ -78,19 +78,19 @@ declare class TabListPattern {
     /** Whether the tablist is disabled. */
     readonly disabled: SignalLike<boolean>;
     /** The tabindex of the tablist. */
-    readonly tabindex: i0.Signal<0 | -1>;
+    readonly tabindex: _angular_core.Signal<0 | -1>;
     /** The id of the current active tab. */
-    readonly activedescendant: i0.Signal<string | undefined>;
+    readonly activedescendant: _angular_core.Signal<string | undefined>;
     /** Whether selection should follow focus. */
-    readonly followFocus: i0.Signal<boolean>;
+    readonly followFocus: _angular_core.Signal<boolean>;
     /** The key used to navigate to the previous tab in the tablist. */
-    readonly prevKey: i0.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
+    readonly prevKey: _angular_core.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
     /** The key used to navigate to the next item in the list. */
-    readonly nextKey: i0.Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
+    readonly nextKey: _angular_core.Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
     /** The keydown event manager for the tablist. */
-    readonly keydown: i0.Signal<KeyboardEventManager<KeyboardEvent>>;
+    readonly keydown: _angular_core.Signal<KeyboardEventManager<KeyboardEvent>>;
     /** The pointerdown event manager for the tablist. */
-    readonly pointerdown: i0.Signal<PointerEventManager<PointerEvent>>;
+    readonly pointerdown: _angular_core.Signal<PointerEventManager<PointerEvent>>;
     constructor(inputs: TabListInputs);
     /**
      * Sets the tablist to its default initial state.

@@ -88,6 +88,10 @@
       "types": "./tabs/index.d.ts",
       "default": "./fesm2022/tabs.mjs"
     },
+    "./tree": {
+      "types": "./tree/index.d.ts",
+      "default": "./fesm2022/tree.mjs"
+    },
     "./ui-patterns": {
       "types": "./ui-patterns/index.d.ts",
       "default": "./fesm2022/ui-patterns.mjs"

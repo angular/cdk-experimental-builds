@@ -1,5 +1,5 @@
-import * as i0 from '@angular/core';
-import { S as SignalLike, W as WritableSignalLike } from './list-navigation.d-Br99p_2O.js';
+import * as _angular_core from '@angular/core';
+import { S as SignalLike, W as WritableSignalLike } from './list-navigation.d-tcweHm4g.js';
 
 /** Represents an item that can be expanded or collapsed. */
 interface ExpansionItem {
@@ -21,9 +21,9 @@ declare class ExpansionControl {
         expansionManager: ListExpansion;
     };
     /** Whether this specific item is currently expanded. Derived from the Expansion manager. */
-    readonly isExpanded: i0.Signal<boolean>;
+    readonly isExpanded: _angular_core.Signal<boolean>;
     /** Whether this item can be expanded. */
-    readonly isExpandable: i0.Signal<boolean>;
+    readonly isExpandable: _angular_core.Signal<boolean>;
     constructor(inputs: ExpansionItem & {
         expansionManager: ListExpansion;
     });

@@ -1,4 +1,4 @@
-import * as i0 from '@angular/core';
+import * as _angular_core from '@angular/core';
 import { InjectionToken, AfterViewInit, OnDestroy, ElementRef, NgZone, Provider, OnInit, Injector, ViewContainerRef, ChangeDetectorRef, Type } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { CdkTable, CdkColumnDef } from '@angular/cdk/table';
@@ -38,8 +38,8 @@ declare class ColumnResizeNotifierSource {
     readonly resizeCompleted: Subject<ColumnSize>;
     /** Triggers a resize action. */
     readonly triggerResize: Subject<ColumnSizeAction>;
-    static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResizeNotifierSource, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ColumnResizeNotifierSource>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<ColumnResizeNotifierSource, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<ColumnResizeNotifierSource>;
 }
 /** Service for triggering column resizes imperatively or being notified of them. */
 declare class ColumnResizeNotifier {
@@ -48,8 +48,8 @@ declare class ColumnResizeNotifier {
     readonly resizeCompleted: Observable<ColumnSize>;
     /** Instantly resizes the specified column. */
     resize(columnId: string, size: number): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResizeNotifier, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ColumnResizeNotifier>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<ColumnResizeNotifier, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<ColumnResizeNotifier>;
 }
 
 /** Coordinates events between the column resize directives. */
@@ -82,8 +82,8 @@ declare class HeaderRowEventDispatcher {
      */
     resizeOverlayVisibleForHeaderRow(row: Element): Observable<boolean>;
     private _enterZone;
-    static ɵfac: i0.ɵɵFactoryDeclaration<HeaderRowEventDispatcher, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<HeaderRowEventDispatcher>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<HeaderRowEventDispatcher, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<HeaderRowEventDispatcher>;
 }
 
 /** Configurable options for column resize. */
@@ -126,8 +126,8 @@ declare abstract class ColumnResize implements AfterViewInit, OnDestroy {
     private _listenForRowHoverEvents;
     private _listenForResizeActivity;
     private _listenForHoverActivity;
-    static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResize, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<ColumnResize, never, never, { "liveResizeUpdates": { "alias": "liveResizeUpdates"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<ColumnResize, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<ColumnResize, never, never, { "liveResizeUpdates": { "alias": "liveResizeUpdates"; "required": false; }; }, {}, never, never, true, never>;
 }
 
 /**
@@ -141,8 +141,8 @@ declare class CdkColumnResize extends ColumnResize {
     protected readonly ngZone: NgZone;
     protected readonly notifier: ColumnResizeNotifierSource;
     protected readonly table: CdkTable<unknown>;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkColumnResize, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkColumnResize, "table[cdk-table][columnResize]", never, {}, {}, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkColumnResize, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkColumnResize, "table[cdk-table][columnResize]", never, {}, {}, never, never, true, never>;
 }
 
 /**
@@ -156,8 +156,8 @@ declare class CdkColumnResizeFlex extends ColumnResize {
     protected readonly ngZone: NgZone;
     protected readonly notifier: ColumnResizeNotifierSource;
     protected readonly table: CdkTable<unknown>;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkColumnResizeFlex, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkColumnResizeFlex, "cdk-table[columnResize]", never, {}, {}, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkColumnResizeFlex, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkColumnResizeFlex, "cdk-table[columnResize]", never, {}, {}, never, never, true, never>;
 }
 
 /**
@@ -171,8 +171,8 @@ declare class CdkDefaultEnabledColumnResize extends ColumnResize {
     protected readonly ngZone: NgZone;
     protected readonly notifier: ColumnResizeNotifierSource;
     protected readonly table: CdkTable<unknown>;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkDefaultEnabledColumnResize, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResize, "table[cdk-table]", never, {}, {}, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkDefaultEnabledColumnResize, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResize, "table[cdk-table]", never, {}, {}, never, never, true, never>;
 }
 
 /**
@@ -186,8 +186,8 @@ declare class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
     protected readonly ngZone: NgZone;
     protected readonly notifier: ColumnResizeNotifierSource;
     protected readonly table: CdkTable<unknown>;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkDefaultEnabledColumnResizeFlex, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResizeFlex, "cdk-table", never, {}, {}, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkDefaultEnabledColumnResizeFlex, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkDefaultEnabledColumnResizeFlex, "cdk-table", never, {}, {}, never, never, true, never>;
 }
 
 /**
@@ -195,18 +195,18 @@ declare class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
  * When using this module, columns are resizable by default.
  */
 declare class CdkColumnResizeDefaultEnabledModule {
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkColumnResizeDefaultEnabledModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkColumnResizeDefaultEnabledModule, never, [typeof CdkDefaultEnabledColumnResize, typeof CdkDefaultEnabledColumnResizeFlex], [typeof CdkDefaultEnabledColumnResize, typeof CdkDefaultEnabledColumnResizeFlex]>;
-    static ɵinj: i0.ɵɵInjectorDeclaration<CdkColumnResizeDefaultEnabledModule>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkColumnResizeDefaultEnabledModule, never>;
+    static ɵmod: _angular_core.ɵɵNgModuleDeclaration<CdkColumnResizeDefaultEnabledModule, never, [typeof CdkDefaultEnabledColumnResize, typeof CdkDefaultEnabledColumnResizeFlex], [typeof CdkDefaultEnabledColumnResize, typeof CdkDefaultEnabledColumnResizeFlex]>;
+    static ɵinj: _angular_core.ɵɵInjectorDeclaration<CdkColumnResizeDefaultEnabledModule>;
 }
 /**
  * One of two NgModules for use with CdkColumnResize.
  * When using this module, columns are not resizable by default.
  */
 declare class CdkColumnResizeModule {
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkColumnResizeModule, never>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkColumnResizeModule, never, [typeof CdkColumnResize, typeof CdkColumnResizeFlex], [typeof CdkColumnResize, typeof CdkColumnResizeFlex]>;
-    static ɵinj: i0.ɵɵInjectorDeclaration<CdkColumnResizeModule>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkColumnResizeModule, never>;
+    static ɵmod: _angular_core.ɵɵNgModuleDeclaration<CdkColumnResizeModule, never, [typeof CdkColumnResize, typeof CdkColumnResizeFlex], [typeof CdkColumnResize, typeof CdkColumnResizeFlex]>;
+    static ɵinj: _angular_core.ɵɵInjectorDeclaration<CdkColumnResizeModule>;
 }
 
 /**
@@ -217,8 +217,8 @@ declare abstract class ColumnSizeStore {
     abstract getSize(tableId: string, columnId: string): Observable<number | null> | null;
     /** Persists the size of the specified column in the specified table. */
     abstract setSize(tableId: string, columnId: string, sizePx: number): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<ColumnSizeStore, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ColumnSizeStore>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<ColumnSizeStore, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<ColumnSizeStore>;
 }
 
 /** Tracks state of resize events in progress. */
@@ -261,8 +261,8 @@ declare class _CoalescedStyleScheduler {
      */
     scheduleEnd(task: () => unknown): void;
     private _createScheduleIfNeeded;
-    static ɵfac: i0.ɵɵFactoryDeclaration<_CoalescedStyleScheduler, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<_CoalescedStyleScheduler>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<_CoalescedStyleScheduler, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<_CoalescedStyleScheduler>;
 }
 
 /**
@@ -295,8 +295,8 @@ declare abstract class ResizeOverlayHandle implements AfterViewInit, OnDestroy {
     private _isLtr;
     private _notifyResizeEnded;
     private _observableFromEvent;
-    static ɵfac: i0.ɵɵFactoryDeclaration<ResizeOverlayHandle, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<ResizeOverlayHandle, never, never, {}, {}, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<ResizeOverlayHandle, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<ResizeOverlayHandle, never, never, {}, {}, never, never, true, never>;
 }
 
 /**
@@ -324,8 +324,8 @@ declare abstract class ResizeStrategy implements OnDestroy {
     registerColumn(column: HTMLElement): void;
     ngOnDestroy(): void;
     private _updateCachedSizes;
-    static ɵfac: i0.ɵɵFactoryDeclaration<ResizeStrategy, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ResizeStrategy>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<ResizeStrategy, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<ResizeStrategy>;
 }
 /**
  * The optimally performing resize strategy for &lt;table&gt; elements with table-layout: fixed.
@@ -341,8 +341,8 @@ declare class TableLayoutFixedResizeStrategy extends ResizeStrategy {
     applyColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number, previousSizeInPx?: number): void;
     applyMinColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number): void;
     applyMaxColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<TableLayoutFixedResizeStrategy, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<TableLayoutFixedResizeStrategy>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<TableLayoutFixedResizeStrategy, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<TableLayoutFixedResizeStrategy>;
 }
 /**
  * The optimally performing resize strategy for flex mat-tables.
@@ -373,8 +373,8 @@ declare class CdkFlexTableResizeStrategy extends ResizeStrategy implements OnDes
     private _getStyleSheet;
     private _getColumnPropertiesMap;
     private _applySizeCss;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CdkFlexTableResizeStrategy, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<CdkFlexTableResizeStrategy>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkFlexTableResizeStrategy, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<CdkFlexTableResizeStrategy>;
 }
 declare const TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER: Provider;
 declare const FLEX_RESIZE_STRATEGY_PROVIDER: Provider;
@@ -429,8 +429,8 @@ declare abstract class Resizable<HandleComponent extends ResizeOverlayHandle> im
     private _applyMinWidthPx;
     private _applyMaxWidthPx;
     private _appendInlineHandle;
-    static ɵfac: i0.ɵɵFactoryDeclaration<Resizable<any>, never>;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<Resizable<any>, never, never, {}, {}, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<Resizable<any>, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<Resizable<any>, never, never, {}, {}, never, never, true, never>;
 }
 
 export { COLUMN_RESIZE_OPTIONS, CdkColumnResize, CdkColumnResizeDefaultEnabledModule, CdkColumnResizeFlex, CdkColumnResizeModule, CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex, CdkFlexTableResizeStrategy, ColumnResize, ColumnResizeNotifier, ColumnResizeNotifierSource, ColumnSizeStore, FLEX_RESIZE_STRATEGY_PROVIDER, HeaderRowEventDispatcher, Resizable, ResizeOverlayHandle, ResizeRef, ResizeStrategy, TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER, TableLayoutFixedResizeStrategy, _COALESCED_STYLE_SCHEDULER, _CoalescedStyleScheduler, _Schedule };
