@@ -6,6 +6,8 @@ import { E as ExpansionControl, L as ListExpansion } from './expansion-C9iQLHOG.
 /** A tab in a tablist. */
 class TabPattern {
     inputs;
+    /** Controls expansion for this tab. */
+    expansion;
     /** A global unique identifier for the tab. */
     id;
     /** A local unique identifier for the tab. */
@@ -15,11 +17,11 @@ class TabPattern {
     /** The html element that should receive focus. */
     element;
     /** Whether this tab has expandable content. */
-    expandable;
+    expandable = computed(() => this.expansion.expandable());
     /** The unique identifier used by the expansion behavior. */
-    expansionId;
+    expansionId = computed(() => this.expansion.expansionId());
     /** Whether the tab is expanded. */
-    expanded;
+    expanded = computed(() => this.expansion.isExpanded());
     /** Whether the tab is active. */
     active = computed(() => this.inputs.tablist().focusManager.activeItem() === this);
     /** Whether the tab is selected. */
@@ -34,15 +36,12 @@ class TabPattern {
         this.value = inputs.value;
         this.disabled = inputs.disabled;
         this.element = inputs.element;
-        const expansionControl = new ExpansionControl({
+        this.expansion = new ExpansionControl({
             ...inputs,
             expansionId: inputs.value,
             expandable: () => true,
             expansionManager: inputs.tablist().expansionManager,
         });
-        this.expansionId = expansionControl.expansionId;
-        this.expandable = expansionControl.isExpandable;
-        this.expanded = expansionControl.isExpanded;
     }
 }
 /** A tabpanel associated with a tab. */
@@ -126,6 +125,31 @@ class TabListPattern {
             expandedIds: this.inputs.value,
         });
     }
+    /**
+     * Sets the tablist to its default initial state.
+     *
+     * Sets the active index of the tablist to the first focusable selected
+     * tab if one exists. Otherwise, sets focus to the first focusable tab.
+     *
+     * This method should be called once the tablist and its tabs are properly initialized.
+     */
+    setDefaultState() {
+        let firstItemIndex;
+        for (const [index, item] of this.inputs.items().entries()) {
+            if (!this.focusManager.isFocusable(item))
+                continue;
+            if (firstItemIndex === undefined) {
+                firstItemIndex = index;
+            }
+            if (item.selected()) {
+                this.inputs.activeIndex.set(index);
+                return;
+            }
+        }
+        if (firstItemIndex !== undefined) {
+            this.inputs.activeIndex.set(firstItemIndex);
+        }
+    }
     /** Handles keydown events for the tablist. */
     onKeydown(event) {
         if (!this.disabled()) {
@@ -168,7 +192,7 @@ class TabListPattern {
     }
     /** Handles updating selection for the tablist. */
     _select(opts) {
-        if (opts?.select) {
+        if (opts?.select && !this.focusManager.activeItem().disabled()) {
             this.selection.selectOne();
             this.expansionManager.open(this.focusManager.activeItem());
         }
@@ -183,4 +207,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-CeifH1j2.mjs.map
+//# sourceMappingURL=tabs-D3sG46vV.mjs.map

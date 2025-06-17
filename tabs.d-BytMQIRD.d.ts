@@ -1,7 +1,7 @@
 import * as i0 from '@angular/core';
 import { e as ListNavigationItem, f as ListFocusItem, S as SignalLike, L as ListNavigationInputs, a as ListFocusInputs, b as ListNavigation, d as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-Br99p_2O.js';
 import { L as ListSelectionItem, a as ListSelectionInputs, b as ListSelection } from './list-selection.d-BQWRFJI-.js';
-import { E as ExpansionItem, L as ListExpansionInputs, a as ListExpansion } from './expansion.d-DB4i_1Aa.js';
+import { E as ExpansionItem, b as ExpansionControl, L as ListExpansionInputs, a as ListExpansion } from './expansion.d-DB4i_1Aa.js';
 
 /** The required inputs to tabs. */
 interface TabInputs extends ListNavigationItem, ListSelectionItem<string>, ListFocusItem, Omit<ExpansionItem, 'expansionId' | 'expandable'> {
@@ -13,28 +13,30 @@ interface TabInputs extends ListNavigationItem, ListSelectionItem<string>, ListF
 /** A tab in a tablist. */
 declare class TabPattern {
     readonly inputs: TabInputs;
+    /** Controls expansion for this tab. */
+    readonly expansion: ExpansionControl;
     /** A global unique identifier for the tab. */
-    id: SignalLike<string>;
+    readonly id: SignalLike<string>;
     /** A local unique identifier for the tab. */
-    value: SignalLike<string>;
+    readonly value: SignalLike<string>;
     /** Whether the tab is disabled. */
-    disabled: SignalLike<boolean>;
+    readonly disabled: SignalLike<boolean>;
     /** The html element that should receive focus. */
-    element: SignalLike<HTMLElement>;
+    readonly element: SignalLike<HTMLElement>;
     /** Whether this tab has expandable content. */
-    expandable: SignalLike<boolean>;
+    readonly expandable: i0.Signal<boolean>;
     /** The unique identifier used by the expansion behavior. */
-    expansionId: SignalLike<string>;
+    readonly expansionId: i0.Signal<string>;
     /** Whether the tab is expanded. */
-    expanded: SignalLike<boolean>;
+    readonly expanded: i0.Signal<boolean>;
     /** Whether the tab is active. */
-    active: i0.Signal<boolean>;
+    readonly active: i0.Signal<boolean>;
     /** Whether the tab is selected. */
-    selected: i0.Signal<boolean>;
+    readonly selected: i0.Signal<boolean>;
     /** The tabindex of the tab. */
-    tabindex: i0.Signal<0 | -1>;
+    readonly tabindex: i0.Signal<0 | -1>;
     /** The id of the tabpanel associated with the tab. */
-    controls: i0.Signal<string | undefined>;
+    readonly controls: i0.Signal<string | undefined>;
     constructor(inputs: TabInputs);
 }
 /** The required inputs for the tabpanel. */
@@ -47,11 +49,11 @@ interface TabPanelInputs {
 declare class TabPanelPattern {
     readonly inputs: TabPanelInputs;
     /** A global unique identifier for the tabpanel. */
-    id: SignalLike<string>;
+    readonly id: SignalLike<string>;
     /** A local unique identifier for the tabpanel. */
-    value: SignalLike<string>;
+    readonly value: SignalLike<string>;
     /** Whether the tabpanel is hidden. */
-    hidden: i0.Signal<boolean>;
+    readonly hidden: i0.Signal<boolean>;
     constructor(inputs: TabPanelInputs);
 }
 /** The selection operations that the tablist can perform. */
@@ -64,32 +66,41 @@ type TabListInputs = ListNavigationInputs<TabPattern> & Omit<ListSelectionInputs
 declare class TabListPattern {
     readonly inputs: TabListInputs;
     /** Controls navigation for the tablist. */
-    navigation: ListNavigation<TabPattern>;
+    readonly navigation: ListNavigation<TabPattern>;
     /** Controls selection for the tablist. */
-    selection: ListSelection<TabPattern, string>;
+    readonly selection: ListSelection<TabPattern, string>;
     /** Controls focus for the tablist. */
-    focusManager: ListFocus<TabPattern>;
+    readonly focusManager: ListFocus<TabPattern>;
     /** Controls expansion for the tablist. */
-    expansionManager: ListExpansion;
+    readonly expansionManager: ListExpansion;
     /** Whether the tablist is vertically or horizontally oriented. */
-    orientation: SignalLike<'vertical' | 'horizontal'>;
+    readonly orientation: SignalLike<'vertical' | 'horizontal'>;
     /** Whether the tablist is disabled. */
-    disabled: SignalLike<boolean>;
+    readonly disabled: SignalLike<boolean>;
     /** The tabindex of the tablist. */
-    tabindex: i0.Signal<0 | -1>;
+    readonly tabindex: i0.Signal<0 | -1>;
     /** The id of the current active tab. */
-    activedescendant: i0.Signal<string | undefined>;
+    readonly activedescendant: i0.Signal<string | undefined>;
     /** Whether selection should follow focus. */
-    followFocus: i0.Signal<boolean>;
+    readonly followFocus: i0.Signal<boolean>;
     /** The key used to navigate to the previous tab in the tablist. */
-    prevKey: i0.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
+    readonly prevKey: i0.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
     /** The key used to navigate to the next item in the list. */
-    nextKey: i0.Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
+    readonly nextKey: i0.Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
     /** The keydown event manager for the tablist. */
-    keydown: i0.Signal<KeyboardEventManager<KeyboardEvent>>;
+    readonly keydown: i0.Signal<KeyboardEventManager<KeyboardEvent>>;
     /** The pointerdown event manager for the tablist. */
-    pointerdown: i0.Signal<PointerEventManager<PointerEvent>>;
+    readonly pointerdown: i0.Signal<PointerEventManager<PointerEvent>>;
     constructor(inputs: TabListInputs);
+    /**
+     * Sets the tablist to its default initial state.
+     *
+     * Sets the active index of the tablist to the first focusable selected
+     * tab if one exists. Otherwise, sets focus to the first focusable tab.
+     *
+     * This method should be called once the tablist and its tabs are properly initialized.
+     */
+    setDefaultState(): void;
     /** Handles keydown events for the tablist. */
     onKeydown(event: KeyboardEvent): void;
     /** The pointerdown event manager for the tablist. */
