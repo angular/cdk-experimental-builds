@@ -53,7 +53,7 @@ class CdkRadioGroup {
     /** The RadioButton UIPatterns of the child CdkRadioButtons. */
     items = computed(() => this._cdkRadioButtons().map(radio => radio.pattern));
     /** Whether the radio group is vertically or horizontally oriented. */
-    orientation = input('horizontal');
+    orientation = input('vertical');
     /** Whether disabled items in the group should be skipped when navigating. */
     skipDisabled = input(true, { transform: booleanAttribute });
     /** The focus strategy used by the radio group. */
