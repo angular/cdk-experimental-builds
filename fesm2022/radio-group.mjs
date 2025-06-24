@@ -2,7 +2,7 @@ import * as i0 from '@angular/core';
 import { contentChildren, inject, computed, input, booleanAttribute, model, signal, afterRenderEffect, Directive, ElementRef, linkedSignal } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { R as RadioGroupPattern, a as RadioButtonPattern } from './radio-s5uO_tmJ.mjs';
+import { R as RadioGroupPattern, a as RadioButtonPattern } from './radio-button-s5uO_tmJ.mjs';
 import './list-focus-BXQdAA3i.mjs';
 import './list-selection-BLV4Yy7T.mjs';
 
@@ -166,4 +166,4 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImpor
         }] });
 
 export { CdkRadioButton, CdkRadioGroup };
-//# sourceMappingURL=radio.mjs.map
+//# sourceMappingURL=radio-group.mjs.map
