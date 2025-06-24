@@ -75,7 +75,13 @@ class ListSelection {
     }
     /** Sets the selection to only the current active item. */
     selectOne() {
+        if (this.inputs.focusManager.activeItem().disabled()) {
+            return;
+        }
         this.deselectAll();
+        if (this.inputs.value().length > 0 && !this.inputs.multi()) {
+            return;
+        }
         this.select();
     }
     /**
@@ -127,4 +133,4 @@ class ListSelection {
 }
 
 export { ListSelection as L };
-//# sourceMappingURL=list-selection-BLV4Yy7T.mjs.map
+//# sourceMappingURL=list-selection-C41ApAbt.mjs.map

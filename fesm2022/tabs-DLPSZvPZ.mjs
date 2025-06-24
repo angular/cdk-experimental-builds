@@ -1,6 +1,6 @@
 import { computed } from '@angular/core';
 import { K as KeyboardEventManager, P as PointerEventManager, L as ListFocus, a as ListNavigation } from './list-focus-BXQdAA3i.mjs';
-import { L as ListSelection } from './list-selection-BLV4Yy7T.mjs';
+import { L as ListSelection } from './list-selection-C41ApAbt.mjs';
 import { E as ExpansionControl, L as ListExpansion } from './expansion-C9iQLHOG.mjs';
 
 /** A tab in a tablist. */
@@ -192,7 +192,7 @@ class TabListPattern {
     }
     /** Handles updating selection for the tablist. */
     _select(opts) {
-        if (opts?.select && !this.focusManager.activeItem().disabled()) {
+        if (opts?.select) {
             this.selection.selectOne();
             this.expansionManager.open(this.focusManager.activeItem());
         }
@@ -207,4 +207,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-D3sG46vV.mjs.map
+//# sourceMappingURL=tabs-DLPSZvPZ.mjs.map

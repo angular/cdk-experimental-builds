@@ -1,6 +1,6 @@
 import { computed } from '@angular/core';
 import { L as ListFocus, a as ListNavigation, K as KeyboardEventManager, P as PointerEventManager } from './list-focus-BXQdAA3i.mjs';
-import { L as ListSelection } from './list-selection-BLV4Yy7T.mjs';
+import { L as ListSelection } from './list-selection-C41ApAbt.mjs';
 
 /** Controls the state of a radio group. */
 class RadioGroupPattern {
@@ -200,4 +200,4 @@ class RadioButtonPattern {
 }
 
 export { RadioGroupPattern as R, RadioButtonPattern as a };
-//# sourceMappingURL=radio-button-s5uO_tmJ.mjs.map
+//# sourceMappingURL=radio-button-BiqPDreS.mjs.map

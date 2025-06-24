@@ -4,9 +4,9 @@ import { _IdGenerator } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
 import { signal, computed, Directive, inject, linkedSignal, input, booleanAttribute, model, afterRenderEffect, ElementRef } from '@angular/core';
-import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-D3sG46vV.mjs';
+import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-DLPSZvPZ.mjs';
 import './list-focus-BXQdAA3i.mjs';
-import './list-selection-BLV4Yy7T.mjs';
+import './list-selection-C41ApAbt.mjs';
 import './expansion-C9iQLHOG.mjs';
 
 /**

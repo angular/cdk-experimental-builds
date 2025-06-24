@@ -1,5 +1,5 @@
 import { M as ModifierKey, L as ListFocus, a as ListNavigation, K as KeyboardEventManager, P as PointerEventManager } from './list-focus-BXQdAA3i.mjs';
-import { L as ListSelection } from './list-selection-BLV4Yy7T.mjs';
+import { L as ListSelection } from './list-selection-C41ApAbt.mjs';
 import { L as ListTypeahead } from './list-typeahead-DIIbNJrP.mjs';
 import { computed, signal } from '@angular/core';
 
@@ -318,4 +318,4 @@ class OptionPattern {
 }
 
 export { ListboxPattern as L, OptionPattern as O };
-//# sourceMappingURL=option-BZgyz6mj.mjs.map
+//# sourceMappingURL=option-D44ECQK6.mjs.map

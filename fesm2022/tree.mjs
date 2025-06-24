@@ -5,7 +5,7 @@ import { Directionality } from '@angular/cdk/bidi';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
 import { DeferredContentAware, DeferredContent } from '@angular/cdk-experimental/deferred-content';
 import { M as ModifierKey, L as ListFocus, a as ListNavigation, K as KeyboardEventManager, P as PointerEventManager } from './list-focus-BXQdAA3i.mjs';
-import { L as ListSelection } from './list-selection-BLV4Yy7T.mjs';
+import { L as ListSelection } from './list-selection-C41ApAbt.mjs';
 import { L as ListTypeahead } from './list-typeahead-DIIbNJrP.mjs';
 import { E as ExpansionControl, L as ListExpansion } from './expansion-C9iQLHOG.mjs';
 
