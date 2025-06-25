@@ -71,6 +71,12 @@ class CdkAccordionTrigger {
     value = input.required();
     /** Whether the trigger is disabled. */
     disabled = input(false, { transform: booleanAttribute });
+    /**
+     * Whether this trigger is completely inaccessible.
+     *
+     * TODO(ok7sai): Consider move this to UI patterns.
+     */
+    hardDisabled = computed(() => this.pattern.disabled() && this.pattern.tabindex() < 0);
     /** The accordion panel pattern controlled by this trigger. This is set by CdkAccordionGroup. */
     accordionPanel = signal(undefined);
     /** The UI pattern instance for this trigger. */
@@ -83,7 +89,7 @@ class CdkAccordionTrigger {
         accordionPanel: this.accordionPanel,
     });
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkAccordionTrigger, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0", type: CdkAccordionTrigger, isStandalone: true, selector: "[cdkAccordionTrigger]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "button" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "pattern.onFocus($event)" }, properties: { "class.cdk-active": "pattern.active()", "id": "pattern.id()", "attr.aria-expanded": "pattern.expanded()", "attr.aria-controls": "pattern.controls()", "attr.aria-disabled": "pattern.disabled()", "attr.tabindex": "pattern.tabindex()" }, classAttribute: "cdk-accordion-trigger" }, exportAs: ["cdkAccordionTrigger"], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0", type: CdkAccordionTrigger, isStandalone: true, selector: "[cdkAccordionTrigger]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "button" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "pattern.onFocus($event)" }, properties: { "class.cdk-active": "pattern.active()", "id": "pattern.id()", "attr.aria-expanded": "pattern.expanded()", "attr.aria-controls": "pattern.controls()", "attr.aria-disabled": "pattern.disabled()", "attr.inert": "hardDisabled() ? true : null", "attr.disabled": "hardDisabled() ? true : null", "attr.tabindex": "pattern.tabindex()" }, classAttribute: "cdk-accordion-trigger" }, exportAs: ["cdkAccordionTrigger"], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkAccordionTrigger, decorators: [{
             type: Directive,
@@ -98,6 +104,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImpor
                         '[attr.aria-expanded]': 'pattern.expanded()',
                         '[attr.aria-controls]': 'pattern.controls()',
                         '[attr.aria-disabled]': 'pattern.disabled()',
+                        '[attr.inert]': 'hardDisabled() ? true : null',
+                        '[attr.disabled]': 'hardDisabled() ? true : null',
                         '[attr.tabindex]': 'pattern.tabindex()',
                         '(keydown)': 'pattern.onKeydown($event)',
                         '(pointerdown)': 'pattern.onPointerdown($event)',

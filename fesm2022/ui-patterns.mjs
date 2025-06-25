@@ -1,6 +1,6 @@
 export { L as ListboxPattern, O as OptionPattern } from './option-D44ECQK6.mjs';
 export { a as RadioButtonPattern, R as RadioGroupPattern } from './radio-button-BiqPDreS.mjs';
-export { T as TabListPattern, b as TabPanelPattern, a as TabPattern } from './tabs-DLPSZvPZ.mjs';
+export { T as TabListPattern, b as TabPanelPattern, a as TabPattern } from './tabs-YS9XXb7X.mjs';
 export { b as AccordionGroupPattern, A as AccordionPanelPattern, a as AccordionTriggerPattern } from './accordion-CN4PcmAh.mjs';
 import './list-focus-BXQdAA3i.mjs';
 import '@angular/core';

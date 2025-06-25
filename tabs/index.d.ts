@@ -1,7 +1,7 @@
 import * as _angular_core from '@angular/core';
 import { Signal, OnInit, OnDestroy } from '@angular/core';
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
-import { a as TabPattern, c as TabPanelPattern, e as TabListPattern } from '../tabs.d-DHT_RQQu.js';
+import { a as TabPattern, c as TabPanelPattern, e as TabListPattern } from '../tabs.d-C4vwhxZL.js';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
 import '../list-navigation.d-tcweHm4g.js';
 import '../list-selection.d-BBLdeUeF.js';

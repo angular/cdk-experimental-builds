@@ -40,6 +40,12 @@ declare class CdkAccordionTrigger {
     value: _angular_core.InputSignal<string>;
     /** Whether the trigger is disabled. */
     disabled: _angular_core.InputSignalWithTransform<boolean, unknown>;
+    /**
+     * Whether this trigger is completely inaccessible.
+     *
+     * TODO(ok7sai): Consider move this to UI patterns.
+     */
+    readonly hardDisabled: _angular_core.Signal<boolean>;
     /** The accordion panel pattern controlled by this trigger. This is set by CdkAccordionGroup. */
     readonly accordionPanel: WritableSignal<AccordionPanelPattern | undefined>;
     /** The UI pattern instance for this trigger. */

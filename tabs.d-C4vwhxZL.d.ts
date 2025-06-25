@@ -54,6 +54,8 @@ declare class TabPanelPattern {
     readonly value: SignalLike<string>;
     /** Whether the tabpanel is hidden. */
     readonly hidden: _angular_core.Signal<boolean>;
+    /** The tabindex of this tabpanel. */
+    readonly tabindex: _angular_core.Signal<-1 | 0>;
     constructor(inputs: TabPanelInputs);
 }
 /** The selection operations that the tablist can perform. */

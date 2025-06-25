@@ -53,6 +53,8 @@ class TabPanelPattern {
     value;
     /** Whether the tabpanel is hidden. */
     hidden = computed(() => this.inputs.tab()?.expanded() === false);
+    /** The tabindex of this tabpanel. */
+    tabindex = computed(() => (this.hidden() ? -1 : 0));
     constructor(inputs) {
         this.inputs = inputs;
         this.id = inputs.id;
@@ -207,4 +209,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-DLPSZvPZ.mjs.map
+//# sourceMappingURL=tabs-YS9XXb7X.mjs.map

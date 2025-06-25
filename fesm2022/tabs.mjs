@@ -4,7 +4,7 @@ import { _IdGenerator } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
 import { signal, computed, Directive, inject, linkedSignal, input, booleanAttribute, model, afterRenderEffect, ElementRef } from '@angular/core';
-import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-DLPSZvPZ.mjs';
+import { T as TabListPattern, a as TabPattern, b as TabPanelPattern } from './tabs-YS9XXb7X.mjs';
 import './list-focus-BXQdAA3i.mjs';
 import './list-selection-C41ApAbt.mjs';
 import './expansion-C9iQLHOG.mjs';
@@ -256,7 +256,7 @@ class CdkTabPanel {
         this._cdkTabs.deregister(this);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTabPanel, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0", type: CdkTabPanel, isStandalone: true, selector: "[cdkTabPanel]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "tabpanel", "tabindex": "0" }, properties: { "attr.id": "pattern.id()", "attr.inert": "pattern.hidden() ? true : null" }, classAttribute: "cdk-tabpanel" }, exportAs: ["cdkTabPanel"], hostDirectives: [{ directive: i1.DeferredContentAware, inputs: ["preserveContent", "preserveContent"] }], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0", type: CdkTabPanel, isStandalone: true, selector: "[cdkTabPanel]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "tabpanel" }, properties: { "attr.id": "pattern.id()", "attr.tabindex": "pattern.tabindex()", "attr.inert": "pattern.hidden() ? true : null" }, classAttribute: "cdk-tabpanel" }, exportAs: ["cdkTabPanel"], hostDirectives: [{ directive: i1.DeferredContentAware, inputs: ["preserveContent", "preserveContent"] }], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTabPanel, decorators: [{
             type: Directive,
@@ -265,9 +265,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImpor
                     exportAs: 'cdkTabPanel',
                     host: {
                         'role': 'tabpanel',
-                        'tabindex': '0',
                         'class': 'cdk-tabpanel',
                         '[attr.id]': 'pattern.id()',
+                        '[attr.tabindex]': 'pattern.tabindex()',
                         '[attr.inert]': 'pattern.hidden() ? true : null',
                     },
                     hostDirectives: [
