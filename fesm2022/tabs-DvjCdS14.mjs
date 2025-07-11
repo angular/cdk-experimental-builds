@@ -3,6 +3,31 @@ import { K as KeyboardEventManager, P as PointerEventManager, L as ListFocus, a 
 import { L as ListSelection } from './list-selection-C41ApAbt.mjs';
 import { E as ExpansionControl, L as ListExpansion } from './expansion-C9iQLHOG.mjs';
 
+/** Controls label and description of an element. */
+class LabelControl {
+    inputs;
+    /** The `aria-label`. */
+    label = computed(() => this.inputs.label?.());
+    /** The `aria-labelledby` ids. */
+    labelledBy = computed(() => {
+        const label = this.label();
+        const labelledBy = this.inputs.labelledBy?.();
+        const defaultLabelledBy = this.inputs.defaultLabelledBy();
+        if (labelledBy && labelledBy.length > 0) {
+            return labelledBy;
+        }
+        // If an aria-label is provided by developers, do not set aria-labelledby with the
+        // defaultLabelledBy value because if both attributes are set, aria-labelledby will be used.
+        if (label) {
+            return [];
+        }
+        return defaultLabelledBy;
+    });
+    constructor(inputs) {
+        this.inputs = inputs;
+    }
+}
+
 /** A tab in a tablist. */
 class TabPattern {
     inputs;
@@ -51,14 +76,24 @@ class TabPanelPattern {
     id;
     /** A local unique identifier for the tabpanel. */
     value;
+    /** Controls label for this tabpanel. */
+    labelManager;
     /** Whether the tabpanel is hidden. */
     hidden = computed(() => this.inputs.tab()?.expanded() === false);
     /** The tabindex of this tabpanel. */
     tabindex = computed(() => (this.hidden() ? -1 : 0));
+    /** The aria-labelledby value for this tabpanel. */
+    labelledBy = computed(() => this.labelManager.labelledBy().length > 0
+        ? this.labelManager.labelledBy().join(' ')
+        : undefined);
     constructor(inputs) {
         this.inputs = inputs;
         this.id = inputs.id;
         this.value = inputs.value;
+        this.labelManager = new LabelControl({
+            ...inputs,
+            defaultLabelledBy: computed(() => (this.inputs.tab() ? [this.inputs.tab().id()] : [])),
+        });
     }
 }
 /** Controls the state of a tablist. */
@@ -209,4 +244,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-YS9XXb7X.mjs.map
+//# sourceMappingURL=tabs-DvjCdS14.mjs.map

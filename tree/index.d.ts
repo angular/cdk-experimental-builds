@@ -2,7 +2,7 @@ import * as _angular_cdk_bidi from '@angular/cdk/bidi';
 import * as _angular_core from '@angular/core';
 import { OnInit, OnDestroy, Signal } from '@angular/core';
 import { S as SignalLike, d as ListFocus, b as ListNavigation, K as KeyboardEventManager, P as PointerEventManager, f as ListFocusItem, e as ListNavigationItem, a as ListFocusInputs, L as ListNavigationInputs } from '../list-navigation.d-tcweHm4g.js';
-import { b as ListSelection, L as ListSelectionItem, a as ListSelectionInputs } from '../list-selection.d-BBLdeUeF.js';
+import { L as ListSelection, a as ListSelectionItem, b as ListSelectionInputs } from '../list-selection.d-zyz_XRbe.js';
 import { L as ListTypeahead, a as ListTypeaheadItem, b as ListTypeaheadInputs } from '../list-typeahead.d-DvIIfjfu.js';
 import { E as ExpansionItem, a as ListExpansion, b as ExpansionControl } from '../expansion.d-BvIuKvYU.js';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
@@ -48,7 +48,9 @@ declare class TreeItemPattern<V> implements ExpansionItem {
     /** The tabindex of the item. */
     readonly tabindex: _angular_core.Signal<0 | -1>;
     /** Whether the item is selected. */
-    readonly selected: _angular_core.Signal<boolean>;
+    readonly selected: _angular_core.Signal<boolean | undefined>;
+    /** The current type of this item. */
+    readonly current: _angular_core.Signal<"page" | "step" | "location" | "date" | "time" | "true" | "false" | undefined>;
     constructor(inputs: TreeItemInputs<V>);
 }
 /** The selection operations that the tree can perform. */
@@ -62,6 +64,10 @@ interface SelectOptions {
 interface TreeInputs<V> extends Omit<ListFocusInputs<TreeItemPattern<V>> & ListNavigationInputs<TreeItemPattern<V>> & ListSelectionInputs<TreeItemPattern<V>, V> & ListTypeaheadInputs<TreeItemPattern<V>>, 'items'> {
     /** All items in the tree, in document order (DFS-like, a flattened list). */
     allItems: SignalLike<TreeItemPattern<V>[]>;
+    /** Whether the tree is in navigation mode. */
+    nav: SignalLike<boolean>;
+    /** The aria-current type. */
+    currentType: SignalLike<'page' | 'step' | 'location' | 'date' | 'time' | 'true' | 'false'>;
 }
 interface TreePattern<V> extends TreeInputs<V> {
 }
@@ -207,6 +213,10 @@ declare class CdkTree<V> {
     readonly value: _angular_core.ModelSignal<V[]>;
     /** Text direction. */
     readonly textDirection: _angular_core.WritableSignal<_angular_cdk_bidi.Direction>;
+    /** Whether the tree is in navigation mode. */
+    readonly nav: _angular_core.InputSignal<boolean>;
+    /** The aria-current type. */
+    readonly currentType: _angular_core.InputSignal<"page" | "step" | "location" | "date" | "time" | "true" | "false">;
     /** The UI pattern for the tree. */
     readonly pattern: TreePattern<V>;
     /** Whether the tree has received focus yet. */
@@ -216,7 +226,7 @@ declare class CdkTree<V> {
     register(child: CdkTreeItemGroup<V> | CdkTreeItem<V>): void;
     deregister(child: CdkTreeItemGroup<V> | CdkTreeItem<V>): void;
     static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkTree<any>, never>;
-    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkTree<any>, "[cdkTree]", ["cdkTree"], { "orientation": { "alias": "orientation"; "required": false; "isSignal": true; }; "multi": { "alias": "multi"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "selectionMode": { "alias": "selectionMode"; "required": false; "isSignal": true; }; "focusMode": { "alias": "focusMode"; "required": false; "isSignal": true; }; "wrap": { "alias": "wrap"; "required": false; "isSignal": true; }; "skipDisabled": { "alias": "skipDisabled"; "required": false; "isSignal": true; }; "typeaheadDelay": { "alias": "typeaheadDelay"; "required": false; "isSignal": true; }; "value": { "alias": "value"; "required": false; "isSignal": true; }; }, { "value": "valueChange"; }, never, never, true, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkTree<any>, "[cdkTree]", ["cdkTree"], { "orientation": { "alias": "orientation"; "required": false; "isSignal": true; }; "multi": { "alias": "multi"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "selectionMode": { "alias": "selectionMode"; "required": false; "isSignal": true; }; "focusMode": { "alias": "focusMode"; "required": false; "isSignal": true; }; "wrap": { "alias": "wrap"; "required": false; "isSignal": true; }; "skipDisabled": { "alias": "skipDisabled"; "required": false; "isSignal": true; }; "typeaheadDelay": { "alias": "typeaheadDelay"; "required": false; "isSignal": true; }; "value": { "alias": "value"; "required": false; "isSignal": true; }; "nav": { "alias": "nav"; "required": false; "isSignal": true; }; "currentType": { "alias": "currentType"; "required": false; "isSignal": true; }; }, { "value": "valueChange"; }, never, never, true, never>;
 }
 /**
  * A selectable and expandable Tree Item in a Tree.

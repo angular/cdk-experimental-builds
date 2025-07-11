@@ -65,5 +65,5 @@ declare class ListSelection<T extends ListSelectionItem<V>, V> {
     private _getItemsFromIndex;
 }
 
-export { ListSelection as b };
-export type { ListSelectionItem as L, ListSelectionInputs as a };
+export { ListSelection as L };
+export type { ListSelectionItem as a, ListSelectionInputs as b };

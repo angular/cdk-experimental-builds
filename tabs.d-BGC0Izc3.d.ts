@@ -1,7 +1,29 @@
 import * as _angular_core from '@angular/core';
-import { e as ListNavigationItem, f as ListFocusItem, S as SignalLike, L as ListNavigationInputs, a as ListFocusInputs, b as ListNavigation, d as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-tcweHm4g.js';
-import { L as ListSelectionItem, a as ListSelectionInputs, b as ListSelection } from './list-selection.d-BBLdeUeF.js';
+import { S as SignalLike, e as ListNavigationItem, f as ListFocusItem, L as ListNavigationInputs, a as ListFocusInputs, b as ListNavigation, d as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation.d-tcweHm4g.js';
+import { a as ListSelectionItem, b as ListSelectionInputs, L as ListSelection } from './list-selection.d-zyz_XRbe.js';
 import { E as ExpansionItem, b as ExpansionControl, L as ListExpansionInputs, a as ListExpansion } from './expansion.d-BvIuKvYU.js';
+
+/** Represents the required inputs for the label control. */
+interface LabelControlInputs {
+    /** The default `aria-labelledby` ids. */
+    defaultLabelledBy: SignalLike<string[]>;
+}
+/** Represents the optional inputs for the label control. */
+interface LabelControlOptionalInputs {
+    /** The `aria-label`. */
+    label?: SignalLike<string | undefined>;
+    /** The user-provided `aria-labelledby` ids. */
+    labelledBy?: SignalLike<string[]>;
+}
+/** Controls label and description of an element. */
+declare class LabelControl {
+    readonly inputs: LabelControlInputs & LabelControlOptionalInputs;
+    /** The `aria-label`. */
+    readonly label: _angular_core.Signal<string | undefined>;
+    /** The `aria-labelledby` ids. */
+    readonly labelledBy: _angular_core.Signal<string[]>;
+    constructor(inputs: LabelControlInputs & LabelControlOptionalInputs);
+}
 
 /** The required inputs to tabs. */
 interface TabInputs extends ListNavigationItem, ListSelectionItem<string>, ListFocusItem, Omit<ExpansionItem, 'expansionId' | 'expandable'> {
@@ -40,7 +62,7 @@ declare class TabPattern {
     constructor(inputs: TabInputs);
 }
 /** The required inputs for the tabpanel. */
-interface TabPanelInputs {
+interface TabPanelInputs extends LabelControlOptionalInputs {
     id: SignalLike<string>;
     tab: SignalLike<TabPattern | undefined>;
     value: SignalLike<string>;
@@ -52,10 +74,14 @@ declare class TabPanelPattern {
     readonly id: SignalLike<string>;
     /** A local unique identifier for the tabpanel. */
     readonly value: SignalLike<string>;
+    /** Controls label for this tabpanel. */
+    readonly labelManager: LabelControl;
     /** Whether the tabpanel is hidden. */
     readonly hidden: _angular_core.Signal<boolean>;
     /** The tabindex of this tabpanel. */
     readonly tabindex: _angular_core.Signal<-1 | 0>;
+    /** The aria-labelledby value for this tabpanel. */
+    readonly labelledBy: _angular_core.Signal<string | undefined>;
     constructor(inputs: TabPanelInputs);
 }
 /** The selection operations that the tablist can perform. */
