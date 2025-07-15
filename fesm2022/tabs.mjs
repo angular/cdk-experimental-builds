@@ -44,13 +44,13 @@ function sortDirectives(a, b) {
  */
 class CdkTabs {
     /** The CdkTabList nested inside of the container. */
-    _tablist = signal(undefined);
+    _tablist = signal(undefined, ...(ngDevMode ? [{ debugName: "_tablist" }] : []));
     /** The CdkTabPanels nested inside of the container. */
-    _unorderedPanels = signal(new Set());
+    _unorderedPanels = signal(new Set(), ...(ngDevMode ? [{ debugName: "_unorderedPanels" }] : []));
     /** The Tab UIPattern of the child Tabs. */
-    tabs = computed(() => this._tablist()?.tabs());
+    tabs = computed(() => this._tablist()?.tabs(), ...(ngDevMode ? [{ debugName: "tabs" }] : []));
     /** The TabPanel UIPattern of the child TabPanels. */
-    unorderedTabpanels = computed(() => [...this._unorderedPanels()].map(tabpanel => tabpanel.pattern));
+    unorderedTabpanels = computed(() => [...this._unorderedPanels()].map(tabpanel => tabpanel.pattern), ...(ngDevMode ? [{ debugName: "unorderedTabpanels" }] : []));
     register(child) {
         if (child instanceof CdkTabList) {
             this._tablist.set(child);
@@ -69,10 +69,10 @@ class CdkTabs {
             this._unorderedPanels.set(new Set(this._unorderedPanels()));
         }
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTabs, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.0.0", type: CdkTabs, isStandalone: true, selector: "[cdkTabs]", host: { classAttribute: "cdk-tabs" }, exportAs: ["cdkTabs"], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTabs, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.2.0-next.0", type: CdkTabs, isStandalone: true, selector: "[cdkTabs]", host: { classAttribute: "cdk-tabs" }, exportAs: ["cdkTabs"], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTabs, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTabs, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkTabs]',
@@ -91,27 +91,27 @@ class CdkTabList {
     /** The parent CdkTabs. */
     _cdkTabs = inject(CdkTabs);
     /** The CdkTabs nested inside of the CdkTabList. */
-    _unorderedTabs = signal(new Set());
+    _unorderedTabs = signal(new Set(), ...(ngDevMode ? [{ debugName: "_unorderedTabs" }] : []));
     /** The internal tab selection state. */
     _selection = linkedSignal(() => (this.tab() ? [this.tab()] : []));
     /** Text direction. */
     textDirection = inject(Directionality).valueSignal;
     /** The Tab UIPatterns of the child Tabs. */
-    tabs = computed(() => [...this._unorderedTabs()].sort(sortDirectives).map(tab => tab.pattern));
+    tabs = computed(() => [...this._unorderedTabs()].sort(sortDirectives).map(tab => tab.pattern), ...(ngDevMode ? [{ debugName: "tabs" }] : []));
     /** Whether the tablist is vertically or horizontally oriented. */
-    orientation = input('horizontal');
+    orientation = input('horizontal', ...(ngDevMode ? [{ debugName: "orientation" }] : []));
     /** Whether focus should wrap when navigating. */
-    wrap = input(true, { transform: booleanAttribute });
+    wrap = input(true, ...(ngDevMode ? [{ debugName: "wrap", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
     /** Whether disabled items in the list should be skipped when navigating. */
-    skipDisabled = input(true, { transform: booleanAttribute });
+    skipDisabled = input(true, ...(ngDevMode ? [{ debugName: "skipDisabled", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
     /** The focus strategy used by the tablist. */
-    focusMode = input('roving');
+    focusMode = input('roving', ...(ngDevMode ? [{ debugName: "focusMode" }] : []));
     /** The selection strategy used by the tablist. */
-    selectionMode = input('follow');
+    selectionMode = input('follow', ...(ngDevMode ? [{ debugName: "selectionMode" }] : []));
     /** Whether the tablist is disabled. */
-    disabled = input(false, { transform: booleanAttribute });
+    disabled = input(false, ...(ngDevMode ? [{ debugName: "disabled", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
     /** The current selected tab. */
-    tab = model();
+    tab = model(...(ngDevMode ? [undefined, { debugName: "tab" }] : []));
     /** The TabList UIPattern. */
     pattern = new TabListPattern({
         ...this,
@@ -120,7 +120,7 @@ class CdkTabList {
         activeIndex: signal(0),
     });
     /** Whether the tree has received focus yet. */
-    _hasFocused = signal(false);
+    _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));
     constructor() {
         afterRenderEffect(() => this.tab.set(this._selection()[0]));
         afterRenderEffect(() => {
@@ -146,10 +146,10 @@ class CdkTabList {
         this._unorderedTabs().delete(child);
         this._unorderedTabs.set(new Set(this._unorderedTabs()));
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTabList, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0", type: CdkTabList, isStandalone: true, selector: "[cdkTabList]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, tab: { classPropertyName: "tab", publicName: "tab", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { tab: "tabChange" }, host: { attributes: { "role": "tablist" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.tabindex": "pattern.tabindex()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-orientation": "pattern.orientation()", "attr.aria-activedescendant": "pattern.activedescendant()" }, classAttribute: "cdk-tablist" }, exportAs: ["cdkTabList"], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTabList, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.0", type: CdkTabList, isStandalone: true, selector: "[cdkTabList]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, tab: { classPropertyName: "tab", publicName: "tab", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { tab: "tabChange" }, host: { attributes: { "role": "tablist" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.tabindex": "pattern.tabindex()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-orientation": "pattern.orientation()", "attr.aria-activedescendant": "pattern.activedescendant()" }, classAttribute: "cdk-tablist" }, exportAs: ["cdkTabList"], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTabList, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTabList, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkTabList]',
@@ -178,15 +178,15 @@ class CdkTab {
     /** A global unique identifier for the tab. */
     _id = inject(_IdGenerator).getId('cdk-tab-');
     /** The host native element. */
-    element = computed(() => this._elementRef.nativeElement);
+    element = computed(() => this._elementRef.nativeElement, ...(ngDevMode ? [{ debugName: "element" }] : []));
     /** The parent TabList UIPattern. */
-    tablist = computed(() => this._cdkTabList.pattern);
+    tablist = computed(() => this._cdkTabList.pattern, ...(ngDevMode ? [{ debugName: "tablist" }] : []));
     /** The TabPanel UIPattern associated with the tab */
-    tabpanel = computed(() => this._cdkTabs.unorderedTabpanels().find(tabpanel => tabpanel.value() === this.value()));
+    tabpanel = computed(() => this._cdkTabs.unorderedTabpanels().find(tabpanel => tabpanel.value() === this.value()), ...(ngDevMode ? [{ debugName: "tabpanel" }] : []));
     /** Whether a tab is disabled. */
-    disabled = input(false, { transform: booleanAttribute });
+    disabled = input(false, ...(ngDevMode ? [{ debugName: "disabled", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
     /** A local unique identifier for the tab. */
-    value = input.required();
+    value = input.required(...(ngDevMode ? [{ debugName: "value" }] : []));
     /** The Tab UIPattern. */
     pattern = new TabPattern({
         ...this,
@@ -201,10 +201,10 @@ class CdkTab {
     ngOnDestroy() {
         this._cdkTabList.deregister(this);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTab, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0", type: CdkTab, isStandalone: true, selector: "[cdkTab]", inputs: { disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "tab" }, properties: { "class.cdk-active": "pattern.active()", "attr.id": "pattern.id()", "attr.tabindex": "pattern.tabindex()", "attr.aria-selected": "pattern.selected()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-controls": "pattern.controls()" }, classAttribute: "cdk-tab" }, exportAs: ["cdkTab"], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTab, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.0", type: CdkTab, isStandalone: true, selector: "[cdkTab]", inputs: { disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "tab" }, properties: { "class.cdk-active": "pattern.active()", "attr.id": "pattern.id()", "attr.tabindex": "pattern.tabindex()", "attr.aria-selected": "pattern.selected()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-controls": "pattern.controls()" }, classAttribute: "cdk-tab" }, exportAs: ["cdkTab"], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTab, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTab, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkTab]',
@@ -237,9 +237,9 @@ class CdkTabPanel {
     /** A global unique identifier for the tab. */
     _id = inject(_IdGenerator).getId('cdk-tabpanel-');
     /** The Tab UIPattern associated with the tabpanel */
-    tab = computed(() => this._cdkTabs.tabs()?.find(tab => tab.value() === this.value()));
+    tab = computed(() => this._cdkTabs.tabs()?.find(tab => tab.value() === this.value()), ...(ngDevMode ? [{ debugName: "tab" }] : []));
     /** A local unique identifier for the tabpanel. */
-    value = input.required();
+    value = input.required(...(ngDevMode ? [{ debugName: "value" }] : []));
     /** The TabPanel UIPattern. */
     pattern = new TabPanelPattern({
         ...this,
@@ -255,10 +255,10 @@ class CdkTabPanel {
     ngOnDestroy() {
         this._cdkTabs.deregister(this);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTabPanel, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0", type: CdkTabPanel, isStandalone: true, selector: "[cdkTabPanel]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "tabpanel" }, properties: { "attr.id": "pattern.id()", "attr.tabindex": "pattern.tabindex()", "attr.inert": "pattern.hidden() ? true : null", "attr.aria-labelledby": "pattern.labelledBy()" }, classAttribute: "cdk-tabpanel" }, exportAs: ["cdkTabPanel"], hostDirectives: [{ directive: i1.DeferredContentAware, inputs: ["preserveContent", "preserveContent"] }], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTabPanel, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.0", type: CdkTabPanel, isStandalone: true, selector: "[cdkTabPanel]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "tabpanel" }, properties: { "attr.id": "pattern.id()", "attr.tabindex": "pattern.tabindex()", "attr.inert": "pattern.hidden() ? true : null", "attr.aria-labelledby": "pattern.labelledBy()" }, classAttribute: "cdk-tabpanel" }, exportAs: ["cdkTabPanel"], hostDirectives: [{ directive: i1.DeferredContentAware, inputs: ["preserveContent", "preserveContent"] }], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTabPanel, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTabPanel, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkTabPanel]',
@@ -283,10 +283,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImpor
  * A TabContent container for the lazy-loaded content.
  */
 class CdkTabContent {
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTabContent, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.0.0", type: CdkTabContent, isStandalone: true, selector: "ng-template[cdkTabContent]", exportAs: ["cdTabContent"], hostDirectives: [{ directive: i1.DeferredContent }], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTabContent, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.2.0-next.0", type: CdkTabContent, isStandalone: true, selector: "ng-template[cdkTabContent]", exportAs: ["cdTabContent"], hostDirectives: [{ directive: i1.DeferredContent }], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTabContent, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTabContent, decorators: [{
             type: Directive,
             args: [{
                     selector: 'ng-template[cdkTabContent]',

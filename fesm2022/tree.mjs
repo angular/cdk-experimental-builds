@@ -452,33 +452,33 @@ function sortDirectives(a, b) {
  */
 class CdkTree {
     /** All CdkTreeItem instances within this tree. */
-    _unorderedItems = signal(new Set());
+    _unorderedItems = signal(new Set(), ...(ngDevMode ? [{ debugName: "_unorderedItems" }] : []));
     /** All CdkGroup instances within this tree. */
-    unorderedGroups = signal(new Set());
+    unorderedGroups = signal(new Set(), ...(ngDevMode ? [{ debugName: "unorderedGroups" }] : []));
     /** Orientation of the tree. */
-    orientation = input('vertical');
+    orientation = input('vertical', ...(ngDevMode ? [{ debugName: "orientation" }] : []));
     /** Whether multi-selection is allowed. */
-    multi = input(false, { transform: booleanAttribute });
+    multi = input(false, ...(ngDevMode ? [{ debugName: "multi", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
     /** Whether the tree is disabled. */
-    disabled = input(false, { transform: booleanAttribute });
+    disabled = input(false, ...(ngDevMode ? [{ debugName: "disabled", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
     /** The selection strategy used by the tree. */
-    selectionMode = input('explicit');
+    selectionMode = input('explicit', ...(ngDevMode ? [{ debugName: "selectionMode" }] : []));
     /** The focus strategy used by the tree. */
-    focusMode = input('roving');
+    focusMode = input('roving', ...(ngDevMode ? [{ debugName: "focusMode" }] : []));
     /** Whether navigation wraps. */
-    wrap = input(true, { transform: booleanAttribute });
+    wrap = input(true, ...(ngDevMode ? [{ debugName: "wrap", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
     /** Whether to skip disabled items during navigation. */
-    skipDisabled = input(true, { transform: booleanAttribute });
+    skipDisabled = input(true, ...(ngDevMode ? [{ debugName: "skipDisabled", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
     /** Typeahead delay. */
-    typeaheadDelay = input(0.5);
+    typeaheadDelay = input(0.5, ...(ngDevMode ? [{ debugName: "typeaheadDelay" }] : []));
     /** Selected item values. */
-    value = model([]);
+    value = model([], ...(ngDevMode ? [{ debugName: "value" }] : []));
     /** Text direction. */
     textDirection = inject(Directionality).valueSignal;
     /** Whether the tree is in navigation mode. */
-    nav = input(false);
+    nav = input(false, ...(ngDevMode ? [{ debugName: "nav" }] : []));
     /** The aria-current type. */
-    currentType = input('page');
+    currentType = input('page', ...(ngDevMode ? [{ debugName: "currentType" }] : []));
     /** The UI pattern for the tree. */
     pattern = new TreePattern({
         ...this,
@@ -486,7 +486,7 @@ class CdkTree {
         activeIndex: signal(0),
     });
     /** Whether the tree has received focus yet. */
-    _hasFocused = signal(false);
+    _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));
     constructor() {
         afterRenderEffect(() => {
             if (!this._hasFocused()) {
@@ -517,10 +517,10 @@ class CdkTree {
             this._unorderedItems.set(new Set(this._unorderedItems()));
         }
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTree, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0", type: CdkTree, isStandalone: true, selector: "[cdkTree]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, multi: { classPropertyName: "multi", publicName: "multi", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, typeaheadDelay: { classPropertyName: "typeaheadDelay", publicName: "typeaheadDelay", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, nav: { classPropertyName: "nav", publicName: "nav", isSignal: true, isRequired: false, transformFunction: null }, currentType: { classPropertyName: "currentType", publicName: "currentType", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { attributes: { "role": "tree" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.aria-orientation": "pattern.orientation()", "attr.aria-multiselectable": "pattern.multi()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-activedescendant": "pattern.activedescendant()", "tabindex": "pattern.tabindex()" }, classAttribute: "cdk-tree" }, exportAs: ["cdkTree"], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTree, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.0", type: CdkTree, isStandalone: true, selector: "[cdkTree]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, multi: { classPropertyName: "multi", publicName: "multi", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, typeaheadDelay: { classPropertyName: "typeaheadDelay", publicName: "typeaheadDelay", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, nav: { classPropertyName: "nav", publicName: "nav", isSignal: true, isRequired: false, transformFunction: null }, currentType: { classPropertyName: "currentType", publicName: "currentType", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { attributes: { "role": "tree" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.aria-orientation": "pattern.orientation()", "attr.aria-multiselectable": "pattern.multi()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-activedescendant": "pattern.activedescendant()", "tabindex": "pattern.tabindex()" }, classAttribute: "cdk-tree" }, exportAs: ["cdkTree"], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTree, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTree, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkTree]',
@@ -554,21 +554,21 @@ class CdkTreeItem {
     /** The parent CdkGroup, if any. */
     _parentGroup = inject((CdkTreeItemGroup), { optional: true });
     /** The top level TreePattern. */
-    _treePattern = computed(() => this._tree.pattern);
+    _treePattern = computed(() => this._tree.pattern, ...(ngDevMode ? [{ debugName: "_treePattern" }] : []));
     /** The parent TreeItemPattern. */
-    _parentPattern = computed(() => this._treeItem?.pattern ?? this._treePattern());
+    _parentPattern = computed(() => this._treeItem?.pattern ?? this._treePattern(), ...(ngDevMode ? [{ debugName: "_parentPattern" }] : []));
     /** The host native element. */
-    element = computed(() => this._elementRef.nativeElement);
+    element = computed(() => this._elementRef.nativeElement, ...(ngDevMode ? [{ debugName: "element" }] : []));
     /** The value of the tree item. */
-    value = input.required();
+    value = input.required(...(ngDevMode ? [{ debugName: "value" }] : []));
     /** Whether the tree item is disabled. */
-    disabled = input(false, { transform: booleanAttribute });
+    disabled = input(false, ...(ngDevMode ? [{ debugName: "disabled", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
     /** Optional label for typeahead. Defaults to the element's textContent. */
-    label = input();
+    label = input(...(ngDevMode ? [undefined, { debugName: "label" }] : []));
     /** Search term for typeahead. */
-    searchTerm = computed(() => this.label() ?? this.element().textContent);
+    searchTerm = computed(() => this.label() ?? this.element().textContent, ...(ngDevMode ? [{ debugName: "searchTerm" }] : []));
     /** Manual group assignment. */
-    group = signal(undefined);
+    group = signal(undefined, ...(ngDevMode ? [{ debugName: "group" }] : []));
     /** The UI pattern for this item. */
     pattern = new TreeItemPattern({
         ...this,
@@ -600,10 +600,10 @@ class CdkTreeItem {
         this._tree.deregister(this);
         this._parentGroup?.deregister(this);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTreeItem, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0", type: CdkTreeItem, isStandalone: true, selector: "[cdkTreeItem]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "treeitem" }, properties: { "class.cdk-active": "pattern.active()", "id": "pattern.id()", "attr.aria-expanded": "pattern.expandable() ? pattern.expanded() : null", "attr.aria-selected": "pattern.selected()", "attr.aria-current": "pattern.current()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-level": "pattern.level()", "attr.aria-owns": "group()?.id", "attr.aria-setsize": "pattern.setsize()", "attr.aria-posinset": "pattern.posinset()", "attr.tabindex": "pattern.tabindex()", "attr.inert": "pattern.visible() ? null : true" }, classAttribute: "cdk-treeitem" }, exportAs: ["cdkTreeItem"], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTreeItem, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.0", type: CdkTreeItem, isStandalone: true, selector: "[cdkTreeItem]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "treeitem" }, properties: { "class.cdk-active": "pattern.active()", "id": "pattern.id()", "attr.aria-expanded": "pattern.expandable() ? pattern.expanded() : null", "attr.aria-selected": "pattern.selected()", "attr.aria-current": "pattern.current()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-level": "pattern.level()", "attr.aria-owns": "group()?.id", "attr.aria-setsize": "pattern.setsize()", "attr.aria-posinset": "pattern.posinset()", "attr.tabindex": "pattern.tabindex()", "attr.inert": "pattern.visible() ? null : true" }, classAttribute: "cdk-treeitem" }, exportAs: ["cdkTreeItem"], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTreeItem, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTreeItem, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkTreeItem]',
@@ -637,17 +637,17 @@ class CdkTreeItemGroup {
     /** The top level CdkTree. */
     _tree = inject((CdkTree));
     /** All groupable items that are descendants of the group. */
-    _unorderedItems = signal(new Set());
+    _unorderedItems = signal(new Set(), ...(ngDevMode ? [{ debugName: "_unorderedItems" }] : []));
     /** The host native element. */
-    element = computed(() => this._elementRef.nativeElement);
+    element = computed(() => this._elementRef.nativeElement, ...(ngDevMode ? [{ debugName: "element" }] : []));
     /** Unique ID for the group. */
     id = inject(_IdGenerator).getId('cdk-tree-group-');
     /** Whether the group is visible. */
-    visible = signal(true);
+    visible = signal(true, ...(ngDevMode ? [{ debugName: "visible" }] : []));
     /** Child items within this group. */
-    children = computed(() => [...this._unorderedItems()].sort(sortDirectives));
+    children = computed(() => [...this._unorderedItems()].sort(sortDirectives), ...(ngDevMode ? [{ debugName: "children" }] : []));
     /** Identifier for matching the group owner. */
-    value = input.required();
+    value = input.required(...(ngDevMode ? [{ debugName: "value" }] : []));
     constructor() {
         // Connect the group's hidden state to the DeferredContentAware's visibility.
         afterRenderEffect(() => {
@@ -668,10 +668,10 @@ class CdkTreeItemGroup {
         this._unorderedItems().delete(child);
         this._unorderedItems.set(new Set(this._unorderedItems()));
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTreeItemGroup, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.0.0", type: CdkTreeItemGroup, isStandalone: true, selector: "[cdkTreeItemGroup]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "group" }, properties: { "id": "id", "attr.inert": "visible() ? null : true" }, classAttribute: "cdk-treeitem-group" }, exportAs: ["cdkTreeItemGroup"], hostDirectives: [{ directive: i1.DeferredContentAware, inputs: ["preserveContent", "preserveContent"] }], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTreeItemGroup, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.0", type: CdkTreeItemGroup, isStandalone: true, selector: "[cdkTreeItemGroup]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "group" }, properties: { "id": "id", "attr.inert": "visible() ? null : true" }, classAttribute: "cdk-treeitem-group" }, exportAs: ["cdkTreeItemGroup"], hostDirectives: [{ directive: i1.DeferredContentAware, inputs: ["preserveContent", "preserveContent"] }], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTreeItemGroup, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTreeItemGroup, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkTreeItemGroup]',
@@ -695,10 +695,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImpor
  * for a `CdkTreeItemGroup`. This content can be lazily loaded.
  */
 class CdkTreeItemGroupContent {
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTreeItemGroupContent, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.0.0", type: CdkTreeItemGroupContent, isStandalone: true, selector: "ng-template[cdkTreeItemGroupContent]", hostDirectives: [{ directive: i1.DeferredContent }], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTreeItemGroupContent, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.2.0-next.0", type: CdkTreeItemGroupContent, isStandalone: true, selector: "ng-template[cdkTreeItemGroupContent]", hostDirectives: [{ directive: i1.DeferredContent }], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.0.0", ngImport: i0, type: CdkTreeItemGroupContent, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkTreeItemGroupContent, decorators: [{
             type: Directive,
             args: [{
                     selector: 'ng-template[cdkTreeItemGroupContent]',
