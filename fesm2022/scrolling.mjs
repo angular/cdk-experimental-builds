@@ -400,8 +400,8 @@ class CdkAutoSizeVirtualScroll {
     ngOnChanges() {
         this._scrollStrategy.updateBufferSize(this.minBufferPx, this.maxBufferPx);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkAutoSizeVirtualScroll, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.2.0-next.0", type: CdkAutoSizeVirtualScroll, isStandalone: true, selector: "cdk-virtual-scroll-viewport[autosize]", inputs: { minBufferPx: "minBufferPx", maxBufferPx: "maxBufferPx" }, providers: [
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: CdkAutoSizeVirtualScroll, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.1.0", type: CdkAutoSizeVirtualScroll, isStandalone: true, selector: "cdk-virtual-scroll-viewport[autosize]", inputs: { minBufferPx: "minBufferPx", maxBufferPx: "maxBufferPx" }, providers: [
             {
                 provide: VIRTUAL_SCROLL_STRATEGY,
                 useFactory: _autoSizeVirtualScrollStrategyFactory,
@@ -409,7 +409,7 @@ class CdkAutoSizeVirtualScroll {
             },
         ], usesOnChanges: true, ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: CdkAutoSizeVirtualScroll, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: CdkAutoSizeVirtualScroll, decorators: [{
             type: Directive,
             args: [{
                     selector: 'cdk-virtual-scroll-viewport[autosize]',
@@ -428,11 +428,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.0", 
             }] } });
 
 class ScrollingModule {
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: ScrollingModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
-    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.2.0-next.0", ngImport: i0, type: ScrollingModule, imports: [CdkAutoSizeVirtualScroll], exports: [CdkAutoSizeVirtualScroll] });
-    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: ScrollingModule });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: ScrollingModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.1.0", ngImport: i0, type: ScrollingModule, imports: [CdkAutoSizeVirtualScroll], exports: [CdkAutoSizeVirtualScroll] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: ScrollingModule });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.0", ngImport: i0, type: ScrollingModule, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: ScrollingModule, decorators: [{
             type: NgModule,
             args: [{
                     imports: [CdkAutoSizeVirtualScroll],
