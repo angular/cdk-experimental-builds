@@ -1,5 +1,5 @@
 import * as _angular_core from '@angular/core';
-import { f as ListFocusItem, S as SignalLike, a as ListFocusInputs, W as WritableSignalLike, d as ListFocus } from './list-navigation.d-tcweHm4g.js';
+import { f as ListFocusItem, S as SignalLike, a as ListFocusInputs, W as WritableSignalLike, d as ListFocus } from './pointer-event-manager.d-BqSm9Jh5.js';
 
 /** Represents an item in a collection, such as a listbox option, than can be selected. */
 interface ListSelectionItem<V> extends ListFocusItem {

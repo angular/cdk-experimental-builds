@@ -1,6 +1,6 @@
-import { M as ModifierKey, L as ListFocus, a as ListNavigation, K as KeyboardEventManager, P as PointerEventManager } from './list-focus-BXQdAA3i.mjs';
 import { L as ListSelection } from './list-selection-C41ApAbt.mjs';
 import { L as ListTypeahead } from './list-typeahead-DIIbNJrP.mjs';
+import { M as Modifier, L as ListFocus, a as ListNavigation, K as KeyboardEventManager, P as PointerEventManager } from './list-focus-Czul8jzR.mjs';
 import { computed, signal } from '@angular/core';
 
 /** Controls the state of a listbox. */
@@ -92,19 +92,19 @@ class ListboxPattern {
         }
         if (this.inputs.multi()) {
             manager
-                .on(ModifierKey.Any, 'Shift', () => this.anchorIndex.set(this.inputs.activeIndex()))
-                .on(ModifierKey.Shift, this.prevKey, () => this.prev({ selectRange: true }))
-                .on(ModifierKey.Shift, this.nextKey, () => this.next({ selectRange: true }))
-                .on([ModifierKey.Ctrl | ModifierKey.Shift, ModifierKey.Meta | ModifierKey.Shift], 'Home', () => this.first({ selectRange: true, anchor: false }))
-                .on([ModifierKey.Ctrl | ModifierKey.Shift, ModifierKey.Meta | ModifierKey.Shift], 'End', () => this.last({ selectRange: true, anchor: false }))
-                .on(ModifierKey.Shift, 'Enter', () => this._updateSelection({ selectRange: true, anchor: false }))
-                .on(ModifierKey.Shift, this.dynamicSpaceKey, () => this._updateSelection({ selectRange: true, anchor: false }));
+                .on(Modifier.Any, 'Shift', () => this.anchorIndex.set(this.inputs.activeIndex()))
+                .on(Modifier.Shift, this.prevKey, () => this.prev({ selectRange: true }))
+                .on(Modifier.Shift, this.nextKey, () => this.next({ selectRange: true }))
+                .on([Modifier.Ctrl | Modifier.Shift, Modifier.Meta | Modifier.Shift], 'Home', () => this.first({ selectRange: true, anchor: false }))
+                .on([Modifier.Ctrl | Modifier.Shift, Modifier.Meta | Modifier.Shift], 'End', () => this.last({ selectRange: true, anchor: false }))
+                .on(Modifier.Shift, 'Enter', () => this._updateSelection({ selectRange: true, anchor: false }))
+                .on(Modifier.Shift, this.dynamicSpaceKey, () => this._updateSelection({ selectRange: true, anchor: false }));
         }
         if (!this.followFocus() && this.inputs.multi()) {
             manager
                 .on(this.dynamicSpaceKey, () => this.selection.toggle())
                 .on('Enter', () => this.selection.toggle())
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'A', () => this.selection.toggleAll());
+                .on([Modifier.Ctrl, Modifier.Meta], 'A', () => this.selection.toggleAll());
         }
         if (!this.followFocus() && !this.inputs.multi()) {
             manager.on(this.dynamicSpaceKey, () => this.selection.toggleOne());
@@ -112,13 +112,13 @@ class ListboxPattern {
         }
         if (this.inputs.multi() && this.followFocus()) {
             manager
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], this.prevKey, () => this.prev())
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], this.nextKey, () => this.next())
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], ' ', () => this.selection.toggle())
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'Enter', () => this.selection.toggle())
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'Home', () => this.first())
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'End', () => this.last())
-                .on([ModifierKey.Ctrl, ModifierKey.Meta], 'A', () => {
+                .on([Modifier.Ctrl, Modifier.Meta], this.prevKey, () => this.prev())
+                .on([Modifier.Ctrl, Modifier.Meta], this.nextKey, () => this.next())
+                .on([Modifier.Ctrl, Modifier.Meta], ' ', () => this.selection.toggle())
+                .on([Modifier.Ctrl, Modifier.Meta], 'Enter', () => this.selection.toggle())
+                .on([Modifier.Ctrl, Modifier.Meta], 'Home', () => this.first())
+                .on([Modifier.Ctrl, Modifier.Meta], 'End', () => this.last())
+                .on([Modifier.Ctrl, Modifier.Meta], 'A', () => {
                 this.selection.toggleAll();
                 this.selection.select(); // Ensure the currect option remains selected.
             });
@@ -132,7 +132,7 @@ class ListboxPattern {
             return manager.on(e => this.goto(e));
         }
         if (this.multi()) {
-            manager.on(ModifierKey.Shift, e => this.goto(e, { selectRange: true }));
+            manager.on(Modifier.Shift, e => this.goto(e, { selectRange: true }));
         }
         if (!this.multi() && this.followFocus()) {
             return manager.on(e => this.goto(e, { selectOne: true }));
@@ -143,7 +143,7 @@ class ListboxPattern {
         if (this.multi() && this.followFocus()) {
             return manager
                 .on(e => this.goto(e, { selectOne: true }))
-                .on(ModifierKey.Ctrl, e => this.goto(e, { toggle: true }));
+                .on(Modifier.Ctrl, e => this.goto(e, { toggle: true }));
         }
         if (this.multi() && !this.followFocus()) {
             return manager.on(e => this.goto(e, { toggle: true }));
@@ -318,4 +318,4 @@ class OptionPattern {
 }
 
 export { ListboxPattern as L, OptionPattern as O };
-//# sourceMappingURL=option-D44ECQK6.mjs.map
+//# sourceMappingURL=option-CgeKz9_Q.mjs.map

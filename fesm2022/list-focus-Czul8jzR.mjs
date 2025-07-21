@@ -1,15 +1,15 @@
 import { signal, computed } from '@angular/core';
 
 /** Bit flag representation of the possible modifier keys that can be present on an event. */
-var ModifierKey;
-(function (ModifierKey) {
-    ModifierKey[ModifierKey["None"] = 0] = "None";
-    ModifierKey[ModifierKey["Ctrl"] = 1] = "Ctrl";
-    ModifierKey[ModifierKey["Shift"] = 2] = "Shift";
-    ModifierKey[ModifierKey["Alt"] = 4] = "Alt";
-    ModifierKey[ModifierKey["Meta"] = 8] = "Meta";
-    ModifierKey["Any"] = "Any";
-})(ModifierKey || (ModifierKey = {}));
+var Modifier;
+(function (Modifier) {
+    Modifier[Modifier["None"] = 0] = "None";
+    Modifier[Modifier["Ctrl"] = 1] = "Ctrl";
+    Modifier[Modifier["Shift"] = 2] = "Shift";
+    Modifier[Modifier["Alt"] = 4] = "Alt";
+    Modifier[Modifier["Meta"] = 8] = "Meta";
+    Modifier["Any"] = "Any";
+})(Modifier || (Modifier = {}));
 /**
  * Abstract base class for all event managers.
  *
@@ -35,10 +35,10 @@ class EventManager {
 }
 /** Gets bit flag representation of the modifier keys present on the given event. */
 function getModifiers(event) {
-    return ((+event.ctrlKey && ModifierKey.Ctrl) |
-        (+event.shiftKey && ModifierKey.Shift) |
-        (+event.altKey && ModifierKey.Alt) |
-        (+event.metaKey && ModifierKey.Meta));
+    return ((+event.ctrlKey && Modifier.Ctrl) |
+        (+event.shiftKey && Modifier.Shift) |
+        (+event.altKey && Modifier.Alt) |
+        (+event.metaKey && Modifier.Meta));
 }
 /**
  * Checks if the given event has modifiers that are an exact match for any of the given modifier
@@ -47,7 +47,7 @@ function getModifiers(event) {
 function hasModifiers(event, modifiers) {
     const eventModifiers = getModifiers(event);
     const modifiersList = Array.isArray(modifiers) ? modifiers : [modifiers];
-    if (modifiersList.includes(ModifierKey.Any)) {
+    if (modifiersList.includes(Modifier.Any)) {
         return true;
     }
     return modifiersList.some(modifiers => eventModifiers === modifiers);
@@ -74,7 +74,7 @@ class KeyboardEventManager extends EventManager {
     _normalizeInputs(...args) {
         const key = args.length === 3 ? args[1] : args[0];
         const handler = args.length === 3 ? args[2] : args[1];
-        const modifiers = args.length === 3 ? args[0] : ModifierKey.None;
+        const modifiers = args.length === 3 ? args[0] : Modifier.None;
         return {
             key: key,
             handler: handler,
@@ -134,7 +134,7 @@ class PointerEventManager extends EventManager {
         }
         return {
             button: MouseButton.Main,
-            modifiers: ModifierKey.None,
+            modifiers: Modifier.None,
             handler: args[0],
         };
     }
@@ -254,5 +254,5 @@ class ListFocus {
     }
 }
 
-export { KeyboardEventManager as K, ListFocus as L, ModifierKey as M, PointerEventManager as P, ListNavigation as a };
-//# sourceMappingURL=list-focus-BXQdAA3i.mjs.map
+export { KeyboardEventManager as K, ListFocus as L, Modifier as M, PointerEventManager as P, ListNavigation as a };
+//# sourceMappingURL=list-focus-Czul8jzR.mjs.map

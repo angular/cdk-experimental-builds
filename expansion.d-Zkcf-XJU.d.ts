@@ -1,5 +1,5 @@
 import * as _angular_core from '@angular/core';
-import { S as SignalLike, W as WritableSignalLike } from './list-navigation.d-tcweHm4g.js';
+import { S as SignalLike, W as WritableSignalLike } from './pointer-event-manager.d-BqSm9Jh5.js';
 
 /** Represents an item that can be expanded or collapsed. */
 interface ExpansionItem {
