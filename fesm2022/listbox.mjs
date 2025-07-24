@@ -114,8 +114,6 @@ class CdkOption {
     // TODO(wagnermaciel): https://github.com/angular/components/pull/30495#discussion_r1972601144.
     /** A unique identifier for the option. */
     id = computed(() => this._generatedId, ...(ngDevMode ? [{ debugName: "id" }] : []));
-    /** The value of the option. */
-    value = input.required(...(ngDevMode ? [{ debugName: "value" }] : []));
     // TODO(wagnermaciel): See if we want to change how we handle this since textContent is not
     // reactive. See https://github.com/angular/components/pull/30495#discussion_r1961260216.
     /** The text used by the typeahead search. */
@@ -124,6 +122,8 @@ class CdkOption {
     listbox = computed(() => this._cdkListbox.pattern, ...(ngDevMode ? [{ debugName: "listbox" }] : []));
     /** A reference to the option element to be focused on navigation. */
     element = computed(() => this._elementRef.nativeElement, ...(ngDevMode ? [{ debugName: "element" }] : []));
+    /** The value of the option. */
+    value = input.required(...(ngDevMode ? [{ debugName: "value" }] : []));
     /** Whether an item is disabled. */
     disabled = input(false, ...(ngDevMode ? [{ debugName: "disabled", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
     /** The text used by the typeahead search. */
