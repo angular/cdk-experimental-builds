@@ -1,7 +1,7 @@
 import { computed } from '@angular/core';
-import { K as KeyboardEventManager, P as PointerEventManager, L as ListFocus, a as ListNavigation } from './list-focus-Czul8jzR.mjs';
-import { L as ListSelection } from './list-selection-C41ApAbt.mjs';
 import { E as ExpansionControl, L as ListExpansion } from './expansion-C9iQLHOG.mjs';
+import { L as List } from './list-DwfufhyY.mjs';
+import { K as KeyboardEventManager, P as PointerEventManager } from './list-navigation-DzM8xz11.mjs';
 
 /** Controls label and description of an element. */
 class LabelControl {
@@ -41,6 +41,8 @@ class TabPattern {
     disabled;
     /** The html element that should receive focus. */
     element;
+    /** The text used by the typeahead search. */
+    searchTerm = () => ''; // Unused because tabs do not support typeahead.
     /** Whether this tab has expandable content. */
     expandable = computed(() => this.expansion.expandable());
     /** The unique identifier used by the expansion behavior. */
@@ -48,11 +50,11 @@ class TabPattern {
     /** Whether the tab is expanded. */
     expanded = computed(() => this.expansion.isExpanded());
     /** Whether the tab is active. */
-    active = computed(() => this.inputs.tablist().focusManager.activeItem() === this);
+    active = computed(() => this.inputs.tablist().listBehavior.activeItem() === this);
     /** Whether the tab is selected. */
-    selected = computed(() => !!this.inputs.tablist().selection.inputs.value().includes(this.value()));
+    selected = computed(() => !!this.inputs.tablist().inputs.value().includes(this.value()));
     /** The tabindex of the tab. */
-    tabindex = computed(() => this.inputs.tablist().focusManager.getItemTabindex(this));
+    tabindex = computed(() => this.inputs.tablist().listBehavior.getItemTabindex(this));
     /** The id of the tabpanel associated with the tab. */
     controls = computed(() => this.inputs.tabpanel()?.id());
     constructor(inputs) {
@@ -99,12 +101,8 @@ class TabPanelPattern {
 /** Controls the state of a tablist. */
 class TabListPattern {
     inputs;
-    /** Controls navigation for the tablist. */
-    navigation;
-    /** Controls selection for the tablist. */
-    selection;
-    /** Controls focus for the tablist. */
-    focusManager;
+    /** The list behavior for the tablist. */
+    listBehavior;
     /** Controls expansion for the tablist. */
     expansionManager;
     /** Whether the tablist is vertically or horizontally oriented. */
@@ -112,9 +110,9 @@ class TabListPattern {
     /** Whether the tablist is disabled. */
     disabled;
     /** The tabindex of the tablist. */
-    tabindex = computed(() => this.focusManager.getListTabindex());
+    tabindex = computed(() => this.listBehavior.tabindex());
     /** The id of the current active tab. */
-    activedescendant = computed(() => this.focusManager.getActiveDescendant());
+    activedescendant = computed(() => this.listBehavior.activedescendant());
     /** Whether selection should follow focus. */
     followFocus = computed(() => this.inputs.selectionMode() === 'follow');
     /** The key used to navigate to the previous tab in the tablist. */
@@ -134,27 +132,25 @@ class TabListPattern {
     /** The keydown event manager for the tablist. */
     keydown = computed(() => {
         return new KeyboardEventManager()
-            .on(this.prevKey, () => this.prev({ select: this.followFocus() }))
-            .on(this.nextKey, () => this.next({ select: this.followFocus() }))
-            .on('Home', () => this.first({ select: this.followFocus() }))
-            .on('End', () => this.last({ select: this.followFocus() }))
-            .on(' ', () => this._select({ select: true }))
-            .on('Enter', () => this._select({ select: true }));
+            .on(this.prevKey, () => this.listBehavior.prev({ select: this.followFocus() }))
+            .on(this.nextKey, () => this.listBehavior.next({ select: this.followFocus() }))
+            .on('Home', () => this.listBehavior.first({ select: this.followFocus() }))
+            .on('End', () => this.listBehavior.last({ select: this.followFocus() }))
+            .on(' ', () => this.listBehavior.select())
+            .on('Enter', () => this.listBehavior.select());
     });
     /** The pointerdown event manager for the tablist. */
     pointerdown = computed(() => {
-        return new PointerEventManager().on(e => this.goto(e, { select: true }));
+        return new PointerEventManager().on(e => this.listBehavior.goto(this._getItem(e), { select: true }));
     });
     constructor(inputs) {
         this.inputs = inputs;
         this.disabled = inputs.disabled;
         this.orientation = inputs.orientation;
-        this.focusManager = new ListFocus(inputs);
-        this.navigation = new ListNavigation({ ...inputs, focusManager: this.focusManager });
-        this.selection = new ListSelection({
+        this.listBehavior = new List({
             ...inputs,
             multi: () => false,
-            focusManager: this.focusManager,
+            typeaheadDelay: () => 0, // Tabs do not support typeahead.
         });
         this.expansionManager = new ListExpansion({
             ...inputs,
@@ -173,7 +169,7 @@ class TabListPattern {
     setDefaultState() {
         let firstItemIndex;
         for (const [index, item] of this.inputs.items().entries()) {
-            if (!this.focusManager.isFocusable(item))
+            if (!this.listBehavior.isFocusable(item))
                 continue;
             if (firstItemIndex === undefined) {
                 firstItemIndex = index;
@@ -199,41 +195,7 @@ class TabListPattern {
             this.pointerdown().handle(event);
         }
     }
-    /** Navigates to the first option in the tablist. */
-    first(opts) {
-        this.navigation.first();
-        this._select(opts);
-    }
-    /** Navigates to the last option in the tablist. */
-    last(opts) {
-        this.navigation.last();
-        this._select(opts);
-    }
-    /** Navigates to the next option in the tablist. */
-    next(opts) {
-        this.navigation.next();
-        this._select(opts);
-    }
-    /** Navigates to the previous option in the tablist. */
-    prev(opts) {
-        this.navigation.prev();
-        this._select(opts);
-    }
-    /** Navigates to the given item in the tablist. */
-    goto(event, opts) {
-        const item = this._getItem(event);
-        if (item) {
-            this.navigation.goto(item);
-            this._select(opts);
-        }
-    }
-    /** Handles updating selection for the tablist. */
-    _select(opts) {
-        if (opts?.select) {
-            this.selection.selectOne();
-            this.expansionManager.open(this.focusManager.activeItem());
-        }
-    }
+    /** Returns the tab item associated with the given pointer event. */
     _getItem(e) {
         if (!(e.target instanceof HTMLElement)) {
             return;
@@ -244,4 +206,4 @@ class TabListPattern {
 }
 
 export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-hMdwtXv2.mjs.map
+//# sourceMappingURL=tabs-Y300LEKG.mjs.map

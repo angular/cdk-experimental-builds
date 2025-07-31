@@ -1,7 +1,7 @@
 import * as _angular_core from '@angular/core';
-import { S as SignalLike, e as ListNavigationItem, f as ListFocusItem, L as ListNavigationInputs, a as ListFocusInputs, b as ListNavigation, d as ListFocus, K as KeyboardEventManager, P as PointerEventManager } from './pointer-event-manager.d-BqSm9Jh5.js';
-import { a as ListSelectionItem, b as ListSelectionInputs, L as ListSelection } from './list-selection.d-fbAPr_N_.js';
+import { S as SignalLike, K as KeyboardEventManager, P as PointerEventManager } from './pointer-event-manager.d-BqSm9Jh5.js';
 import { E as ExpansionItem, b as ExpansionControl, L as ListExpansionInputs, a as ListExpansion } from './expansion.d-Zkcf-XJU.js';
+import { a as ListItem, b as ListInputs, L as List } from './list.d-vrWuM64c.js';
 
 /** Represents the required inputs for the label control. */
 interface LabelControlInputs {
@@ -26,7 +26,7 @@ declare class LabelControl {
 }
 
 /** The required inputs to tabs. */
-interface TabInputs extends ListNavigationItem, ListSelectionItem<string>, ListFocusItem, Omit<ExpansionItem, 'expansionId' | 'expandable'> {
+interface TabInputs extends Omit<ListItem<string>, 'searchTerm'>, Omit<ExpansionItem, 'expansionId' | 'expandable'> {
     /** The parent tablist that controls the tab. */
     tablist: SignalLike<TabListPattern>;
     /** The remote tabpanel controlled by the tab. */
@@ -45,6 +45,8 @@ declare class TabPattern {
     readonly disabled: SignalLike<boolean>;
     /** The html element that should receive focus. */
     readonly element: SignalLike<HTMLElement>;
+    /** The text used by the typeahead search. */
+    readonly searchTerm: () => string;
     /** Whether this tab has expandable content. */
     readonly expandable: _angular_core.Signal<boolean>;
     /** The unique identifier used by the expansion behavior. */
@@ -79,26 +81,18 @@ declare class TabPanelPattern {
     /** Whether the tabpanel is hidden. */
     readonly hidden: _angular_core.Signal<boolean>;
     /** The tabindex of this tabpanel. */
-    readonly tabindex: _angular_core.Signal<-1 | 0>;
+    readonly tabindex: _angular_core.Signal<0 | -1>;
     /** The aria-labelledby value for this tabpanel. */
     readonly labelledBy: _angular_core.Signal<string | undefined>;
     constructor(inputs: TabPanelInputs);
 }
-/** The selection operations that the tablist can perform. */
-interface SelectOptions {
-    select?: boolean;
-}
 /** The required inputs for the tablist. */
-type TabListInputs = ListNavigationInputs<TabPattern> & Omit<ListSelectionInputs<TabPattern, string>, 'multi'> & ListFocusInputs<TabPattern> & Omit<ListExpansionInputs, 'multiExpandable' | 'expandedIds' | 'items'>;
+type TabListInputs = Omit<ListInputs<TabPattern, string>, 'multi' | 'typeaheadDelay'> & Omit<ListExpansionInputs, 'multiExpandable' | 'expandedIds' | 'items'>;
 /** Controls the state of a tablist. */
 declare class TabListPattern {
     readonly inputs: TabListInputs;
-    /** Controls navigation for the tablist. */
-    readonly navigation: ListNavigation<TabPattern>;
-    /** Controls selection for the tablist. */
-    readonly selection: ListSelection<TabPattern, string>;
-    /** Controls focus for the tablist. */
-    readonly focusManager: ListFocus<TabPattern>;
+    /** The list behavior for the tablist. */
+    readonly listBehavior: List<TabPattern, string>;
     /** Controls expansion for the tablist. */
     readonly expansionManager: ListExpansion;
     /** Whether the tablist is vertically or horizontally oriented. */
@@ -133,18 +127,7 @@ declare class TabListPattern {
     onKeydown(event: KeyboardEvent): void;
     /** The pointerdown event manager for the tablist. */
     onPointerdown(event: PointerEvent): void;
-    /** Navigates to the first option in the tablist. */
-    first(opts?: SelectOptions): void;
-    /** Navigates to the last option in the tablist. */
-    last(opts?: SelectOptions): void;
-    /** Navigates to the next option in the tablist. */
-    next(opts?: SelectOptions): void;
-    /** Navigates to the previous option in the tablist. */
-    prev(opts?: SelectOptions): void;
-    /** Navigates to the given item in the tablist. */
-    goto(event: PointerEvent, opts?: SelectOptions): void;
-    /** Handles updating selection for the tablist. */
-    private _select;
+    /** Returns the tab item associated with the given pointer event. */
     private _getItem;
 }
 

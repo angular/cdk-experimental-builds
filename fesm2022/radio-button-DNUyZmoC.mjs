@@ -1,28 +1,24 @@
 import { computed } from '@angular/core';
-import { L as ListFocus, a as ListNavigation, K as KeyboardEventManager, P as PointerEventManager } from './list-focus-Czul8jzR.mjs';
-import { L as ListSelection } from './list-selection-C41ApAbt.mjs';
+import { L as List } from './list-DwfufhyY.mjs';
+import { K as KeyboardEventManager, P as PointerEventManager } from './list-navigation-DzM8xz11.mjs';
 
 /** Controls the state of a radio group. */
 class RadioGroupPattern {
     inputs;
-    /** Controls navigation for the radio group. */
-    navigation;
-    /** Controls selection for the radio group. */
-    selection;
-    /** Controls focus for the radio group. */
-    focusManager;
+    /** The list behavior for the radio group. */
+    listBehavior;
     /** Whether the radio group is vertically or horizontally oriented. */
     orientation;
     /** Whether the radio group is disabled. */
-    disabled = computed(() => this.inputs.disabled() || this.focusManager.isListDisabled());
+    disabled = computed(() => this.inputs.disabled() || this.listBehavior.disabled());
     /** The currently selected radio button. */
-    selectedItem = computed(() => this.selection.selectedItems()[0]);
+    selectedItem = computed(() => this.listBehavior.selectionBehavior.selectedItems()[0]);
     /** Whether the radio group is readonly. */
     readonly = computed(() => this.selectedItem()?.disabled() || this.inputs.readonly());
     /** The tabindex of the radio group (if using activedescendant). */
-    tabindex = computed(() => this.focusManager.getListTabindex());
+    tabindex = computed(() => this.listBehavior.tabindex());
     /** The id of the current active radio button (if using activedescendant). */
-    activedescendant = computed(() => this.focusManager.getActiveDescendant());
+    activedescendant = computed(() => this.listBehavior.activedescendant());
     /** The key used to navigate to the previous radio button. */
     prevKey = computed(() => {
         if (this.inputs.orientation() === 'vertical') {
@@ -43,45 +39,40 @@ class RadioGroupPattern {
         // Readonly mode allows navigation but not selection changes.
         if (this.readonly()) {
             return manager
-                .on(this.prevKey, () => this.prev())
-                .on(this.nextKey, () => this.next())
-                .on('Home', () => this.first())
-                .on('End', () => this.last());
+                .on(this.prevKey, () => this.listBehavior.prev())
+                .on(this.nextKey, () => this.listBehavior.next())
+                .on('Home', () => this.listBehavior.first())
+                .on('End', () => this.listBehavior.last());
         }
         // Default behavior: navigate and select on arrow keys, home, end.
         // Space/Enter also select the focused item.
         return manager
-            .on(this.prevKey, () => this.prev({ selectOne: true }))
-            .on(this.nextKey, () => this.next({ selectOne: true }))
-            .on('Home', () => this.first({ selectOne: true }))
-            .on('End', () => this.last({ selectOne: true }))
-            .on(' ', () => this.selection.selectOne())
-            .on('Enter', () => this.selection.selectOne());
+            .on(this.prevKey, () => this.listBehavior.prev({ selectOne: true }))
+            .on(this.nextKey, () => this.listBehavior.next({ selectOne: true }))
+            .on('Home', () => this.listBehavior.first({ selectOne: true }))
+            .on('End', () => this.listBehavior.last({ selectOne: true }))
+            .on(' ', () => this.listBehavior.selectOne())
+            .on('Enter', () => this.listBehavior.selectOne());
     });
     /** The pointerdown event manager for the radio group. */
     pointerdown = computed(() => {
         const manager = new PointerEventManager();
         if (this.readonly()) {
             // Navigate focus only in readonly mode.
-            return manager.on(e => this.goto(e));
+            return manager.on(e => this.listBehavior.goto(this._getItem(e)));
         }
         // Default behavior: navigate and select on click.
-        return manager.on(e => this.goto(e, { selectOne: true }));
+        return manager.on(e => this.listBehavior.goto(this._getItem(e), { selectOne: true }));
     });
     constructor(inputs) {
         this.inputs = inputs;
         this.orientation = inputs.orientation;
-        this.focusManager = new ListFocus(inputs);
-        this.navigation = new ListNavigation({
+        this.listBehavior = new List({
             ...inputs,
             wrap: () => false,
-            focusManager: this.focusManager,
-        });
-        this.selection = new ListSelection({
-            ...inputs,
             multi: () => false,
             selectionMode: () => 'follow',
-            focusManager: this.focusManager,
+            typeaheadDelay: () => 0, // Radio groups do not support typeahead.
         });
     }
     /** Handles keydown events for the radio group. */
@@ -96,27 +87,6 @@ class RadioGroupPattern {
             this.pointerdown().handle(event);
         }
     }
-    /** Navigates to the first enabled radio button in the group. */
-    first(opts) {
-        this._navigate(opts, () => this.navigation.first());
-    }
-    /** Navigates to the last enabled radio button in the group. */
-    last(opts) {
-        this._navigate(opts, () => this.navigation.last());
-    }
-    /** Navigates to the next enabled radio button in the group. */
-    next(opts) {
-        this._navigate(opts, () => this.navigation.next());
-    }
-    /** Navigates to the previous enabled radio button in the group. */
-    prev(opts) {
-        this._navigate(opts, () => this.navigation.prev());
-    }
-    /** Navigates to the radio button associated with the given pointer event. */
-    goto(event, opts) {
-        const item = this._getItem(event);
-        this._navigate(opts, () => this.navigation.goto(item));
-    }
     /**
      * Sets the radio group to its default initial state.
      *
@@ -126,7 +96,7 @@ class RadioGroupPattern {
     setDefaultState() {
         let firstItem = null;
         for (const item of this.inputs.items()) {
-            if (this.focusManager.isFocusable(item)) {
+            if (this.listBehavior.isFocusable(item)) {
                 if (!firstItem) {
                     firstItem = item;
                 }
@@ -148,13 +118,6 @@ class RadioGroupPattern {
         }
         return violations;
     }
-    /** Safely performs a navigation operation and updates selection if needed. */
-    _navigate(opts = {}, operation) {
-        const moved = operation();
-        if (moved && opts.selectOne) {
-            this.selection.selectOne();
-        }
-    }
     /** Finds the RadioButtonPattern associated with a pointer event target. */
     _getItem(e) {
         if (!(e.target instanceof HTMLElement)) {
@@ -175,20 +138,22 @@ class RadioButtonPattern {
     value;
     /** The position of the radio button within the group. */
     index = computed(() => this.group()
-        ?.navigation.inputs.items()
+        ?.listBehavior.inputs.items()
         .findIndex(i => i.id() === this.id()) ?? -1);
     /** Whether the radio button is currently the active one (focused). */
-    active = computed(() => this.group()?.focusManager.activeItem() === this);
+    active = computed(() => this.group()?.listBehavior.activeItem() === this);
     /** Whether the radio button is selected. */
-    selected = computed(() => !!this.group()?.selection.inputs.value().includes(this.value()));
+    selected = computed(() => !!this.group()?.listBehavior.inputs.value().includes(this.value()));
     /** Whether the radio button is disabled. */
     disabled;
     /** A reference to the parent radio group. */
     group;
     /** The tabindex of the radio button. */
-    tabindex = computed(() => this.group()?.focusManager.getItemTabindex(this));
+    tabindex = computed(() => this.group()?.listBehavior.getItemTabindex(this));
     /** The HTML element associated with the radio button. */
     element;
+    /** The search term for typeahead. */
+    searchTerm = () => ''; // Radio groups do not support typeahead.
     constructor(inputs) {
         this.inputs = inputs;
         this.id = inputs.id;
@@ -200,4 +165,4 @@ class RadioButtonPattern {
 }
 
 export { RadioGroupPattern as R, RadioButtonPattern as a };
-//# sourceMappingURL=radio-button-92xc4w-A.mjs.map
+//# sourceMappingURL=radio-button-DNUyZmoC.mjs.map

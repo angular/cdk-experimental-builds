@@ -143,57 +143,6 @@ class PointerEventManager extends EventManager {
     }
 }
 
-/** Controls navigation for a list of items. */
-class ListNavigation {
-    inputs;
-    constructor(inputs) {
-        this.inputs = inputs;
-    }
-    /** Navigates to the given item. */
-    goto(item) {
-        return item ? this.inputs.focusManager.focus(item) : false;
-    }
-    /** Navigates to the next item in the list. */
-    next() {
-        return this._advance(1);
-    }
-    /** Navigates to the previous item in the list. */
-    prev() {
-        return this._advance(-1);
-    }
-    /** Navigates to the first item in the list. */
-    first() {
-        const item = this.inputs.items().find(i => this.inputs.focusManager.isFocusable(i));
-        return item ? this.goto(item) : false;
-    }
-    /** Navigates to the last item in the list. */
-    last() {
-        const items = this.inputs.items();
-        for (let i = items.length - 1; i >= 0; i--) {
-            if (this.inputs.focusManager.isFocusable(items[i])) {
-                return this.goto(items[i]);
-            }
-        }
-        return false;
-    }
-    /** Advances to the next or previous focusable item in the list based on the given delta. */
-    _advance(delta) {
-        const items = this.inputs.items();
-        const itemCount = items.length;
-        const startIndex = this.inputs.activeIndex();
-        const step = (i) => this.inputs.wrap() ? (i + delta + itemCount) % itemCount : i + delta;
-        // If wrapping is enabled, this loop ultimately terminates when `i` gets back to `startIndex`
-        // in the case that all options are disabled. If wrapping is disabled, the loop terminates
-        // when the index goes out of bounds.
-        for (let i = step(startIndex); i !== startIndex && i < itemCount && i >= 0; i = step(i)) {
-            if (this.inputs.focusManager.isFocusable(items[i])) {
-                return this.goto(items[i]);
-            }
-        }
-        return false;
-    }
-}
-
 /** Controls focus for a list of items. */
 class ListFocus {
     inputs;
@@ -254,5 +203,56 @@ class ListFocus {
     }
 }
 
+/** Controls navigation for a list of items. */
+class ListNavigation {
+    inputs;
+    constructor(inputs) {
+        this.inputs = inputs;
+    }
+    /** Navigates to the given item. */
+    goto(item) {
+        return item ? this.inputs.focusManager.focus(item) : false;
+    }
+    /** Navigates to the next item in the list. */
+    next() {
+        return this._advance(1);
+    }
+    /** Navigates to the previous item in the list. */
+    prev() {
+        return this._advance(-1);
+    }
+    /** Navigates to the first item in the list. */
+    first() {
+        const item = this.inputs.items().find(i => this.inputs.focusManager.isFocusable(i));
+        return item ? this.goto(item) : false;
+    }
+    /** Navigates to the last item in the list. */
+    last() {
+        const items = this.inputs.items();
+        for (let i = items.length - 1; i >= 0; i--) {
+            if (this.inputs.focusManager.isFocusable(items[i])) {
+                return this.goto(items[i]);
+            }
+        }
+        return false;
+    }
+    /** Advances to the next or previous focusable item in the list based on the given delta. */
+    _advance(delta) {
+        const items = this.inputs.items();
+        const itemCount = items.length;
+        const startIndex = this.inputs.activeIndex();
+        const step = (i) => this.inputs.wrap() ? (i + delta + itemCount) % itemCount : i + delta;
+        // If wrapping is enabled, this loop ultimately terminates when `i` gets back to `startIndex`
+        // in the case that all options are disabled. If wrapping is disabled, the loop terminates
+        // when the index goes out of bounds.
+        for (let i = step(startIndex); i !== startIndex && i < itemCount && i >= 0; i = step(i)) {
+            if (this.inputs.focusManager.isFocusable(items[i])) {
+                return this.goto(items[i]);
+            }
+        }
+        return false;
+    }
+}
+
 export { KeyboardEventManager as K, ListFocus as L, Modifier as M, PointerEventManager as P, ListNavigation as a };
-//# sourceMappingURL=list-focus-Czul8jzR.mjs.map
+//# sourceMappingURL=list-navigation-DzM8xz11.mjs.map

@@ -1,18 +1,17 @@
 import * as _angular_core from '@angular/core';
-import { e as ListNavigationItem, f as ListFocusItem, S as SignalLike, d as ListFocus, b as ListNavigation, L as ListNavigationInputs, a as ListFocusInputs, K as KeyboardEventManager, P as PointerEventManager } from './pointer-event-manager.d-BqSm9Jh5.js';
-import { a as ListSelectionItem, L as ListSelection, b as ListSelectionInputs } from './list-selection.d-fbAPr_N_.js';
+import { S as SignalLike, K as KeyboardEventManager, P as PointerEventManager } from './pointer-event-manager.d-BqSm9Jh5.js';
+import { a as ListItem, L as List, b as ListInputs } from './list.d-vrWuM64c.js';
 
 /**
  * Represents the properties exposed by a radio group that need to be accessed by a radio button.
  * This exists to avoid circular dependency errors between the radio group and radio button.
  */
 interface RadioGroupLike<V> {
-    focusManager: ListFocus<RadioButtonPattern<V>>;
-    selection: ListSelection<RadioButtonPattern<V>, V>;
-    navigation: ListNavigation<RadioButtonPattern<V>>;
+    /** The list behavior for the radio group. */
+    listBehavior: List<RadioButtonPattern<V>, V>;
 }
 /** Represents the required inputs for a radio button in a radio group. */
-interface RadioButtonInputs<V> extends ListNavigationItem, ListSelectionItem<V>, ListFocusItem {
+interface RadioButtonInputs<V> extends Omit<ListItem<V>, 'searchTerm'> {
     /** A reference to the parent radio group. */
     group: SignalLike<RadioGroupLike<V> | undefined>;
 }
@@ -37,15 +36,13 @@ declare class RadioButtonPattern<V> {
     tabindex: _angular_core.Signal<0 | -1 | undefined>;
     /** The HTML element associated with the radio button. */
     element: SignalLike<HTMLElement>;
+    /** The search term for typeahead. */
+    readonly searchTerm: () => string;
     constructor(inputs: RadioButtonInputs<V>);
 }
 
-/** The selection operations that the radio group can perform. */
-interface SelectOptions {
-    selectOne?: boolean;
-}
 /** Represents the required inputs for a radio group. */
-type RadioGroupInputs<V> = Omit<ListNavigationInputs<RadioButtonPattern<V>>, 'wrap'> & Omit<ListSelectionInputs<RadioButtonPattern<V>, V>, 'multi' | 'selectionMode'> & ListFocusInputs<RadioButtonPattern<V>> & {
+type RadioGroupInputs<V> = Omit<ListInputs<RadioButtonPattern<V>, V>, 'multi' | 'selectionMode' | 'wrap' | 'typeaheadDelay'> & {
     /** Whether the radio group is disabled. */
     disabled: SignalLike<boolean>;
     /** Whether the radio group is readonly. */
@@ -54,12 +51,8 @@ type RadioGroupInputs<V> = Omit<ListNavigationInputs<RadioButtonPattern<V>>, 'wr
 /** Controls the state of a radio group. */
 declare class RadioGroupPattern<V> {
     readonly inputs: RadioGroupInputs<V>;
-    /** Controls navigation for the radio group. */
-    navigation: ListNavigation<RadioButtonPattern<V>>;
-    /** Controls selection for the radio group. */
-    selection: ListSelection<RadioButtonPattern<V>, V>;
-    /** Controls focus for the radio group. */
-    focusManager: ListFocus<RadioButtonPattern<V>>;
+    /** The list behavior for the radio group. */
+    readonly listBehavior: List<RadioButtonPattern<V>, V>;
     /** Whether the radio group is vertically or horizontally oriented. */
     orientation: SignalLike<'vertical' | 'horizontal'>;
     /** Whether the radio group is disabled. */
@@ -85,16 +78,6 @@ declare class RadioGroupPattern<V> {
     onKeydown(event: KeyboardEvent): void;
     /** Handles pointerdown events for the radio group. */
     onPointerdown(event: PointerEvent): void;
-    /** Navigates to the first enabled radio button in the group. */
-    first(opts?: SelectOptions): void;
-    /** Navigates to the last enabled radio button in the group. */
-    last(opts?: SelectOptions): void;
-    /** Navigates to the next enabled radio button in the group. */
-    next(opts?: SelectOptions): void;
-    /** Navigates to the previous enabled radio button in the group. */
-    prev(opts?: SelectOptions): void;
-    /** Navigates to the radio button associated with the given pointer event. */
-    goto(event: PointerEvent, opts?: SelectOptions): void;
     /**
      * Sets the radio group to its default initial state.
      *
@@ -104,8 +87,6 @@ declare class RadioGroupPattern<V> {
     setDefaultState(): void;
     /** Validates the state of the radio group and returns a list of accessibility violations. */
     validate(): string[];
-    /** Safely performs a navigation operation and updates selection if needed. */
-    private _navigate;
     /** Finds the RadioButtonPattern associated with a pointer event target. */
     private _getItem;
 }

@@ -1,19 +1,17 @@
 import * as _angular_core from '@angular/core';
-import { a as ListSelectionItem, L as ListSelection, b as ListSelectionInputs } from './list-selection.d-fbAPr_N_.js';
-import { a as ListTypeaheadItem, b as ListTypeaheadInputs, L as ListTypeahead } from './list-typeahead.d-ljh3nJ9y.js';
-import { e as ListNavigationItem, f as ListFocusItem, S as SignalLike, d as ListFocus, b as ListNavigation, L as ListNavigationInputs, a as ListFocusInputs, K as KeyboardEventManager, P as PointerEventManager } from './pointer-event-manager.d-BqSm9Jh5.js';
+import { S as SignalLike, K as KeyboardEventManager, P as PointerEventManager } from './pointer-event-manager.d-BqSm9Jh5.js';
+import { a as ListItem, b as ListInputs, L as List } from './list.d-vrWuM64c.js';
 
 /**
  * Represents the properties exposed by a listbox that need to be accessed by an option.
  * This exists to avoid circular dependency errors between the listbox and option.
  */
 interface ListboxPattern$1<V> {
-    focusManager: ListFocus<OptionPattern<V>>;
-    selection: ListSelection<OptionPattern<V>, V>;
-    navigation: ListNavigation<OptionPattern<V>>;
+    inputs: ListInputs<OptionPattern<V>, V>;
+    listBehavior: List<OptionPattern<V>, V>;
 }
 /** Represents the required inputs for an option in a listbox. */
-interface OptionInputs<V> extends ListNavigationItem, ListSelectionItem<V>, ListTypeaheadItem, ListFocusItem {
+interface OptionInputs<V> extends ListItem<V> {
     listbox: SignalLike<ListboxPattern$1<V> | undefined>;
 }
 /** Represents an option in a listbox. */
@@ -41,28 +39,14 @@ declare class OptionPattern<V> {
     constructor(args: OptionInputs<V>);
 }
 
-/** The selection operations that the listbox can perform. */
-interface SelectOptions {
-    toggle?: boolean;
-    selectOne?: boolean;
-    selectRange?: boolean;
-    anchor?: boolean;
-}
 /** Represents the required inputs for a listbox. */
-type ListboxInputs<V> = ListNavigationInputs<OptionPattern<V>> & ListSelectionInputs<OptionPattern<V>, V> & ListTypeaheadInputs<OptionPattern<V>> & ListFocusInputs<OptionPattern<V>> & {
+type ListboxInputs<V> = ListInputs<OptionPattern<V>, V> & {
     readonly: SignalLike<boolean>;
 };
 /** Controls the state of a listbox. */
 declare class ListboxPattern<V> {
     readonly inputs: ListboxInputs<V>;
-    /** Controls navigation for the listbox. */
-    navigation: ListNavigation<OptionPattern<V>>;
-    /** Controls selection for the listbox. */
-    selection: ListSelection<OptionPattern<V>, V>;
-    /** Controls typeahead for the listbox. */
-    typeahead: ListTypeahead<OptionPattern<V>>;
-    /** Controls focus for the listbox. */
-    focusManager: ListFocus<OptionPattern<V>>;
+    listBehavior: List<OptionPattern<V>, V>;
     /** Whether the list is vertically or horizontally oriented. */
     orientation: SignalLike<'vertical' | 'horizontal'>;
     /** Whether the listbox is disabled. */
@@ -89,19 +73,6 @@ declare class ListboxPattern<V> {
     dynamicSpaceKey: _angular_core.Signal<"" | " ">;
     /** The regexp used to decide if a key should trigger typeahead. */
     typeaheadRegexp: RegExp;
-    /**
-     * The uncommitted index for selecting a range of options.
-     *
-     * NOTE: This is subtly distinct from the "rangeStartIndex" in the ListSelection behavior.
-     * The anchorIndex does not necessarily represent the start of a range, but represents the most
-     * recent index where the user showed intent to begin a range selection. Usually, this is wherever
-     * the user most recently pressed the "Shift" key, but if the user presses shift + space to select
-     * from the anchor, the user is not intending to start a new range from this index.
-     *
-     * In other words, "rangeStartIndex" is only set when a user commits to starting a range selection
-     * while "anchorIndex" is set whenever a user indicates they may be starting a range selection.
-     */
-    anchorIndex: _angular_core.WritableSignal<number>;
     /** The keydown event manager for the listbox. */
     keydown: _angular_core.Signal<KeyboardEventManager<KeyboardEvent>>;
     /** The pointerdown event manager for the listbox. */
@@ -112,18 +83,6 @@ declare class ListboxPattern<V> {
     /** Handles keydown events for the listbox. */
     onKeydown(event: KeyboardEvent): void;
     onPointerdown(event: PointerEvent): void;
-    /** Navigates to the first option in the listbox. */
-    first(opts?: SelectOptions): void;
-    /** Navigates to the last option in the listbox. */
-    last(opts?: SelectOptions): void;
-    /** Navigates to the next option in the listbox. */
-    next(opts?: SelectOptions): void;
-    /** Navigates to the previous option in the listbox. */
-    prev(opts?: SelectOptions): void;
-    /** Navigates to the given item in the listbox. */
-    goto(event: PointerEvent, opts?: SelectOptions): void;
-    /** Handles typeahead search navigation for the listbox. */
-    search(char: string, opts?: SelectOptions): void;
     /**
      * Sets the listbox to it's default initial state.
      *
@@ -135,18 +94,6 @@ declare class ListboxPattern<V> {
      * is called.
      */
     setDefaultState(): void;
-    /**
-     * Safely performs a navigation operation.
-     *
-     * Handles conditionally disabling wrapping for when a navigation
-     * operation is occurring while the user is selecting a range of options.
-     *
-     * Handles boilerplate calling of focus & selection operations. Also ensures these
-     * additional operations are only called if the navigation operation moved focus to a new option.
-     */
-    private _navigate;
-    /** Handles updating selection for the listbox. */
-    private _updateSelection;
     private _getItem;
 }
 

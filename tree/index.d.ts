@@ -1,14 +1,13 @@
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
 import * as _angular_core from '@angular/core';
 import { OnInit, OnDestroy, Signal } from '@angular/core';
-import { S as SignalLike, d as ListFocus, b as ListNavigation, K as KeyboardEventManager, P as PointerEventManager, f as ListFocusItem, e as ListNavigationItem, a as ListFocusInputs, L as ListNavigationInputs } from '../pointer-event-manager.d-BqSm9Jh5.js';
-import { L as ListSelection, a as ListSelectionItem, b as ListSelectionInputs } from '../list-selection.d-fbAPr_N_.js';
-import { L as ListTypeahead, a as ListTypeaheadItem, b as ListTypeaheadInputs } from '../list-typeahead.d-ljh3nJ9y.js';
+import { S as SignalLike, K as KeyboardEventManager, P as PointerEventManager } from '../pointer-event-manager.d-BqSm9Jh5.js';
+import { L as List, a as ListItem, b as ListInputs } from '../list.d-vrWuM64c.js';
 import { E as ExpansionItem, a as ListExpansion, b as ExpansionControl } from '../expansion.d-Zkcf-XJU.js';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
 
 /** Represents the required inputs for a tree item. */
-interface TreeItemInputs<V> extends ListFocusItem, ListNavigationItem, ListSelectionItem<V>, ListTypeaheadItem {
+interface TreeItemInputs<V> extends ListItem<V> {
     /** The parent item. */
     parent: SignalLike<TreeItemPattern<V> | TreePattern<V>>;
     /** Whether this item has children. Children can be lazily loaded. */
@@ -61,7 +60,7 @@ interface SelectOptions {
     anchor?: boolean;
 }
 /** Represents the required inputs for a tree. */
-interface TreeInputs<V> extends Omit<ListFocusInputs<TreeItemPattern<V>> & ListNavigationInputs<TreeItemPattern<V>> & ListSelectionInputs<TreeItemPattern<V>, V> & ListTypeaheadInputs<TreeItemPattern<V>>, 'items'> {
+interface TreeInputs<V> extends Omit<ListInputs<TreeItemPattern<V>, V>, 'items'> {
     /** All items in the tree, in document order (DFS-like, a flattened list). */
     allItems: SignalLike<TreeItemPattern<V>[]>;
     /** Whether the tree is in navigation mode. */
@@ -74,14 +73,8 @@ interface TreePattern<V> extends TreeInputs<V> {
 /** Controls the state and interactions of a tree view. */
 declare class TreePattern<V> {
     readonly inputs: TreeInputs<V>;
-    /** Controls focus for the all visible tree items. */
-    readonly focusManager: ListFocus<TreeItemPattern<V>>;
-    /** Controls navigation for all visible tree items. */
-    readonly navigationManager: ListNavigation<TreeItemPattern<V>>;
-    /** Controls selection for all visible tree items. */
-    readonly selectionManager: ListSelection<TreeItemPattern<V>, V>;
-    /** Controls typeahead for all visible tree items. */
-    readonly typeaheadManager: ListTypeahead<TreeItemPattern<V>>;
+    /** The list behavior for the tree. */
+    readonly listBehavior: List<TreeItemPattern<V>, V>;
     /** Controls expansion for direct children of the tree root (top-level items). */
     readonly expansionManager: ListExpansion;
     /** The root level is 0. */
@@ -92,8 +85,6 @@ declare class TreePattern<V> {
     readonly tabindex: _angular_core.Signal<0 | -1>;
     /** The id of the current active item. */
     readonly activedescendant: _angular_core.Signal<string | undefined>;
-    /** Whether the tree is performing a range selection. */
-    readonly inSelection: _angular_core.WritableSignal<boolean>;
     /** The direct children of the root (top-level tree items). */
     readonly children: _angular_core.Signal<TreeItemPattern<V>[]>;
     /** All currently visible tree items. An item is visible if their parent is expanded. */
@@ -112,14 +103,6 @@ declare class TreePattern<V> {
     readonly dynamicSpaceKey: _angular_core.Signal<"" | " ">;
     /** Regular expression to match characters for typeahead. */
     readonly typeaheadRegexp: RegExp;
-    /** Uncommitted tree item for selecting a range of tree items. */
-    readonly anchorItem: _angular_core.WritableSignal<TreeItemPattern<V> | undefined>;
-    /**
-     * Uncommitted tree item index for selecting a range of tree items.
-     *
-     * The index is computed in case the tree item position is changed caused by tree expansions.
-     */
-    readonly anchorIndex: _angular_core.Signal<number>;
     /** The keydown event manager for the tree. */
     readonly keydown: _angular_core.Signal<KeyboardEventManager<KeyboardEvent>>;
     /** The pointerdown event manager for the tree. */
@@ -136,18 +119,8 @@ declare class TreePattern<V> {
     onKeydown(event: KeyboardEvent): void;
     /** Handles pointerdown events on the tree. */
     onPointerdown(event: PointerEvent): void;
-    /** Navigates to the first visible tree item in the tree. */
-    first(opts?: SelectOptions): void;
-    /** Navigates to the last visible tree item in the tree. */
-    last(opts?: SelectOptions): void;
-    /** Navigates to the next visible tree item in the tree. */
-    next(opts?: SelectOptions): void;
-    /** Navigates to the previous visible tree item in the tree. */
-    prev(opts?: SelectOptions): void;
     /** Navigates to the given tree item in the tree. */
-    goto(event: PointerEvent, opts?: SelectOptions): void;
-    /** Handles typeahead search navigation for the tree. */
-    search(char: string, opts?: SelectOptions): void;
+    goto(e: PointerEvent, opts?: SelectOptions): void;
     /** Toggles to expand or collapse a tree item. */
     toggleExpansion(item?: TreeItemPattern<V>): void;
     /** Expands a tree item. */
@@ -156,10 +129,6 @@ declare class TreePattern<V> {
     expandSiblings(item?: TreeItemPattern<V>): void;
     /** Collapses a tree item. */
     collapse(item?: TreeItemPattern<V>): void;
-    /** Safely performs a navigation operation. */
-    private _navigate;
-    /** Handles updating selection for the tree. */
-    private _updateSelection;
     /** Retrieves the TreeItemPattern associated with a DOM event, if any. */
     private _getItem;
 }
