@@ -1,6 +1,6 @@
 import { computed, signal } from '@angular/core';
-import { L as List } from './list-DwfufhyY.mjs';
-import { M as Modifier, K as KeyboardEventManager, P as PointerEventManager } from './list-navigation-DzM8xz11.mjs';
+import { List } from './list.mjs';
+import { Modifier, KeyboardEventManager, PointerEventManager } from './list-navigation.mjs';
 
 /** Controls the state of a listbox. */
 class ListboxPattern {
@@ -229,5 +229,5 @@ class OptionPattern {
     }
 }
 
-export { ListboxPattern as L, OptionPattern as O };
-//# sourceMappingURL=option-PfSxXfNh.mjs.map
+export { ListboxPattern, OptionPattern };
+//# sourceMappingURL=option.mjs.map

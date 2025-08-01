@@ -181,5 +181,5 @@ declare class PointerEventManager<T extends PointerEvent> extends EventManager<T
     _isMatch(event: PointerEvent, button: MouseButton, modifiers: ModifierInputs): boolean;
 }
 
-export { KeyboardEventManager as K, PointerEventManager as P, ListNavigation as b, convertGetterSetterToWritableSignalLike as c, ListFocus as d };
-export type { ListNavigationInputs as L, SignalLike as S, WritableSignalLike as W, ListFocusInputs as a, ListNavigationItem as e, ListFocusItem as f };
+export { KeyboardEventManager, ListFocus, ListNavigation, PointerEventManager, convertGetterSetterToWritableSignalLike };
+export type { ListFocusInputs, ListFocusItem, ListNavigationInputs, ListNavigationItem, SignalLike, WritableSignalLike };

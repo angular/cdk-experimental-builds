@@ -1,7 +1,7 @@
 import * as _angular_core from '@angular/core';
-import { S as SignalLike, K as KeyboardEventManager, P as PointerEventManager } from './pointer-event-manager.d-BqSm9Jh5.js';
-import { E as ExpansionItem, b as ExpansionControl, L as ListExpansionInputs, a as ListExpansion } from './expansion.d-Zkcf-XJU.js';
-import { a as ListItem, b as ListInputs, L as List } from './list.d-vrWuM64c.js';
+import { SignalLike, KeyboardEventManager, PointerEventManager } from './pointer-event-manager.d.js';
+import { ExpansionItem, ExpansionControl, ListExpansionInputs, ListExpansion } from './expansion.d.js';
+import { ListItem, ListInputs, List } from './list.d.js';
 
 /** Represents the required inputs for the label control. */
 interface LabelControlInputs {
@@ -131,5 +131,5 @@ declare class TabListPattern {
     private _getItem;
 }
 
-export { TabPattern as a, TabPanelPattern as c, TabListPattern as e };
-export type { TabInputs as T, TabPanelInputs as b, TabListInputs as d };
+export { TabListPattern, TabPanelPattern, TabPattern };
+export type { TabInputs, TabListInputs, TabPanelInputs };

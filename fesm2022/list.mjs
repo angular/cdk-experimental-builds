@@ -1,5 +1,5 @@
 import { signal, computed } from '@angular/core';
-import { L as ListFocus, a as ListNavigation } from './list-navigation-DzM8xz11.mjs';
+import { ListFocus, ListNavigation } from './list-navigation.mjs';
 
 /** Controls selection for a list of items. */
 class ListSelection {
@@ -346,5 +346,5 @@ class List {
     }
 }
 
-export { List as L };
-//# sourceMappingURL=list-DwfufhyY.mjs.map
+export { List };
+//# sourceMappingURL=list.mjs.map

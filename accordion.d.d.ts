@@ -1,6 +1,6 @@
 import * as _angular_core from '@angular/core';
-import { L as ListNavigationInputs, a as ListFocusInputs, b as ListNavigation, d as ListFocus, e as ListNavigationItem, f as ListFocusItem, S as SignalLike, K as KeyboardEventManager, P as PointerEventManager } from './pointer-event-manager.d-BqSm9Jh5.js';
-import { L as ListExpansionInputs, a as ListExpansion, E as ExpansionItem, b as ExpansionControl } from './expansion.d-Zkcf-XJU.js';
+import { ListNavigationInputs, ListFocusInputs, ListNavigation, ListFocus, ListNavigationItem, ListFocusItem, SignalLike, KeyboardEventManager, PointerEventManager } from './pointer-event-manager.d.js';
+import { ListExpansionInputs, ListExpansion, ExpansionItem, ExpansionControl } from './expansion.d.js';
 
 /** Inputs of the AccordionGroupPattern. */
 type AccordionGroupInputs = Omit<ListNavigationInputs<AccordionTriggerPattern> & ListFocusInputs<AccordionTriggerPattern> & Omit<ListExpansionInputs, 'items'>, 'focusMode'>;
@@ -83,5 +83,5 @@ declare class AccordionPanelPattern {
     constructor(inputs: AccordionPanelInputs);
 }
 
-export { AccordionGroupPattern as a, AccordionTriggerPattern as c, AccordionPanelPattern as e };
-export type { AccordionGroupInputs as A, AccordionTriggerInputs as b, AccordionPanelInputs as d };
+export { AccordionGroupPattern, AccordionPanelPattern, AccordionTriggerPattern };
+export type { AccordionGroupInputs, AccordionPanelInputs, AccordionTriggerInputs };

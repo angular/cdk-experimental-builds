@@ -1,5 +1,5 @@
 import * as _angular_core from '@angular/core';
-import { S as SignalLike, W as WritableSignalLike } from './pointer-event-manager.d-BqSm9Jh5.js';
+import { SignalLike, WritableSignalLike } from './pointer-event-manager.d.js';
 
 /** Represents an item that can be expanded or collapsed. */
 interface ExpansionItem {
@@ -67,5 +67,5 @@ declare class ListExpansion {
     isExpanded(item: ExpansionItem): boolean;
 }
 
-export { ListExpansion as a, ExpansionControl as b };
-export type { ExpansionItem as E, ListExpansionInputs as L };
+export { ExpansionControl, ListExpansion };
+export type { ExpansionItem, ListExpansionInputs };

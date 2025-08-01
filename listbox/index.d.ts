@@ -1,8 +1,8 @@
 import * as _angular_core from '@angular/core';
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
-import { b as OptionPattern, a as ListboxPattern } from '../listbox.d-BUCQY_50.js';
-import '../pointer-event-manager.d-BqSm9Jh5.js';
-import '../list.d-vrWuM64c.js';
+import { OptionPattern, ListboxPattern } from '../listbox.d.js';
+import '../pointer-event-manager.d.js';
+import '../list.d.js';
 
 /**
  * A listbox container.

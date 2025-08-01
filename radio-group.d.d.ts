@@ -1,6 +1,6 @@
 import * as _angular_core from '@angular/core';
-import { S as SignalLike, K as KeyboardEventManager, P as PointerEventManager } from './pointer-event-manager.d-BqSm9Jh5.js';
-import { a as ListItem, L as List, b as ListInputs } from './list.d-vrWuM64c.js';
+import { SignalLike, KeyboardEventManager, PointerEventManager } from './pointer-event-manager.d.js';
+import { ListItem, List, ListInputs } from './list.d.js';
 
 /**
  * Represents the properties exposed by a radio group that need to be accessed by a radio button.
@@ -91,5 +91,5 @@ declare class RadioGroupPattern<V> {
     private _getItem;
 }
 
-export { RadioGroupPattern as a, RadioButtonPattern as c };
-export type { RadioGroupInputs as R, RadioButtonInputs as b };
+export { RadioButtonPattern, RadioGroupPattern };
+export type { RadioButtonInputs, RadioGroupInputs };

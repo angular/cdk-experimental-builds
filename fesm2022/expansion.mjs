@@ -83,5 +83,5 @@ class ListExpansion {
     }
 }
 
-export { ExpansionControl as E, ListExpansion as L };
-//# sourceMappingURL=expansion-C9iQLHOG.mjs.map
+export { ExpansionControl, ListExpansion };
+//# sourceMappingURL=expansion.mjs.map

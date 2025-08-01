@@ -1,9 +1,9 @@
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
 import * as _angular_core from '@angular/core';
 import { OnInit, OnDestroy, Signal } from '@angular/core';
-import { S as SignalLike, K as KeyboardEventManager, P as PointerEventManager } from '../pointer-event-manager.d-BqSm9Jh5.js';
-import { L as List, a as ListItem, b as ListInputs } from '../list.d-vrWuM64c.js';
-import { E as ExpansionItem, a as ListExpansion, b as ExpansionControl } from '../expansion.d-Zkcf-XJU.js';
+import { SignalLike, KeyboardEventManager, PointerEventManager } from '../pointer-event-manager.d.js';
+import { List, ListItem, ListInputs } from '../list.d.js';
+import { ExpansionItem, ListExpansion, ExpansionControl } from '../expansion.d.js';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
 
 /** Represents the required inputs for a tree item. */

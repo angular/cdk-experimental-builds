@@ -1,7 +1,7 @@
 import { computed } from '@angular/core';
-import { E as ExpansionControl, L as ListExpansion } from './expansion-C9iQLHOG.mjs';
-import { L as List } from './list-DwfufhyY.mjs';
-import { K as KeyboardEventManager, P as PointerEventManager } from './list-navigation-DzM8xz11.mjs';
+import { ExpansionControl, ListExpansion } from './expansion.mjs';
+import { List } from './list.mjs';
+import { KeyboardEventManager, PointerEventManager } from './list-navigation.mjs';
 
 /** Controls label and description of an element. */
 class LabelControl {
@@ -205,5 +205,5 @@ class TabListPattern {
     }
 }
 
-export { TabListPattern as T, TabPattern as a, TabPanelPattern as b };
-//# sourceMappingURL=tabs-Y300LEKG.mjs.map
+export { TabListPattern, TabPanelPattern, TabPattern };
+//# sourceMappingURL=tabs2.mjs.map

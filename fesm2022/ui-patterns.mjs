@@ -1,11 +1,11 @@
-export { L as ListboxPattern, O as OptionPattern } from './option-PfSxXfNh.mjs';
-export { a as RadioButtonPattern, R as RadioGroupPattern } from './radio-button-DNUyZmoC.mjs';
-export { T as TabListPattern, b as TabPanelPattern, a as TabPattern } from './tabs-Y300LEKG.mjs';
-export { b as AccordionGroupPattern, A as AccordionPanelPattern, a as AccordionTriggerPattern } from './accordion-CILp35b8.mjs';
+export { ListboxPattern, OptionPattern } from './option.mjs';
+export { RadioButtonPattern, RadioGroupPattern } from './radio-button.mjs';
+export { TabListPattern, TabPanelPattern, TabPattern } from './tabs2.mjs';
+export { AccordionGroupPattern, AccordionPanelPattern, AccordionTriggerPattern } from './accordion2.mjs';
 import '@angular/core';
-import './list-DwfufhyY.mjs';
-import './list-navigation-DzM8xz11.mjs';
-import './expansion-C9iQLHOG.mjs';
+import './list.mjs';
+import './list-navigation.mjs';
+import './expansion.mjs';
 
 /** Converts a getter setter style signal to a WritableSignalLike. */
 function convertGetterSetterToWritableSignalLike(getter, setter) {

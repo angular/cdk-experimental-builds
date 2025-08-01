@@ -1,6 +1,6 @@
 import * as _angular_core from '@angular/core';
-import { S as SignalLike, K as KeyboardEventManager, P as PointerEventManager } from './pointer-event-manager.d-BqSm9Jh5.js';
-import { a as ListItem, b as ListInputs, L as List } from './list.d-vrWuM64c.js';
+import { SignalLike, KeyboardEventManager, PointerEventManager } from './pointer-event-manager.d.js';
+import { ListItem, ListInputs, List } from './list.d.js';
 
 /**
  * Represents the properties exposed by a listbox that need to be accessed by an option.
@@ -97,5 +97,5 @@ declare class ListboxPattern<V> {
     private _getItem;
 }
 
-export { ListboxPattern as a, OptionPattern as b };
-export type { ListboxInputs as L, OptionInputs as O };
+export { ListboxPattern, OptionPattern };
+export type { ListboxInputs, OptionInputs };
