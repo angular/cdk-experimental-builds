@@ -61,7 +61,7 @@ declare class CdkRadioButton<V> {
     /** A unique identifier for the radio button. */
     protected id: _angular_core.Signal<string>;
     /** The value associated with the radio button. */
-    protected value: _angular_core.InputSignal<V>;
+    readonly value: _angular_core.InputSignal<V>;
     /** The parent RadioGroup UIPattern. */
     protected group: _angular_core.Signal<RadioGroupPattern<any>>;
     /** A reference to the radio button element to be focused on navigation. */
