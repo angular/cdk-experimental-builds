@@ -68,7 +68,7 @@ declare class CdkOption<V> {
     /** A unique identifier for the option. */
     protected id: _angular_core.Signal<string>;
     /** The value of the option. */
-    protected value: _angular_core.InputSignal<V>;
+    readonly value: _angular_core.InputSignal<V>;
     /** The text used by the typeahead search. */
     protected searchTerm: _angular_core.Signal<any>;
     /** The parent Listbox UIPattern. */
