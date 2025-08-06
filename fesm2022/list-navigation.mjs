@@ -146,10 +146,12 @@ class PointerEventManager extends EventManager {
 /** Controls focus for a list of items. */
 class ListFocus {
     inputs;
-    /** The last index that was active. */
-    prevActiveIndex = signal(0);
-    /** The current active item. */
-    activeItem = computed(() => this.inputs.items()[this.inputs.activeIndex()]);
+    /** The last item that was active. */
+    prevActiveItem = signal(undefined);
+    /** The index of the last item that was active. */
+    prevActiveIndex = computed(() => this.prevActiveItem()?.index() ?? -1);
+    /** The current active index in the list. */
+    activeIndex = computed(() => this.inputs.activeItem()?.index() ?? -1);
     constructor(inputs) {
         this.inputs = inputs;
     }
@@ -165,7 +167,7 @@ class ListFocus {
         if (this.inputs.focusMode() === 'roving') {
             return undefined;
         }
-        return this.inputs.items()[this.inputs.activeIndex()].id();
+        return this.inputs.activeItem()?.id() ?? undefined;
     }
     /** The tabindex for the list. */
     getListTabindex() {
@@ -182,16 +184,15 @@ class ListFocus {
         if (this.inputs.focusMode() === 'activedescendant') {
             return -1;
         }
-        return this.activeItem() === item ? 0 : -1;
+        return this.inputs.activeItem() === item ? 0 : -1;
     }
     /** Moves focus to the given item if it is focusable. */
     focus(item) {
         if (this.isListDisabled() || !this.isFocusable(item)) {
             return false;
         }
-        this.prevActiveIndex.set(this.inputs.activeIndex());
-        const index = this.inputs.items().indexOf(item);
-        this.inputs.activeIndex.set(index);
+        this.prevActiveItem.set(this.inputs.activeItem());
+        this.inputs.activeItem.set(item);
         if (this.inputs.focusMode() === 'roving') {
             item.element().focus();
         }
@@ -240,7 +241,7 @@ class ListNavigation {
     _advance(delta) {
         const items = this.inputs.items();
         const itemCount = items.length;
-        const startIndex = this.inputs.activeIndex();
+        const startIndex = this.inputs.focusManager.activeIndex();
         const step = (i) => this.inputs.wrap() ? (i + delta + itemCount) % itemCount : i + delta;
         // If wrapping is enabled, this loop ultimately terminates when `i` gets back to `startIndex`
         // in the case that all options are disabled. If wrapping is disabled, the loop terminates

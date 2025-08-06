@@ -18,7 +18,7 @@ declare class AccordionGroupPattern {
     constructor(inputs: AccordionGroupInputs);
 }
 /** Inputs for the AccordionTriggerPattern. */
-type AccordionTriggerInputs = ListNavigationItem & ListFocusItem & Omit<ExpansionItem, 'expansionId' | 'expandable'> & {
+type AccordionTriggerInputs = Omit<ListNavigationItem & ListFocusItem, 'index'> & Omit<ExpansionItem, 'expansionId' | 'expandable'> & {
     /** A local unique identifier for the trigger. */
     value: SignalLike<string>;
     /** The parent accordion group that controls this trigger. */
@@ -47,6 +47,8 @@ declare class AccordionTriggerPattern {
     tabindex: _angular_core.Signal<-1 | 0>;
     /** Whether the trigger is disabled. Disabling an accordion group disables all the triggers. */
     disabled: _angular_core.Signal<boolean>;
+    /** The index of the trigger within its accordion group. */
+    index: _angular_core.Signal<number>;
     constructor(inputs: AccordionTriggerInputs);
     /** The key used to navigate to the previous accordion trigger. */
     prevKey: _angular_core.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;

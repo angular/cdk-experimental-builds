@@ -16,6 +16,8 @@ interface ListFocusItem {
     element: SignalLike<HTMLElement>;
     /** Whether an item is disabled. */
     disabled: SignalLike<boolean>;
+    /** The index of the item in the list. */
+    index: SignalLike<number>;
 }
 /** Represents the required inputs for a collection that contains focusable items. */
 interface ListFocusInputs<T extends ListFocusItem> {
@@ -25,18 +27,20 @@ interface ListFocusInputs<T extends ListFocusItem> {
     disabled: SignalLike<boolean>;
     /** The items in the list. */
     items: SignalLike<T[]>;
-    /** The index of the current active item. */
-    activeIndex: WritableSignalLike<number>;
+    /** The active item. */
+    activeItem: WritableSignalLike<T | undefined>;
     /** Whether disabled items in the list should be skipped when navigating. */
     skipDisabled: SignalLike<boolean>;
 }
 /** Controls focus for a list of items. */
 declare class ListFocus<T extends ListFocusItem> {
     readonly inputs: ListFocusInputs<T>;
-    /** The last index that was active. */
-    prevActiveIndex: _angular_core.WritableSignal<number>;
-    /** The current active item. */
-    activeItem: _angular_core.Signal<T>;
+    /** The last item that was active. */
+    prevActiveItem: _angular_core.WritableSignal<T | undefined>;
+    /** The index of the last item that was active. */
+    prevActiveIndex: _angular_core.Signal<number>;
+    /** The current active index in the list. */
+    activeIndex: _angular_core.Signal<number>;
     constructor(inputs: ListFocusInputs<T>);
     /** Whether the list is in a disabled state. */
     isListDisabled(): boolean;

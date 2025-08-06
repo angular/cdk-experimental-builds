@@ -7,7 +7,7 @@ import { ExpansionItem, ListExpansion, ExpansionControl } from '../expansion.d.j
 import * as i1 from '@angular/cdk-experimental/deferred-content';
 
 /** Represents the required inputs for a tree item. */
-interface TreeItemInputs<V> extends ListItem<V> {
+interface TreeItemInputs<V> extends Omit<ListItem<V>, 'index'> {
     /** The parent item. */
     parent: SignalLike<TreeItemPattern<V> | TreePattern<V>>;
     /** Whether this item has children. Children can be lazily loaded. */
@@ -24,6 +24,8 @@ interface TreeItemPattern<V> extends TreeItemInputs<V> {
  */
 declare class TreeItemPattern<V> implements ExpansionItem {
     readonly inputs: TreeItemInputs<V>;
+    /** The position of this item among its siblings. */
+    readonly index: _angular_core.Signal<number>;
     /** The unique identifier used by the expansion behavior. */
     readonly expansionId: SignalLike<string>;
     /** Controls expansion for child items. */

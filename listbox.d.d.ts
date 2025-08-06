@@ -11,7 +11,7 @@ interface ListboxPattern$1<V> {
     listBehavior: List<OptionPattern<V>, V>;
 }
 /** Represents the required inputs for an option in a listbox. */
-interface OptionInputs<V> extends ListItem<V> {
+interface OptionInputs<V> extends Omit<ListItem<V>, 'index'> {
     listbox: SignalLike<ListboxPattern$1<V> | undefined>;
 }
 /** Represents an option in a listbox. */

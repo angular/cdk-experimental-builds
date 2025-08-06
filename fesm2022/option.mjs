@@ -71,7 +71,7 @@ class ListboxPattern {
         }
         if (this.inputs.multi()) {
             manager
-                .on(Modifier.Any, 'Shift', () => this.listBehavior.anchor(this.inputs.activeIndex()))
+                .on(Modifier.Any, 'Shift', () => this.listBehavior.anchor(this.listBehavior.activeIndex()))
                 .on(Modifier.Shift, this.prevKey, () => this.listBehavior.prev({ selectRange: true }))
                 .on(Modifier.Shift, this.nextKey, () => this.listBehavior.next({ selectRange: true }))
                 .on([Modifier.Ctrl | Modifier.Shift, Modifier.Meta | Modifier.Shift], 'Home', () => this.listBehavior.first({ selectRange: true, anchor: false }))
@@ -142,9 +142,9 @@ class ListboxPattern {
         if (!this.inputs.multi() && this.inputs.value().length > 1) {
             violations.push(`A single-select listbox should not have multiple selected options. Selected options: ${this.inputs.value().join(', ')}`);
         }
-        if (this.inputs.items.length &&
-            (this.inputs.activeIndex() < 0 || this.inputs.activeIndex() >= this.inputs.items().length)) {
-            violations.push(`The active index is out of bounds. Number of options: ${this.inputs.items().length} Active index: ${this.inputs.activeIndex()}.`);
+        const activeItem = this.inputs.activeItem();
+        if (activeItem && !this.inputs.items().includes(activeItem)) {
+            violations.push(`The current active item does not exist in the list. Active item: ${activeItem.id()}.`);
         }
         return violations;
     }
@@ -177,13 +177,13 @@ class ListboxPattern {
                     firstItem = item;
                 }
                 if (item.selected()) {
-                    this.inputs.activeIndex.set(item.index());
+                    this.inputs.activeItem.set(item);
                     return;
                 }
             }
         }
         if (firstItem) {
-            this.inputs.activeIndex.set(firstItem.index());
+            this.inputs.activeItem.set(firstItem);
         }
     }
     _getItem(e) {
@@ -202,11 +202,9 @@ class OptionPattern {
     /** The value of the option. */
     value;
     /** The position of the option in the list. */
-    index = computed(() => this.listbox()
-        ?.inputs.items()
-        .findIndex(i => i.id() === this.id()) ?? -1);
+    index = computed(() => this.listbox()?.inputs.items().indexOf(this) ?? -1);
     /** Whether the option is active. */
-    active = computed(() => this.listbox()?.listBehavior.activeItem() === this);
+    active = computed(() => this.listbox()?.inputs.activeItem() === this);
     /** Whether the option is selected. */
     selected = computed(() => this.listbox()?.inputs.value().includes(this.value()));
     /** Whether the option is disabled. */

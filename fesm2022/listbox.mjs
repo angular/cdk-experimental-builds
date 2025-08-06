@@ -56,7 +56,7 @@ class CdkListbox {
     pattern = new ListboxPattern({
         ...this,
         items: this.items,
-        activeIndex: signal(0), // TODO: Use linkedSignal to ensure this doesn't get fked up.
+        activeItem: signal(undefined),
         textDirection: this.textDirection,
     });
     /** Whether the listbox has received focus yet. */

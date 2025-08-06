@@ -101,13 +101,13 @@ class RadioGroupPattern {
                     firstItem = item;
                 }
                 if (item.selected()) {
-                    this.inputs.activeIndex.set(item.index());
+                    this.inputs.activeItem.set(item);
                     return;
                 }
             }
         }
         if (firstItem) {
-            this.inputs.activeIndex.set(firstItem.index());
+            this.inputs.activeItem.set(firstItem);
         }
     }
     /** Validates the state of the radio group and returns a list of accessibility violations. */
@@ -137,11 +137,9 @@ class RadioButtonPattern {
     /** The value associated with the radio button. */
     value;
     /** The position of the radio button within the group. */
-    index = computed(() => this.group()
-        ?.listBehavior.inputs.items()
-        .findIndex(i => i.id() === this.id()) ?? -1);
+    index = computed(() => this.group()?.listBehavior.inputs.items().indexOf(this) ?? -1);
     /** Whether the radio button is currently the active one (focused). */
-    active = computed(() => this.group()?.listBehavior.activeItem() === this);
+    active = computed(() => this.group()?.listBehavior.inputs.activeItem() === this);
     /** Whether the radio button is selected. */
     selected = computed(() => !!this.group()?.listBehavior.inputs.value().includes(this.value()));
     /** Whether the radio button is disabled. */

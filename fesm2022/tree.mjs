@@ -13,6 +13,8 @@ import { Modifier, KeyboardEventManager, PointerEventManager } from './list-navi
  */
 class TreeItemPattern {
     inputs;
+    /** The position of this item among its siblings. */
+    index = computed(() => this.tree().visibleItems().indexOf(this));
     /** The unique identifier used by the expansion behavior. */
     expansionId;
     /** Controls expansion for child items. */
@@ -32,7 +34,7 @@ class TreeItemPattern {
     /** The position of this item among its siblings (1-based). */
     posinset = computed(() => this.parent().children().indexOf(this) + 1);
     /** Whether the item is active. */
-    active = computed(() => this.tree().listBehavior.activeItem() === this);
+    active = computed(() => this.tree().activeItem() === this);
     /** The tabindex of the item. */
     tabindex = computed(() => this.tree().listBehavior.getItemTabindex(this));
     /** Whether the item is selected. */
@@ -154,7 +156,7 @@ class TreePattern {
             manager
                 // TODO: Tracking the anchor by index can break if the
                 // tree is expanded or collapsed causing the index to change.
-                .on(Modifier.Any, 'Shift', () => list.anchor(this.inputs.activeIndex()))
+                .on(Modifier.Any, 'Shift', () => list.anchor(this.listBehavior.activeIndex()))
                 .on(Modifier.Shift, this.prevKey, () => list.prev({ selectRange: true }))
                 .on(Modifier.Shift, this.nextKey, () => list.next({ selectRange: true }))
                 .on([Modifier.Ctrl | Modifier.Shift, Modifier.Meta | Modifier.Shift], 'Home', () => list.first({ selectRange: true, anchor: false }))
@@ -220,7 +222,7 @@ class TreePattern {
         this.allItems = inputs.allItems;
         this.focusMode = inputs.focusMode;
         this.disabled = inputs.disabled;
-        this.activeIndex = inputs.activeIndex;
+        this.activeItem = inputs.activeItem;
         this.skipDisabled = inputs.skipDisabled;
         this.wrap = inputs.wrap;
         this.orientation = inputs.orientation;
@@ -249,22 +251,22 @@ class TreePattern {
      * Otherwise, sets focus to the first focusable tree item.
      */
     setDefaultState() {
-        let firstItemIndex;
-        for (const [index, item] of this.allItems().entries()) {
+        let firstItem;
+        for (const item of this.allItems()) {
             if (!item.visible())
                 continue;
             if (!this.listBehavior.isFocusable(item))
                 continue;
-            if (firstItemIndex === undefined) {
-                firstItemIndex = index;
+            if (firstItem === undefined) {
+                firstItem = item;
             }
             if (item.selected()) {
-                this.inputs.activeIndex.set(index);
+                this.activeItem.set(item);
                 return;
             }
         }
-        if (firstItemIndex !== undefined) {
-            this.inputs.activeIndex.set(firstItemIndex);
+        if (firstItem !== undefined) {
+            this.activeItem.set(firstItem);
         }
     }
     /** Handles keydown events on the tree. */
@@ -289,7 +291,7 @@ class TreePattern {
     }
     /** Toggles to expand or collapse a tree item. */
     toggleExpansion(item) {
-        item ??= this.listBehavior.activeItem();
+        item ??= this.activeItem();
         if (!item || !this.listBehavior.isFocusable(item))
             return;
         if (!item.expandable())
@@ -303,7 +305,7 @@ class TreePattern {
     }
     /** Expands a tree item. */
     expand(item) {
-        item ??= this.listBehavior.activeItem();
+        item ??= this.activeItem();
         if (!item || !this.listBehavior.isFocusable(item))
             return;
         if (item.expandable() && !item.expanded()) {
@@ -318,13 +320,13 @@ class TreePattern {
     }
     /** Expands all sibling tree items including itself. */
     expandSiblings(item) {
-        item ??= this.listBehavior.activeItem();
-        const siblings = item.parent()?.children();
+        item ??= this.activeItem();
+        const siblings = item?.parent()?.children();
         siblings?.forEach(item => this.expand(item));
     }
     /** Collapses a tree item. */
     collapse(item) {
-        item ??= this.listBehavior.activeItem();
+        item ??= this.activeItem();
         if (!item || !this.listBehavior.isFocusable(item))
             return;
         if (item.expandable() && item.expanded()) {
@@ -409,7 +411,7 @@ class CdkTree {
     pattern = new TreePattern({
         ...this,
         allItems: computed(() => [...this._unorderedItems()].sort(sortDirectives).map(item => item.pattern)),
-        activeIndex: signal(0),
+        activeItem: signal(undefined),
     });
     /** Whether the tree has received focus yet. */
     _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));

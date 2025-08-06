@@ -15,7 +15,7 @@ class ListSelection {
     }
     /** Selects the item at the current active index. */
     select(item, opts = { anchor: true }) {
-        item = item ?? this.inputs.focusManager.activeItem();
+        item = item ?? this.inputs.focusManager.inputs.activeItem();
         if (item.disabled() || this.inputs.value().includes(item.value())) {
             return;
         }
@@ -30,20 +30,24 @@ class ListSelection {
     }
     /** Deselects the item at the current active index. */
     deselect(item) {
-        item = item ?? this.inputs.focusManager.activeItem();
-        if (!item.disabled()) {
+        item = item ?? this.inputs.focusManager.inputs.activeItem();
+        if (item && !item.disabled()) {
             this.inputs.value.update(values => values.filter(value => value !== item.value()));
         }
     }
     /** Toggles the item at the current active index. */
     toggle() {
-        const item = this.inputs.focusManager.activeItem();
-        this.inputs.value().includes(item.value()) ? this.deselect() : this.select();
+        const item = this.inputs.focusManager.inputs.activeItem();
+        if (item) {
+            this.inputs.value().includes(item.value()) ? this.deselect() : this.select();
+        }
     }
     /** Toggles only the item at the current active index. */
     toggleOne() {
-        const item = this.inputs.focusManager.activeItem();
-        this.inputs.value().includes(item.value()) ? this.deselect() : this.selectOne();
+        const item = this.inputs.focusManager.inputs.activeItem();
+        if (item) {
+            this.inputs.value().includes(item.value()) ? this.deselect() : this.selectOne();
+        }
     }
     /** Selects all items in the list. */
     selectAll() {
@@ -76,7 +80,8 @@ class ListSelection {
     }
     /** Sets the selection to only the current active item. */
     selectOne() {
-        if (this.inputs.focusManager.activeItem().disabled()) {
+        const item = this.inputs.focusManager.inputs.activeItem();
+        if (item && item.disabled()) {
             return;
         }
         this.deselectAll();
@@ -111,7 +116,7 @@ class ListSelection {
         }
     }
     /** Marks the given index as the start of a range selection. */
-    beginRangeSelection(index = this.inputs.activeIndex()) {
+    beginRangeSelection(index = this.inputs.focusManager.activeIndex()) {
         this.rangeStartIndex.set(index);
         this.rangeEndIndex.set(index);
     }
@@ -120,13 +125,13 @@ class ListSelection {
         if (index === -1) {
             return [];
         }
-        const upper = Math.max(this.inputs.activeIndex(), index);
-        const lower = Math.min(this.inputs.activeIndex(), index);
+        const upper = Math.max(this.inputs.focusManager.activeIndex(), index);
+        const lower = Math.min(this.inputs.focusManager.activeIndex(), index);
         const items = [];
         for (let i = lower; i <= upper; i++) {
             items.push(this.inputs.items()[i]);
         }
-        if (this.inputs.activeIndex() < index) {
+        if (this.inputs.focusManager.activeIndex() < index) {
             return items.reverse();
         }
         return items;
@@ -159,7 +164,7 @@ class ListTypeahead {
             return false;
         }
         if (this._startIndex() === undefined) {
-            this._startIndex.set(this.focusManager.inputs.activeIndex());
+            this._startIndex.set(this.focusManager.activeIndex());
         }
         clearTimeout(this.timeout);
         this._query.update(q => q + char.toLowerCase());
@@ -210,8 +215,8 @@ class List {
     activedescendant = computed(() => this.focusBehavior.getActiveDescendant());
     /** The tabindex of the list. */
     tabindex = computed(() => this.focusBehavior.getListTabindex());
-    /** The currently active item in the list. */
-    activeItem = computed(() => this.focusBehavior.activeItem());
+    /** The index of the currently active item in the list. */
+    activeIndex = computed(() => this.focusBehavior.activeIndex());
     /**
      * The uncommitted index for selecting a range of options.
      *

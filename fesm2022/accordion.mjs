@@ -137,9 +137,9 @@ class CdkAccordionGroup {
     /** The UI pattern instance for this accordion group. */
     pattern = new AccordionGroupPattern({
         ...this,
-        // TODO(ok7sai): Consider making `activeIndex` an internal state in the pattern and call
+        // TODO(ok7sai): Consider making `activeItem` an internal state in the pattern and call
         // `setDefaultState` in the CDK.
-        activeIndex: signal(0),
+        activeItem: signal(undefined),
         items: computed(() => this._triggers().map(trigger => trigger.pattern)),
         expandedIds: this.value,
         // TODO(ok7sai): Investigate whether an accordion should support horizontal mode.

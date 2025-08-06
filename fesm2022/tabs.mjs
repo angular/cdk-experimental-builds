@@ -117,7 +117,7 @@ class CdkTabList {
         ...this,
         items: this.tabs,
         value: this._selection,
-        activeIndex: signal(0),
+        activeItem: signal(undefined),
     });
     /** Whether the tree has received focus yet. */
     _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));

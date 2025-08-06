@@ -35,6 +35,8 @@ class TabPattern {
     expansion;
     /** A global unique identifier for the tab. */
     id;
+    /** The index of the tab. */
+    index = computed(() => this.inputs.tablist().inputs.items().indexOf(this));
     /** A local unique identifier for the tab. */
     value;
     /** Whether the tab is disabled. */
@@ -50,7 +52,7 @@ class TabPattern {
     /** Whether the tab is expanded. */
     expanded = computed(() => this.expansion.isExpanded());
     /** Whether the tab is active. */
-    active = computed(() => this.inputs.tablist().listBehavior.activeItem() === this);
+    active = computed(() => this.inputs.tablist().inputs.activeItem() === this);
     /** Whether the tab is selected. */
     selected = computed(() => !!this.inputs.tablist().inputs.value().includes(this.value()));
     /** The tabindex of the tab. */
@@ -167,20 +169,20 @@ class TabListPattern {
      * This method should be called once the tablist and its tabs are properly initialized.
      */
     setDefaultState() {
-        let firstItemIndex;
-        for (const [index, item] of this.inputs.items().entries()) {
+        let firstItem;
+        for (const item of this.inputs.items()) {
             if (!this.listBehavior.isFocusable(item))
                 continue;
-            if (firstItemIndex === undefined) {
-                firstItemIndex = index;
+            if (firstItem === undefined) {
+                firstItem = item;
             }
             if (item.selected()) {
-                this.inputs.activeIndex.set(index);
+                this.inputs.activeItem.set(item);
                 return;
             }
         }
-        if (firstItemIndex !== undefined) {
-            this.inputs.activeIndex.set(firstItemIndex);
+        if (firstItem !== undefined) {
+            this.inputs.activeItem.set(firstItem);
         }
     }
     /** Handles keydown events for the tablist. */

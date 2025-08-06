@@ -74,7 +74,7 @@ class CdkRadioGroup {
         ...this,
         items: this.items,
         value: this._value,
-        activeIndex: signal(0),
+        activeItem: signal(undefined),
         textDirection: this.textDirection,
     });
     /** Whether the radio group has received focus yet. */

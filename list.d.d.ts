@@ -34,7 +34,7 @@ declare class ListSelection<T extends ListSelectionItem<V>, V> {
         anchor: boolean;
     }): void;
     /** Deselects the item at the current active index. */
-    deselect(item?: T): void;
+    deselect(item?: T | null): void;
     /** Toggles the item at the current active index. */
     toggle(): void;
     /** Toggles only the item at the current active index. */
@@ -137,8 +137,8 @@ declare class List<T extends ListItem<V>, V> {
     activedescendant: _angular_core.Signal<string | undefined>;
     /** The tabindex of the list. */
     tabindex: _angular_core.Signal<0 | -1>;
-    /** The currently active item in the list. */
-    activeItem: _angular_core.Signal<T>;
+    /** The index of the currently active item in the list. */
+    activeIndex: _angular_core.Signal<number>;
     /**
      * The uncommitted index for selecting a range of options.
      *

@@ -11,7 +11,7 @@ interface RadioGroupLike<V> {
     listBehavior: List<RadioButtonPattern<V>, V>;
 }
 /** Represents the required inputs for a radio button in a radio group. */
-interface RadioButtonInputs<V> extends Omit<ListItem<V>, 'searchTerm'> {
+interface RadioButtonInputs<V> extends Omit<ListItem<V>, 'searchTerm' | 'index'> {
     /** A reference to the parent radio group. */
     group: SignalLike<RadioGroupLike<V> | undefined>;
 }

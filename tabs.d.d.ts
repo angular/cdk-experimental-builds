@@ -26,7 +26,7 @@ declare class LabelControl {
 }
 
 /** The required inputs to tabs. */
-interface TabInputs extends Omit<ListItem<string>, 'searchTerm'>, Omit<ExpansionItem, 'expansionId' | 'expandable'> {
+interface TabInputs extends Omit<ListItem<string>, 'searchTerm' | 'index'>, Omit<ExpansionItem, 'expansionId' | 'expandable'> {
     /** The parent tablist that controls the tab. */
     tablist: SignalLike<TabListPattern>;
     /** The remote tabpanel controlled by the tab. */
@@ -39,6 +39,8 @@ declare class TabPattern {
     readonly expansion: ExpansionControl;
     /** A global unique identifier for the tab. */
     readonly id: SignalLike<string>;
+    /** The index of the tab. */
+    readonly index: _angular_core.Signal<number>;
     /** A local unique identifier for the tab. */
     readonly value: SignalLike<string>;
     /** Whether the tab is disabled. */
