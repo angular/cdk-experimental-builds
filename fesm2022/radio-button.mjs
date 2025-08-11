@@ -15,8 +15,8 @@ class RadioGroupPattern {
     selectedItem = computed(() => this.listBehavior.selectionBehavior.selectedItems()[0]);
     /** Whether the radio group is readonly. */
     readonly = computed(() => this.selectedItem()?.disabled() || this.inputs.readonly());
-    /** The tabindex of the radio group (if using activedescendant). */
-    tabindex = computed(() => this.listBehavior.tabindex());
+    /** The tabindex of the radio group. */
+    tabindex = computed(() => (this.inputs.toolbar() ? -1 : this.listBehavior.tabindex()));
     /** The id of the current active radio button (if using activedescendant). */
     activedescendant = computed(() => this.listBehavior.activedescendant());
     /** The key used to navigate to the previous radio button. */
@@ -36,6 +36,10 @@ class RadioGroupPattern {
     /** The keydown event manager for the radio group. */
     keydown = computed(() => {
         const manager = new KeyboardEventManager();
+        // When within a toolbar relinquish keyboard control
+        if (this.inputs.toolbar()) {
+            return manager;
+        }
         // Readonly mode allows navigation but not selection changes.
         if (this.readonly()) {
             return manager
@@ -57,6 +61,10 @@ class RadioGroupPattern {
     /** The pointerdown event manager for the radio group. */
     pointerdown = computed(() => {
         const manager = new PointerEventManager();
+        // When within a toolbar relinquish pointer control
+        if (this.inputs.toolbar()) {
+            return manager;
+        }
         if (this.readonly()) {
             // Navigate focus only in readonly mode.
             return manager.on(e => this.listBehavior.goto(this._getItem(e)));
@@ -66,12 +74,14 @@ class RadioGroupPattern {
     });
     constructor(inputs) {
         this.inputs = inputs;
-        this.orientation = inputs.orientation;
+        this.orientation =
+            inputs.toolbar() !== undefined ? inputs.toolbar().orientation : inputs.orientation;
         this.listBehavior = new List({
             ...inputs,
-            wrap: () => false,
+            activeItem: inputs.toolbar()?.listBehavior.inputs.activeItem ?? inputs.activeItem,
+            wrap: () => !!inputs.toolbar(),
             multi: () => false,
-            selectionMode: () => 'follow',
+            selectionMode: () => (inputs.toolbar() ? 'explicit' : 'follow'),
             typeaheadDelay: () => 0, // Radio groups do not support typeahead.
         });
     }

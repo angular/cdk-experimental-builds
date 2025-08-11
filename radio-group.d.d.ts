@@ -3,12 +3,28 @@ import { SignalLike, KeyboardEventManager, PointerEventManager } from './pointer
 import { ListItem, List, ListInputs } from './list.d.js';
 
 /**
+ * Represents the properties exposed by a toolbar widget that need to be accessed by a radio group.
+ * This exists to avoid circular dependency errors between the toolbar and radio button.
+ */
+type ToolbarWidgetLike$1 = {
+    id: SignalLike<string>;
+    index: SignalLike<number>;
+    element: SignalLike<HTMLElement>;
+    disabled: SignalLike<boolean>;
+    searchTerm: SignalLike<any>;
+    value: SignalLike<any>;
+};
+/**
  * Represents the properties exposed by a radio group that need to be accessed by a radio button.
  * This exists to avoid circular dependency errors between the radio group and radio button.
  */
 interface RadioGroupLike<V> {
     /** The list behavior for the radio group. */
-    listBehavior: List<RadioButtonPattern<V>, V>;
+    listBehavior: List<RadioButtonPattern<V> | ToolbarWidgetLike$1, V>;
+    /** Whether the list is readonly */
+    readonly: SignalLike<boolean>;
+    /** Whether the radio group is disabled. */
+    disabled: SignalLike<boolean>;
 }
 /** Represents the required inputs for a radio button in a radio group. */
 interface RadioButtonInputs<V> extends Omit<ListItem<V>, 'searchTerm' | 'index'> {
@@ -23,7 +39,7 @@ declare class RadioButtonPattern<V> {
     /** The value associated with the radio button. */
     value: SignalLike<V>;
     /** The position of the radio button within the group. */
-    index: _angular_core.Signal<number>;
+    index: SignalLike<number>;
     /** Whether the radio button is currently the active one (focused). */
     active: _angular_core.Signal<boolean>;
     /** Whether the radio button is selected. */
@@ -47,21 +63,44 @@ type RadioGroupInputs<V> = Omit<ListInputs<RadioButtonPattern<V>, V>, 'multi' | 
     disabled: SignalLike<boolean>;
     /** Whether the radio group is readonly. */
     readonly: SignalLike<boolean>;
+    /** Parent toolbar of radio group */
+    toolbar: SignalLike<ToolbarLike<V> | undefined>;
 };
+/**
+ * Represents the properties exposed by a toolbar widget that need to be accessed by a radio group.
+ * This exists to avoid circular dependency errors between the toolbar and radio button.
+ */
+type ToolbarWidgetLike = {
+    id: SignalLike<string>;
+    index: SignalLike<number>;
+    element: SignalLike<HTMLElement>;
+    disabled: SignalLike<boolean>;
+    searchTerm: SignalLike<any>;
+    value: SignalLike<any>;
+};
+/**
+ * Represents the properties exposed by a toolbar that need to be accessed by a radio group.
+ * This exists to avoid circular dependency errors between the toolbar and radio button.
+ */
+interface ToolbarLike<V> {
+    listBehavior: List<RadioButtonPattern<V> | ToolbarWidgetLike, V>;
+    orientation: SignalLike<'vertical' | 'horizontal'>;
+    disabled: SignalLike<boolean>;
+}
 /** Controls the state of a radio group. */
 declare class RadioGroupPattern<V> {
     readonly inputs: RadioGroupInputs<V>;
     /** The list behavior for the radio group. */
-    readonly listBehavior: List<RadioButtonPattern<V>, V>;
+    readonly listBehavior: List<RadioButtonPattern<V> | ToolbarWidgetLike, V>;
     /** Whether the radio group is vertically or horizontally oriented. */
     orientation: SignalLike<'vertical' | 'horizontal'>;
     /** Whether the radio group is disabled. */
     disabled: _angular_core.Signal<boolean>;
     /** The currently selected radio button. */
-    selectedItem: _angular_core.Signal<RadioButtonPattern<V>>;
+    selectedItem: _angular_core.Signal<ToolbarWidgetLike | RadioButtonPattern<V>>;
     /** Whether the radio group is readonly. */
     readonly: _angular_core.Signal<boolean>;
-    /** The tabindex of the radio group (if using activedescendant). */
+    /** The tabindex of the radio group. */
     tabindex: _angular_core.Signal<0 | -1>;
     /** The id of the current active radio button (if using activedescendant). */
     activedescendant: _angular_core.Signal<string | undefined>;
@@ -92,4 +131,4 @@ declare class RadioGroupPattern<V> {
 }
 
 export { RadioButtonPattern, RadioGroupPattern };
-export type { RadioButtonInputs, RadioGroupInputs };
+export type { RadioButtonInputs, RadioGroupInputs, ToolbarLike };

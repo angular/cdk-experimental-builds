@@ -76,6 +76,7 @@ class CdkRadioGroup {
         value: this._value,
         activeItem: signal(undefined),
         textDirection: this.textDirection,
+        toolbar: signal(undefined), // placeholder until Toolbar CDK is added
     });
     /** Whether the radio group has received focus yet. */
     _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));
