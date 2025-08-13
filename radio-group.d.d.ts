@@ -1,61 +1,7 @@
 import * as _angular_core from '@angular/core';
 import { SignalLike, KeyboardEventManager, PointerEventManager } from './pointer-event-manager.d.js';
-import { ListItem, List, ListInputs } from './list.d.js';
-
-/**
- * Represents the properties exposed by a toolbar widget that need to be accessed by a radio group.
- * This exists to avoid circular dependency errors between the toolbar and radio button.
- */
-type ToolbarWidgetLike$1 = {
-    id: SignalLike<string>;
-    index: SignalLike<number>;
-    element: SignalLike<HTMLElement>;
-    disabled: SignalLike<boolean>;
-    searchTerm: SignalLike<any>;
-    value: SignalLike<any>;
-};
-/**
- * Represents the properties exposed by a radio group that need to be accessed by a radio button.
- * This exists to avoid circular dependency errors between the radio group and radio button.
- */
-interface RadioGroupLike<V> {
-    /** The list behavior for the radio group. */
-    listBehavior: List<RadioButtonPattern<V> | ToolbarWidgetLike$1, V>;
-    /** Whether the list is readonly */
-    readonly: SignalLike<boolean>;
-    /** Whether the radio group is disabled. */
-    disabled: SignalLike<boolean>;
-}
-/** Represents the required inputs for a radio button in a radio group. */
-interface RadioButtonInputs<V> extends Omit<ListItem<V>, 'searchTerm' | 'index'> {
-    /** A reference to the parent radio group. */
-    group: SignalLike<RadioGroupLike<V> | undefined>;
-}
-/** Represents a radio button within a radio group. */
-declare class RadioButtonPattern<V> {
-    readonly inputs: RadioButtonInputs<V>;
-    /** A unique identifier for the radio button. */
-    id: SignalLike<string>;
-    /** The value associated with the radio button. */
-    value: SignalLike<V>;
-    /** The position of the radio button within the group. */
-    index: SignalLike<number>;
-    /** Whether the radio button is currently the active one (focused). */
-    active: _angular_core.Signal<boolean>;
-    /** Whether the radio button is selected. */
-    selected: SignalLike<boolean>;
-    /** Whether the radio button is disabled. */
-    disabled: SignalLike<boolean>;
-    /** A reference to the parent radio group. */
-    group: SignalLike<RadioGroupLike<V> | undefined>;
-    /** The tabindex of the radio button. */
-    tabindex: _angular_core.Signal<0 | -1 | undefined>;
-    /** The HTML element associated with the radio button. */
-    element: SignalLike<HTMLElement>;
-    /** The search term for typeahead. */
-    readonly searchTerm: () => string;
-    constructor(inputs: RadioButtonInputs<V>);
-}
+import { ListInputs, List } from './list.d.js';
+import { RadioButtonPattern } from './toolbar.d.js';
 
 /** Represents the required inputs for a radio group. */
 type RadioGroupInputs<V> = Omit<ListInputs<RadioButtonPattern<V>, V>, 'multi' | 'selectionMode' | 'wrap' | 'typeaheadDelay'> & {
@@ -130,5 +76,5 @@ declare class RadioGroupPattern<V> {
     private _getItem;
 }
 
-export { RadioButtonPattern, RadioGroupPattern };
-export type { RadioButtonInputs, RadioGroupInputs, ToolbarLike };
+export { RadioGroupPattern };
+export type { RadioGroupInputs, ToolbarLike };

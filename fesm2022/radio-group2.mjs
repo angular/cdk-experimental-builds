@@ -139,38 +139,5 @@ class RadioGroupPattern {
     }
 }
 
-/** Represents a radio button within a radio group. */
-class RadioButtonPattern {
-    inputs;
-    /** A unique identifier for the radio button. */
-    id;
-    /** The value associated with the radio button. */
-    value;
-    /** The position of the radio button within the group. */
-    index = computed(() => this.group()?.listBehavior.inputs.items().indexOf(this) ?? -1);
-    /** Whether the radio button is currently the active one (focused). */
-    active = computed(() => this.group()?.listBehavior.inputs.activeItem() === this);
-    /** Whether the radio button is selected. */
-    selected = computed(() => !!this.group()?.listBehavior.inputs.value().includes(this.value()));
-    /** Whether the radio button is disabled. */
-    disabled;
-    /** A reference to the parent radio group. */
-    group;
-    /** The tabindex of the radio button. */
-    tabindex = computed(() => this.group()?.listBehavior.getItemTabindex(this));
-    /** The HTML element associated with the radio button. */
-    element;
-    /** The search term for typeahead. */
-    searchTerm = () => ''; // Radio groups do not support typeahead.
-    constructor(inputs) {
-        this.inputs = inputs;
-        this.id = inputs.id;
-        this.value = inputs.value;
-        this.group = inputs.group;
-        this.element = inputs.element;
-        this.disabled = inputs.disabled;
-    }
-}
-
-export { RadioButtonPattern, RadioGroupPattern };
-//# sourceMappingURL=radio-button.mjs.map
+export { RadioGroupPattern };
+//# sourceMappingURL=radio-group2.mjs.map
