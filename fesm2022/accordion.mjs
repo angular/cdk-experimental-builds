@@ -33,10 +33,10 @@ class CdkAccordionPanel {
             this._deferredContentAware.contentVisible.set(!this.pattern.hidden());
         });
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkAccordionPanel, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkAccordionPanel, isStandalone: true, selector: "[cdkAccordionPanel]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "region" }, properties: { "attr.id": "pattern.id()", "attr.aria-labelledby": "pattern.accordionTrigger()?.id()", "attr.inert": "pattern.hidden() ? true : null" }, classAttribute: "cdk-accordion-panel" }, exportAs: ["cdkAccordionPanel"], hostDirectives: [{ directive: i1.DeferredContentAware, inputs: ["preserveContent", "preserveContent"] }], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-rc.1", ngImport: i0, type: CdkAccordionPanel, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-rc.1", type: CdkAccordionPanel, isStandalone: true, selector: "[cdkAccordionPanel]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "region" }, properties: { "attr.id": "pattern.id()", "attr.aria-labelledby": "pattern.accordionTrigger()?.id()", "attr.inert": "pattern.hidden() ? true : null" }, classAttribute: "cdk-accordion-panel" }, exportAs: ["cdkAccordionPanel"], hostDirectives: [{ directive: i1.DeferredContentAware, inputs: ["preserveContent", "preserveContent"] }], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkAccordionPanel, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-rc.1", ngImport: i0, type: CdkAccordionPanel, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkAccordionPanel]',
@@ -88,10 +88,10 @@ class CdkAccordionTrigger {
         accordionGroup: computed(() => this._accordionGroup.pattern),
         accordionPanel: this.accordionPanel,
     });
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkAccordionTrigger, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkAccordionTrigger, isStandalone: true, selector: "[cdkAccordionTrigger]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "button" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "pattern.onFocus($event)" }, properties: { "class.cdk-active": "pattern.active()", "id": "pattern.id()", "attr.aria-expanded": "pattern.expanded()", "attr.aria-controls": "pattern.controls()", "attr.aria-disabled": "pattern.disabled()", "attr.inert": "hardDisabled() ? true : null", "attr.disabled": "hardDisabled() ? true : null", "attr.tabindex": "pattern.tabindex()" }, classAttribute: "cdk-accordion-trigger" }, exportAs: ["cdkAccordionTrigger"], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-rc.1", ngImport: i0, type: CdkAccordionTrigger, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-rc.1", type: CdkAccordionTrigger, isStandalone: true, selector: "[cdkAccordionTrigger]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "button" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "pattern.onFocus($event)" }, properties: { "class.cdk-active": "pattern.active()", "id": "pattern.id()", "attr.aria-expanded": "pattern.expanded()", "attr.aria-controls": "pattern.controls()", "attr.aria-disabled": "pattern.disabled()", "attr.inert": "hardDisabled() ? true : null", "attr.disabled": "hardDisabled() ? true : null", "attr.tabindex": "pattern.tabindex()" }, classAttribute: "cdk-accordion-trigger" }, exportAs: ["cdkAccordionTrigger"], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkAccordionTrigger, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-rc.1", ngImport: i0, type: CdkAccordionTrigger, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkAccordionTrigger]',
@@ -159,10 +159,10 @@ class CdkAccordionGroup {
             }
         });
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkAccordionGroup, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.2.0", version: "20.2.0-next.2", type: CdkAccordionGroup, isStandalone: true, selector: "[cdkAccordionGroup]", inputs: { disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, multiExpandable: { classPropertyName: "multiExpandable", publicName: "multiExpandable", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { classAttribute: "cdk-accordion-group" }, queries: [{ propertyName: "_triggers", predicate: CdkAccordionTrigger, descendants: true, isSignal: true }, { propertyName: "_panels", predicate: CdkAccordionPanel, descendants: true, isSignal: true }], exportAs: ["cdkAccordionGroup"], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-rc.1", ngImport: i0, type: CdkAccordionGroup, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.2.0", version: "20.2.0-rc.1", type: CdkAccordionGroup, isStandalone: true, selector: "[cdkAccordionGroup]", inputs: { disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, multiExpandable: { classPropertyName: "multiExpandable", publicName: "multiExpandable", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { classAttribute: "cdk-accordion-group" }, queries: [{ propertyName: "_triggers", predicate: CdkAccordionTrigger, descendants: true, isSignal: true }, { propertyName: "_panels", predicate: CdkAccordionPanel, descendants: true, isSignal: true }], exportAs: ["cdkAccordionGroup"], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkAccordionGroup, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-rc.1", ngImport: i0, type: CdkAccordionGroup, decorators: [{
             type: Directive,
             args: [{
                     selector: '[cdkAccordionGroup]',
@@ -177,10 +177,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", 
  * for a `CdkAccordionPanel`. This content can be lazily loaded.
  */
 class CdkAccordionContent {
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkAccordionContent, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.2.0-next.2", type: CdkAccordionContent, isStandalone: true, selector: "ng-template[cdkAccordionContent]", hostDirectives: [{ directive: i1.DeferredContent }], ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-rc.1", ngImport: i0, type: CdkAccordionContent, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.2.0-rc.1", type: CdkAccordionContent, isStandalone: true, selector: "ng-template[cdkAccordionContent]", hostDirectives: [{ directive: i1.DeferredContent }], ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkAccordionContent, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-rc.1", ngImport: i0, type: CdkAccordionContent, decorators: [{
             type: Directive,
             args: [{
                     selector: 'ng-template[cdkAccordionContent]',
