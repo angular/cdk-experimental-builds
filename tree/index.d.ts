@@ -126,11 +126,11 @@ declare class TreePattern<V> {
     /** Toggles to expand or collapse a tree item. */
     toggleExpansion(item?: TreeItemPattern<V>): void;
     /** Expands a tree item. */
-    expand(item?: TreeItemPattern<V>): void;
+    expand(opts?: SelectOptions): void;
     /** Expands all sibling tree items including itself. */
     expandSiblings(item?: TreeItemPattern<V>): void;
     /** Collapses a tree item. */
-    collapse(item?: TreeItemPattern<V>): void;
+    collapse(opts?: SelectOptions): void;
     /** Retrieves the TreeItemPattern associated with a DOM event, if any. */
     private _getItem;
 }
