@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { computed, signal, input, booleanAttribute, model, inject, afterRenderEffect, Directive, ElementRef } from '@angular/core';
+import { computed, signal, inject, ElementRef, input, booleanAttribute, model, afterRenderEffect, Directive } from '@angular/core';
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
@@ -368,6 +368,8 @@ function sortDirectives(a, b) {
  * ```
  */
 class CdkTree {
+    /** A reference to the tree element. */
+    _elementRef = inject(ElementRef);
     /** All CdkTreeItem instances within this tree. */
     _unorderedItems = signal(new Set(), ...(ngDevMode ? [{ debugName: "_unorderedItems" }] : []));
     /** Orientation of the tree. */
@@ -399,6 +401,7 @@ class CdkTree {
         ...this,
         allItems: computed(() => [...this._unorderedItems()].sort(sortDirectives).map(item => item.pattern)),
         activeItem: signal(undefined),
+        element: () => this._elementRef.nativeElement,
     });
     /** Whether the tree has received focus yet. */
     _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));

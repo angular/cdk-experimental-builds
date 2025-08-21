@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { inject, contentChildren, computed, input, booleanAttribute, model, signal, afterRenderEffect, Directive, ElementRef } from '@angular/core';
+import { inject, ElementRef, contentChildren, computed, input, booleanAttribute, model, signal, afterRenderEffect, Directive } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { _IdGenerator } from '@angular/cdk/a11y';
@@ -22,6 +22,8 @@ import './list-navigation.mjs';
  * ```
  */
 class CdkListbox {
+    /** A reference to the listbox element. */
+    _elementRef = inject(ElementRef);
     /** The directionality (LTR / RTL) context for the application (or a subtree of it). */
     _directionality = inject(Directionality);
     /** The CdkOptions nested inside of the CdkListbox. */
@@ -58,6 +60,7 @@ class CdkListbox {
         items: this.items,
         activeItem: signal(undefined),
         textDirection: this.textDirection,
+        element: () => this._elementRef.nativeElement,
     });
     /** Whether the listbox has received focus yet. */
     _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));

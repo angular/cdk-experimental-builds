@@ -197,9 +197,7 @@ class ListFocus {
         }
         this.prevActiveItem.set(this.inputs.activeItem());
         this.inputs.activeItem.set(item);
-        if (this.inputs.focusMode() === 'roving') {
-            item.element().focus();
-        }
+        this.inputs.focusMode() === 'roving' ? item.element().focus() : this.inputs.element()?.focus();
         return true;
     }
     /** Returns true if the given item can be navigated to. */

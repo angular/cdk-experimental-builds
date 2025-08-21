@@ -19,6 +19,8 @@ import '../list.d.js';
  * ```
  */
 declare class CdkListbox<V> {
+    /** A reference to the listbox element. */
+    private readonly _elementRef;
     /** The directionality (LTR / RTL) context for the application (or a subtree of it). */
     private readonly _directionality;
     /** The CdkOptions nested inside of the CdkListbox. */

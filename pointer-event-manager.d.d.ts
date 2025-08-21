@@ -31,6 +31,7 @@ interface ListFocusInputs<T extends ListFocusItem> {
     activeItem: WritableSignalLike<T | undefined>;
     /** Whether disabled items in the list should be skipped when navigating. */
     skipDisabled: SignalLike<boolean>;
+    element: SignalLike<HTMLElement | undefined>;
 }
 /** Controls focus for a list of items. */
 declare class ListFocus<T extends ListFocusItem> {

@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { signal, inject, computed, input, booleanAttribute, afterRenderEffect, Directive, ElementRef } from '@angular/core';
+import { inject, ElementRef, signal, computed, input, booleanAttribute, afterRenderEffect, Directive } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { ToolbarPattern, ToolbarWidgetPattern } from './toolbar2.mjs';
@@ -33,6 +33,8 @@ function sortDirectives(a, b) {
  * ```
  */
 class CdkToolbar {
+    /** A reference to the toolbar element. */
+    _elementRef = inject(ElementRef);
     /** The CdkTabList nested inside of the container. */
     _cdkWidgets = signal(new Set(), ...(ngDevMode ? [{ debugName: "_cdkWidgets" }] : []));
     /** A signal wrapper for directionality. */
@@ -53,6 +55,7 @@ class CdkToolbar {
         activeItem: signal(undefined),
         textDirection: this.textDirection,
         focusMode: signal('roving'),
+        element: () => this._elementRef.nativeElement,
     });
     /** Whether the toolbar has received focus yet. */
     _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));

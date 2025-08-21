@@ -32,6 +32,8 @@ interface CdkRadioButtonInterface<V> {
  * ```
  */
 declare class CdkToolbar<V> {
+    /** A reference to the toolbar element. */
+    private readonly _elementRef;
     /** The CdkTabList nested inside of the container. */
     private readonly _cdkWidgets;
     /** A signal wrapper for directionality. */

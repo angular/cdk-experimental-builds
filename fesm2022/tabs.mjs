@@ -3,7 +3,7 @@ import { DeferredContentAware, DeferredContent } from '@angular/cdk-experimental
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
-import { signal, computed, Directive, inject, linkedSignal, input, booleanAttribute, model, afterRenderEffect, ElementRef } from '@angular/core';
+import { signal, computed, Directive, inject, ElementRef, linkedSignal, input, booleanAttribute, model, afterRenderEffect } from '@angular/core';
 import { TabListPattern, TabPattern, TabPanelPattern } from './tabs2.mjs';
 import './expansion.mjs';
 import './list.mjs';
@@ -88,6 +88,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-rc.1", ng
  * Controls a list of CdkTab(s).
  */
 class CdkTabList {
+    /** A reference to the tab list element. */
+    _elementRef = inject(ElementRef);
     /** The parent CdkTabs. */
     _cdkTabs = inject(CdkTabs);
     /** The CdkTabs nested inside of the CdkTabList. */
@@ -118,6 +120,7 @@ class CdkTabList {
         items: this.tabs,
         value: this._selection,
         activeItem: signal(undefined),
+        element: () => this._elementRef.nativeElement,
     });
     /** Whether the tree has received focus yet. */
     _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));

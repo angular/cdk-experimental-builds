@@ -118,6 +118,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-rc.1", ng
  * interactions of the accordion, such as keyboard navigation and expansion mode.
  */
 class CdkAccordionGroup {
+    /** A reference to the group element. */
+    _elementRef = inject(ElementRef);
     /** The CdkAccordionTriggers nested inside this group. */
     _triggers = contentChildren(CdkAccordionTrigger, ...(ngDevMode ? [{ debugName: "_triggers", descendants: true }] : [{ descendants: true }]));
     /** The CdkAccordionPanels nested inside this group. */
@@ -144,6 +146,7 @@ class CdkAccordionGroup {
         expandedIds: this.value,
         // TODO(ok7sai): Investigate whether an accordion should support horizontal mode.
         orientation: () => 'vertical',
+        element: () => this._elementRef.nativeElement,
     });
     constructor() {
         // Effect to link triggers with their corresponding panels and update the group's items.

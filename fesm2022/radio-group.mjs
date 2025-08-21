@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { contentChildren, inject, computed, input, booleanAttribute, model, signal, afterRenderEffect, Directive, ElementRef, linkedSignal } from '@angular/core';
+import { inject, ElementRef, contentChildren, computed, input, booleanAttribute, model, signal, afterRenderEffect, Directive, linkedSignal } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { CdkToolbar } from './toolbar.mjs';
@@ -48,6 +48,8 @@ function mapSignal(originalSignal, operations) {
  * ```
  */
 class CdkRadioGroup {
+    /** A reference to the radio group element. */
+    _elementRef = inject(ElementRef);
     /** The CdkRadioButtons nested inside of the CdkRadioGroup. */
     _cdkRadioButtons = contentChildren(CdkRadioButton, ...(ngDevMode ? [{ debugName: "_cdkRadioButtons", descendants: true }] : [{ descendants: true }]));
     /** A signal wrapper for directionality. */
@@ -83,6 +85,7 @@ class CdkRadioGroup {
         activeItem: signal(undefined),
         textDirection: this.textDirection,
         toolbar: this._toolbarPattern,
+        element: () => this._elementRef.nativeElement,
         focusMode: this._toolbarPattern()?.inputs.focusMode ?? this.focusMode,
         skipDisabled: this._toolbarPattern()?.inputs.skipDisabled ?? this.skipDisabled,
     });

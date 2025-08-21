@@ -23,6 +23,8 @@ import '../list.d.js';
  * ```
  */
 declare class CdkRadioGroup<V> {
+    /** A reference to the radio group element. */
+    private readonly _elementRef;
     /** The CdkRadioButtons nested inside of the CdkRadioGroup. */
     private readonly _cdkRadioButtons;
     /** A signal wrapper for directionality. */

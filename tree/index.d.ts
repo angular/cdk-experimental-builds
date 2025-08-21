@@ -160,6 +160,8 @@ interface HasElement {
  * ```
  */
 declare class CdkTree<V> {
+    /** A reference to the tree element. */
+    private readonly _elementRef;
     /** All CdkTreeItem instances within this tree. */
     private readonly _unorderedItems;
     /** Orientation of the tree. */

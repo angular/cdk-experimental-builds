@@ -58,6 +58,8 @@ declare class CdkAccordionTrigger {
  * interactions of the accordion, such as keyboard navigation and expansion mode.
  */
 declare class CdkAccordionGroup {
+    /** A reference to the group element. */
+    private readonly _elementRef;
     /** The CdkAccordionTriggers nested inside this group. */
     protected readonly _triggers: _angular_core.Signal<readonly CdkAccordionTrigger[]>;
     /** The CdkAccordionPanels nested inside this group. */

@@ -55,6 +55,8 @@ declare class CdkTabs {
  * Controls a list of CdkTab(s).
  */
 declare class CdkTabList implements OnInit, OnDestroy {
+    /** A reference to the tab list element. */
+    private readonly _elementRef;
     /** The parent CdkTabs. */
     private readonly _cdkTabs;
     /** The CdkTabs nested inside of the CdkTabList. */
