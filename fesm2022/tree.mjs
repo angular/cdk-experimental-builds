@@ -164,8 +164,8 @@ class TreePattern {
                 .on([Modifier.Ctrl, Modifier.Meta], 'A', () => list.toggleAll());
         }
         if (!this.followFocus() && !this.inputs.multi()) {
-            manager.on(this.dynamicSpaceKey, () => list.toggleOne());
-            manager.on('Enter', () => list.toggleOne());
+            manager.on(this.dynamicSpaceKey, () => list.selectOne());
+            manager.on('Enter', () => list.selectOne());
         }
         if (this.inputs.multi() && this.followFocus()) {
             manager
@@ -190,11 +190,8 @@ class TreePattern {
         if (this.multi()) {
             manager.on(Modifier.Shift, e => this.goto(e, { selectRange: true }));
         }
-        if (!this.multi() && this.followFocus()) {
+        if (!this.multi()) {
             return manager.on(e => this.goto(e, { selectOne: true }));
-        }
-        if (!this.multi() && !this.followFocus()) {
-            return manager.on(e => this.goto(e, { toggle: true }));
         }
         if (this.multi() && this.followFocus()) {
             return manager
