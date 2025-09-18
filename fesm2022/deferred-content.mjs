@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { signal, input, Directive, inject, TemplateRef, ViewContainerRef, effect } from '@angular/core';
+import { signal, input, Directive, inject, TemplateRef, ViewContainerRef, afterRenderEffect } from '@angular/core';
 
 /**
  * A container directive controls the visibility of its content.
@@ -34,16 +34,15 @@ class DeferredContent {
     _viewContainerRef = inject(ViewContainerRef);
     _isRendered = false;
     constructor() {
-        effect(() => {
-            if (this._deferredContentAware.preserveContent() ||
-                this._deferredContentAware.contentVisible()) {
+        afterRenderEffect(() => {
+            if (this._deferredContentAware.contentVisible()) {
                 if (this._isRendered)
                     return;
                 this._viewContainerRef.clear();
                 this._viewContainerRef.createEmbeddedView(this._templateRef);
                 this._isRendered = true;
             }
-            else {
+            else if (!this._deferredContentAware.preserveContent()) {
                 this._viewContainerRef.clear();
                 this._isRendered = false;
             }

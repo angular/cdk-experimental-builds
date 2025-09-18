@@ -4,7 +4,7 @@ import * as _angular_core from '@angular/core';
  * A container directive controls the visibility of its content.
  */
 declare class DeferredContentAware {
-    contentVisible: _angular_core.WritableSignal<boolean>;
+    readonly contentVisible: _angular_core.WritableSignal<boolean>;
     readonly preserveContent: _angular_core.InputSignal<boolean>;
     static ɵfac: _angular_core.ɵɵFactoryDeclaration<DeferredContentAware, never>;
     static ɵdir: _angular_core.ɵɵDirectiveDeclaration<DeferredContentAware, never, never, { "preserveContent": { "alias": "preserveContent"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
