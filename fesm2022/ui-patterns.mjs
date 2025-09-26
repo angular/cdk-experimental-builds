@@ -1,7 +1,7 @@
 export { ListboxPattern, OptionPattern } from './option.mjs';
-export { RadioGroupPattern } from './radio-group2.mjs';
-export { RadioButtonPattern, ToolbarPattern, ToolbarWidgetPattern } from './toolbar2.mjs';
+export { RadioButtonPattern, RadioGroupPattern, ToolbarRadioGroupPattern } from './toolbar-radio-group.mjs';
 export { TabListPattern, TabPanelPattern, TabPattern } from './tabs2.mjs';
+export { ToolbarPattern, ToolbarWidgetGroupPattern, ToolbarWidgetPattern } from './toolbar2.mjs';
 export { AccordionGroupPattern, AccordionPanelPattern, AccordionTriggerPattern } from './accordion2.mjs';
 import '@angular/core';
 import './list.mjs';

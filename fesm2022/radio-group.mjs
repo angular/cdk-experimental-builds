@@ -1,10 +1,10 @@
 import * as i0 from '@angular/core';
-import { inject, ElementRef, contentChildren, computed, input, booleanAttribute, model, signal, afterRenderEffect, Directive, linkedSignal } from '@angular/core';
+import { inject, ElementRef, computed, contentChildren, input, booleanAttribute, model, signal, afterRenderEffect, Directive, linkedSignal } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { CdkToolbar } from './toolbar.mjs';
-import { RadioGroupPattern } from './radio-group2.mjs';
-import { RadioButtonPattern } from './toolbar2.mjs';
+import * as i1 from '@angular/cdk-experimental/toolbar';
+import { CdkToolbarWidgetGroup } from '@angular/cdk-experimental/toolbar';
+import { ToolbarRadioGroupPattern, RadioGroupPattern, RadioButtonPattern } from './toolbar-radio-group.mjs';
 import './list.mjs';
 import './list-navigation.mjs';
 
@@ -50,14 +50,14 @@ function mapSignal(originalSignal, operations) {
 class CdkRadioGroup {
     /** A reference to the radio group element. */
     _elementRef = inject(ElementRef);
+    /** A reference to the CdkToolbarWidgetGroup, if the radio group is in a toolbar. */
+    _cdkToolbarWidgetGroup = inject(CdkToolbarWidgetGroup);
+    /** Whether the radio group is inside of a CdkToolbar. */
+    _hasToolbar = computed(() => !!this._cdkToolbarWidgetGroup.toolbar(), ...(ngDevMode ? [{ debugName: "_hasToolbar" }] : []));
     /** The CdkRadioButtons nested inside of the CdkRadioGroup. */
     _cdkRadioButtons = contentChildren(CdkRadioButton, ...(ngDevMode ? [{ debugName: "_cdkRadioButtons", descendants: true }] : [{ descendants: true }]));
     /** A signal wrapper for directionality. */
     textDirection = inject(Directionality).valueSignal;
-    /** A signal wrapper for toolbar. */
-    toolbar = inject(CdkToolbar, { optional: true });
-    /** Toolbar pattern if applicable */
-    _toolbarPattern = computed(() => this.toolbar?.pattern, ...(ngDevMode ? [{ debugName: "_toolbarPattern" }] : []));
     /** The RadioButton UIPatterns of the child CdkRadioButtons. */
     items = computed(() => this._cdkRadioButtons().map(radio => radio.pattern), ...(ngDevMode ? [{ debugName: "items" }] : []));
     /** Whether the radio group is vertically or horizontally oriented. */
@@ -78,20 +78,32 @@ class CdkRadioGroup {
         reverse: values => (values.length === 0 ? null : values[0]),
     });
     /** The RadioGroup UIPattern. */
-    pattern = new RadioGroupPattern({
-        ...this,
-        items: this.items,
-        value: this._value,
-        activeItem: signal(undefined),
-        textDirection: this.textDirection,
-        toolbar: this._toolbarPattern,
-        element: () => this._elementRef.nativeElement,
-        focusMode: this._toolbarPattern()?.inputs.focusMode ?? this.focusMode,
-        skipDisabled: this._toolbarPattern()?.inputs.skipDisabled ?? this.skipDisabled,
-    });
+    pattern;
     /** Whether the radio group has received focus yet. */
     _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));
     constructor() {
+        const inputs = {
+            ...this,
+            items: this.items,
+            value: this._value,
+            activeItem: signal(undefined),
+            textDirection: this.textDirection,
+            element: () => this._elementRef.nativeElement,
+            getItem: e => {
+                if (!(e.target instanceof HTMLElement)) {
+                    return undefined;
+                }
+                const element = e.target.closest('[role="radio"]');
+                return this.items().find(i => i.element() === element);
+            },
+            toolbar: this._cdkToolbarWidgetGroup.toolbar,
+        };
+        this.pattern = this._hasToolbar()
+            ? new ToolbarRadioGroupPattern(inputs)
+            : new RadioGroupPattern(inputs);
+        if (this._hasToolbar()) {
+            this._cdkToolbarWidgetGroup.controls.set(this.pattern);
+        }
         afterRenderEffect(() => {
             if (typeof ngDevMode === 'undefined' || ngDevMode) {
                 const violations = this.pattern.validate();
@@ -101,35 +113,16 @@ class CdkRadioGroup {
             }
         });
         afterRenderEffect(() => {
-            if (!this._hasFocused() && !this.toolbar) {
+            if (!this._hasFocused() && !this._hasToolbar()) {
                 this.pattern.setDefaultState();
-            }
-        });
-        // TODO: Refactor to be handled within list behavior
-        afterRenderEffect(() => {
-            if (this.toolbar) {
-                const radioButtons = this._cdkRadioButtons();
-                // If the group is disabled and the toolbar is set to skip disabled items,
-                // the radio buttons should not be part of the toolbar's navigation.
-                if (this.disabled() && this.toolbar.skipDisabled()) {
-                    radioButtons.forEach(radio => this.toolbar.unregister(radio));
-                }
-                else {
-                    radioButtons.forEach(radio => this.toolbar.register(radio));
-                }
             }
         });
     }
     onFocus() {
         this._hasFocused.set(true);
     }
-    toolbarButtonUnregister(radio) {
-        if (this.toolbar) {
-            this.toolbar.unregister(radio);
-        }
-    }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkRadioGroup, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.2.0", version: "20.2.0-next.2", type: CdkRadioGroup, isStandalone: true, selector: "[cdkRadioGroup]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, readonly: { classPropertyName: "readonly", publicName: "readonly", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { attributes: { "role": "radiogroup" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.tabindex": "pattern.tabindex()", "attr.aria-readonly": "pattern.readonly()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-orientation": "pattern.orientation()", "attr.aria-activedescendant": "pattern.activedescendant()" }, classAttribute: "cdk-radio-group" }, queries: [{ propertyName: "_cdkRadioButtons", predicate: CdkRadioButton, descendants: true, isSignal: true }], exportAs: ["cdkRadioGroup"], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.2.0", version: "20.2.0-next.2", type: CdkRadioGroup, isStandalone: true, selector: "[cdkRadioGroup]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, readonly: { classPropertyName: "readonly", publicName: "readonly", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { attributes: { "role": "radiogroup" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.tabindex": "pattern.tabindex()", "attr.aria-readonly": "pattern.readonly()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-orientation": "pattern.orientation()", "attr.aria-activedescendant": "pattern.activedescendant()" }, classAttribute: "cdk-radio-group" }, queries: [{ propertyName: "_cdkRadioButtons", predicate: CdkRadioButton, descendants: true, isSignal: true }], exportAs: ["cdkRadioGroup"], hostDirectives: [{ directive: i1.CdkToolbarWidgetGroup, inputs: ["disabled", "disabled"] }], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkRadioGroup, decorators: [{
             type: Directive,
@@ -148,6 +141,12 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", 
                         '(pointerdown)': 'pattern.onPointerdown($event)',
                         '(focusin)': 'onFocus()',
                     },
+                    hostDirectives: [
+                        {
+                            directive: CdkToolbarWidgetGroup,
+                            inputs: ['disabled'],
+                        },
+                    ],
                 }]
         }], ctorParameters: () => [] });
 /** A selectable radio button in a CdkRadioGroup. */
@@ -176,11 +175,6 @@ class CdkRadioButton {
         group: this.group,
         element: this.element,
     });
-    ngOnDestroy() {
-        if (this._cdkRadioGroup.toolbar) {
-            this._cdkRadioGroup.toolbarButtonUnregister(this);
-        }
-    }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkRadioButton, deps: [], target: i0.ɵɵFactoryTarget.Directive });
     static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkRadioButton, isStandalone: true, selector: "[cdkRadioButton]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "radio" }, properties: { "class.cdk-active": "pattern.active()", "attr.tabindex": "pattern.tabindex()", "attr.aria-checked": "pattern.selected()", "attr.aria-disabled": "pattern.disabled()", "id": "pattern.id()" }, classAttribute: "cdk-radio-button" }, exportAs: ["cdkRadioButton"], ngImport: i0 });
 }

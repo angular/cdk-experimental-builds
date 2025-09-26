@@ -2,7 +2,7 @@ import * as i0 from '@angular/core';
 import { inject, ElementRef, signal, computed, input, booleanAttribute, afterRenderEffect, Directive } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { ToolbarPattern, ToolbarWidgetPattern } from './toolbar2.mjs';
+import { ToolbarPattern, ToolbarWidgetPattern, ToolbarWidgetGroupPattern } from './toolbar2.mjs';
 import './list.mjs';
 import './list-navigation.mjs';
 
@@ -54,20 +54,12 @@ class CdkToolbar {
         ...this,
         activeItem: signal(undefined),
         textDirection: this.textDirection,
-        focusMode: signal('roving'),
         element: () => this._elementRef.nativeElement,
+        getItem: e => this._getItem(e),
     });
     /** Whether the toolbar has received focus yet. */
     _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));
-    onFocus() {
-        this._hasFocused.set(true);
-    }
     constructor() {
-        afterRenderEffect(() => {
-            if (!this._hasFocused()) {
-                this.pattern.setDefaultState();
-            }
-        });
         afterRenderEffect(() => {
             if (typeof ngDevMode === 'undefined' || ngDevMode) {
                 const violations = this.pattern.validate();
@@ -76,6 +68,14 @@ class CdkToolbar {
                 }
             }
         });
+        afterRenderEffect(() => {
+            if (!this._hasFocused()) {
+                this.pattern.setDefaultState();
+            }
+        });
+    }
+    onFocus() {
+        this._hasFocused.set(true);
     }
     register(widget) {
         const widgets = this._cdkWidgets();
@@ -90,8 +90,14 @@ class CdkToolbar {
             this._cdkWidgets.set(new Set(widgets));
         }
     }
+    /** Finds the toolbar item associated with a given element. */
+    _getItem(element) {
+        const widgetTarget = element.closest('.cdk-toolbar-widget');
+        const groupTarget = element.closest('.cdk-toolbar-widget-group');
+        return this.items().find(widget => widget.element() === widgetTarget || widget.element() === groupTarget);
+    }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkToolbar, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkToolbar, isStandalone: true, selector: "[cdkToolbar]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "toolbar" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.tabindex": "pattern.tabindex()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-orientation": "pattern.orientation()", "attr.aria-activedescendant": "pattern.activedescendant()" }, classAttribute: "cdk-toolbar" }, exportAs: ["cdkToolbar"], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkToolbar, isStandalone: true, selector: "[cdkToolbar]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "toolbar" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.tabindex": "pattern.tabindex()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-orientation": "pattern.orientation()" }, classAttribute: "cdk-toolbar" }, exportAs: ["cdkToolbar"], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkToolbar, decorators: [{
             type: Directive,
@@ -104,7 +110,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", 
                         '[attr.tabindex]': 'pattern.tabindex()',
                         '[attr.aria-disabled]': 'pattern.disabled()',
                         '[attr.aria-orientation]': 'pattern.orientation()',
-                        '[attr.aria-activedescendant]': 'pattern.activedescendant()',
                         '(keydown)': 'pattern.onKeydown($event)',
                         '(pointerdown)': 'pattern.onPointerdown($event)',
                         '(focusin)': 'onFocus()',
@@ -127,18 +132,19 @@ class CdkToolbarWidget {
     /** A unique identifier for the widget. */
     id = computed(() => this._generatedId, ...(ngDevMode ? [{ debugName: "id" }] : []));
     /** The parent Toolbar UIPattern. */
-    parentToolbar = computed(() => this._cdkToolbar.pattern, ...(ngDevMode ? [{ debugName: "parentToolbar" }] : []));
+    toolbar = computed(() => this._cdkToolbar.pattern, ...(ngDevMode ? [{ debugName: "toolbar" }] : []));
     /** A reference to the widget element to be focused on navigation. */
     element = computed(() => this._elementRef.nativeElement, ...(ngDevMode ? [{ debugName: "element" }] : []));
     /** Whether the widget is disabled. */
     disabled = input(false, ...(ngDevMode ? [{ debugName: "disabled", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
+    /** Whether the widget is 'hard' disabled, which is different from `aria-disabled`. A hard disabled widget cannot receive focus. */
     hardDisabled = computed(() => this.pattern.disabled() && this._cdkToolbar.skipDisabled(), ...(ngDevMode ? [{ debugName: "hardDisabled" }] : []));
+    /** The ToolbarWidget UIPattern. */
     pattern = new ToolbarWidgetPattern({
         ...this,
         id: this.id,
         element: this.element,
         disabled: computed(() => this._cdkToolbar.disabled() || this.disabled()),
-        parentToolbar: this.parentToolbar,
     });
     ngOnInit() {
         this._cdkToolbar.register(this);
@@ -147,7 +153,7 @@ class CdkToolbarWidget {
         this._cdkToolbar.unregister(this);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkToolbarWidget, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkToolbarWidget, isStandalone: true, selector: "[cdkToolbarWidget]", inputs: { disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "button" }, properties: { "class.cdk-active": "pattern.active()", "attr.tabindex": "pattern.tabindex()", "attr.inert": "hardDisabled() ? true : null", "attr.disabled": "hardDisabled() ? true : null", "attr.aria-disabled": "pattern.disabled()", "id": "pattern.id()" }, classAttribute: "cdk-toolbar-widget" }, exportAs: ["cdkToolbarWidget"], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkToolbarWidget, isStandalone: true, selector: "[cdkToolbarWidget]", inputs: { disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null } }, host: { properties: { "class.cdk-active": "pattern.active()", "attr.tabindex": "pattern.tabindex()", "attr.inert": "hardDisabled() ? true : null", "attr.disabled": "hardDisabled() ? true : null", "attr.aria-disabled": "pattern.disabled()", "id": "pattern.id()" }, classAttribute: "cdk-toolbar-widget" }, exportAs: ["cdkToolbarWidget"], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkToolbarWidget, decorators: [{
             type: Directive,
@@ -155,7 +161,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", 
                     selector: '[cdkToolbarWidget]',
                     exportAs: 'cdkToolbarWidget',
                     host: {
-                        'role': 'button',
                         'class': 'cdk-toolbar-widget',
                         '[class.cdk-active]': 'pattern.active()',
                         '[attr.tabindex]': 'pattern.tabindex()',
@@ -166,6 +171,50 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", 
                     },
                 }]
         }] });
+/**
+ * A directive that groups toolbar widgets, used for more complex widgets like radio groups that
+ * have their own internal navigation.
+ */
+class CdkToolbarWidgetGroup {
+    /** A reference to the widget element. */
+    _elementRef = inject(ElementRef);
+    /** The parent CdkToolbar. */
+    _cdkToolbar = inject(CdkToolbar, { optional: true });
+    /** A unique identifier for the widget. */
+    _generatedId = inject(_IdGenerator).getId('cdk-toolbar-widget-group-');
+    /** A unique identifier for the widget. */
+    id = computed(() => this._generatedId, ...(ngDevMode ? [{ debugName: "id" }] : []));
+    /** The parent Toolbar UIPattern. */
+    toolbar = computed(() => this._cdkToolbar?.pattern, ...(ngDevMode ? [{ debugName: "toolbar" }] : []));
+    /** A reference to the widget element to be focused on navigation. */
+    element = computed(() => this._elementRef.nativeElement, ...(ngDevMode ? [{ debugName: "element" }] : []));
+    /** Whether the widget group is disabled. */
+    disabled = input(false, ...(ngDevMode ? [{ debugName: "disabled", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
+    /** The controls that can be performed on the widget group. */
+    controls = signal(undefined, ...(ngDevMode ? [{ debugName: "controls" }] : []));
+    /** The ToolbarWidgetGroup UIPattern. */
+    pattern = new ToolbarWidgetGroupPattern({
+        ...this,
+        id: this.id,
+        element: this.element,
+    });
+    ngOnInit() {
+        this._cdkToolbar?.register(this);
+    }
+    ngOnDestroy() {
+        this._cdkToolbar?.unregister(this);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkToolbarWidgetGroup, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkToolbarWidgetGroup, isStandalone: true, inputs: { disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null } }, host: { properties: { "class.cdk-toolbar-widget-group": "!!toolbar()" } }, ngImport: i0 });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkToolbarWidgetGroup, decorators: [{
+            type: Directive,
+            args: [{
+                    host: {
+                        '[class.cdk-toolbar-widget-group]': '!!toolbar()',
+                    },
+                }]
+        }] });
 
-export { CdkToolbar, CdkToolbarWidget };
+export { CdkToolbar, CdkToolbarWidget, CdkToolbarWidgetGroup };
 //# sourceMappingURL=toolbar.mjs.map

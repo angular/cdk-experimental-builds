@@ -220,9 +220,17 @@ class ListNavigation {
     next() {
         return this._advance(1);
     }
+    /** Peeks the next item in the list. */
+    peekNext() {
+        return this._peek(1);
+    }
     /** Navigates to the previous item in the list. */
     prev() {
         return this._advance(-1);
+    }
+    /** Peeks the previous item in the list. */
+    peekPrev() {
+        return this._peek(-1);
     }
     /** Navigates to the first item in the list. */
     first() {
@@ -241,6 +249,11 @@ class ListNavigation {
     }
     /** Advances to the next or previous focusable item in the list based on the given delta. */
     _advance(delta) {
+        const item = this._peek(delta);
+        return item ? this.goto(item) : false;
+    }
+    /** Peeks the next or previous focusable item in the list based on the given delta. */
+    _peek(delta) {
         const items = this.inputs.items();
         const itemCount = items.length;
         const startIndex = this.inputs.focusManager.activeIndex();
@@ -250,10 +263,10 @@ class ListNavigation {
         // when the index goes out of bounds.
         for (let i = step(startIndex); i !== startIndex && i < itemCount && i >= 0; i = step(i)) {
             if (this.inputs.focusManager.isFocusable(items[i])) {
-                return this.goto(items[i]);
+                return items[i];
             }
         }
-        return false;
+        return;
     }
 }
 

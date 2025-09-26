@@ -1,6 +1,7 @@
 import * as _angular_core from '@angular/core';
-import { SignalLike, KeyboardEventManager, PointerEventManager } from './pointer-event-manager.d.js';
+import { KeyboardEventManager, PointerEventManager } from './pointer-event-manager.d.js';
 import { ExpansionItem, ExpansionControl, ListExpansionInputs, ListExpansion } from './expansion.d.js';
+import { SignalLike } from './list-navigation.d.js';
 import { ListItem, ListInputs, List } from './list.d.js';
 
 /** Represents the required inputs for the label control. */

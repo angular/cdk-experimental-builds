@@ -1,99 +1,140 @@
 import * as _angular_core from '@angular/core';
-import { SignalLike, KeyboardEventManager, PointerEventManager } from './pointer-event-manager.d.js';
-import { ListItem, List, ListInputs } from './list.d.js';
+import { SignalLike } from './list-navigation.d.js';
+import { ListItem, ListInputs, List } from './list.d.js';
 
-/**
- * Represents the properties exposed by a toolbar widget that need to be accessed by a radio group.
- * This exists to avoid circular dependency errors between the toolbar and radio button.
- */
-type ToolbarWidgetLike = {
-    id: SignalLike<string>;
-    index: SignalLike<number>;
-    element: SignalLike<HTMLElement>;
-    disabled: SignalLike<boolean>;
-    searchTerm: SignalLike<any>;
-    value: SignalLike<any>;
-};
-/**
- * Represents the properties exposed by a radio group that need to be accessed by a radio button.
- * This exists to avoid circular dependency errors between the radio group and radio button.
- */
-interface RadioGroupLike<V> {
-    /** The list behavior for the radio group. */
-    listBehavior: List<RadioButtonPattern<V> | ToolbarWidgetLike, V>;
-    /** Whether the list is readonly */
-    readonly: SignalLike<boolean>;
-    /** Whether the radio group is disabled. */
-    disabled: SignalLike<boolean>;
+/** Represents the required inputs for a toolbar widget in a toolbar. */
+interface ToolbarWidgetInputs<V> extends Omit<ListItem<V>, 'searchTerm' | 'value' | 'index'> {
+    /** A reference to the parent toolbar. */
+    toolbar: SignalLike<ToolbarPattern<V>>;
 }
-/** Represents the required inputs for a radio button in a radio group. */
-interface RadioButtonInputs<V> extends Omit<ListItem<V>, 'searchTerm' | 'index'> {
-    /** A reference to the parent radio group. */
-    group: SignalLike<RadioGroupLike<V> | undefined>;
-}
-/** Represents a radio button within a radio group. */
-declare class RadioButtonPattern<V> {
-    readonly inputs: RadioButtonInputs<V>;
-    /** A unique identifier for the radio button. */
-    id: SignalLike<string>;
-    /** The value associated with the radio button. */
-    value: SignalLike<V>;
-    /** The position of the radio button within the group. */
-    index: SignalLike<number>;
-    /** Whether the radio button is currently the active one (focused). */
-    active: _angular_core.Signal<boolean>;
-    /** Whether the radio button is selected. */
-    selected: SignalLike<boolean>;
-    /** Whether the radio button is disabled. */
-    disabled: SignalLike<boolean>;
-    /** A reference to the parent radio group. */
-    group: SignalLike<RadioGroupLike<V> | undefined>;
-    /** The tabindex of the radio button. */
-    tabindex: _angular_core.Signal<0 | -1 | undefined>;
-    /** The HTML element associated with the radio button. */
-    element: SignalLike<HTMLElement>;
-    /** The search term for typeahead. */
+declare class ToolbarWidgetPattern<V> implements ListItem<V> {
+    readonly inputs: ToolbarWidgetInputs<V>;
+    /** A unique identifier for the widget. */
+    readonly id: SignalLike<string>;
+    /** The html element that should receive focus. */
+    readonly element: SignalLike<HTMLElement>;
+    /** Whether the widget is disabled. */
+    readonly disabled: SignalLike<boolean>;
+    /** A reference to the parent toolbar. */
+    readonly toolbar: SignalLike<ToolbarPattern<V>>;
+    /** The tabindex of the widgdet. */
+    readonly tabindex: _angular_core.Signal<0 | -1>;
+    /** The text used by the typeahead search. */
     readonly searchTerm: () => string;
-    constructor(inputs: RadioButtonInputs<V>);
+    /** The value associated with the widget. */
+    readonly value: () => V;
+    /** The position of the widget within the toolbar. */
+    readonly index: _angular_core.Signal<number>;
+    /** Whether the widget is currently the active one (focused). */
+    readonly active: _angular_core.Signal<boolean>;
+    constructor(inputs: ToolbarWidgetInputs<V>);
+}
+
+/** An interface that allows sub patterns to expose the necessary controls for the toolbar. */
+interface ToolbarWidgetGroupControls {
+    /** Whether the widget group is currently on the first item. */
+    isOnFirstItem(): boolean;
+    /** Whether the widget group is currently on the last item. */
+    isOnLastItem(): boolean;
+    /** Navigates to the next widget in the group. */
+    next(wrap: boolean): void;
+    /** Navigates to the previous widget in the group. */
+    prev(wrap: boolean): void;
+    /** Navigates to the first widget in the group. */
+    first(): void;
+    /** Navigates to the last widget in the group. */
+    last(): void;
+    /** Removes focus from the widget group. */
+    unfocus(): void;
+    /** Triggers the action of the currently active widget in the group. */
+    trigger(): void;
+    /** Navigates to the widget targeted by a pointer event. */
+    goto(event: PointerEvent): void;
+    /** Sets the widget group to its default initial state. */
+    setDefaultState(): void;
+}
+/** Represents the required inputs for a toolbar widget group. */
+interface ToolbarWidgetGroupInputs<V> extends Omit<ListItem<V>, 'searchTerm' | 'value' | 'index'> {
+    /** A reference to the parent toolbar. */
+    toolbar: SignalLike<ToolbarPattern<V> | undefined>;
+    /** The controls for the sub patterns associated with the toolbar. */
+    controls: SignalLike<ToolbarWidgetGroupControls | undefined>;
+}
+/** A group of widgets within a toolbar that provides nested navigation. */
+declare class ToolbarWidgetGroupPattern<V> implements ListItem<V> {
+    readonly inputs: ToolbarWidgetGroupInputs<V>;
+    /** A unique identifier for the widget. */
+    readonly id: SignalLike<string>;
+    /** The html element that should receive focus. */
+    readonly element: SignalLike<HTMLElement>;
+    /** Whether the widget is disabled. */
+    readonly disabled: SignalLike<boolean>;
+    /** A reference to the parent toolbar. */
+    readonly toolbar: SignalLike<ToolbarPattern<V> | undefined>;
+    /** The text used by the typeahead search. */
+    readonly searchTerm: () => string;
+    /** The value associated with the widget. */
+    readonly value: () => V;
+    /** The position of the widget within the toolbar. */
+    readonly index: _angular_core.Signal<number>;
+    /** The actions that can be performed on the widget group. */
+    readonly controls: SignalLike<ToolbarWidgetGroupControls>;
+    /** Default toolbar widget group controls when no controls provided. */
+    private readonly _defaultControls;
+    constructor(inputs: ToolbarWidgetGroupInputs<V>);
 }
 
 /** Represents the required inputs for a toolbar. */
-type ToolbarInputs<V> = Omit<ListInputs<ToolbarWidgetPattern | RadioButtonPattern<V>, V>, 'multi' | 'typeaheadDelay' | 'value' | 'selectionMode'>;
+type ToolbarInputs<V> = Omit<ListInputs<ToolbarWidgetPattern<V> | ToolbarWidgetGroupPattern<V>, V>, 'multi' | 'typeaheadDelay' | 'value' | 'selectionMode' | 'focusMode'> & {
+    /** A function that returns the toolbar item associated with a given element. */
+    getItem: (e: Element) => ToolbarWidgetPattern<V> | ToolbarWidgetGroupPattern<V> | undefined;
+};
 /** Controls the state of a toolbar. */
 declare class ToolbarPattern<V> {
     readonly inputs: ToolbarInputs<V>;
     /** The list behavior for the toolbar. */
-    listBehavior: List<ToolbarWidgetPattern | RadioButtonPattern<V>, V>;
+    readonly listBehavior: List<ToolbarWidgetPattern<V> | ToolbarWidgetGroupPattern<V>, V>;
     /** Whether the tablist is vertically or horizontally oriented. */
     readonly orientation: SignalLike<'vertical' | 'horizontal'>;
+    /** Whether disabled items in the group should be skipped when navigating. */
+    readonly skipDisabled: SignalLike<boolean>;
     /** Whether the toolbar is disabled. */
-    disabled: _angular_core.Signal<boolean>;
+    readonly disabled: _angular_core.Signal<boolean>;
     /** The tabindex of the toolbar (if using activedescendant). */
-    tabindex: _angular_core.Signal<0 | -1>;
+    readonly tabindex: _angular_core.Signal<0 | -1>;
     /** The id of the current active widget (if using activedescendant). */
-    activedescendant: _angular_core.Signal<string | undefined>;
+    readonly activedescendant: _angular_core.Signal<string | undefined>;
     /** The key used to navigate to the previous widget. */
-    prevKey: _angular_core.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
+    private readonly _prevKey;
     /** The key used to navigate to the next widget. */
-    nextKey: _angular_core.Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
-    /** The alternate key used to navigate to the previous widget */
-    altPrevKey: _angular_core.Signal<"ArrowUp" | "ArrowRight" | "ArrowLeft">;
+    private readonly _nextKey;
+    /** The alternate key used to navigate to the previous widget. */
+    private readonly _altPrevKey;
     /** The alternate key used to navigate to the next widget. */
-    altNextKey: _angular_core.Signal<"ArrowRight" | "ArrowLeft" | "ArrowDown">;
+    private readonly _altNextKey;
     /** The keydown event manager for the toolbar. */
-    keydown: _angular_core.Signal<KeyboardEventManager<KeyboardEvent>>;
-    selectRadioButton(): void;
+    private readonly _keydown;
     /** The pointerdown event manager for the toolbar. */
-    pointerdown: _angular_core.Signal<PointerEventManager<PointerEvent>>;
-    /** Navigates to the widget associated with the given pointer event. */
-    goto(event: PointerEvent): void;
+    private readonly _pointerdown;
+    /** Navigates to the next widget in the toolbar. */
+    private _next;
+    /** Navigates to the previous widget in the toolbar. */
+    private _prev;
+    private _groupNext;
+    private _groupPrev;
+    /** Triggers the action of the currently active widget. */
+    private _trigger;
+    /** Navigates to the first widget in the toolbar. */
+    private _first;
+    /** Navigates to the last widget in the toolbar. */
+    private _last;
+    /** Navigates to the widget targeted by a pointer event. */
+    private _goto;
+    constructor(inputs: ToolbarInputs<V>);
     /** Handles keydown events for the toolbar. */
     onKeydown(event: KeyboardEvent): void;
     /** Handles pointerdown events for the toolbar. */
     onPointerdown(event: PointerEvent): void;
-    /** Finds the Toolbar Widget associated with a pointer event target. */
-    private _getItem;
-    constructor(inputs: ToolbarInputs<V>);
     /**
      * Sets the toolbar to its default initial state.
      *
@@ -104,33 +145,6 @@ declare class ToolbarPattern<V> {
     /** Validates the state of the toolbar and returns a list of accessibility violations. */
     validate(): string[];
 }
-/** Represents the required inputs for a toolbar widget in a toolbar. */
-interface ToolbarWidgetInputs extends Omit<ListItem<any>, 'searchTerm' | 'value' | 'index'> {
-    /** A reference to the parent toolbar. */
-    parentToolbar: SignalLike<ToolbarPattern<null>>;
-}
-declare class ToolbarWidgetPattern {
-    readonly inputs: ToolbarWidgetInputs;
-    /** A unique identifier for the widget. */
-    id: SignalLike<string>;
-    /** The html element that should receive focus. */
-    readonly element: SignalLike<HTMLElement>;
-    /** Whether the widget is disabled. */
-    disabled: SignalLike<boolean>;
-    /** A reference to the parent toolbar. */
-    parentToolbar: SignalLike<ToolbarPattern<null> | undefined>;
-    /** The tabindex of the widgdet. */
-    tabindex: _angular_core.Signal<0 | -1>;
-    /** The text used by the typeahead search. */
-    readonly searchTerm: () => string;
-    /** The value associated with the widget. */
-    readonly value: () => any;
-    /** The position of the widget within the toolbar. */
-    index: _angular_core.Signal<number>;
-    /** Whether the widget is currently the active one (focused). */
-    active: _angular_core.Signal<boolean>;
-    constructor(inputs: ToolbarWidgetInputs);
-}
 
-export { RadioButtonPattern, ToolbarPattern, ToolbarWidgetPattern };
-export type { RadioButtonInputs, ToolbarInputs, ToolbarWidgetInputs };
+export { ToolbarPattern, ToolbarWidgetGroupPattern, ToolbarWidgetPattern };
+export type { ToolbarInputs, ToolbarWidgetGroupControls, ToolbarWidgetGroupInputs, ToolbarWidgetInputs };

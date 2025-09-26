@@ -1,6 +1,7 @@
 import * as _angular_core from '@angular/core';
-import { SignalLike, KeyboardEventManager, PointerEventManager } from './pointer-event-manager.d.js';
+import { SignalLike } from './list-navigation.d.js';
 import { ListItem, ListInputs, List } from './list.d.js';
+import { KeyboardEventManager, PointerEventManager } from './pointer-event-manager.d.js';
 
 /**
  * Represents the properties exposed by a listbox that need to be accessed by an option.

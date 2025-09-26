@@ -4,6 +4,7 @@ import { WritableSignal } from '@angular/core';
 import { AccordionTriggerPattern, AccordionPanelPattern, AccordionGroupPattern } from '../accordion.d.js';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
 import '../pointer-event-manager.d.js';
+import '../list-navigation.d.js';
 import '../expansion.d.js';
 
 /**

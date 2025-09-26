@@ -4,6 +4,7 @@ import * as _angular_cdk_bidi from '@angular/cdk/bidi';
 import { TabPattern, TabPanelPattern, TabListPattern } from '../tabs.d.js';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
 import '../pointer-event-manager.d.js';
+import '../list-navigation.d.js';
 import '../expansion.d.js';
 import '../list.d.js';
 

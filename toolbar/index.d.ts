@@ -1,18 +1,10 @@
 import * as _angular_core from '@angular/core';
 import { Signal, OnInit, OnDestroy } from '@angular/core';
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
-import { RadioButtonPattern, ToolbarWidgetPattern, ToolbarPattern } from '../toolbar.d.js';
-import '../pointer-event-manager.d.js';
+import { ToolbarWidgetPattern, ToolbarWidgetGroupPattern, ToolbarPattern, ToolbarWidgetGroupControls } from '../toolbar.d.js';
+import '../list-navigation.d.js';
 import '../list.d.js';
 
-/** Interface for a radio button that can be used with a toolbar. Based on radio-button in ui-patterns */
-interface CdkRadioButtonInterface<V> {
-    /** The HTML element associated with the radio button. */
-    element: Signal<HTMLElement>;
-    /** Whether the radio button is disabled. */
-    disabled: Signal<boolean>;
-    pattern: RadioButtonPattern<V>;
-}
 /**
  * A toolbar widget container.
  *
@@ -37,25 +29,27 @@ declare class CdkToolbar<V> {
     /** The CdkTabList nested inside of the container. */
     private readonly _cdkWidgets;
     /** A signal wrapper for directionality. */
-    textDirection: _angular_core.WritableSignal<_angular_cdk_bidi.Direction>;
+    readonly textDirection: _angular_core.WritableSignal<_angular_cdk_bidi.Direction>;
     /** Sorted UIPatterns of the child widgets */
-    items: Signal<(RadioButtonPattern<V> | ToolbarWidgetPattern)[]>;
+    readonly items: Signal<(ToolbarWidgetPattern<V> | ToolbarWidgetGroupPattern<V>)[]>;
     /** Whether the toolbar is vertically or horizontally oriented. */
-    orientation: _angular_core.InputSignal<"vertical" | "horizontal">;
+    readonly orientation: _angular_core.InputSignal<"vertical" | "horizontal">;
     /** Whether disabled items in the group should be skipped when navigating. */
-    skipDisabled: _angular_core.InputSignalWithTransform<boolean, unknown>;
+    readonly skipDisabled: _angular_core.InputSignalWithTransform<boolean, unknown>;
     /** Whether the toolbar is disabled. */
-    disabled: _angular_core.InputSignalWithTransform<boolean, unknown>;
+    readonly disabled: _angular_core.InputSignalWithTransform<boolean, unknown>;
     /** Whether focus should wrap when navigating. */
     readonly wrap: _angular_core.InputSignalWithTransform<boolean, unknown>;
     /** The toolbar UIPattern. */
-    pattern: ToolbarPattern<V>;
+    readonly pattern: ToolbarPattern<V>;
     /** Whether the toolbar has received focus yet. */
     private _hasFocused;
-    onFocus(): void;
     constructor();
-    register(widget: CdkRadioButtonInterface<V> | CdkToolbarWidget): void;
-    unregister(widget: CdkRadioButtonInterface<V> | CdkToolbarWidget): void;
+    onFocus(): void;
+    register(widget: CdkToolbarWidget<V> | CdkToolbarWidgetGroup<V>): void;
+    unregister(widget: CdkToolbarWidget<V> | CdkToolbarWidgetGroup<V>): void;
+    /** Finds the toolbar item associated with a given element. */
+    private _getItem;
     static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkToolbar<any>, never>;
     static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkToolbar<any>, "[cdkToolbar]", ["cdkToolbar"], { "orientation": { "alias": "orientation"; "required": false; "isSignal": true; }; "skipDisabled": { "alias": "skipDisabled"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "wrap": { "alias": "wrap"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
 }
@@ -65,7 +59,7 @@ declare class CdkToolbar<V> {
  * A widget is anything that is within a toolbar. It should be applied to any native HTML element
  * that has the purpose of acting as a widget navigatable within a toolbar.
  */
-declare class CdkToolbarWidget implements OnInit, OnDestroy {
+declare class CdkToolbarWidget<V> implements OnInit, OnDestroy {
     /** A reference to the widget element. */
     private readonly _elementRef;
     /** The parent CdkToolbar. */
@@ -73,19 +67,49 @@ declare class CdkToolbarWidget implements OnInit, OnDestroy {
     /** A unique identifier for the widget. */
     private readonly _generatedId;
     /** A unique identifier for the widget. */
-    protected id: Signal<string>;
+    readonly id: Signal<string>;
     /** The parent Toolbar UIPattern. */
-    protected parentToolbar: Signal<ToolbarPattern<any>>;
+    readonly toolbar: Signal<ToolbarPattern<any>>;
     /** A reference to the widget element to be focused on navigation. */
-    element: Signal<any>;
+    readonly element: Signal<any>;
     /** Whether the widget is disabled. */
-    disabled: _angular_core.InputSignalWithTransform<boolean, unknown>;
+    readonly disabled: _angular_core.InputSignalWithTransform<boolean, unknown>;
+    /** Whether the widget is 'hard' disabled, which is different from `aria-disabled`. A hard disabled widget cannot receive focus. */
     readonly hardDisabled: Signal<boolean>;
-    pattern: ToolbarWidgetPattern;
+    /** The ToolbarWidget UIPattern. */
+    readonly pattern: ToolbarWidgetPattern<V>;
     ngOnInit(): void;
     ngOnDestroy(): void;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkToolbarWidget, never>;
-    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkToolbarWidget, "[cdkToolbarWidget]", ["cdkToolbarWidget"], { "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkToolbarWidget<any>, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkToolbarWidget<any>, "[cdkToolbarWidget]", ["cdkToolbarWidget"], { "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
+}
+/**
+ * A directive that groups toolbar widgets, used for more complex widgets like radio groups that
+ * have their own internal navigation.
+ */
+declare class CdkToolbarWidgetGroup<V> implements OnInit, OnDestroy {
+    /** A reference to the widget element. */
+    private readonly _elementRef;
+    /** The parent CdkToolbar. */
+    private readonly _cdkToolbar;
+    /** A unique identifier for the widget. */
+    private readonly _generatedId;
+    /** A unique identifier for the widget. */
+    readonly id: Signal<string>;
+    /** The parent Toolbar UIPattern. */
+    readonly toolbar: Signal<ToolbarPattern<any> | undefined>;
+    /** A reference to the widget element to be focused on navigation. */
+    readonly element: Signal<any>;
+    /** Whether the widget group is disabled. */
+    readonly disabled: _angular_core.InputSignalWithTransform<boolean, unknown>;
+    /** The controls that can be performed on the widget group. */
+    readonly controls: _angular_core.WritableSignal<ToolbarWidgetGroupControls | undefined>;
+    /** The ToolbarWidgetGroup UIPattern. */
+    readonly pattern: ToolbarWidgetGroupPattern<V>;
+    ngOnInit(): void;
+    ngOnDestroy(): void;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkToolbarWidgetGroup<any>, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkToolbarWidgetGroup<any>, never, never, { "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
 }
 
-export { CdkToolbar, CdkToolbarWidget };
+export { CdkToolbar, CdkToolbarWidget, CdkToolbarWidgetGroup };
