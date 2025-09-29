@@ -4,9 +4,10 @@ import { _IdGenerator } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
 import { DeferredContentAware, DeferredContent } from '@angular/cdk-experimental/deferred-content';
-import { AccordionPanelPattern, AccordionTriggerPattern, AccordionGroupPattern } from './accordion-BaOrFTZM.mjs';
-import './expansion-B3kmlWCY.mjs';
-import './list-navigation-DFutf3ha.mjs';
+import { AccordionPanelPattern, AccordionTriggerPattern, AccordionGroupPattern } from './accordion-B0bXcxhE.mjs';
+import './expansion-BRQMRoGR.mjs';
+import './list-navigation-CPkqnU1i.mjs';
+import './pointer-event-manager-B6GE9jDm.mjs';
 
 /**
  * Represents the content panel of an accordion item. It is controlled by an

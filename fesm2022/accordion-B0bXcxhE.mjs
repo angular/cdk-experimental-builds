@@ -1,6 +1,7 @@
 import { computed } from '@angular/core';
-import { ListExpansion, ExpansionControl } from './expansion-B3kmlWCY.mjs';
-import { ListFocus, ListNavigation, KeyboardEventManager, PointerEventManager } from './list-navigation-DFutf3ha.mjs';
+import { ListExpansion, ExpansionControl } from './expansion-BRQMRoGR.mjs';
+import { ListFocus, ListNavigation } from './list-navigation-CPkqnU1i.mjs';
+import { KeyboardEventManager, PointerEventManager } from './pointer-event-manager-B6GE9jDm.mjs';
 
 const focusMode = () => 'roving';
 /** A pattern controls the nested Accordions. */
@@ -149,4 +150,4 @@ class AccordionPanelPattern {
 }
 
 export { AccordionGroupPattern, AccordionPanelPattern, AccordionTriggerPattern };
-//# sourceMappingURL=accordion-BaOrFTZM.mjs.map
+//# sourceMappingURL=accordion-B0bXcxhE.mjs.map

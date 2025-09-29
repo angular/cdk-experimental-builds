@@ -1,5 +1,5 @@
 import { signal, computed } from '@angular/core';
-import { ListFocus, ListNavigation } from './list-navigation-DFutf3ha.mjs';
+import { ListFocus, ListNavigation } from './list-navigation-CPkqnU1i.mjs';
 
 /** Controls selection for a list of items. */
 class ListSelection {
@@ -16,7 +16,7 @@ class ListSelection {
     /** Selects the item at the current active index. */
     select(item, opts = { anchor: true }) {
         item = item ?? this.inputs.focusManager.inputs.activeItem();
-        if (item.disabled() || this.inputs.value().includes(item.value())) {
+        if (!item || item.disabled() || this.inputs.value().includes(item.value())) {
             return;
         }
         if (!this.inputs.multi()) {
@@ -282,6 +282,10 @@ class List {
     goto(item, opts) {
         this._navigate(opts, () => this.navigationBehavior.goto(item));
     }
+    /** Removes focus from the list. */
+    unfocus() {
+        this.inputs.activeItem.set(undefined);
+    }
     /** Marks the given index as the potential start of a range selection. */
     anchor(index) {
         this._anchorIndex.set(index);
@@ -295,8 +299,8 @@ class List {
         return this.typeaheadBehavior.isTyping();
     }
     /** Selects the currently active item in the list. */
-    select() {
-        this.selectionBehavior.select();
+    select(item) {
+        this.selectionBehavior.select(item);
     }
     /** Sets the selection to only the current active item. */
     selectOne() {
@@ -367,4 +371,4 @@ class List {
 }
 
 export { List };
-//# sourceMappingURL=list-DDPL6e4b.mjs.map
+//# sourceMappingURL=list-QKHHM4uh.mjs.map

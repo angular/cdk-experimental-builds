@@ -1,9 +1,12 @@
-import * as _angular_core from '@angular/core';
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
-import { OptionPattern, ListboxPattern } from './listbox.d-fLTfIr8M.js';
+import * as _angular_core from '@angular/core';
+import { OptionPattern, ListboxPattern } from './listbox.d-D0n-irer.js';
+import { CdkComboboxPopup } from './combobox.js';
 import './list-navigation.d-v7LRaIQt.js';
-import './list.d-B9T5bCJD.js';
+import './list.d-CgeCwpQa.js';
 import './pointer-event-manager.d-DxLZK1bd.js';
+import './combobox.d-DU-Rmfjh.js';
+import '@angular/cdk-experimental/deferred-content';
 
 /**
  * A listbox container.
@@ -20,6 +23,12 @@ import './pointer-event-manager.d-DxLZK1bd.js';
  * ```
  */
 declare class CdkListbox<V> {
+    /** A unique identifier for the listbox. */
+    private readonly _generatedId;
+    /** A unique identifier for the listbox. */
+    protected id: _angular_core.Signal<string>;
+    /** A reference to the parent combobox popup, if one exists. */
+    private readonly _popup;
     /** A reference to the listbox element. */
     private readonly _elementRef;
     /** The directionality (LTR / RTL) context for the application (or a subtree of it). */
@@ -57,7 +66,7 @@ declare class CdkListbox<V> {
     constructor();
     onFocus(): void;
     static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkListbox<any>, never>;
-    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "orientation": { "alias": "orientation"; "required": false; "isSignal": true; }; "multi": { "alias": "multi"; "required": false; "isSignal": true; }; "wrap": { "alias": "wrap"; "required": false; "isSignal": true; }; "skipDisabled": { "alias": "skipDisabled"; "required": false; "isSignal": true; }; "focusMode": { "alias": "focusMode"; "required": false; "isSignal": true; }; "selectionMode": { "alias": "selectionMode"; "required": false; "isSignal": true; }; "typeaheadDelay": { "alias": "typeaheadDelay"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "readonly": { "alias": "readonly"; "required": false; "isSignal": true; }; "value": { "alias": "value"; "required": false; "isSignal": true; }; }, { "value": "valueChange"; }, ["_cdkOptions"], never, true, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkListbox<any>, "[cdkListbox]", ["cdkListbox"], { "orientation": { "alias": "orientation"; "required": false; "isSignal": true; }; "multi": { "alias": "multi"; "required": false; "isSignal": true; }; "wrap": { "alias": "wrap"; "required": false; "isSignal": true; }; "skipDisabled": { "alias": "skipDisabled"; "required": false; "isSignal": true; }; "focusMode": { "alias": "focusMode"; "required": false; "isSignal": true; }; "selectionMode": { "alias": "selectionMode"; "required": false; "isSignal": true; }; "typeaheadDelay": { "alias": "typeaheadDelay"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "readonly": { "alias": "readonly"; "required": false; "isSignal": true; }; "value": { "alias": "value"; "required": false; "isSignal": true; }; }, { "value": "valueChange"; }, ["_cdkOptions"], never, true, [{ directive: typeof CdkComboboxPopup; inputs: {}; outputs: {}; }]>;
 }
 /** A selectable option in a CdkListbox. */
 declare class CdkOption<V> {

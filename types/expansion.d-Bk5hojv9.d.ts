@@ -27,7 +27,7 @@ declare class ExpansionControl {
     constructor(inputs: ExpansionItem & {
         expansionManager: ListExpansion;
     });
-    /** Requests the Expansopn manager to open this item. */
+    /** Requests the Expansion manager to open this item. */
     open(): void;
     /** Requests the Expansion manager to close this item. */
     close(): void;

@@ -16,7 +16,7 @@ class ExpansionControl {
         this.expandable = inputs.expandable;
         this.disabled = inputs.disabled;
     }
-    /** Requests the Expansopn manager to open this item. */
+    /** Requests the Expansion manager to open this item. */
     open() {
         this.inputs.expansionManager.open(this);
     }
@@ -84,4 +84,4 @@ class ListExpansion {
 }
 
 export { ExpansionControl, ListExpansion };
-//# sourceMappingURL=expansion-B3kmlWCY.mjs.map
+//# sourceMappingURL=expansion-BRQMRoGR.mjs.map

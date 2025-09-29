@@ -167,6 +167,8 @@ declare class List<T extends ListItem<V>, V> {
     prev(opts?: SelectOptions): void;
     /** Navigates to the given item in the list. */
     goto(item: T, opts?: SelectOptions): void;
+    /** Removes focus from the list. */
+    unfocus(): void;
     /** Marks the given index as the potential start of a range selection. */
     anchor(index: number): void;
     /** Handles typeahead search navigation for the list. */
@@ -174,7 +176,7 @@ declare class List<T extends ListItem<V>, V> {
     /** Checks if the list is currently typing for typeahead search. */
     isTyping(): boolean;
     /** Selects the currently active item in the list. */
-    select(): void;
+    select(item?: T): void;
     /** Sets the selection to only the current active item. */
     selectOne(): void;
     /** Deselects the currently active item in the list. */

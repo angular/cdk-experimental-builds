@@ -5,9 +5,9 @@ import * as _angular_core from '@angular/core';
  */
 declare class DeferredContentAware {
     readonly contentVisible: _angular_core.WritableSignal<boolean>;
-    readonly preserveContent: _angular_core.InputSignal<boolean>;
+    readonly preserveContent: _angular_core.ModelSignal<boolean>;
     static ɵfac: _angular_core.ɵɵFactoryDeclaration<DeferredContentAware, never>;
-    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<DeferredContentAware, never, never, { "preserveContent": { "alias": "preserveContent"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<DeferredContentAware, never, never, { "preserveContent": { "alias": "preserveContent"; "required": false; "isSignal": true; }; }, { "preserveContent": "preserveContentChange"; }, never, never, true, never>;
 }
 /**
  * DeferredContent loads/unloads the content based on the visibility.

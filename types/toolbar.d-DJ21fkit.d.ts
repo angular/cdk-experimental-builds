@@ -1,6 +1,6 @@
 import * as _angular_core from '@angular/core';
 import { SignalLike } from './list-navigation.d-v7LRaIQt.js';
-import { ListItem, ListInputs, List } from './list.d-B9T5bCJD.js';
+import { ListItem, ListInputs, List } from './list.d-CgeCwpQa.js';
 
 /** Represents the required inputs for a toolbar widget in a toolbar. */
 interface ToolbarWidgetInputs<V> extends Omit<ListItem<V>, 'searchTerm' | 'value' | 'index'> {

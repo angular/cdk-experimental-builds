@@ -1,14 +1,14 @@
 import * as i0 from '@angular/core';
-import { signal, input, Directive, inject, TemplateRef, ViewContainerRef, afterRenderEffect } from '@angular/core';
+import { signal, model, Directive, inject, TemplateRef, ViewContainerRef, afterRenderEffect } from '@angular/core';
 
 /**
  * A container directive controls the visibility of its content.
  */
 class DeferredContentAware {
     contentVisible = signal(false, ...(ngDevMode ? [{ debugName: "contentVisible" }] : []));
-    preserveContent = input(false, ...(ngDevMode ? [{ debugName: "preserveContent" }] : []));
+    preserveContent = model(false, ...(ngDevMode ? [{ debugName: "preserveContent" }] : []));
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: DeferredContentAware, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: DeferredContentAware, isStandalone: true, inputs: { preserveContent: { classPropertyName: "preserveContent", publicName: "preserveContent", isSignal: true, isRequired: false, transformFunction: null } }, ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: DeferredContentAware, isStandalone: true, inputs: { preserveContent: { classPropertyName: "preserveContent", publicName: "preserveContent", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { preserveContent: "preserveContentChange" }, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: DeferredContentAware, decorators: [{
             type: Directive

@@ -1,339 +1,16 @@
 import * as i0 from '@angular/core';
-import { computed, signal, inject, ElementRef, input, booleanAttribute, model, afterRenderEffect, Directive } from '@angular/core';
+import { inject, computed, ElementRef, signal, input, booleanAttribute, model, afterRenderEffect, untracked, Directive } from '@angular/core';
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
-import * as i1 from '@angular/cdk-experimental/deferred-content';
+import * as i1$1 from '@angular/cdk-experimental/deferred-content';
 import { DeferredContentAware, DeferredContent } from '@angular/cdk-experimental/deferred-content';
-import { List } from './list-DDPL6e4b.mjs';
-import { ExpansionControl, ListExpansion } from './expansion-B3kmlWCY.mjs';
-import { Modifier, KeyboardEventManager, PointerEventManager } from './list-navigation-DFutf3ha.mjs';
-
-/**
- * Represents an item in a Tree.
- */
-class TreeItemPattern {
-    inputs;
-    /** The position of this item among its siblings. */
-    index = computed(() => this.tree().visibleItems().indexOf(this));
-    /** The unique identifier used by the expansion behavior. */
-    expansionId;
-    /** Controls expansion for child items. */
-    expansionManager;
-    /** Controls expansion for this item. */
-    expansion;
-    /** Whether the item is expandable. It's expandable if children item exist. */
-    expandable;
-    /** The level of the current item in a tree. */
-    level = computed(() => this.parent().level() + 1);
-    /** Whether this item is currently expanded. */
-    expanded = computed(() => this.expansion.isExpanded());
-    /** Whether this item is visible. */
-    visible = computed(() => this.parent().expanded());
-    /** The number of items under the same parent at the same level. */
-    setsize = computed(() => this.parent().children().length);
-    /** The position of this item among its siblings (1-based). */
-    posinset = computed(() => this.parent().children().indexOf(this) + 1);
-    /** Whether the item is active. */
-    active = computed(() => this.tree().activeItem() === this);
-    /** The tabindex of the item. */
-    tabindex = computed(() => this.tree().listBehavior.getItemTabindex(this));
-    /** Whether the item is selected. */
-    selected = computed(() => {
-        if (this.tree().nav()) {
-            return undefined;
-        }
-        return this.tree().value().includes(this.value());
-    });
-    /** The current type of this item. */
-    current = computed(() => {
-        if (!this.tree().nav()) {
-            return undefined;
-        }
-        return this.tree().value().includes(this.value()) ? this.tree().currentType() : undefined;
-    });
-    constructor(inputs) {
-        this.inputs = inputs;
-        this.id = inputs.id;
-        this.value = inputs.value;
-        this.element = inputs.element;
-        this.disabled = inputs.disabled;
-        this.searchTerm = inputs.searchTerm;
-        this.expansionId = inputs.id;
-        this.tree = inputs.tree;
-        this.parent = inputs.parent;
-        this.children = inputs.children;
-        this.expandable = inputs.hasChildren;
-        this.expansion = new ExpansionControl({
-            ...inputs,
-            expandable: this.expandable,
-            expansionId: this.expansionId,
-            expansionManager: this.parent().expansionManager,
-        });
-        this.expansionManager = new ListExpansion({
-            ...inputs,
-            multiExpandable: () => true,
-            // TODO(ok7sai): allow pre-expanded tree items.
-            expandedIds: signal([]),
-            items: this.children,
-            disabled: computed(() => this.tree()?.disabled() ?? false),
-        });
-    }
-}
-/** Controls the state and interactions of a tree view. */
-class TreePattern {
-    inputs;
-    /** The list behavior for the tree. */
-    listBehavior;
-    /** Controls expansion for direct children of the tree root (top-level items). */
-    expansionManager;
-    /** The root level is 0. */
-    level = () => 0;
-    /** The root is always expanded. */
-    expanded = () => true;
-    /** The tabindex of the tree. */
-    tabindex = computed(() => this.listBehavior.tabindex());
-    /** The id of the current active item. */
-    activedescendant = computed(() => this.listBehavior.activedescendant());
-    /** The direct children of the root (top-level tree items). */
-    children = computed(() => this.inputs.allItems().filter(item => item.level() === this.level() + 1));
-    /** All currently visible tree items. An item is visible if their parent is expanded. */
-    visibleItems = computed(() => this.inputs.allItems().filter(item => item.visible()));
-    /** Whether the tree selection follows focus. */
-    followFocus = computed(() => this.inputs.selectionMode() === 'follow');
-    /** The key for navigating to the previous item. */
-    prevKey = computed(() => {
-        if (this.inputs.orientation() === 'vertical') {
-            return 'ArrowUp';
-        }
-        return this.inputs.textDirection() === 'rtl' ? 'ArrowRight' : 'ArrowLeft';
-    });
-    /** The key for navigating to the next item. */
-    nextKey = computed(() => {
-        if (this.inputs.orientation() === 'vertical') {
-            return 'ArrowDown';
-        }
-        return this.inputs.textDirection() === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
-    });
-    /** The key for collapsing an item or moving to its parent. */
-    collapseKey = computed(() => {
-        if (this.inputs.orientation() === 'horizontal') {
-            return 'ArrowUp';
-        }
-        return this.inputs.textDirection() === 'rtl' ? 'ArrowRight' : 'ArrowLeft';
-    });
-    /** The key for expanding an item or moving to its first child. */
-    expandKey = computed(() => {
-        if (this.inputs.orientation() === 'horizontal') {
-            return 'ArrowDown';
-        }
-        return this.inputs.textDirection() === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
-    });
-    /** Represents the space key. Does nothing when the user is actively using typeahead. */
-    dynamicSpaceKey = computed(() => (this.listBehavior.isTyping() ? '' : ' '));
-    /** Regular expression to match characters for typeahead. */
-    typeaheadRegexp = /^.$/;
-    /** The keydown event manager for the tree. */
-    keydown = computed(() => {
-        const manager = new KeyboardEventManager();
-        const list = this.listBehavior;
-        manager
-            .on(this.prevKey, () => list.prev({ selectOne: this.followFocus() }))
-            .on(this.nextKey, () => list.next({ selectOne: this.followFocus() }))
-            .on('Home', () => list.first({ selectOne: this.followFocus() }))
-            .on('End', () => list.last({ selectOne: this.followFocus() }))
-            .on(this.typeaheadRegexp, e => list.search(e.key, { selectOne: this.followFocus() }))
-            .on(this.expandKey, () => this.expand({ selectOne: this.followFocus() }))
-            .on(this.collapseKey, () => this.collapse({ selectOne: this.followFocus() }))
-            .on(Modifier.Shift, '*', () => this.expandSiblings());
-        if (this.inputs.multi()) {
-            manager
-                // TODO: Tracking the anchor by index can break if the
-                // tree is expanded or collapsed causing the index to change.
-                .on(Modifier.Any, 'Shift', () => list.anchor(this.listBehavior.activeIndex()))
-                .on(Modifier.Shift, this.prevKey, () => list.prev({ selectRange: true }))
-                .on(Modifier.Shift, this.nextKey, () => list.next({ selectRange: true }))
-                .on([Modifier.Ctrl | Modifier.Shift, Modifier.Meta | Modifier.Shift], 'Home', () => list.first({ selectRange: true, anchor: false }))
-                .on([Modifier.Ctrl | Modifier.Shift, Modifier.Meta | Modifier.Shift], 'End', () => list.last({ selectRange: true, anchor: false }))
-                .on(Modifier.Shift, 'Enter', () => list.updateSelection({ selectRange: true, anchor: false }))
-                .on(Modifier.Shift, this.dynamicSpaceKey, () => list.updateSelection({ selectRange: true, anchor: false }));
-        }
-        if (!this.followFocus() && this.inputs.multi()) {
-            manager
-                .on(this.dynamicSpaceKey, () => list.toggle())
-                .on('Enter', () => list.toggle())
-                .on([Modifier.Ctrl, Modifier.Meta], 'A', () => list.toggleAll());
-        }
-        if (!this.followFocus() && !this.inputs.multi()) {
-            manager.on(this.dynamicSpaceKey, () => list.selectOne());
-            manager.on('Enter', () => list.selectOne());
-        }
-        if (this.inputs.multi() && this.followFocus()) {
-            manager
-                .on([Modifier.Ctrl, Modifier.Meta], this.prevKey, () => list.prev())
-                .on([Modifier.Ctrl, Modifier.Meta], this.nextKey, () => list.next())
-                .on([Modifier.Ctrl, Modifier.Meta], this.expandKey, () => this.expand())
-                .on([Modifier.Ctrl, Modifier.Meta], this.collapseKey, () => this.collapse())
-                .on([Modifier.Ctrl, Modifier.Meta], ' ', () => list.toggle())
-                .on([Modifier.Ctrl, Modifier.Meta], 'Enter', () => list.toggle())
-                .on([Modifier.Ctrl, Modifier.Meta], 'Home', () => list.first())
-                .on([Modifier.Ctrl, Modifier.Meta], 'End', () => list.last())
-                .on([Modifier.Ctrl, Modifier.Meta], 'A', () => {
-                list.toggleAll();
-                list.select(); // Ensure the currect item remains selected.
-            });
-        }
-        return manager;
-    });
-    /** The pointerdown event manager for the tree. */
-    pointerdown = computed(() => {
-        const manager = new PointerEventManager();
-        if (this.multi()) {
-            manager.on(Modifier.Shift, e => this.goto(e, { selectRange: true }));
-        }
-        if (!this.multi()) {
-            return manager.on(e => this.goto(e, { selectOne: true }));
-        }
-        if (this.multi() && this.followFocus()) {
-            return manager
-                .on(e => this.goto(e, { selectOne: true }))
-                .on(Modifier.Ctrl, e => this.goto(e, { toggle: true }));
-        }
-        if (this.multi() && !this.followFocus()) {
-            return manager.on(e => this.goto(e, { toggle: true }));
-        }
-        return manager;
-    });
-    constructor(inputs) {
-        this.inputs = inputs;
-        this.nav = inputs.nav;
-        this.currentType = inputs.currentType;
-        this.allItems = inputs.allItems;
-        this.focusMode = inputs.focusMode;
-        this.disabled = inputs.disabled;
-        this.activeItem = inputs.activeItem;
-        this.skipDisabled = inputs.skipDisabled;
-        this.wrap = inputs.wrap;
-        this.orientation = inputs.orientation;
-        this.textDirection = inputs.textDirection;
-        this.multi = computed(() => (this.nav() ? false : this.inputs.multi()));
-        this.selectionMode = inputs.selectionMode;
-        this.typeaheadDelay = inputs.typeaheadDelay;
-        this.value = inputs.value;
-        this.listBehavior = new List({
-            ...inputs,
-            items: this.visibleItems,
-            multi: this.multi,
-        });
-        this.expansionManager = new ListExpansion({
-            multiExpandable: () => true,
-            // TODO(ok7sai): allow pre-expanded tree items.
-            expandedIds: signal([]),
-            items: this.children,
-            disabled: this.disabled,
-        });
-    }
-    /**
-     * Sets the tree to it's default initial state.
-     *
-     * Sets the active index of the tree to the first focusable selected tree item if one exists.
-     * Otherwise, sets focus to the first focusable tree item.
-     */
-    setDefaultState() {
-        let firstItem;
-        for (const item of this.allItems()) {
-            if (!item.visible())
-                continue;
-            if (!this.listBehavior.isFocusable(item))
-                continue;
-            if (firstItem === undefined) {
-                firstItem = item;
-            }
-            if (item.selected()) {
-                this.activeItem.set(item);
-                return;
-            }
-        }
-        if (firstItem !== undefined) {
-            this.activeItem.set(firstItem);
-        }
-    }
-    /** Handles keydown events on the tree. */
-    onKeydown(event) {
-        if (!this.disabled()) {
-            this.keydown().handle(event);
-        }
-    }
-    /** Handles pointerdown events on the tree. */
-    onPointerdown(event) {
-        if (!this.disabled()) {
-            this.pointerdown().handle(event);
-        }
-    }
-    /** Navigates to the given tree item in the tree. */
-    goto(e, opts) {
-        const item = this._getItem(e);
-        if (!item)
-            return;
-        this.listBehavior.goto(item, opts);
-        this.toggleExpansion(item);
-    }
-    /** Toggles to expand or collapse a tree item. */
-    toggleExpansion(item) {
-        item ??= this.activeItem();
-        if (!item || !this.listBehavior.isFocusable(item))
-            return;
-        if (!item.expandable())
-            return;
-        if (item.expanded()) {
-            this.collapse();
-        }
-        else {
-            item.expansion.open();
-        }
-    }
-    /** Expands a tree item. */
-    expand(opts) {
-        const item = this.activeItem();
-        if (!item || !this.listBehavior.isFocusable(item))
-            return;
-        if (item.expandable() && !item.expanded()) {
-            item.expansion.open();
-        }
-        else if (item.expanded() &&
-            item.children().some(item => this.listBehavior.isFocusable(item))) {
-            this.listBehavior.next(opts);
-        }
-    }
-    /** Expands all sibling tree items including itself. */
-    expandSiblings(item) {
-        item ??= this.activeItem();
-        const siblings = item?.parent()?.children();
-        siblings?.forEach(item => item.expansion.open());
-    }
-    /** Collapses a tree item. */
-    collapse(opts) {
-        const item = this.activeItem();
-        if (!item || !this.listBehavior.isFocusable(item))
-            return;
-        if (item.expandable() && item.expanded()) {
-            item.expansion.close();
-        }
-        else if (item.parent() && item.parent() !== this) {
-            const parentItem = item.parent();
-            if (parentItem instanceof TreeItemPattern && this.listBehavior.isFocusable(parentItem)) {
-                this.listBehavior.goto(parentItem, opts);
-            }
-        }
-    }
-    /** Retrieves the TreeItemPattern associated with a DOM event, if any. */
-    _getItem(event) {
-        if (!(event.target instanceof HTMLElement)) {
-            return;
-        }
-        const element = event.target.closest('[role="treeitem"]');
-        return this.inputs.allItems().find(i => i.element() === element);
-    }
-}
+import * as i1 from '@angular/cdk-experimental/combobox';
+import { CdkComboboxPopup } from '@angular/cdk-experimental/combobox';
+import { ComboboxTreePattern, TreePattern, TreeItemPattern } from './combobox-tree-T4IBVlaU.mjs';
+import './list-QKHHM4uh.mjs';
+import './list-navigation-CPkqnU1i.mjs';
+import './expansion-BRQMRoGR.mjs';
+import './pointer-event-manager-B6GE9jDm.mjs';
 
 /**
  * Sort directives by their document order.
@@ -365,6 +42,15 @@ function sortDirectives(a, b) {
  * ```
  */
 class CdkTree {
+    /** A unique identifier for the tree. */
+    _generatedId = inject(_IdGenerator).getId('cdk-tree-');
+    // TODO(wagnermaciel): https://github.com/angular/components/pull/30495#discussion_r1972601144.
+    /** A unique identifier for the tree. */
+    id = computed(() => this._generatedId, ...(ngDevMode ? [{ debugName: "id" }] : []));
+    /** A reference to the parent combobox popup, if one exists. */
+    _popup = inject(CdkComboboxPopup, {
+        optional: true,
+    });
     /** A reference to the tree element. */
     _elementRef = inject(ElementRef);
     /** All CdkTreeItem instances within this tree. */
@@ -394,18 +80,41 @@ class CdkTree {
     /** The aria-current type. */
     currentType = input('page', ...(ngDevMode ? [{ debugName: "currentType" }] : []));
     /** The UI pattern for the tree. */
-    pattern = new TreePattern({
-        ...this,
-        allItems: computed(() => [...this._unorderedItems()].sort(sortDirectives).map(item => item.pattern)),
-        activeItem: signal(undefined),
-        element: () => this._elementRef.nativeElement,
-    });
+    pattern;
     /** Whether the tree has received focus yet. */
     _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));
     constructor() {
+        const inputs = {
+            ...this,
+            id: this.id,
+            allItems: computed(() => [...this._unorderedItems()].sort(sortDirectives).map(item => item.pattern)),
+            activeItem: signal(undefined),
+            element: () => this._elementRef.nativeElement,
+            combobox: () => this._popup?.combobox?.pattern,
+        };
+        this.pattern = this._popup?.combobox
+            ? new ComboboxTreePattern(inputs)
+            : new TreePattern(inputs);
+        if (this._popup?.combobox) {
+            this._popup?.controls?.set(this.pattern);
+        }
         afterRenderEffect(() => {
             if (!this._hasFocused()) {
                 this.pattern.setDefaultState();
+            }
+        });
+        afterRenderEffect(() => {
+            const items = inputs.allItems();
+            const activeItem = untracked(() => inputs.activeItem());
+            if (!items.some(i => i === activeItem) && activeItem) {
+                this.pattern.listBehavior.unfocus();
+            }
+        });
+        afterRenderEffect(() => {
+            const items = inputs.allItems();
+            const value = untracked(() => this.value());
+            if (items && value.some(v => !items.some(i => i.value() === v))) {
+                this.value.set(value.filter(v => items.some(i => i.value() === v)));
             }
         });
     }
@@ -421,7 +130,7 @@ class CdkTree {
         this._unorderedItems.set(new Set(this._unorderedItems()));
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkTree, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkTree, isStandalone: true, selector: "[cdkTree]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, multi: { classPropertyName: "multi", publicName: "multi", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, typeaheadDelay: { classPropertyName: "typeaheadDelay", publicName: "typeaheadDelay", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, nav: { classPropertyName: "nav", publicName: "nav", isSignal: true, isRequired: false, transformFunction: null }, currentType: { classPropertyName: "currentType", publicName: "currentType", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { attributes: { "role": "tree" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.aria-orientation": "pattern.orientation()", "attr.aria-multiselectable": "pattern.multi()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-activedescendant": "pattern.activedescendant()", "tabindex": "pattern.tabindex()" }, classAttribute: "cdk-tree" }, exportAs: ["cdkTree"], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkTree, isStandalone: true, selector: "[cdkTree]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, multi: { classPropertyName: "multi", publicName: "multi", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, typeaheadDelay: { classPropertyName: "typeaheadDelay", publicName: "typeaheadDelay", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, nav: { classPropertyName: "nav", publicName: "nav", isSignal: true, isRequired: false, transformFunction: null }, currentType: { classPropertyName: "currentType", publicName: "currentType", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { attributes: { "role": "tree" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.id": "id()", "attr.aria-orientation": "pattern.orientation()", "attr.aria-multiselectable": "pattern.multi()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-activedescendant": "pattern.activedescendant()", "tabindex": "pattern.tabindex()" }, classAttribute: "cdk-tree" }, exportAs: ["cdkTree"], hostDirectives: [{ directive: i1.CdkComboboxPopup }], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkTree, decorators: [{
             type: Directive,
@@ -431,6 +140,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", 
                     host: {
                         'class': 'cdk-tree',
                         'role': 'tree',
+                        '[attr.id]': 'id()',
                         '[attr.aria-orientation]': 'pattern.orientation()',
                         '[attr.aria-multiselectable]': 'pattern.multi()',
                         '[attr.aria-disabled]': 'pattern.disabled()',
@@ -440,6 +150,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", 
                         '(pointerdown)': 'pattern.onPointerdown($event)',
                         '(focusin)': 'onFocus()',
                     },
+                    hostDirectives: [{ directive: CdkComboboxPopup }],
                 }]
         }], ctorParameters: () => [] });
 /**
@@ -513,7 +224,7 @@ class CdkTreeItem {
         this._group.set(undefined);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkTreeItem, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkTreeItem, isStandalone: true, selector: "[cdkTreeItem]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, parent: { classPropertyName: "parent", publicName: "parent", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "treeitem" }, properties: { "class.cdk-active": "pattern.active()", "id": "pattern.id()", "attr.aria-expanded": "pattern.expandable() ? pattern.expanded() : null", "attr.aria-selected": "pattern.selected()", "attr.aria-current": "pattern.current()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-level": "pattern.level()", "attr.aria-owns": "ownsId()", "attr.aria-setsize": "pattern.setsize()", "attr.aria-posinset": "pattern.posinset()", "attr.tabindex": "pattern.tabindex()", "attr.inert": "pattern.visible() ? null : true" }, classAttribute: "cdk-treeitem" }, exportAs: ["cdkTreeItem"], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkTreeItem, isStandalone: true, selector: "[cdkTreeItem]", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, parent: { classPropertyName: "parent", publicName: "parent", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "treeitem" }, properties: { "class.cdk-active": "pattern.active()", "id": "pattern.id()", "attr.aria-expanded": "pattern.expandable() ? pattern.expanded() : null", "attr.aria-selected": "pattern.selected()", "attr.aria-current": "pattern.current()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-level": "pattern.level()", "attr.aria-owns": "ownsId()", "attr.aria-setsize": "pattern.setsize()", "attr.aria-posinset": "pattern.posinset()", "attr.tabindex": "pattern.tabindex()" }, classAttribute: "cdk-treeitem" }, exportAs: ["cdkTreeItem"], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkTreeItem, decorators: [{
             type: Directive,
@@ -534,7 +245,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", 
                         '[attr.aria-setsize]': 'pattern.setsize()',
                         '[attr.aria-posinset]': 'pattern.posinset()',
                         '[attr.tabindex]': 'pattern.tabindex()',
-                        '[attr.inert]': 'pattern.visible() ? null : true',
                     },
                 }]
         }], ctorParameters: () => [] });
@@ -559,9 +269,12 @@ class CdkTreeItemGroup {
     /** Tree item that owns the group. */
     ownedBy = input.required(...(ngDevMode ? [{ debugName: "ownedBy" }] : []));
     constructor() {
+        this._deferredContentAware.preserveContent.set(true);
         // Connect the group's hidden state to the DeferredContentAware's visibility.
         afterRenderEffect(() => {
-            this._deferredContentAware.contentVisible.set(this.visible());
+            this.ownedBy().tree().pattern instanceof ComboboxTreePattern
+                ? this._deferredContentAware.contentVisible.set(true)
+                : this._deferredContentAware.contentVisible.set(this.visible());
         });
     }
     ngOnInit() {
@@ -579,7 +292,7 @@ class CdkTreeItemGroup {
         this._unorderedItems.set(new Set(this._unorderedItems()));
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkTreeItemGroup, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkTreeItemGroup, isStandalone: true, selector: "[cdkTreeItemGroup]", inputs: { ownedBy: { classPropertyName: "ownedBy", publicName: "ownedBy", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "group" }, properties: { "id": "id", "attr.inert": "visible() ? null : true" }, classAttribute: "cdk-treeitem-group" }, exportAs: ["cdkTreeItemGroup"], hostDirectives: [{ directive: i1.DeferredContentAware, inputs: ["preserveContent", "preserveContent"] }], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.2.0-next.2", type: CdkTreeItemGroup, isStandalone: true, selector: "[cdkTreeItemGroup]", inputs: { ownedBy: { classPropertyName: "ownedBy", publicName: "ownedBy", isSignal: true, isRequired: true, transformFunction: null } }, host: { attributes: { "role": "group" }, properties: { "id": "id", "attr.inert": "visible() ? null : true" }, classAttribute: "cdk-treeitem-group" }, exportAs: ["cdkTreeItemGroup"], hostDirectives: [{ directive: i1$1.DeferredContentAware, inputs: ["preserveContent", "preserveContent"] }], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkTreeItemGroup, decorators: [{
             type: Directive,
@@ -606,7 +319,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", 
  */
 class CdkTreeItemGroupContent {
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkTreeItemGroupContent, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.2.0-next.2", type: CdkTreeItemGroupContent, isStandalone: true, selector: "ng-template[cdkTreeItemGroupContent]", hostDirectives: [{ directive: i1.DeferredContent }], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.2.0-next.2", type: CdkTreeItemGroupContent, isStandalone: true, selector: "ng-template[cdkTreeItemGroupContent]", hostDirectives: [{ directive: i1$1.DeferredContent }], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkTreeItemGroupContent, decorators: [{
             type: Directive,

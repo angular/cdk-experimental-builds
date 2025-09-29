@@ -1,6 +1,6 @@
 import { computed, signal } from '@angular/core';
-import { List } from './list-DDPL6e4b.mjs';
-import { Modifier, KeyboardEventManager, PointerEventManager } from './list-navigation-DFutf3ha.mjs';
+import { List } from './list-QKHHM4uh.mjs';
+import { Modifier, KeyboardEventManager, PointerEventManager } from './pointer-event-manager-B6GE9jDm.mjs';
 
 /** Controls the state of a listbox. */
 class ListboxPattern {
@@ -142,10 +142,6 @@ class ListboxPattern {
         if (!this.inputs.multi() && this.inputs.value().length > 1) {
             violations.push(`A single-select listbox should not have multiple selected options. Selected options: ${this.inputs.value().join(', ')}`);
         }
-        const activeItem = this.inputs.activeItem();
-        if (activeItem && !this.inputs.items().includes(activeItem)) {
-            violations.push(`The current active item does not exist in the list. Active item: ${activeItem.id()}.`);
-        }
         return violations;
     }
     /** Handles keydown events for the listbox. */
@@ -227,5 +223,56 @@ class OptionPattern {
     }
 }
 
-export { ListboxPattern, OptionPattern };
-//# sourceMappingURL=option-HpmyHx3F.mjs.map
+class ComboboxListboxPattern extends ListboxPattern {
+    inputs;
+    /** A unique identifier for the popup. */
+    id = computed(() => this.inputs.id());
+    /** The ARIA role for the listbox. */
+    role = computed(() => 'listbox');
+    /** The id of the active (focused) item in the listbox. */
+    activeId = computed(() => this.listBehavior.activedescendant());
+    /** The list of options in the listbox. */
+    items = computed(() => this.inputs.items());
+    /** The tabindex for the listbox. Always -1 because the combobox handles focus. */
+    tabindex = () => -1;
+    constructor(inputs) {
+        if (inputs.combobox()) {
+            inputs.multi = () => false;
+            inputs.focusMode = () => 'activedescendant';
+            inputs.element = inputs.combobox().inputs.inputEl;
+        }
+        super(inputs);
+        this.inputs = inputs;
+    }
+    /** Noop. The combobox handles keydown events. */
+    onKeydown(_) { }
+    /** Noop. The combobox handles pointerdown events. */
+    onPointerdown(_) { }
+    /** Noop. The combobox controls the open state. */
+    setDefaultState() { }
+    /** Navigates to the specified item in the listbox. */
+    focus = (item) => this.listBehavior.goto(item);
+    /** Navigates to the next focusable item in the listbox. */
+    next = () => this.listBehavior.next();
+    /** Navigates to the previous focusable item in the listbox. */
+    prev = () => this.listBehavior.prev();
+    /** Navigates to the last focusable item in the listbox. */
+    last = () => this.listBehavior.last();
+    /** Navigates to the first focusable item in the listbox. */
+    first = () => this.listBehavior.first();
+    /** Unfocuses the currently focused item in the listbox. */
+    unfocus = () => this.listBehavior.unfocus();
+    /** Selects the specified item in the listbox. */
+    select = (item) => this.listBehavior.select(item);
+    /** Clears the selection in the listbox. */
+    clearSelection = () => this.listBehavior.deselectAll();
+    /** Retrieves the OptionPattern associated with a pointer event. */
+    getItem = (e) => this._getItem(e);
+    /** Retrieves the currently selected item in the listbox. */
+    getSelectedItem = () => this.inputs.items().find(i => i.selected());
+    /** Sets the value of the combobox listbox. */
+    setValue = (value) => this.inputs.value.set(value ? [value] : []);
+}
+
+export { ComboboxListboxPattern, ListboxPattern, OptionPattern };
+//# sourceMappingURL=combobox-listbox-DuA-LCB4.mjs.map

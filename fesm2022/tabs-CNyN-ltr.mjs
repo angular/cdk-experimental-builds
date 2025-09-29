@@ -1,7 +1,7 @@
 import { computed } from '@angular/core';
-import { ExpansionControl, ListExpansion } from './expansion-B3kmlWCY.mjs';
-import { List } from './list-DDPL6e4b.mjs';
-import { KeyboardEventManager, PointerEventManager } from './list-navigation-DFutf3ha.mjs';
+import { ExpansionControl, ListExpansion } from './expansion-BRQMRoGR.mjs';
+import { List } from './list-QKHHM4uh.mjs';
+import { KeyboardEventManager, PointerEventManager } from './pointer-event-manager-B6GE9jDm.mjs';
 
 /** Controls label and description of an element. */
 class LabelControl {
@@ -208,4 +208,4 @@ class TabListPattern {
 }
 
 export { TabListPattern, TabPanelPattern, TabPattern };
-//# sourceMappingURL=tabs-CgsqriS4.mjs.map
+//# sourceMappingURL=tabs-CNyN-ltr.mjs.map

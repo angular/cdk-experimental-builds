@@ -1,6 +1,6 @@
 import { computed, signal } from '@angular/core';
-import { List } from './list-DDPL6e4b.mjs';
-import { PointerEventManager, KeyboardEventManager } from './list-navigation-DFutf3ha.mjs';
+import { List } from './list-QKHHM4uh.mjs';
+import { PointerEventManager, KeyboardEventManager } from './pointer-event-manager-B6GE9jDm.mjs';
 
 class ToolbarWidgetPattern {
     inputs;
@@ -270,4 +270,4 @@ class ToolbarPattern {
 }
 
 export { ToolbarPattern, ToolbarWidgetGroupPattern, ToolbarWidgetPattern };
-//# sourceMappingURL=toolbar-CGsEAlA3.mjs.map
+//# sourceMappingURL=toolbar-yLXvQipo.mjs.map

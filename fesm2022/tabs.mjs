@@ -4,10 +4,11 @@ import { _IdGenerator } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import * as i0 from '@angular/core';
 import { signal, computed, Directive, inject, ElementRef, linkedSignal, input, booleanAttribute, model, afterRenderEffect } from '@angular/core';
-import { TabListPattern, TabPattern, TabPanelPattern } from './tabs-CgsqriS4.mjs';
-import './expansion-B3kmlWCY.mjs';
-import './list-DDPL6e4b.mjs';
-import './list-navigation-DFutf3ha.mjs';
+import { TabListPattern, TabPattern, TabPanelPattern } from './tabs-CNyN-ltr.mjs';
+import './expansion-BRQMRoGR.mjs';
+import './list-QKHHM4uh.mjs';
+import './list-navigation-CPkqnU1i.mjs';
+import './pointer-event-manager-B6GE9jDm.mjs';
 
 /**
  * Sort directives by their document order.

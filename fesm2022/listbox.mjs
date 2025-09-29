@@ -1,11 +1,15 @@
 import * as i0 from '@angular/core';
-import { inject, ElementRef, contentChildren, computed, input, booleanAttribute, model, signal, afterRenderEffect, Directive } from '@angular/core';
+import { inject, computed, ElementRef, contentChildren, input, booleanAttribute, model, signal, afterRenderEffect, untracked, Directive } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { ListboxPattern, OptionPattern } from './option-HpmyHx3F.mjs';
-import './list-DDPL6e4b.mjs';
-import './list-navigation-DFutf3ha.mjs';
+import { CdkComboboxPopup } from './combobox.mjs';
+import { ComboboxListboxPattern, ListboxPattern, OptionPattern } from './combobox-listbox-DuA-LCB4.mjs';
+import '@angular/cdk-experimental/deferred-content';
+import './combobox-ZZC2YlgZ.mjs';
+import './pointer-event-manager-B6GE9jDm.mjs';
+import './list-QKHHM4uh.mjs';
+import './list-navigation-CPkqnU1i.mjs';
 
 /**
  * A listbox container.
@@ -22,6 +26,15 @@ import './list-navigation-DFutf3ha.mjs';
  * ```
  */
 class CdkListbox {
+    /** A unique identifier for the listbox. */
+    _generatedId = inject(_IdGenerator).getId('cdk-listbox-');
+    // TODO(wagnermaciel): https://github.com/angular/components/pull/30495#discussion_r1972601144.
+    /** A unique identifier for the listbox. */
+    id = computed(() => this._generatedId, ...(ngDevMode ? [{ debugName: "id" }] : []));
+    /** A reference to the parent combobox popup, if one exists. */
+    _popup = inject(CdkComboboxPopup, {
+        optional: true,
+    });
     /** A reference to the listbox element. */
     _elementRef = inject(ElementRef);
     /** The directionality (LTR / RTL) context for the application (or a subtree of it). */
@@ -55,16 +68,25 @@ class CdkListbox {
     /** The values of the current selected items. */
     value = model([], ...(ngDevMode ? [{ debugName: "value" }] : []));
     /** The Listbox UIPattern. */
-    pattern = new ListboxPattern({
-        ...this,
-        items: this.items,
-        activeItem: signal(undefined),
-        textDirection: this.textDirection,
-        element: () => this._elementRef.nativeElement,
-    });
+    pattern;
     /** Whether the listbox has received focus yet. */
     _hasFocused = signal(false, ...(ngDevMode ? [{ debugName: "_hasFocused" }] : []));
     constructor() {
+        const inputs = {
+            ...this,
+            id: this.id,
+            items: this.items,
+            activeItem: signal(undefined),
+            textDirection: this.textDirection,
+            element: () => this._elementRef.nativeElement,
+            combobox: () => this._popup?.combobox?.pattern,
+        };
+        this.pattern = this._popup?.combobox
+            ? new ComboboxListboxPattern(inputs)
+            : new ListboxPattern(inputs);
+        if (this._popup) {
+            this._popup.controls.set(this.pattern);
+        }
         afterRenderEffect(() => {
             if (typeof ngDevMode === 'undefined' || ngDevMode) {
                 const violations = this.pattern.validate();
@@ -78,12 +100,29 @@ class CdkListbox {
                 this.pattern.setDefaultState();
             }
         });
+        // Ensure that if the active item is removed from
+        // the list, the listbox updates it's focus state.
+        afterRenderEffect(() => {
+            const items = inputs.items();
+            const activeItem = untracked(() => inputs.activeItem());
+            if (!items.some(i => i === activeItem) && activeItem) {
+                this.pattern.listBehavior.unfocus();
+            }
+        });
+        // Ensure that the value is always in sync with the available options.
+        afterRenderEffect(() => {
+            const items = inputs.items();
+            const value = untracked(() => this.value());
+            if (items && value.some(v => !items.some(i => i.value() === v))) {
+                this.value.set(value.filter(v => items.some(i => i.value() === v)));
+            }
+        });
     }
     onFocus() {
         this._hasFocused.set(true);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkListbox, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.2.0", version: "20.2.0-next.2", type: CdkListbox, isStandalone: true, selector: "[cdkListbox]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, multi: { classPropertyName: "multi", publicName: "multi", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: true, isRequired: false, transformFunction: null }, typeaheadDelay: { classPropertyName: "typeaheadDelay", publicName: "typeaheadDelay", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, readonly: { classPropertyName: "readonly", publicName: "readonly", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { attributes: { "role": "listbox" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.tabindex": "pattern.tabindex()", "attr.aria-readonly": "pattern.readonly()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-orientation": "pattern.orientation()", "attr.aria-multiselectable": "pattern.multi()", "attr.aria-activedescendant": "pattern.activedescendant()" }, classAttribute: "cdk-listbox" }, queries: [{ propertyName: "_cdkOptions", predicate: CdkOption, descendants: true, isSignal: true }], exportAs: ["cdkListbox"], ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.2.0", version: "20.2.0-next.2", type: CdkListbox, isStandalone: true, selector: "[cdkListbox]", inputs: { orientation: { classPropertyName: "orientation", publicName: "orientation", isSignal: true, isRequired: false, transformFunction: null }, multi: { classPropertyName: "multi", publicName: "multi", isSignal: true, isRequired: false, transformFunction: null }, wrap: { classPropertyName: "wrap", publicName: "wrap", isSignal: true, isRequired: false, transformFunction: null }, skipDisabled: { classPropertyName: "skipDisabled", publicName: "skipDisabled", isSignal: true, isRequired: false, transformFunction: null }, focusMode: { classPropertyName: "focusMode", publicName: "focusMode", isSignal: true, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: true, isRequired: false, transformFunction: null }, typeaheadDelay: { classPropertyName: "typeaheadDelay", publicName: "typeaheadDelay", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, readonly: { classPropertyName: "readonly", publicName: "readonly", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { attributes: { "role": "listbox" }, listeners: { "keydown": "pattern.onKeydown($event)", "pointerdown": "pattern.onPointerdown($event)", "focusin": "onFocus()" }, properties: { "attr.id": "id()", "attr.tabindex": "pattern.tabindex()", "attr.aria-readonly": "pattern.readonly()", "attr.aria-disabled": "pattern.disabled()", "attr.aria-orientation": "pattern.orientation()", "attr.aria-multiselectable": "pattern.multi()", "attr.aria-activedescendant": "pattern.activedescendant()" }, classAttribute: "cdk-listbox" }, queries: [{ propertyName: "_cdkOptions", predicate: CdkOption, descendants: true, isSignal: true }], exportAs: ["cdkListbox"], hostDirectives: [{ directive: CdkComboboxPopup }], ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", ngImport: i0, type: CdkListbox, decorators: [{
             type: Directive,
@@ -93,6 +132,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", 
                     host: {
                         'role': 'listbox',
                         'class': 'cdk-listbox',
+                        '[attr.id]': 'id()',
                         '[attr.tabindex]': 'pattern.tabindex()',
                         '[attr.aria-readonly]': 'pattern.readonly()',
                         '[attr.aria-disabled]': 'pattern.disabled()',
@@ -103,6 +143,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.2.0-next.2", 
                         '(pointerdown)': 'pattern.onPointerdown($event)',
                         '(focusin)': 'onFocus()',
                     },
+                    hostDirectives: [{ directive: CdkComboboxPopup }],
                 }]
         }], ctorParameters: () => [] });
 /** A selectable option in a CdkListbox. */

@@ -1,6 +1,6 @@
 import * as _angular_core from '@angular/core';
 import { KeyboardEventManager, PointerEventManager } from './pointer-event-manager.d-DxLZK1bd.js';
-import { ListExpansionInputs, ListExpansion, ExpansionItem, ExpansionControl } from './expansion.d-D5S9iQY2.js';
+import { ListExpansionInputs, ListExpansion, ExpansionItem, ExpansionControl } from './expansion.d-Bk5hojv9.js';
 import { ListNavigationInputs, ListFocusInputs, ListNavigation, ListFocus, ListNavigationItem, ListFocusItem, SignalLike } from './list-navigation.d-v7LRaIQt.js';
 
 /** Inputs of the AccordionGroupPattern. */

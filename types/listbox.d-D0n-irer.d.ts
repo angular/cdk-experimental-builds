@@ -1,6 +1,6 @@
 import * as _angular_core from '@angular/core';
 import { SignalLike } from './list-navigation.d-v7LRaIQt.js';
-import { ListItem, ListInputs, List } from './list.d-B9T5bCJD.js';
+import { ListItem, ListInputs, List } from './list.d-CgeCwpQa.js';
 import { KeyboardEventManager, PointerEventManager } from './pointer-event-manager.d-DxLZK1bd.js';
 
 /**
@@ -42,6 +42,9 @@ declare class OptionPattern<V> {
 
 /** Represents the required inputs for a listbox. */
 type ListboxInputs<V> = ListInputs<OptionPattern<V>, V> & {
+    /** A unique identifier for the listbox. */
+    id: SignalLike<string>;
+    /** Whether the listbox is readonly. */
     readonly: SignalLike<boolean>;
 };
 /** Controls the state of a listbox. */
@@ -55,7 +58,7 @@ declare class ListboxPattern<V> {
     /** Whether the listbox is readonly. */
     readonly: SignalLike<boolean>;
     /** The tabindex of the listbox. */
-    tabindex: _angular_core.Signal<0 | -1>;
+    tabindex: SignalLike<-1 | 0>;
     /** The id of the current active item. */
     activedescendant: _angular_core.Signal<string | undefined>;
     /** Whether multiple items in the list can be selected at once. */
@@ -95,7 +98,7 @@ declare class ListboxPattern<V> {
      * is called.
      */
     setDefaultState(): void;
-    private _getItem;
+    protected _getItem(e: PointerEvent): OptionPattern<V> | undefined;
 }
 
 export { ListboxPattern, OptionPattern };
