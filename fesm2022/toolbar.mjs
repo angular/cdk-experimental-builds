@@ -2,9 +2,9 @@ import * as i0 from '@angular/core';
 import { inject, ElementRef, signal, computed, input, booleanAttribute, afterRenderEffect, Directive } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import { _IdGenerator } from '@angular/cdk/a11y';
-import { ToolbarPattern, ToolbarWidgetPattern, ToolbarWidgetGroupPattern } from './toolbar2.mjs';
-import './list.mjs';
-import './list-navigation.mjs';
+import { ToolbarPattern, ToolbarWidgetPattern, ToolbarWidgetGroupPattern } from './toolbar-CGsEAlA3.mjs';
+import './list-DDPL6e4b.mjs';
+import './list-navigation-DFutf3ha.mjs';
 
 /**
  * Sort directives by their document order.

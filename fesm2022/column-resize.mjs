@@ -3,7 +3,7 @@ import { InjectionToken, inject, Renderer2, Directive, Input, Injectable, NgZone
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { Subject, merge, combineLatest, Observable } from 'rxjs';
 import { mapTo, take, takeUntil, startWith, pairwise, distinctUntilChanged, share, map, skip, filter } from 'rxjs/operators';
-import { closest } from './polyfill.mjs';
+import { closest } from './polyfill-DRXnWbMt.mjs';
 import { CdkTable } from '@angular/cdk/table';
 import { coerceCssPixelValue } from '@angular/cdk/coercion';
 import { ComponentPortal } from '@angular/cdk/portal';
