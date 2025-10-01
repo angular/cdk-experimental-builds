@@ -2,8 +2,8 @@ import * as i0 from '@angular/core';
 import { inject, ElementRef, contentChild, input, signal, afterRenderEffect, Directive, model, untracked } from '@angular/core';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
 import { DeferredContentAware, DeferredContent } from '@angular/cdk-experimental/deferred-content';
-import { ComboboxPattern } from './combobox-ZZC2YlgZ.mjs';
-import './pointer-event-manager-B6GE9jDm.mjs';
+import { ComboboxPattern } from './_combobox-chunk.mjs';
+import './_pointer-event-manager-chunk.mjs';
 
 class CdkCombobox {
     /** The element that the combobox is attached to. */

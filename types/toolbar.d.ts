@@ -1,9 +1,9 @@
 import * as _angular_core from '@angular/core';
 import { Signal, OnInit, OnDestroy } from '@angular/core';
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
-import { ToolbarWidgetPattern, ToolbarWidgetGroupPattern, ToolbarPattern, ToolbarWidgetGroupControls } from './toolbar.d-DJ21fkit.js';
-import './list-navigation.d-v7LRaIQt.js';
-import './list.d-CgeCwpQa.js';
+import { ToolbarWidgetPattern, ToolbarWidgetGroupPattern, ToolbarPattern, ToolbarWidgetGroupControls } from './_toolbar-chunk.js';
+import './_list-navigation-chunk.js';
+import './_list-chunk.js';
 
 /**
  * A toolbar widget container.

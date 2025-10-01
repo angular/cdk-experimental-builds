@@ -1,11 +1,11 @@
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
 import * as _angular_core from '@angular/core';
 import { WritableSignal } from '@angular/core';
-import { AccordionTriggerPattern, AccordionPanelPattern, AccordionGroupPattern } from './accordion.d-C-nrfp4d.js';
+import { AccordionTriggerPattern, AccordionPanelPattern, AccordionGroupPattern } from './_accordion-chunk.js';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
-import './pointer-event-manager.d-DxLZK1bd.js';
-import './list-navigation.d-v7LRaIQt.js';
-import './expansion.d-Bk5hojv9.js';
+import './_pointer-event-manager-chunk.js';
+import './_list-navigation-chunk.js';
+import './_expansion-chunk.js';
 
 /**
  * Represents the content panel of an accordion item. It is controlled by an

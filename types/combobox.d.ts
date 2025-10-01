@@ -1,10 +1,10 @@
 import * as _angular_core from '@angular/core';
 import { WritableSignal } from '@angular/core';
-import { ComboboxPattern, ComboboxListboxControls, ComboboxTreeControls } from './combobox.d-DU-Rmfjh.js';
+import { ComboboxPattern, ComboboxListboxControls, ComboboxTreeControls } from './_combobox-chunk.js';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
-import './pointer-event-manager.d-DxLZK1bd.js';
-import './list-navigation.d-v7LRaIQt.js';
-import './list.d-CgeCwpQa.js';
+import './_pointer-event-manager-chunk.js';
+import './_list-navigation-chunk.js';
+import './_list-chunk.js';
 
 declare class CdkCombobox<V> {
     /** The element that the combobox is attached to. */

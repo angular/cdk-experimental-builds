@@ -1,21 +1,21 @@
-import { ComboboxPattern, ComboboxListboxControls, ComboboxTreeControls } from './combobox.d-DU-Rmfjh.js';
-export { ComboboxInputs } from './combobox.d-DU-Rmfjh.js';
-import { ListboxInputs, OptionPattern, ListboxPattern } from './listbox.d-D0n-irer.js';
-export { OptionInputs } from './listbox.d-D0n-irer.js';
+import { ComboboxPattern, ComboboxListboxControls, ComboboxTreeControls } from './_combobox-chunk.js';
+export { ComboboxInputs } from './_combobox-chunk.js';
+import { ListboxInputs, OptionPattern, ListboxPattern } from './_listbox-chunk.js';
+export { OptionInputs } from './_listbox-chunk.js';
 import * as _angular_core from '@angular/core';
-import { SignalLike } from './list-navigation.d-v7LRaIQt.js';
-export { WritableSignalLike, convertGetterSetterToWritableSignalLike } from './list-navigation.d-v7LRaIQt.js';
-import { RadioGroupInputs, RadioGroupPattern } from './radio-group.d-29i6QPDq.js';
-export { RadioButtonInputs, RadioButtonPattern } from './radio-group.d-29i6QPDq.js';
-import { ToolbarPattern, ToolbarWidgetGroupControls } from './toolbar.d-DJ21fkit.js';
-export { ToolbarInputs, ToolbarWidgetGroupInputs, ToolbarWidgetGroupPattern, ToolbarWidgetInputs, ToolbarWidgetPattern } from './toolbar.d-DJ21fkit.js';
-export { TabInputs, TabListInputs, TabListPattern, TabPanelInputs, TabPanelPattern, TabPattern } from './tabs.d-DSEqkD60.js';
-export { AccordionGroupInputs, AccordionGroupPattern, AccordionPanelInputs, AccordionPanelPattern, AccordionTriggerInputs, AccordionTriggerPattern } from './accordion.d-C-nrfp4d.js';
-import { TreeInputs, TreeItemPattern, TreePattern } from './tree.d-DomXPN8h.js';
-export { TreeItemInputs } from './tree.d-DomXPN8h.js';
-import './pointer-event-manager.d-DxLZK1bd.js';
-import './list.d-CgeCwpQa.js';
-import './expansion.d-Bk5hojv9.js';
+import { SignalLike } from './_list-navigation-chunk.js';
+export { WritableSignalLike, convertGetterSetterToWritableSignalLike } from './_list-navigation-chunk.js';
+import { RadioGroupInputs, RadioGroupPattern } from './_radio-group-chunk.js';
+export { RadioButtonInputs, RadioButtonPattern } from './_radio-group-chunk.js';
+import { ToolbarPattern, ToolbarWidgetGroupControls } from './_toolbar-chunk.js';
+export { ToolbarInputs, ToolbarWidgetGroupInputs, ToolbarWidgetGroupPattern, ToolbarWidgetInputs, ToolbarWidgetPattern } from './_toolbar-chunk.js';
+export { TabInputs, TabListInputs, TabListPattern, TabPanelInputs, TabPanelPattern, TabPattern } from './_tabs-chunk.js';
+export { AccordionGroupInputs, AccordionGroupPattern, AccordionPanelInputs, AccordionPanelPattern, AccordionTriggerInputs, AccordionTriggerPattern } from './_accordion-chunk.js';
+import { TreeInputs, TreeItemPattern, TreePattern } from './_tree-chunk.js';
+export { TreeItemInputs } from './_tree-chunk.js';
+import './_pointer-event-manager-chunk.js';
+import './_list-chunk.js';
+import './_expansion-chunk.js';
 
 type ComboboxListboxInputs<V> = ListboxInputs<V> & {
     /** The combobox controlling the listbox. */

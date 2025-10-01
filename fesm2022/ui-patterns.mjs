@@ -1,15 +1,15 @@
-export { ComboboxPattern } from './combobox-ZZC2YlgZ.mjs';
-export { ComboboxListboxPattern, ListboxPattern, OptionPattern } from './combobox-listbox-DuA-LCB4.mjs';
-export { RadioButtonPattern, RadioGroupPattern, ToolbarRadioGroupPattern } from './toolbar-radio-group-B9FHdtFs.mjs';
-export { TabListPattern, TabPanelPattern, TabPattern } from './tabs-CNyN-ltr.mjs';
-export { ToolbarPattern, ToolbarWidgetGroupPattern, ToolbarWidgetPattern } from './toolbar-yLXvQipo.mjs';
-export { AccordionGroupPattern, AccordionPanelPattern, AccordionTriggerPattern } from './accordion-B0bXcxhE.mjs';
-export { ComboboxTreePattern, TreeItemPattern, TreePattern } from './combobox-tree-T4IBVlaU.mjs';
+export { ComboboxPattern } from './_combobox-chunk.mjs';
+export { ComboboxListboxPattern, ListboxPattern, OptionPattern } from './_combobox-listbox-chunk.mjs';
+export { RadioButtonPattern, RadioGroupPattern, ToolbarRadioGroupPattern } from './_toolbar-radio-group-chunk.mjs';
+export { TabListPattern, TabPanelPattern, TabPattern } from './_tabs-chunk.mjs';
+export { ToolbarPattern, ToolbarWidgetGroupPattern, ToolbarWidgetPattern } from './_toolbar-chunk.mjs';
+export { AccordionGroupPattern, AccordionPanelPattern, AccordionTriggerPattern } from './_accordion-chunk.mjs';
+export { ComboboxTreePattern, TreeItemPattern, TreePattern } from './_combobox-tree-chunk.mjs';
 import '@angular/core';
-import './pointer-event-manager-B6GE9jDm.mjs';
-import './list-QKHHM4uh.mjs';
-import './list-navigation-CPkqnU1i.mjs';
-import './expansion-BRQMRoGR.mjs';
+import './_pointer-event-manager-chunk.mjs';
+import './_list-chunk.mjs';
+import './_list-navigation-chunk.mjs';
+import './_expansion-chunk.mjs';
 
 /** Converts a getter setter style signal to a WritableSignalLike. */
 function convertGetterSetterToWritableSignalLike(getter, setter) {

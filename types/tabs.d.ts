@@ -1,12 +1,12 @@
 import * as _angular_core from '@angular/core';
 import { Signal, OnInit, OnDestroy } from '@angular/core';
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
-import { TabPattern, TabPanelPattern, TabListPattern } from './tabs.d-DSEqkD60.js';
+import { TabPattern, TabPanelPattern, TabListPattern } from './_tabs-chunk.js';
 import * as i1 from '@angular/cdk-experimental/deferred-content';
-import './pointer-event-manager.d-DxLZK1bd.js';
-import './list-navigation.d-v7LRaIQt.js';
-import './expansion.d-Bk5hojv9.js';
-import './list.d-CgeCwpQa.js';
+import './_pointer-event-manager-chunk.js';
+import './_list-navigation-chunk.js';
+import './_expansion-chunk.js';
+import './_list-chunk.js';
 
 interface HasElement {
     element: Signal<HTMLElement>;

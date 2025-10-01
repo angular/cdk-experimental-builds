@@ -4,12 +4,12 @@ import { Directionality } from '@angular/cdk/bidi';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { CdkComboboxPopup } from './combobox.mjs';
-import { ComboboxListboxPattern, ListboxPattern, OptionPattern } from './combobox-listbox-DuA-LCB4.mjs';
+import { ComboboxListboxPattern, ListboxPattern, OptionPattern } from './_combobox-listbox-chunk.mjs';
 import '@angular/cdk-experimental/deferred-content';
-import './combobox-ZZC2YlgZ.mjs';
-import './pointer-event-manager-B6GE9jDm.mjs';
-import './list-QKHHM4uh.mjs';
-import './list-navigation-CPkqnU1i.mjs';
+import './_combobox-chunk.mjs';
+import './_pointer-event-manager-chunk.mjs';
+import './_list-chunk.mjs';
+import './_list-navigation-chunk.mjs';
 
 /**
  * A listbox container.

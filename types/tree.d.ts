@@ -1,13 +1,13 @@
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
 import * as _angular_core from '@angular/core';
 import { Signal, OnInit, OnDestroy } from '@angular/core';
-import { TreePattern, TreeItemPattern } from './tree.d-DomXPN8h.js';
+import { TreePattern, TreeItemPattern } from './_tree-chunk.js';
 import * as i1 from '@angular/cdk-experimental/combobox';
 import * as i1$1 from '@angular/cdk-experimental/deferred-content';
-import './list-navigation.d-v7LRaIQt.js';
-import './list.d-CgeCwpQa.js';
-import './expansion.d-Bk5hojv9.js';
-import './pointer-event-manager.d-DxLZK1bd.js';
+import './_list-navigation-chunk.js';
+import './_list-chunk.js';
+import './_expansion-chunk.js';
+import './_pointer-event-manager-chunk.js';
 
 interface HasElement {
     element: Signal<HTMLElement>;

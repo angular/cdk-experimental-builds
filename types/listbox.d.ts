@@ -1,11 +1,11 @@
 import * as _angular_cdk_bidi from '@angular/cdk/bidi';
 import * as _angular_core from '@angular/core';
-import { OptionPattern, ListboxPattern } from './listbox.d-D0n-irer.js';
+import { OptionPattern, ListboxPattern } from './_listbox-chunk.js';
 import { CdkComboboxPopup } from './combobox.js';
-import './list-navigation.d-v7LRaIQt.js';
-import './list.d-CgeCwpQa.js';
-import './pointer-event-manager.d-DxLZK1bd.js';
-import './combobox.d-DU-Rmfjh.js';
+import './_list-navigation-chunk.js';
+import './_list-chunk.js';
+import './_pointer-event-manager-chunk.js';
+import './_combobox-chunk.js';
 import '@angular/cdk-experimental/deferred-content';
 
 /**

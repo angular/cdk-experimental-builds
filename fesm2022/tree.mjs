@@ -6,11 +6,11 @@ import * as i1$1 from '@angular/cdk-experimental/deferred-content';
 import { DeferredContentAware, DeferredContent } from '@angular/cdk-experimental/deferred-content';
 import * as i1 from '@angular/cdk-experimental/combobox';
 import { CdkComboboxPopup } from '@angular/cdk-experimental/combobox';
-import { ComboboxTreePattern, TreePattern, TreeItemPattern } from './combobox-tree-T4IBVlaU.mjs';
-import './list-QKHHM4uh.mjs';
-import './list-navigation-CPkqnU1i.mjs';
-import './expansion-BRQMRoGR.mjs';
-import './pointer-event-manager-B6GE9jDm.mjs';
+import { ComboboxTreePattern, TreePattern, TreeItemPattern } from './_combobox-tree-chunk.mjs';
+import './_list-chunk.mjs';
+import './_list-navigation-chunk.mjs';
+import './_expansion-chunk.mjs';
+import './_pointer-event-manager-chunk.mjs';
 
 /**
  * Sort directives by their document order.
