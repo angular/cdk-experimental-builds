@@ -1,4 +1,4 @@
-import * as _angular_core from '@angular/core';
+import * as i0 from '@angular/core';
 import { OnDestroy, OnInit } from '@angular/core';
 import { StickyPositioningListener, StickyUpdate } from '@angular/cdk/table';
 
@@ -41,14 +41,14 @@ declare class CdkTableScrollContainer implements StickyPositioningListener, OnDe
     /** Updates the stylesheet with the specified scrollbar style. */
     private _applyCss;
     private _clearCss;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkTableScrollContainer, never>;
-    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<CdkTableScrollContainer, "[cdkTableScrollContainer]", never, {}, {}, never, never, true, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkTableScrollContainer, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CdkTableScrollContainer, "[cdkTableScrollContainer]", never, {}, {}, never, never, true, never>;
 }
 
 declare class CdkTableScrollContainerModule {
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<CdkTableScrollContainerModule, never>;
-    static ɵmod: _angular_core.ɵɵNgModuleDeclaration<CdkTableScrollContainerModule, never, [typeof CdkTableScrollContainer], [typeof CdkTableScrollContainer]>;
-    static ɵinj: _angular_core.ɵɵInjectorDeclaration<CdkTableScrollContainerModule>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CdkTableScrollContainerModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CdkTableScrollContainerModule, never, [typeof CdkTableScrollContainer], [typeof CdkTableScrollContainer]>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<CdkTableScrollContainerModule>;
 }
 
 export { CdkTableScrollContainer, CdkTableScrollContainerModule };

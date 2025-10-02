@@ -24,6 +24,7 @@
   "ng-update": {
     "packageGroup": [
       "@angular/material",
+      "@angular/aria",
       "@angular/cdk",
       "@angular/cdk-experimental",
       "@angular/material-experimental",
@@ -44,33 +45,13 @@
       "types": "./types/cdk-experimental.d.ts",
       "default": "./fesm2022/cdk-experimental.mjs"
     },
-    "./accordion": {
-      "types": "./types/accordion.d.ts",
-      "default": "./fesm2022/accordion.mjs"
-    },
     "./column-resize": {
       "types": "./types/column-resize.d.ts",
       "default": "./fesm2022/column-resize.mjs"
     },
-    "./combobox": {
-      "types": "./types/combobox.d.ts",
-      "default": "./fesm2022/combobox.mjs"
-    },
-    "./deferred-content": {
-      "types": "./types/deferred-content.d.ts",
-      "default": "./fesm2022/deferred-content.mjs"
-    },
-    "./listbox": {
-      "types": "./types/listbox.d.ts",
-      "default": "./fesm2022/listbox.mjs"
-    },
     "./popover-edit": {
       "types": "./types/popover-edit.d.ts",
       "default": "./fesm2022/popover-edit.mjs"
-    },
-    "./radio-group": {
-      "types": "./types/radio-group.d.ts",
-      "default": "./fesm2022/radio-group.mjs"
     },
     "./scrolling": {
       "types": "./types/scrolling.d.ts",
@@ -83,22 +64,6 @@
     "./table-scroll-container": {
       "types": "./types/table-scroll-container.d.ts",
       "default": "./fesm2022/table-scroll-container.mjs"
-    },
-    "./tabs": {
-      "types": "./types/tabs.d.ts",
-      "default": "./fesm2022/tabs.mjs"
-    },
-    "./toolbar": {
-      "types": "./types/toolbar.d.ts",
-      "default": "./fesm2022/toolbar.mjs"
-    },
-    "./tree": {
-      "types": "./types/tree.d.ts",
-      "default": "./fesm2022/tree.mjs"
-    },
-    "./ui-patterns": {
-      "types": "./types/ui-patterns.d.ts",
-      "default": "./fesm2022/ui-patterns.mjs"
     }
   }
 }
