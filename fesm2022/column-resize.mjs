@@ -919,19 +919,19 @@ class Resizable {
   }
   _listenForRowHoverEvents() {
     const element = this.elementRef.nativeElement;
-    const takeUntilDestroyed = takeUntil(this.destroyed);
-    this.eventDispatcher.resizeOverlayVisibleForHeaderRow(closest(element, HEADER_ROW_SELECTOR)).pipe(takeUntilDestroyed).subscribe(hoveringRow => {
+    this.eventDispatcher.resizeOverlayVisibleForHeaderRow(closest(element, HEADER_ROW_SELECTOR)).pipe(takeUntil(this.destroyed)).subscribe(hoveringRow => {
+      if (this._isDestroyed) {
+        return;
+      }
       if (hoveringRow) {
         const tooBigToResize = this.maxWidthPxInternal < Number.MAX_SAFE_INTEGER && element.offsetWidth > this.maxWidthPxInternal;
         element.classList.toggle(RESIZE_DISABLED_CLASS, tooBigToResize);
         if (!tooBigToResize) {
-          if (!this.overlayRef) {
-            this.overlayRef = this._createOverlayForHandle();
-          }
+          this.overlayRef ??= this._createOverlayForHandle();
           this._showHandleOverlay();
         }
-      } else if (this.overlayRef) {
-        this.overlayRef.detach();
+      } else {
+        this.overlayRef?.detach();
       }
     });
   }
@@ -965,7 +965,7 @@ class Resizable {
   }
   _cleanUpAfterResize(columnSize) {
     this.elementRef.nativeElement.classList.remove(OVERLAY_ACTIVE_CLASS);
-    if (this.overlayRef && this.overlayRef.hasAttached()) {
+    if (this.overlayRef?.hasAttached()) {
       this._updateOverlayHandleHeight();
       this.overlayRef.updatePosition();
       if (columnSize.columnId === this.columnDef.name) {
@@ -984,15 +984,17 @@ class Resizable {
     return new ComponentPortal(this.getOverlayHandleComponentType(), this.viewContainerRef, injector);
   }
   _showHandleOverlay() {
-    this._updateOverlayHandleHeight();
-    this.overlayRef.attach(this._createHandlePortal());
-    this.changeDetectorRef.markForCheck();
+    if (!this._isDestroyed) {
+      this._updateOverlayHandleHeight();
+      this.overlayRef?.attach(this._createHandlePortal());
+      this.changeDetectorRef.markForCheck();
+    }
   }
   _updateOverlayHandleHeight() {
     runInInjectionContext(this.injector, () => {
       afterNextRender({
         write: () => {
-          this.overlayRef.updateSize({
+          this.overlayRef?.updateSize({
             height: this.elementRef.nativeElement.offsetHeight
           });
         }
