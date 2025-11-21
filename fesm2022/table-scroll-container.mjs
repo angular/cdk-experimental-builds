@@ -90,7 +90,7 @@ class CdkTableScrollContainer {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "20.2.0-next.2",
+    version: "21.0.0",
     ngImport: i0,
     type: CdkTableScrollContainer,
     deps: [],
@@ -98,7 +98,7 @@ class CdkTableScrollContainer {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "20.2.0-next.2",
+    version: "21.0.0",
     type: CdkTableScrollContainer,
     isStandalone: true,
     selector: "[cdkTableScrollContainer]",
@@ -114,7 +114,7 @@ class CdkTableScrollContainer {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "20.2.0-next.2",
+  version: "21.0.0",
   ngImport: i0,
   type: CdkTableScrollContainer,
   decorators: [{
@@ -145,7 +145,7 @@ function computeMargin(sizes) {
 class CdkTableScrollContainerModule {
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "20.2.0-next.2",
+    version: "21.0.0",
     ngImport: i0,
     type: CdkTableScrollContainerModule,
     deps: [],
@@ -153,7 +153,7 @@ class CdkTableScrollContainerModule {
   });
   static ɵmod = i0.ɵɵngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "20.2.0-next.2",
+    version: "21.0.0",
     ngImport: i0,
     type: CdkTableScrollContainerModule,
     imports: [CdkTableScrollContainer],
@@ -161,14 +161,14 @@ class CdkTableScrollContainerModule {
   });
   static ɵinj = i0.ɵɵngDeclareInjector({
     minVersion: "12.0.0",
-    version: "20.2.0-next.2",
+    version: "21.0.0",
     ngImport: i0,
     type: CdkTableScrollContainerModule
   });
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "20.2.0-next.2",
+  version: "21.0.0",
   ngImport: i0,
   type: CdkTableScrollContainerModule,
   decorators: [{
