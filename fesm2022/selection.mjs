@@ -95,10 +95,10 @@ class CdkSelection {
   set multiple(multiple) {
     this._multiple = coerceBooleanProperty(multiple);
   }
-  _multiple;
+  _multiple = false;
   change = new EventEmitter();
   _data;
-  _renderChangeSubscription;
+  _renderChangeSubscription = null;
   _destroyed = new Subject();
   _selection;
   _switchDataSource(dataSource) {

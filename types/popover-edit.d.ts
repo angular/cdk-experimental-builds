@@ -146,7 +146,6 @@ declare class FocusDispatcher {
     protected readonly directionality: Directionality;
     /** Observes keydown events triggered from the table. */
     readonly keyObserver: PartialObserver<KeyboardEvent>;
-    constructor();
     /**
      * Moves focus to earlier or later cells (in dom order) by offset cells relative to
      * currentCell.

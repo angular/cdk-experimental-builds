@@ -246,12 +246,9 @@ i0.ɵɵngDeclareClassMetadata({
 
 class FocusDispatcher {
   directionality = inject(Directionality);
-  keyObserver;
-  constructor() {
-    this.keyObserver = {
-      next: event => this.handleKeyboardEvent(event)
-    };
-  }
+  keyObserver = {
+    next: event => this.handleKeyboardEvent(event)
+  };
   moveFocusHorizontally(currentCell, offset) {
     const cells = Array.from(closest(currentCell, TABLE_SELECTOR).querySelectorAll(EDITABLE_CELL_SELECTOR));
     const currentIndex = cells.indexOf(currentCell);
@@ -325,8 +322,7 @@ i0.ɵɵngDeclareClassMetadata({
     args: [{
       providedIn: 'root'
     }]
-  }],
-  ctorParameters: () => []
+  }]
 });
 
 class FormValueContainer {
