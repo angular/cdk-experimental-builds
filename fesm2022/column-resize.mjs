@@ -2,7 +2,7 @@ import * as i0 from '@angular/core';
 import { InjectionToken, inject, Renderer2, Directive, Input, Injectable, NgZone, CSP_NONCE, DOCUMENT, ElementRef, NgModule, Injector, runInInjectionContext, afterNextRender } from '@angular/core';
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { Subject, merge, combineLatest, Observable } from 'rxjs';
-import { mapTo, take, takeUntil, startWith, pairwise, distinctUntilChanged, share, map, skip, filter } from 'rxjs/operators';
+import { mapTo, take, takeUntil, startWith, pairwise, distinctUntilChanged, debounceTime, share, map, skip, filter } from 'rxjs/operators';
 import { closest } from './_polyfill-chunk.mjs';
 import { CdkTable } from '@angular/cdk/table';
 import { coerceCssPixelValue } from '@angular/cdk/coercion';
@@ -176,7 +176,7 @@ class HeaderRowEventDispatcher {
   _ngZone = inject(NgZone);
   headerCellHovered = new Subject();
   overlayHandleActiveForCell = new Subject();
-  headerCellHoveredDistinct = this.headerCellHovered.pipe(distinctUntilChanged(), share());
+  headerCellHoveredDistinct = this.headerCellHovered.pipe(distinctUntilChanged(), debounceTime(200), share());
   headerRowHoveredOrActiveDistinct = combineLatest([this.headerCellHoveredDistinct.pipe(map(cell => closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged()), this.overlayHandleActiveForCell.pipe(map(cell => closest(cell, HEADER_ROW_SELECTOR)), startWith(null), distinctUntilChanged())]).pipe(skip(1), map(([hovered, active]) => active || hovered), distinctUntilChanged(), share());
   _headerRowHoveredOrActiveDistinctReenterZone = this.headerRowHoveredOrActiveDistinct.pipe(this._enterZone(), share());
   _lastSeenRow = null;
