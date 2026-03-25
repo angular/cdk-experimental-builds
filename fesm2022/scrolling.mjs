@@ -1,7 +1,7 @@
 import { coerceNumberProperty } from '@angular/cdk/coercion';
 import { VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
 import * as i0 from '@angular/core';
-import { forwardRef, Directive, Input, NgModule } from '@angular/core';
+import { forwardRef, Input, Directive, NgModule } from '@angular/core';
 import { Observable } from 'rxjs';
 
 class ItemSizeAverager {
@@ -234,7 +234,7 @@ class CdkAutoSizeVirtualScroll {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.1",
+    version: "22.0.0-next.4",
     ngImport: i0,
     type: CdkAutoSizeVirtualScroll,
     deps: [],
@@ -242,7 +242,7 @@ class CdkAutoSizeVirtualScroll {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "22.0.0-next.1",
+    version: "22.0.0-next.4",
     type: CdkAutoSizeVirtualScroll,
     isStandalone: true,
     selector: "cdk-virtual-scroll-viewport[autosize]",
@@ -261,7 +261,7 @@ class CdkAutoSizeVirtualScroll {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.1",
+  version: "22.0.0-next.4",
   ngImport: i0,
   type: CdkAutoSizeVirtualScroll,
   decorators: [{
@@ -288,7 +288,7 @@ i0.ɵɵngDeclareClassMetadata({
 class ScrollingModule {
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.1",
+    version: "22.0.0-next.4",
     ngImport: i0,
     type: ScrollingModule,
     deps: [],
@@ -296,7 +296,7 @@ class ScrollingModule {
   });
   static ɵmod = i0.ɵɵngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "22.0.0-next.1",
+    version: "22.0.0-next.4",
     ngImport: i0,
     type: ScrollingModule,
     imports: [CdkAutoSizeVirtualScroll],
@@ -304,14 +304,14 @@ class ScrollingModule {
   });
   static ɵinj = i0.ɵɵngDeclareInjector({
     minVersion: "12.0.0",
-    version: "22.0.0-next.1",
+    version: "22.0.0-next.4",
     ngImport: i0,
     type: ScrollingModule
   });
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.1",
+  version: "22.0.0-next.4",
   ngImport: i0,
   type: ScrollingModule,
   decorators: [{
