@@ -250,7 +250,6 @@ declare const _COALESCED_STYLE_SCHEDULER: InjectionToken<_CoalescedStyleSchedule
 declare class _CoalescedStyleScheduler {
     private _currentSchedule;
     private _ngZone;
-    constructor(...args: unknown[]);
     /**
      * Schedules the specified task to run at the end of the current VM turn.
      */

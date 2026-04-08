@@ -228,7 +228,6 @@ const _COALESCED_STYLE_SCHEDULER = new InjectionToken('_COALESCED_STYLE_SCHEDULE
 class _CoalescedStyleScheduler {
   _currentSchedule = null;
   _ngZone = inject(NgZone);
-  constructor() {}
   schedule(task) {
     this._createScheduleIfNeeded();
     this._currentSchedule.tasks.push(task);
@@ -278,8 +277,7 @@ i0.ɵɵngDeclareClassMetadata({
   type: _CoalescedStyleScheduler,
   decorators: [{
     type: Injectable
-  }],
-  ctorParameters: () => []
+  }]
 });
 
 class ResizeStrategy {
