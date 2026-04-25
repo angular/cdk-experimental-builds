@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { InjectionToken, inject, Renderer2, Input, Directive, Injectable, NgZone, CSP_NONCE, DOCUMENT, ElementRef, NgModule, Injector, runInInjectionContext, afterNextRender } from '@angular/core';
+import { InjectionToken, inject, Renderer2, Input, Directive, Service, NgZone, CSP_NONCE, DOCUMENT, ElementRef, NgModule, Injector, runInInjectionContext, afterNextRender } from '@angular/core';
 import { _IdGenerator } from '@angular/cdk/a11y';
 import { Subject, merge, combineLatest, Observable } from 'rxjs';
 import { mapTo, take, takeUntil, startWith, pairwise, distinctUntilChanged, debounceTime, share, map, skip, filter } from 'rxjs/operators';
@@ -118,13 +118,14 @@ class ColumnResizeNotifierSource {
     ngImport: i0,
     type: ColumnResizeNotifierSource,
     deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: ColumnResizeNotifierSource
+    type: ColumnResizeNotifierSource,
+    autoProvided: false
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -133,7 +134,10 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: ColumnResizeNotifierSource,
   decorators: [{
-    type: Injectable
+    type: Service,
+    args: [{
+      autoProvided: false
+    }]
   }]
 });
 class ColumnResizeNotifier {
@@ -153,13 +157,14 @@ class ColumnResizeNotifier {
     ngImport: i0,
     type: ColumnResizeNotifier,
     deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: ColumnResizeNotifier
+    type: ColumnResizeNotifier,
+    autoProvided: false
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -168,7 +173,10 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: ColumnResizeNotifier,
   decorators: [{
-    type: Injectable
+    type: Service,
+    args: [{
+      autoProvided: false
+    }]
   }]
 });
 
@@ -201,13 +209,14 @@ class HeaderRowEventDispatcher {
     ngImport: i0,
     type: HeaderRowEventDispatcher,
     deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: HeaderRowEventDispatcher
+    type: HeaderRowEventDispatcher,
+    autoProvided: false
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -216,7 +225,10 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: HeaderRowEventDispatcher,
   decorators: [{
-    type: Injectable
+    type: Service,
+    args: [{
+      autoProvided: false
+    }]
   }]
 });
 
@@ -261,13 +273,14 @@ class _CoalescedStyleScheduler {
     ngImport: i0,
     type: _CoalescedStyleScheduler,
     deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: _CoalescedStyleScheduler
+    type: _CoalescedStyleScheduler,
+    autoProvided: false
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -276,7 +289,10 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: _CoalescedStyleScheduler,
   decorators: [{
-    type: Injectable
+    type: Service,
+    args: [{
+      autoProvided: false
+    }]
   }]
 });
 
@@ -329,13 +345,14 @@ class ResizeStrategy {
     ngImport: i0,
     type: ResizeStrategy,
     deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: ResizeStrategy
+    type: ResizeStrategy,
+    autoProvided: false
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -344,7 +361,10 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: ResizeStrategy,
   decorators: [{
-    type: Injectable
+    type: Service,
+    args: [{
+      autoProvided: false
+    }]
   }]
 });
 class TableLayoutFixedResizeStrategy extends ResizeStrategy {
@@ -376,14 +396,15 @@ class TableLayoutFixedResizeStrategy extends ResizeStrategy {
     version: "22.0.0-next.9",
     ngImport: i0,
     type: TableLayoutFixedResizeStrategy,
-    deps: null,
-    target: i0.ɵɵFactoryTarget.Injectable
+    deps: [],
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: TableLayoutFixedResizeStrategy
+    type: TableLayoutFixedResizeStrategy,
+    autoProvided: false
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -392,7 +413,10 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: TableLayoutFixedResizeStrategy,
   decorators: [{
-    type: Injectable
+    type: Service,
+    args: [{
+      autoProvided: false
+    }]
   }]
 });
 class CdkFlexTableResizeStrategy extends ResizeStrategy {
@@ -497,14 +521,15 @@ class CdkFlexTableResizeStrategy extends ResizeStrategy {
     version: "22.0.0-next.9",
     ngImport: i0,
     type: CdkFlexTableResizeStrategy,
-    deps: null,
-    target: i0.ɵɵFactoryTarget.Injectable
+    deps: [],
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: CdkFlexTableResizeStrategy
+    type: CdkFlexTableResizeStrategy,
+    autoProvided: false
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -513,7 +538,10 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: CdkFlexTableResizeStrategy,
   decorators: [{
-    type: Injectable
+    type: Service,
+    args: [{
+      autoProvided: false
+    }]
   }]
 });
 function coercePixelsFromCssValue(cssValue) {
@@ -804,13 +832,14 @@ class ColumnSizeStore {
     ngImport: i0,
     type: ColumnSizeStore,
     deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: ColumnSizeStore
+    type: ColumnSizeStore,
+    autoProvided: false
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -819,7 +848,10 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: ColumnSizeStore,
   decorators: [{
-    type: Injectable
+    type: Service,
+    args: [{
+      autoProvided: false
+    }]
   }]
 });
 

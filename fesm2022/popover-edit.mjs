@@ -1,6 +1,6 @@
 import { Subject, pipe, combineLatest, Observable, merge } from 'rxjs';
 import * as i0 from '@angular/core';
-import { inject, NgZone, Injectable, Injector, afterNextRender, ElementRef, EventEmitter, Directive, Input, DOCUMENT, Renderer2, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
+import { inject, NgZone, Service, Injector, afterNextRender, ElementRef, EventEmitter, Directive, Input, DOCUMENT, Renderer2, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
 import { RIGHT_ARROW, LEFT_ARROW, DOWN_ARROW, UP_ARROW, hasModifierKey } from '@angular/cdk/keycodes';
 import { closest } from './_polyfill-chunk.mjs';
 import { ControlContainer } from '@angular/forms';
@@ -129,13 +129,14 @@ class EditEventDispatcher {
     ngImport: i0,
     type: EditEventDispatcher,
     deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: EditEventDispatcher
+    type: EditEventDispatcher,
+    autoProvided: false
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -144,7 +145,10 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: EditEventDispatcher,
   decorators: [{
-    type: Injectable
+    type: Service,
+    args: [{
+      autoProvided: false
+    }]
   }],
   ctorParameters: () => []
 });
@@ -224,13 +228,14 @@ class EditRef {
     ngImport: i0,
     type: EditRef,
     deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: EditRef
+    type: EditRef,
+    autoProvided: false
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -239,7 +244,10 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: EditRef,
   decorators: [{
-    type: Injectable
+    type: Service,
+    args: [{
+      autoProvided: false
+    }]
   }],
   ctorParameters: () => []
 });
@@ -302,14 +310,13 @@ class FocusDispatcher {
     ngImport: i0,
     type: FocusDispatcher,
     deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: FocusDispatcher,
-    providedIn: 'root'
+    type: FocusDispatcher
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -318,10 +325,7 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: FocusDispatcher,
   decorators: [{
-    type: Injectable,
-    args: [{
-      providedIn: 'root'
-    }]
+    type: Service
   }]
 });
 
@@ -579,13 +583,14 @@ class EditServices {
     ngImport: i0,
     type: EditServices,
     deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: EditServices
+    type: EditServices,
+    autoProvided: false
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -594,7 +599,10 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: EditServices,
   decorators: [{
-    type: Injectable
+    type: Service,
+    args: [{
+      autoProvided: false
+    }]
   }]
 });
 
@@ -634,14 +642,13 @@ class FocusEscapeNotifierFactory {
     ngImport: i0,
     type: FocusEscapeNotifierFactory,
     deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable
+    target: i0.ɵɵFactoryTarget.Service
   });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
+  static ɵprov = i0.ɵɵngDeclareService({
+    minVersion: "22.0.0",
     version: "22.0.0-next.9",
     ngImport: i0,
-    type: FocusEscapeNotifierFactory,
-    providedIn: 'root'
+    type: FocusEscapeNotifierFactory
   });
 }
 i0.ɵɵngDeclareClassMetadata({
@@ -650,10 +657,7 @@ i0.ɵɵngDeclareClassMetadata({
   ngImport: i0,
   type: FocusEscapeNotifierFactory,
   decorators: [{
-    type: Injectable,
-    args: [{
-      providedIn: 'root'
-    }]
+    type: Service
   }]
 });
 
