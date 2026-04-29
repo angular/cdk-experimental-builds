@@ -1,6 +1,6 @@
 import { Subject, Observable, PartialObserver } from 'rxjs';
 import * as i0 from '@angular/core';
-import { OnDestroy, ElementRef, OnInit, EventEmitter, NgZone, AfterViewInit, ViewContainerRef, TemplateRef, EmbeddedViewRef } from '@angular/core';
+import { OnDestroy, ElementRef, OnInit, EventEmitter, NgZone, Injector, AfterViewInit, ViewContainerRef, TemplateRef, EmbeddedViewRef } from '@angular/core';
 import { Directionality } from '@angular/cdk/bidi';
 import * as i1 from '@angular/cdk/overlay';
 import { OverlayRef } from '@angular/cdk/overlay';
@@ -276,7 +276,7 @@ declare enum FocusEscapeNotifierDirection {
  */
 declare class FocusEscapeNotifier extends FocusTrap {
     private readonly _escapeSubject;
-    constructor(element: HTMLElement, checker: InteractivityChecker, ngZone: NgZone, document: Document);
+    constructor(element: HTMLElement, checker: InteractivityChecker, ngZone: NgZone, document: Document, injector: Injector);
     escapes(): Observable<FocusEscapeNotifierDirection>;
 }
 /** Factory that allows easy instantiation of focus escape notifiers. */
@@ -284,6 +284,7 @@ declare class FocusEscapeNotifierFactory {
     private _checker;
     private _ngZone;
     private _document;
+    private _injector;
     /**
      * Creates a focus escape notifier region around the given element.
      * @param element The element around which focus will be monitored.

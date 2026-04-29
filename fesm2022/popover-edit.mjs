@@ -613,8 +613,8 @@ var FocusEscapeNotifierDirection;
 })(FocusEscapeNotifierDirection || (FocusEscapeNotifierDirection = {}));
 class FocusEscapeNotifier extends FocusTrap {
   _escapeSubject = new Subject();
-  constructor(element, checker, ngZone, document) {
-    super(element, checker, ngZone, document, true);
+  constructor(element, checker, ngZone, document, injector) {
+    super(element, checker, ngZone, document, true, injector);
     this.startAnchorListener = () => {
       this._escapeSubject.next(FocusEscapeNotifierDirection.START);
       return true;
@@ -633,8 +633,9 @@ class FocusEscapeNotifierFactory {
   _checker = inject(InteractivityChecker);
   _ngZone = inject(NgZone);
   _document = inject(DOCUMENT);
+  _injector = inject(Injector);
   create(element) {
-    return new FocusEscapeNotifier(element, this._checker, this._ngZone, this._document);
+    return new FocusEscapeNotifier(element, this._checker, this._ngZone, this._document, this._injector);
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
