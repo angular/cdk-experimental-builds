@@ -125,7 +125,7 @@ class EditEventDispatcher {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: EditEventDispatcher,
     deps: [],
@@ -133,14 +133,14 @@ class EditEventDispatcher {
   });
   static ɵprov = i0.ɵɵngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: EditEventDispatcher
   });
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: EditEventDispatcher,
   decorators: [{
@@ -220,7 +220,7 @@ class EditRef {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: EditRef,
     deps: [],
@@ -228,14 +228,14 @@ class EditRef {
   });
   static ɵprov = i0.ɵɵngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: EditRef
   });
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: EditRef,
   decorators: [{
@@ -298,7 +298,7 @@ class FocusDispatcher {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: FocusDispatcher,
     deps: [],
@@ -306,7 +306,7 @@ class FocusDispatcher {
   });
   static ɵprov = i0.ɵɵngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: FocusDispatcher,
     providedIn: 'root'
@@ -314,7 +314,7 @@ class FocusDispatcher {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: FocusDispatcher,
   decorators: [{
@@ -395,7 +395,7 @@ class CdkEditControl {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: CdkEditControl,
     deps: [],
@@ -403,7 +403,7 @@ class CdkEditControl {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     type: CdkEditControl,
     isStandalone: true,
     selector: "form[cdkEditControl]",
@@ -428,7 +428,7 @@ class CdkEditControl {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: CdkEditControl,
   decorators: [{
@@ -463,7 +463,7 @@ class CdkEditRevert {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: CdkEditRevert,
     deps: [],
@@ -471,7 +471,7 @@ class CdkEditRevert {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     type: CdkEditRevert,
     isStandalone: true,
     selector: "button[cdkEditRevert]",
@@ -491,7 +491,7 @@ class CdkEditRevert {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: CdkEditRevert,
   decorators: [{
@@ -524,7 +524,7 @@ class CdkEditClose {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: CdkEditClose,
     deps: [],
@@ -532,7 +532,7 @@ class CdkEditClose {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     type: CdkEditClose,
     isStandalone: true,
     selector: "[cdkEditClose]",
@@ -548,7 +548,7 @@ class CdkEditClose {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: CdkEditClose,
   decorators: [{
@@ -575,7 +575,7 @@ class EditServices {
   viewportRuler = inject(ViewportRuler);
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: EditServices,
     deps: [],
@@ -583,14 +583,14 @@ class EditServices {
   });
   static ɵprov = i0.ɵɵngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: EditServices
   });
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: EditServices,
   decorators: [{
@@ -630,7 +630,7 @@ class FocusEscapeNotifierFactory {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: FocusEscapeNotifierFactory,
     deps: [],
@@ -638,7 +638,7 @@ class FocusEscapeNotifierFactory {
   });
   static ɵprov = i0.ɵɵngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: FocusEscapeNotifierFactory,
     providedIn: 'root'
@@ -646,7 +646,7 @@ class FocusEscapeNotifierFactory {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: FocusEscapeNotifierFactory,
   decorators: [{
@@ -733,7 +733,7 @@ class CdkEditable {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: CdkEditable,
     deps: [],
@@ -741,7 +741,7 @@ class CdkEditable {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     type: CdkEditable,
     isStandalone: true,
     selector: "table[editable], cdk-table[editable], mat-table[editable]",
@@ -751,7 +751,7 @@ class CdkEditable {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: CdkEditable,
   decorators: [{
@@ -935,7 +935,7 @@ class CdkPopoverEdit {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: CdkPopoverEdit,
     deps: [],
@@ -943,7 +943,7 @@ class CdkPopoverEdit {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     type: CdkPopoverEdit,
     isStandalone: true,
     selector: "[cdkPopoverEdit]:not([cdkPopoverEditTabOut])",
@@ -966,7 +966,7 @@ class CdkPopoverEdit {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: CdkPopoverEdit,
   decorators: [{
@@ -991,7 +991,7 @@ class CdkPopoverEditTabOut extends CdkPopoverEdit {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: CdkPopoverEditTabOut,
     deps: null,
@@ -999,7 +999,7 @@ class CdkPopoverEditTabOut extends CdkPopoverEdit {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     type: CdkPopoverEditTabOut,
     isStandalone: true,
     selector: "[cdkPopoverEdit][cdkPopoverEditTabOut]",
@@ -1023,7 +1023,7 @@ class CdkPopoverEditTabOut extends CdkPopoverEdit {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: CdkPopoverEditTabOut,
   decorators: [{
@@ -1088,7 +1088,7 @@ class CdkRowHoverContent {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: CdkRowHoverContent,
     deps: [],
@@ -1096,7 +1096,7 @@ class CdkRowHoverContent {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     type: CdkRowHoverContent,
     isStandalone: true,
     selector: "[cdkRowHoverContent]",
@@ -1105,7 +1105,7 @@ class CdkRowHoverContent {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: CdkRowHoverContent,
   decorators: [{
@@ -1131,7 +1131,7 @@ class CdkEditOpen {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: CdkEditOpen,
     deps: [],
@@ -1139,7 +1139,7 @@ class CdkEditOpen {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     type: CdkEditOpen,
     isStandalone: true,
     selector: "[cdkEditOpen]",
@@ -1153,7 +1153,7 @@ class CdkEditOpen {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: CdkEditOpen,
   decorators: [{
@@ -1172,7 +1172,7 @@ const EXPORTED_DECLARATIONS = [CdkPopoverEdit, CdkPopoverEditTabOut, CdkRowHover
 class CdkPopoverEditModule {
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: CdkPopoverEditModule,
     deps: [],
@@ -1180,7 +1180,7 @@ class CdkPopoverEditModule {
   });
   static ɵmod = i0.ɵɵngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: CdkPopoverEditModule,
     imports: [OverlayModule, CdkPopoverEdit, CdkPopoverEditTabOut, CdkRowHoverContent, CdkEditControl, CdkEditRevert, CdkEditClose, CdkEditable, CdkEditOpen],
@@ -1188,7 +1188,7 @@ class CdkPopoverEditModule {
   });
   static ɵinj = i0.ɵɵngDeclareInjector({
     minVersion: "12.0.0",
-    version: "21.2.10",
+    version: "21.2.11",
     ngImport: i0,
     type: CdkPopoverEditModule,
     imports: [OverlayModule]
@@ -1196,7 +1196,7 @@ class CdkPopoverEditModule {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "21.2.10",
+  version: "21.2.11",
   ngImport: i0,
   type: CdkPopoverEditModule,
   decorators: [{
