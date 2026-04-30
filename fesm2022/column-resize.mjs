@@ -76,7 +76,7 @@ class ColumnResize {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: ColumnResize,
     deps: [],
@@ -84,7 +84,7 @@ class ColumnResize {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     type: ColumnResize,
     isStandalone: true,
     inputs: {
@@ -95,7 +95,7 @@ class ColumnResize {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: ColumnResize,
   decorators: [{
@@ -114,7 +114,7 @@ class ColumnResizeNotifierSource {
   triggerResize = new Subject();
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: ColumnResizeNotifierSource,
     deps: [],
@@ -122,7 +122,7 @@ class ColumnResizeNotifierSource {
   });
   static ɵprov = i0.ɵɵngDeclareService({
     minVersion: "22.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: ColumnResizeNotifierSource,
     autoProvided: false
@@ -130,7 +130,7 @@ class ColumnResizeNotifierSource {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: ColumnResizeNotifierSource,
   decorators: [{
@@ -153,7 +153,7 @@ class ColumnResizeNotifier {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: ColumnResizeNotifier,
     deps: [],
@@ -161,7 +161,7 @@ class ColumnResizeNotifier {
   });
   static ɵprov = i0.ɵɵngDeclareService({
     minVersion: "22.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: ColumnResizeNotifier,
     autoProvided: false
@@ -169,7 +169,7 @@ class ColumnResizeNotifier {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: ColumnResizeNotifier,
   decorators: [{
@@ -205,7 +205,7 @@ class HeaderRowEventDispatcher {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: HeaderRowEventDispatcher,
     deps: [],
@@ -213,7 +213,7 @@ class HeaderRowEventDispatcher {
   });
   static ɵprov = i0.ɵɵngDeclareService({
     minVersion: "22.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: HeaderRowEventDispatcher,
     autoProvided: false
@@ -221,7 +221,7 @@ class HeaderRowEventDispatcher {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: HeaderRowEventDispatcher,
   decorators: [{
@@ -269,7 +269,7 @@ class _CoalescedStyleScheduler {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: _CoalescedStyleScheduler,
     deps: [],
@@ -277,7 +277,7 @@ class _CoalescedStyleScheduler {
   });
   static ɵprov = i0.ɵɵngDeclareService({
     minVersion: "22.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: _CoalescedStyleScheduler,
     autoProvided: false
@@ -285,7 +285,7 @@ class _CoalescedStyleScheduler {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: _CoalescedStyleScheduler,
   decorators: [{
@@ -341,7 +341,7 @@ class ResizeStrategy {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: ResizeStrategy,
     deps: [],
@@ -349,7 +349,7 @@ class ResizeStrategy {
   });
   static ɵprov = i0.ɵɵngDeclareService({
     minVersion: "22.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: ResizeStrategy,
     autoProvided: false
@@ -357,7 +357,7 @@ class ResizeStrategy {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: ResizeStrategy,
   decorators: [{
@@ -393,7 +393,7 @@ class TableLayoutFixedResizeStrategy extends ResizeStrategy {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: TableLayoutFixedResizeStrategy,
     deps: [],
@@ -401,7 +401,7 @@ class TableLayoutFixedResizeStrategy extends ResizeStrategy {
   });
   static ɵprov = i0.ɵɵngDeclareService({
     minVersion: "22.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: TableLayoutFixedResizeStrategy,
     autoProvided: false
@@ -409,7 +409,7 @@ class TableLayoutFixedResizeStrategy extends ResizeStrategy {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: TableLayoutFixedResizeStrategy,
   decorators: [{
@@ -518,7 +518,7 @@ class CdkFlexTableResizeStrategy extends ResizeStrategy {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: CdkFlexTableResizeStrategy,
     deps: [],
@@ -526,7 +526,7 @@ class CdkFlexTableResizeStrategy extends ResizeStrategy {
   });
   static ɵprov = i0.ɵɵngDeclareService({
     minVersion: "22.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: CdkFlexTableResizeStrategy,
     autoProvided: false
@@ -534,7 +534,7 @@ class CdkFlexTableResizeStrategy extends ResizeStrategy {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: CdkFlexTableResizeStrategy,
   decorators: [{
@@ -575,7 +575,7 @@ class CdkColumnResize extends ColumnResize {
   table = inject(CdkTable);
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: CdkColumnResize,
     deps: null,
@@ -583,7 +583,7 @@ class CdkColumnResize extends ColumnResize {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     type: CdkColumnResize,
     isStandalone: true,
     selector: "table[cdk-table][columnResize]",
@@ -597,7 +597,7 @@ class CdkColumnResize extends ColumnResize {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: CdkColumnResize,
   decorators: [{
@@ -621,7 +621,7 @@ class CdkColumnResizeFlex extends ColumnResize {
   table = inject(CdkTable);
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: CdkColumnResizeFlex,
     deps: null,
@@ -629,7 +629,7 @@ class CdkColumnResizeFlex extends ColumnResize {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     type: CdkColumnResizeFlex,
     isStandalone: true,
     selector: "cdk-table[columnResize]",
@@ -643,7 +643,7 @@ class CdkColumnResizeFlex extends ColumnResize {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: CdkColumnResizeFlex,
   decorators: [{
@@ -667,7 +667,7 @@ class CdkDefaultEnabledColumnResize extends ColumnResize {
   table = inject(CdkTable);
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: CdkDefaultEnabledColumnResize,
     deps: null,
@@ -675,7 +675,7 @@ class CdkDefaultEnabledColumnResize extends ColumnResize {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     type: CdkDefaultEnabledColumnResize,
     isStandalone: true,
     selector: "table[cdk-table]",
@@ -689,7 +689,7 @@ class CdkDefaultEnabledColumnResize extends ColumnResize {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: CdkDefaultEnabledColumnResize,
   decorators: [{
@@ -713,7 +713,7 @@ class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
   table = inject(CdkTable);
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: CdkDefaultEnabledColumnResizeFlex,
     deps: null,
@@ -721,7 +721,7 @@ class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     type: CdkDefaultEnabledColumnResizeFlex,
     isStandalone: true,
     selector: "cdk-table",
@@ -735,7 +735,7 @@ class CdkDefaultEnabledColumnResizeFlex extends ColumnResize {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: CdkDefaultEnabledColumnResizeFlex,
   decorators: [{
@@ -753,7 +753,7 @@ i0.ɵɵngDeclareClassMetadata({
 class CdkColumnResizeDefaultEnabledModule {
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: CdkColumnResizeDefaultEnabledModule,
     deps: [],
@@ -761,7 +761,7 @@ class CdkColumnResizeDefaultEnabledModule {
   });
   static ɵmod = i0.ɵɵngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: CdkColumnResizeDefaultEnabledModule,
     imports: [CdkDefaultEnabledColumnResize, CdkDefaultEnabledColumnResizeFlex],
@@ -769,14 +769,14 @@ class CdkColumnResizeDefaultEnabledModule {
   });
   static ɵinj = i0.ɵɵngDeclareInjector({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: CdkColumnResizeDefaultEnabledModule
   });
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: CdkColumnResizeDefaultEnabledModule,
   decorators: [{
@@ -790,7 +790,7 @@ i0.ɵɵngDeclareClassMetadata({
 class CdkColumnResizeModule {
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: CdkColumnResizeModule,
     deps: [],
@@ -798,7 +798,7 @@ class CdkColumnResizeModule {
   });
   static ɵmod = i0.ɵɵngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: CdkColumnResizeModule,
     imports: [CdkColumnResize, CdkColumnResizeFlex],
@@ -806,14 +806,14 @@ class CdkColumnResizeModule {
   });
   static ɵinj = i0.ɵɵngDeclareInjector({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: CdkColumnResizeModule
   });
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: CdkColumnResizeModule,
   decorators: [{
@@ -828,7 +828,7 @@ i0.ɵɵngDeclareClassMetadata({
 class ColumnSizeStore {
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: ColumnSizeStore,
     deps: [],
@@ -836,7 +836,7 @@ class ColumnSizeStore {
   });
   static ɵprov = i0.ɵɵngDeclareService({
     minVersion: "22.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: ColumnSizeStore,
     autoProvided: false
@@ -844,7 +844,7 @@ class ColumnSizeStore {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: ColumnSizeStore,
   decorators: [{
@@ -1048,7 +1048,7 @@ class Resizable {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: Resizable,
     deps: [],
@@ -1056,7 +1056,7 @@ class Resizable {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     type: Resizable,
     isStandalone: true,
     ngImport: i0
@@ -1064,7 +1064,7 @@ class Resizable {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: Resizable,
   decorators: [{
@@ -1211,7 +1211,7 @@ class ResizeOverlayHandle {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     ngImport: i0,
     type: ResizeOverlayHandle,
     deps: [],
@@ -1219,7 +1219,7 @@ class ResizeOverlayHandle {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "22.0.0-next.9",
+    version: "22.0.0-next.10",
     type: ResizeOverlayHandle,
     isStandalone: true,
     ngImport: i0
@@ -1227,7 +1227,7 @@ class ResizeOverlayHandle {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.0.0-next.9",
+  version: "22.0.0-next.10",
   ngImport: i0,
   type: ResizeOverlayHandle,
   decorators: [{
