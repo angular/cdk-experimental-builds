@@ -1,6 +1,6 @@
 import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion';
 import * as i0 from '@angular/core';
-import { EventEmitter, Output, Input, Directive, inject, ViewChild, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { EventEmitter, Output, Input, Directive, inject, ViewChild, ViewEncapsulation, Component, NgModule } from '@angular/core';
 import { isDataSource } from '@angular/cdk/collections';
 import { Subject, Observable, of } from 'rxjs';
 import { takeUntil, switchMap, distinctUntilChanged } from 'rxjs/operators';
@@ -600,7 +600,6 @@ class CdkSelectionColumn {
       type: AsyncPipe,
       name: "async"
     }],
-    changeDetection: i0.ChangeDetectionStrategy.OnPush,
     encapsulation: i0.ViewEncapsulation.None
   });
 }
@@ -636,7 +635,6 @@ i0.ɵɵngDeclareClassMetadata({
       </td>
     </ng-container>
   `,
-      changeDetection: ChangeDetectionStrategy.OnPush,
       encapsulation: ViewEncapsulation.None,
       imports: [CdkColumnDef, CdkHeaderCellDef, CdkSelectAll, CdkCellDef, CdkSelectionToggle, AsyncPipe]
     }]
