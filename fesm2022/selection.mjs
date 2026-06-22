@@ -229,7 +229,7 @@ class CdkSelection {
   selectAllState = 'none';
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     ngImport: i0,
     type: CdkSelection,
     deps: [],
@@ -237,7 +237,7 @@ class CdkSelection {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     type: CdkSelection,
     isStandalone: true,
     selector: "[cdkSelection]",
@@ -255,7 +255,7 @@ class CdkSelection {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.1.0-next.0",
+  version: "22.1.0-next.1",
   ngImport: i0,
   type: CdkSelection,
   decorators: [{
@@ -338,7 +338,7 @@ class CdkSelectAll {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     ngImport: i0,
     type: CdkSelectAll,
     deps: [],
@@ -346,7 +346,7 @@ class CdkSelectAll {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     type: CdkSelectAll,
     isStandalone: true,
     selector: "[cdkSelectAll]",
@@ -356,7 +356,7 @@ class CdkSelectAll {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.1.0-next.0",
+  version: "22.1.0-next.1",
   ngImport: i0,
   type: CdkSelectAll,
   decorators: [{
@@ -424,7 +424,7 @@ class CdkSelectionToggle {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     ngImport: i0,
     type: CdkSelectionToggle,
     deps: [],
@@ -432,7 +432,7 @@ class CdkSelectionToggle {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     type: CdkSelectionToggle,
     isStandalone: true,
     selector: "[cdkSelectionToggle]",
@@ -446,7 +446,7 @@ class CdkSelectionToggle {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.1.0-next.0",
+  version: "22.1.0-next.1",
   ngImport: i0,
   type: CdkSelectionToggle,
   decorators: [{
@@ -512,7 +512,7 @@ class CdkSelectionColumn {
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     ngImport: i0,
     type: CdkSelectionColumn,
     deps: [],
@@ -520,7 +520,7 @@ class CdkSelectionColumn {
   });
   static ɵcmp = i0.ɵɵngDeclareComponent({
     minVersion: "17.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     type: CdkSelectionColumn,
     isStandalone: true,
     selector: "cdk-selection-column",
@@ -605,7 +605,7 @@ class CdkSelectionColumn {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.1.0-next.0",
+  version: "22.1.0-next.1",
   ngImport: i0,
   type: CdkSelectionColumn,
   decorators: [{
@@ -677,7 +677,7 @@ class CdkRowSelection {
   _index;
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     ngImport: i0,
     type: CdkRowSelection,
     deps: [],
@@ -685,7 +685,7 @@ class CdkRowSelection {
   });
   static ɵdir = i0.ɵɵngDeclareDirective({
     minVersion: "14.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     type: CdkRowSelection,
     isStandalone: true,
     selector: "[cdkRowSelection]",
@@ -704,7 +704,7 @@ class CdkRowSelection {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.1.0-next.0",
+  version: "22.1.0-next.1",
   ngImport: i0,
   type: CdkRowSelection,
   decorators: [{
@@ -732,7 +732,7 @@ i0.ɵɵngDeclareClassMetadata({
 class CdkSelectionModule {
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     ngImport: i0,
     type: CdkSelectionModule,
     deps: [],
@@ -740,7 +740,7 @@ class CdkSelectionModule {
   });
   static ɵmod = i0.ɵɵngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     ngImport: i0,
     type: CdkSelectionModule,
     imports: [CdkTableModule, CdkSelection, CdkSelectionToggle, CdkSelectAll, CdkSelectionColumn, CdkRowSelection],
@@ -748,7 +748,7 @@ class CdkSelectionModule {
   });
   static ɵinj = i0.ɵɵngDeclareInjector({
     minVersion: "12.0.0",
-    version: "22.1.0-next.0",
+    version: "22.1.0-next.1",
     ngImport: i0,
     type: CdkSelectionModule,
     imports: [CdkTableModule]
@@ -756,7 +756,7 @@ class CdkSelectionModule {
 }
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "22.1.0-next.0",
+  version: "22.1.0-next.1",
   ngImport: i0,
   type: CdkSelectionModule,
   decorators: [{
