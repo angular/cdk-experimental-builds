@@ -94,7 +94,7 @@ declare class EditEventDispatcher<R> {
     private _getLastRowWithHoverContent;
     private _mapAllRowsToSingleRow;
     static ɵfac: i0.ɵɵFactoryDeclaration<EditEventDispatcher<any>, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<EditEventDispatcher<any>>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 
 /**
@@ -135,7 +135,7 @@ declare class EditRef<FormValue> implements OnDestroy {
      */
     reset(value?: FormValue): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<EditRef<any>, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<EditRef<any>>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 
 /**
@@ -156,7 +156,7 @@ declare class FocusDispatcher {
     /** Translates arrow keydown events into focus move operations. */
     protected handleKeyboardEvent(event: KeyboardEvent): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<FocusDispatcher, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<FocusDispatcher>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 
 interface Entry<FormValue> {
@@ -262,7 +262,7 @@ declare class EditServices {
     readonly scrollDispatcher: ScrollDispatcher;
     readonly viewportRuler: ViewportRuler;
     static ɵfac: i0.ɵɵFactoryDeclaration<EditServices, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<EditServices>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 
 /** Value indicating whether focus left the target area before or after the enclosed elements. */
@@ -292,7 +292,7 @@ declare class FocusEscapeNotifierFactory {
      */
     create(element: HTMLElement): FocusEscapeNotifier;
     static ɵfac: i0.ɵɵFactoryDeclaration<FocusEscapeNotifierFactory, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<FocusEscapeNotifierFactory>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 
 /**

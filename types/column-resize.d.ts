@@ -39,7 +39,7 @@ declare class ColumnResizeNotifierSource {
     /** Triggers a resize action. */
     readonly triggerResize: Subject<ColumnSizeAction>;
     static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResizeNotifierSource, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ColumnResizeNotifierSource>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 /** Service for triggering column resizes imperatively or being notified of them. */
 declare class ColumnResizeNotifier {
@@ -49,7 +49,7 @@ declare class ColumnResizeNotifier {
     /** Instantly resizes the specified column. */
     resize(columnId: string, size: number): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<ColumnResizeNotifier, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ColumnResizeNotifier>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 
 /** Coordinates events between the column resize directives. */
@@ -83,7 +83,7 @@ declare class HeaderRowEventDispatcher {
     resizeOverlayVisibleForHeaderRow(row: Element): Observable<boolean>;
     private _enterZone;
     static ɵfac: i0.ɵɵFactoryDeclaration<HeaderRowEventDispatcher, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<HeaderRowEventDispatcher>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 
 /** Configurable options for column resize. */
@@ -218,7 +218,7 @@ declare abstract class ColumnSizeStore {
     /** Persists the size of the specified column in the specified table. */
     abstract setSize(tableId: string, columnId: string, sizePx: number): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<ColumnSizeStore, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ColumnSizeStore>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 
 /** Tracks state of resize events in progress. */
@@ -261,7 +261,7 @@ declare class _CoalescedStyleScheduler {
     scheduleEnd(task: () => unknown): void;
     private _createScheduleIfNeeded;
     static ɵfac: i0.ɵɵFactoryDeclaration<_CoalescedStyleScheduler, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<_CoalescedStyleScheduler>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 
 /**
@@ -324,7 +324,7 @@ declare abstract class ResizeStrategy implements OnDestroy {
     ngOnDestroy(): void;
     private _updateCachedSizes;
     static ɵfac: i0.ɵɵFactoryDeclaration<ResizeStrategy, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ResizeStrategy>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 /**
  * The optimally performing resize strategy for &lt;table&gt; elements with table-layout: fixed.
@@ -341,7 +341,7 @@ declare class TableLayoutFixedResizeStrategy extends ResizeStrategy {
     applyMinColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number): void;
     applyMaxColumnSize(_: string, columnHeader: HTMLElement, sizeInPx: number): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<TableLayoutFixedResizeStrategy, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<TableLayoutFixedResizeStrategy>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 /**
  * The optimally performing resize strategy for flex mat-tables.
@@ -373,7 +373,7 @@ declare class CdkFlexTableResizeStrategy extends ResizeStrategy implements OnDes
     private _getColumnPropertiesMap;
     private _applySizeCss;
     static ɵfac: i0.ɵɵFactoryDeclaration<CdkFlexTableResizeStrategy, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<CdkFlexTableResizeStrategy>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<any>;
 }
 declare const TABLE_LAYOUT_FIXED_RESIZE_STRATEGY_PROVIDER: Provider;
 declare const FLEX_RESIZE_STRATEGY_PROVIDER: Provider;
